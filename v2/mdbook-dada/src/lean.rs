@@ -499,8 +499,13 @@ pub struct LeanSelection {
 /// Resolve a citation with the same declaration-kind checks as the renderer.
 pub fn select(root: &Path, target: &str, kind: crate::units::UnitKind) -> Result<LeanSelection> {
     use crate::units::UnitKind;
+    ensure!(
+        kind != UnitKind::FutureNote,
+        "future notes cannot have formalization citations"
+    );
     let (source, name) = read_source(root, target)?;
     let selected = match kind {
+        UnitKind::FutureNote => unreachable!("rejected above"),
         UnitKind::Definition => extract_definition(&source, &name),
         UnitKind::Theorem | UnitKind::Lemma => extract_theorem(&source, &name),
         UnitKind::Example => extract_example(&source, &name),

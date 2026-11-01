@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "eccaf0e20acb5c9e1a9301fe5949cb1c06d1dba305905b9681b8bb7a99501d85",
+  "reviewer": "Codex /root/review_given — fresh Given/Shared correspondence reviewer",
+  "provenance": "Independent textual comparison on 2026-11-01 by delegated Codex agent /root/review_given, with no authorship of these chapters or Lean implementation. Read all 37 authored units and their dependency units, exact selected Lean sources, review policy, and listed source context. Reprepared after final future-note list/quote rejection fix and confirmed required unit/selection/policy contents identical to those examined; this is a fresh semantic review, not hash replacement. No verdict inferred from previous decisions or mechanical checks.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:lean/Shared/Syntax.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:lean/Unique/UnpackingChecks.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.state: given.programs supplies map/list notation and given.syntax names variables. ObjectId wraps Nat; Slot is Option ObjectId, Object stores class and ordered fields, and State has objects, variables and nextId, with empty all empty/zero. The authored finite-map abstraction expressly requires distinct keys and retains empty slots; allocation counter behavior agrees with the operational definitions in given.evaluation. The comparison found no undefined semantic metavariable or unresolved judgment that changes this claim within its introducing units and dependencies.",
+  "limitations": [
+    "Textual prose/statement correspondence only: no Lean proof execution, kernel verification, or proof-tactic audit was performed by this reviewer. Reading retained selected proof text does not certify tactic correctness.",
+    "Association-list representations admit malformed raw states; finite-map prose is interpreted with the authored distinct-key and well-formedness conventions. Conservative whole-source/tool snapshots were not all examined; examined lists only required review inputs and actually read context."
+  ],
+  "supersedes": [
+    "e5301921261ca72c022ff295c6443e960501c44ac3732ff8d9f6d24bf6e26515"
+  ]
+}

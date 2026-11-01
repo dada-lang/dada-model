@@ -416,3 +416,52 @@ fn rule_selections_preserve_final_literal_tokens() {
         }
     }
 }
+
+#[test]
+fn future_notes_render_without_formalization_or_draft_status() {
+    let files = Sources::new();
+    let source = "# Ideas\n\n````{future-note} future.views\n\nA possible **extension**.\n\n```dada\nclass Token {}\n```\n````\n\nSee {anchor-ref}`future.views`.";
+    let parsed = units::parse(source, "model.md").unwrap();
+    assert_eq!(parsed[0].kind, UnitKind::FutureNote);
+    assert!(!parsed[0].draft);
+    units::validate_coverage(&source[..source.find("\n\nSee").unwrap()], "model.md").unwrap();
+    let output = render(source, &files.lean()).unwrap();
+    assert!(output.contains("future note: future.views"));
+    assert!(output.contains("href=\"#claim-future.views\""));
+    assert!(output.contains("A possible **extension**."));
+    assert!(output.contains("class Token {}"));
+    assert!(!output.contains("type=\"radio\""));
+    assert!(!output.contains("unit-status"));
+}
+
+#[test]
+fn future_notes_reject_formalizations_and_nested_specifications() {
+    let files = Sources::new();
+    for option in [
+        ":lean: Model:initial",
+        ":rust: tool.rs:check",
+        ":tests: tool.rs:checks",
+        ":status: draft",
+    ] {
+        let source = format!("```{{future-note}} future.views\n{option}\n\nIdea.\n```");
+        let error = format!("{:#}", units::parse(&source, "model.md").unwrap_err());
+        assert!(error.contains("model.md:1"), "{error}");
+        assert!(error.contains("future notes cannot have"), "{error}");
+        assert!(render(&source, &files.lean()).is_err());
+    }
+    for source in [
+        "```{future-note} Model:initial\nIdea.\n```",
+        "> ```{future-note} future.views\n> :lean: Model:initial\n> \n> Idea.\n> ```",
+        "- ```{future-note} future.views\n  :rust: tool.rs:check\n  \n  Idea.\n  ```",
+        "````{future-note} future.views\n\n```{definition} Model:initial\nFormalized.\n```\n````",
+        "````{future-note} future.views\n\n```{definition} nested\n:lean: Model:initial\n\nFormalized.\n```\n````",
+    ] {
+        assert!(units::parse(source, "model.md").is_err(), "{source}");
+        assert!(render(source, &files.lean()).is_err(), "{source}");
+    }
+    assert!(lean::select(&files.lean(), "Model:initial", UnitKind::FutureNote).is_err());
+    let literal =
+        "````text\n```{future-note} sample\n:lean: NotAReal:Citation\n\nLiteral syntax.\n```\n````";
+    assert!(units::parse(literal, "model.md").unwrap().is_empty());
+    assert_eq!(render(literal, &files.lean()).unwrap(), literal);
+}

@@ -234,6 +234,7 @@ fn directive_blocks(source: &str) -> Vec<DirectiveBlock> {
                     "{theorem}",
                     "{lemma}",
                     "{example}",
+                    "{future-note}",
                     // Recognized only so the shared validator can reject it.
                     "{obligation}",
                     "{lean.type}",
@@ -283,12 +284,12 @@ fn chapter_roles(source: &str) -> Result<Vec<Role>> {
             .info
             .split_whitespace()
             .next()
-            .is_some_and(|name| MarkdownDirective::parse(name).is_some())
+            .is_some_and(|name| MarkdownDirective::parse(name).is_some() || name == "{future-note}")
         {
             // These bodies are Markdown; grammar, judgment, and rule bodies are TeX.
             ensure!(
                 !directive_blocks(&block.body).iter().any(|nested| {
-                    ["{definition}", "{example}", "{theorem}", "{lemma}"]
+                    ["{definition}", "{example}", "{theorem}", "{lemma}", "{future-note}"]
                         .iter()
                         .any(|name| nested.info.starts_with(name))
                 }),
@@ -557,7 +558,8 @@ fn render(
                 "{definition}",
                 "{theorem}",
                 "{lemma}",
-                "{example}"
+                "{example}",
+                "{future-note}"
             ]
             .iter()
             .any(|name| directive.starts_with(name) && directive != *name),

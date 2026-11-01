@@ -17,6 +17,7 @@ pub enum UnitKind {
     Theorem,
     Lemma,
     Example,
+    FutureNote,
 }
 
 impl UnitKind {
@@ -29,6 +30,7 @@ impl UnitKind {
             "{theorem}" => Self::Theorem,
             "{lemma}" => Self::Lemma,
             "{example}" => Self::Example,
+            "{future-note}" => Self::FutureNote,
             _ => return None,
         })
     }
@@ -42,6 +44,7 @@ impl UnitKind {
             Self::Theorem => "Theorem",
             Self::Lemma => "Lemma",
             Self::Example => "Example",
+            Self::FutureNote => "Future note",
         }
     }
 
@@ -88,6 +91,10 @@ fn parse_block(
     // Legacy directives carry path:declaration on their opening line. Keep their
     // interpretation, but never mistake them for reviewed structured units.
     if argument.contains(':') {
+        ensure!(
+            kind != UnitKind::FutureNote,
+            "future notes cannot have formalization citations; use a stable unit ID"
+        );
         return Ok(None);
     }
     let id = argument.trim();
@@ -199,8 +206,15 @@ fn parse_block(
         !unit.body.starts_with(':'),
         "unit options must immediately follow the opening fence, before the blank line and body"
     );
+    if kind == UnitKind::FutureNote {
+        ensure!(
+            unit.lean.is_empty() && unit.rust.is_empty() && unit.tests.is_empty(),
+            "future notes cannot have formalization citations (:lean:, :rust:, or :tests:); use a specification unit for formalized content"
+        );
+        ensure!(!unit.draft, "future notes cannot have :status: draft; they are exploratory notes, not unfinished specification units");
+    }
     ensure!(
-        unit.draft || !unit.lean.is_empty() || !unit.rust.is_empty(),
+        kind == UnitKind::FutureNote || unit.draft || !unit.lean.is_empty() || !unit.rust.is_empty(),
         "unit requires :lean: or :rust: citations; use :status: draft while its formalization is pending"
     );
     ensure!(
@@ -289,6 +303,16 @@ pub fn parse(source: &str, path: &str) -> Result<Vec<SpecUnit>> {
     let mut depth = 0;
     for (event, range) in Parser::new(source).into_offset_iter() {
         match event {
+            Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(info)))
+                if depth != 0 && info.split_whitespace().next() == Some("{future-note}") =>
+            {
+                let line = source[..range.start]
+                    .bytes()
+                    .filter(|b| *b == b'\n')
+                    .count()
+                    + 1;
+                bail!("{path}:{line}: future notes must be top-level units, not nested in lists or blockquotes");
+            }
             Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(info))) if depth == 0 => {
                 current = Some((range.start, info.into_string()));
                 depth += 1;
@@ -333,7 +357,7 @@ fn reject_removed_syntax(source: &str, path: &str) -> Result<()> {
         );
         if matches!(
             directive,
-            "{definition}" | "{theorem}" | "{lemma}" | "{example}"
+            "{definition}" | "{theorem}" | "{lemma}" | "{example}" | "{future-note}"
         ) {
             reject_removed_syntax(&block.body, path)?;
         }

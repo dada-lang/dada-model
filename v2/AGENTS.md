@@ -8,7 +8,11 @@ reference. Do not claim that partial evidence coverage covers the whole book.
 
 ## Units and scope
 
-- Every new-style unit under the configured book source root (`md/` here) requires evidence. `spec.json` additionally
+- Every new-style specification unit under the configured book source root (`md/` here) requires evidence.
+  `{future-note} ID` is for exploratory, nonnormative notes: it rejects `:lean:`,
+  `:rust:`, `:tests:`, and `:status: draft`. Notes allow `:uses:` and links for
+  context, remain indexed and checked for structure and dependencies, and cannot
+  receive correspondence reviews. Their lack of formalization does not block publication. `spec.json` additionally
   selects strict chapters and policy inputs. Inspect it before changing coverage. New semantic content in strict chapters belongs in
   named units, including its explanatory prose and mathematics.
 - The opening argument is the ID: ```` ```{definition} unique.syntax.place ````.
@@ -154,8 +158,9 @@ including the unresolved representation of an initialized field with no exposed
 interior. Do not implement that proposal as part of the current type system.
 
 The strict chapters are `md/given.md`, `md/given-typing.md`, and `md/shared.md`,
-plus the future-extensions chapter and the evidence pilot. The future generic-views draft intentionally fails evidence
-validation. Changes to the evidence configuration and these instructions also
+plus the future-extensions chapter and the evidence pilot. The generic-views
+future note is publishable without formalization; adding a formalization citation
+to a future note is an error. Draft specification units still fail evidence validation. Changes to the evidence configuration and these instructions also
 invalidate earlier reviews; do not claim those records remain current or
 refresh their hashes without performing new reviews.
 Keep their semantic content in cited units and renew affected review records

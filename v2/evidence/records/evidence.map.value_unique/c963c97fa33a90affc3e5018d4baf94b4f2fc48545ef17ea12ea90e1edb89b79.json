@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "0a318acb9fe19c22df77988926c36e2e27c6097d2770f4790ff3bcc8c1954a0e",
+  "reviewer": "Codex delegated reviewer /root/review_typing",
+  "provenance": "Fresh independent semantic correspondence review on 2026-11-01 by the GPT-6-based Codex review_typing agent. Read complete authored units and their dependency selections, current review policy, and specified supporting context. Final packets were prepared after the future-note parser freeze; compared all required unit/Lean/policy inputs with the inspected preliminary packets and found them unchanged. No chapter or Lean edits were authored by this reviewer.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMap:FiniteMap.value_unique",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.value_unique",
+    "context:lean/Common/FiniteMap.lean"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "FiniteMap.value_unique takes arbitrary Key/Value types, a map, implicit key and two values, and membership premises for both pairs; its conclusion is equality of the two values. The surrounding Common/FiniteMap context has no ordering or DecidableEq typeclass assumption. evidence.map supplies finite-map and entry notation, so the authored quantification and lack of equality/ordering requirements match the statement.",
+  "limitations": [
+    "Statement and definition correspondence review only; no Lean execution, tactic audit, or axiom-dependency audit was performed.",
+    "Conservative full-source/tool snapshots establish freshness, not a claim that every retained source line was reviewed. Listed context files were consulted for the definitions, namespace scope, and example setup identified in the rationale."
+  ],
+  "supersedes": [
+    "d1daadb3bc055e9db3ea1cd183f95e8b2fdc0d04f8a986704fcf0e680c4a7ca8"
+  ]
+}

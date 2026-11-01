@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "0c80f5bc0531df4f232611e250e0cc76dd992cd7fc39e652198b0a910136b1ce",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "unit:meta.syntax.anchors.identity"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "roles validates ASCII ID syntax and excludes code, links, images and HTML blocks, escaped prefixes and double-backtick demonstrations. chapter_roles adds structured IDs and roles inside Markdown directives, including future notes; process_with_roots builds a global defining map before rendering and rejects duplicates. render_role rejects unknown references and produces local HTML shields; relative_html handles nested relative chapter paths. Tests exercise forward/nested/parent references, malformed/missing/duplicate identities, literal contexts and shared legacy role IDs. Identity is introduced in this unit; label inheritance is a rendering convention, with no proof or correspondence inference.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence."
+  ],
+  "supersedes": [
+    "c143e98f24cae33ab0127e773bea7bc72313637b9167768212a434e582355448"
+  ]
+}

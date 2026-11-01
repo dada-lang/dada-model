@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "9b9b4869fa47e9857495a84846b36dd51dbc9fc09b034e062d803cfd9b175ef4",
+  "reviewer": "Codex /root/review_given — fresh Given/Shared correspondence reviewer",
+  "provenance": "Independent textual comparison on 2026-11-01 by delegated Codex agent /root/review_given, with no authorship of these chapters or Lean implementation. Read all 37 authored units and their dependency units, exact selected Lean sources, review policy, and listed source context. Reprepared after final future-note list/quote rejection fix and confirmed required unit/selection/policy contents identical to those examined; this is a fresh semantic review, not hash replacement. No verdict inferred from previous decisions or mechanical checks.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:lean/Shared/Syntax.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:lean/Unique/UnpackingChecks.lean",
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Place",
+    "policy:md/repo/correspondence-review.md",
+    "unit:shared.give"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:shared.give: This unit introduces p, slots, reference modes and effective path access in prose. Resolve joins modes along the route; Give.move uses unique resolution and Take, Give.copy uses shared resolution and a shared stored reference unchanged, and Give.promote uses shared resolution with Promote on the final unique slot. These exactly cover the table; Take/Promote list decompositions preserve every other reference and identity. Compatible constrains coexisting owners, not object modes. The comparison found no undefined semantic metavariable or unresolved judgment that changes this claim within its introducing units and dependencies.",
+  "limitations": [
+    "Textual prose/statement correspondence only: no Lean proof execution, kernel verification, or proof-tactic audit was performed by this reviewer. Reading retained selected proof text does not certify tactic correctness.",
+    "Association-list representations admit malformed raw states; finite-map prose is interpreted with the authored distinct-key and well-formedness conventions. Conservative whole-source/tool snapshots were not all examined; examined lists only required review inputs and actually read context."
+  ],
+  "supersedes": [
+    "4352cc64fcd42f32550e7d77856f802dc9fd0618e7b4fb563fd9b0dca5ed8b18"
+  ]
+}

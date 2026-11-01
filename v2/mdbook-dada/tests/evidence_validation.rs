@@ -997,3 +997,56 @@ fn hidden_markdown_chapters_cannot_escape_required_evidence() {
     let report = evidence::check(&fixture.inventory()).unwrap();
     assert!(report.is_ok(), "{}", report.render(&fixture.inventory()));
 }
+
+#[test]
+fn future_notes_are_publishable_but_cannot_receive_correspondence_reviews() {
+    let fixture = Fixture::new();
+    let note = "\n```{future-note} future.views\n:uses: model.variable\n\nExplore richer views of {anchor-ref}`model.variable`.\n```\n";
+    fixture.write("md/model.md", &format!("{MODEL}{note}"));
+    let inventory = fixture.inventory();
+    assert!(inventory.required.contains("future.views"));
+    assert!(inventory
+        .inputs("future.views")
+        .unwrap()
+        .iter()
+        .any(|input| input.key == "unit:model.variable"));
+    for id in ["model.variable", "model.empty"] {
+        let bundle = ReviewBundle::prepare(&inventory, id, &[]).unwrap();
+        evidence::record(&inventory, &bundle, &review(&bundle)).unwrap();
+    }
+    let report = evidence::check(&inventory).unwrap();
+    assert!(report.is_ok(), "{}", report.render(&inventory));
+    let status = report
+        .statuses
+        .iter()
+        .find(|s| s.unit == "future.views")
+        .unwrap();
+    assert_eq!(status.evidence, "future note");
+    assert_eq!(status.correspondence, "not applicable");
+    assert!(ReviewBundle::prepare(&inventory, "future.views", &[]).is_err());
+    // Reusing an old specification approval cannot approve a future note.
+    let bundle = ReviewBundle::prepare(&inventory, "model.variable", &[]).unwrap();
+    fixture.write(
+        "md/model.md",
+        &format!(
+            "{}{}",
+            MODEL.replace(
+                "```{definition} model.variable\n:lean: Fixture:Variable",
+                "```{future-note} model.variable"
+            ),
+            note
+        ),
+    );
+    let error = evidence::record(&fixture.inventory(), &bundle, &review(&bundle)).unwrap_err();
+    assert!(error
+        .to_string()
+        .contains("cannot record correspondence for a future note"));
+    fixture.write(
+        "md/model.md",
+        &format!(
+            "{MODEL}{}",
+            note.replace(":uses: model.variable", ":uses: missing.unit")
+        ),
+    );
+    assert!(Inventory::load(&fixture.0).is_err());
+}

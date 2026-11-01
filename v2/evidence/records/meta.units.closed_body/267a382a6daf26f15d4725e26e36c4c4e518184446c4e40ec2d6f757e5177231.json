@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "c539bd93429096d02a6a370f0a9784ef2eacefdee5533de5850219e075f2fe95",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "tool:mdbook-dada/src/units.rs",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "parse_block rejects all three mdBook expansion spellings against raw unit text (including literal fences), scans nested legacy citations, and retains the full fenced raw span. SourceConfiguration::validate_chapters parses the original and received chapter separately and compares ordered (ID, raw) pairs, so expansion or insertion cannot acquire evidence by changing the preprocessor input. The four cited tests exercise ordinary and literal expansions, nested citations, preexpanded includes, rewritten claims and the actual mdBook pipeline. The claim explicitly limits protection to received chapters at this stage; neither the implementation nor these tests promises to detect an omitted chapter or subsequent output rewriting. The unit introduces its syntax in ordinary prose without mathematical metavariables.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence."
+  ],
+  "supersedes": [
+    "46229b4c1b43bef53ce0c4c39bcea615419a5d7fb5d44acca2643384cf88cce8"
+  ]
+}

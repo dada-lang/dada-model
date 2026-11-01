@@ -8,8 +8,11 @@ The book separates repository methods and specification-system requirements
 `v2/mdbook-dada` is a shared Rust library in the v2 Cargo workspace, with the
 `mdbook-dada` renderer and `dada-spec` evidence CLI. Read `v2/AGENTS.md` before
 changing structured units, evidence, or the tooling. `v2/spec.json` explicitly
-selects strict chapters and review policies. Every new-style unit under `md/`
-requires evidence; legacy paragraphs outside strict chapters are not implicitly
+selects strict chapters and review policies. Every new-style specification unit under `md/`
+requires evidence; `{future-note} ID` units are explicitly nonnormative and
+reject formalization citations (`:lean:`, `:rust:`, `:tests:`) and draft status.
+They remain indexed and dependency-checked but cannot receive correspondence
+reviews or block publication merely for lacking formalization; legacy paragraphs outside strict chapters are not implicitly
 covered by evidence checks. Structured directives put a stable
 unit ID on the opening line, then `:lean:` source citations and `:uses:` context
 IDs in options before the body. Meta definitions cite `:rust:` implementation

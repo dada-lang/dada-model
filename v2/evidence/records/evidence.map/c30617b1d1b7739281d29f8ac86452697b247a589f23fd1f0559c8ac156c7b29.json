@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "bundle": "f575a826d016ce6fcefc6f6011baf3fb9e3be92e6a98eb81efba2da613e4be5d",
+  "reviewer": "Codex delegated reviewer /root/review_typing",
+  "provenance": "Fresh independent semantic correspondence review on 2026-11-01 by the GPT-6-based Codex review_typing agent. Read complete authored units and their dependency selections, current review policy, and specified supporting context. Final packets were prepared after the future-note parser freeze; compared all required unit/Lean/policy inputs with the inspected preliminary packets and found them unchanged. No chapter or Lean edits were authored by this reviewer.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "FiniteMap has a finite List of key/value pairs and Nodup of mapped keys; empty uses [] with its uniqueness witness. This matches ordered entries with no imposed key ordering, and at most one value per key. The authored unit introduces M, K, T and empty-map notation locally. The record compares the representation and conditions, not just the structure name.",
+  "limitations": [
+    "Statement and definition correspondence review only; no Lean execution, tactic audit, or axiom-dependency audit was performed.",
+    "Conservative full-source/tool snapshots establish freshness, not a claim that every retained source line was reviewed. Listed context files were consulted for the definitions, namespace scope, and example setup identified in the rationale.",
+    "Editorial deviation from review criterion 3: the introducing words finite map are not italicized, although M and its key/value domains are introduced. This does not leave its meaning ambiguous or change the correspondence judgment."
+  ],
+  "supersedes": [
+    "bd94166f1a7162ca49217e8a011d573be9f599345d1e791ab298dcb02c92afae"
+  ]
+}

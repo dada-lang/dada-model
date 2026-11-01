@@ -7,7 +7,9 @@ commands. A unit has one stable identity, a complete authored body, and explicit
 source and context dependencies. The renderer and evidence checker use the same
 unit boundaries.
 
-Every structured unit under `md/` participates in the evidence inventory.
+Every structured unit under `md/` participates in the inventory. Future notes
+record nonnormative ideas with no formalization or correspondence claim; all
+other structured units require evidence.
 `v2/spec.json` additionally lists strict chapters, where semantic prose must be
 inside units using the syntax described in [Authoring units](authoring.md).
 The renderer also retains the earlier citation syntax for compatibility.
@@ -126,10 +128,13 @@ and require the same recorded comparison as language units.
 :uses: meta.syntax.anchors.identity meta.syntax.inline_and_block meta.math.source_view meta.math.typesetting meta.math.runtime meta.math.overline.braces meta.math.definition.selection meta.math.judgment.selection meta.math.theorem.selection meta.examples.selection meta.lean.definitions.navigation meta.syntax.heap.nodes meta.syntax.heap.validation meta.syntax.heap.rendering meta.syntax.heap.routing meta.evidence.mechanical_execution
 
 The *tooling review inventory* includes the renderer contracts linked here, with
-their exact implementation and test selections. Every structured unit under the
+their exact implementation and test selections. Every structured specification unit under the
 book source root, including dot-prefixed files and directories, requires current
 positive correspondence evidence, even when its chapter is not strict about surrounding prose. Explicit dependencies must name
-existing units and become review inputs.
+existing units and become review inputs. Future notes remain in the inventory
+and undergo structural and reference checks, but assert no correspondence and
+require no review. Their explicit boundary is described by
+{anchor-ref}`meta.future_notes`.
 
 Mechanical execution records remain separate from correspondence judgments. A
 review cannot stand in for a command result, and a command result cannot approve

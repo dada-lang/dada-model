@@ -60,7 +60,8 @@ Lean elaboration or a proof that the authored mathematical rule has the same mea
 Recording a review rechecks its inputs against current sources. A later decision
 may explicitly supersede an earlier decision for the same unit; the earlier
 record remains available. Every active decision must concern current inputs and
-conclude correspondence for that unit's check to pass.
+conclude correspondence for that specification unit's check to pass.
+Future notes assert no correspondence and cannot be prepared or recorded for review.
 
 An independent positive decision cannot conceal an active mismatch, inconclusive
 review, or stale decision. If a replacement becomes stale, checking fails rather

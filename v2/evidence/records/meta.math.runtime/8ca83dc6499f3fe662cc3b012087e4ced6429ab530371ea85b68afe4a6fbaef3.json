@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "7704606173bc0c82ddffb280a775f9457dabf71d9b1accc7305532c1a58edd23",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lib.rs:escape",
+    "rust:mdbook-dada/src/lib.rs:markdown_heading",
+    "rust:mdbook-dada/src/lib.rs:protect_math",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/lib.rs:selector_header",
+    "test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order",
+    "test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders",
+    "test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles",
+    "test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies",
+    "test:mdbook-dada/tests/book.rs:leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup",
+    "test:mdbook-dada/tests/book.rs:nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body",
+    "test:mdbook-dada/tests/book.rs:unanchored_rendered_blocks_share_named_headers_and_grouped_choices",
+    "test:mdbook-dada/tests/renderer_contracts.rs:pinned_mathjax_configuration_uses_one_loader",
+    "test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent",
+    "test:mdbook-dada/tests/units.rs:meta_units_show_named_rust_implementation_and_test",
+    "test:mdbook-dada/tests/units.rs:structured_units_render_identified_headers_and_exact_lean_views",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.math.runtime",
+    "unit:meta.math.source_view",
+    "unit:meta.math.typesetting"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected renderer functions emit the delimiters configured in tool:theme/mathjax.js. That asset installs window.MathJax before appending exactly one pinned mathjax@4.1.3/tex-chtml.js loader; tool:book.toml disables mdBook mathjax-support and includes the same script for builds. CSS permits horizontal overflow in mathematical/source containers, and the runtime config retains authored display breaks with overflow. The two asset tests inspect loader/version/configuration, delimiter spellings and pane/overflow CSS; they do not request the CDN or render arbitrary formulas. meta.math.typesetting introduces preserved math delimiters and meta.math.source_view the independent selector. The network and visual limits are accurately explicit.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence.",
+    "No browser rendering or CDN availability check was performed; output/CSS inspection does not establish appearance for all inputs."
+  ],
+  "supersedes": [
+    "e011ead5ab2b03cf3139cf2739093d06bf0492375011fc80ced96966927fc959"
+  ]
+}

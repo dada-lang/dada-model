@@ -1,5 +1,6 @@
 //! Syntactic evidence validation. This module never invokes an agent or proof checker.
 use crate::inventory::{hash, Input, Inventory, SCHEMA};
+use crate::units::UnitKind;
 use annotate_snippets::{AnnotationKind, Group, Level, Renderer, Snippet};
 use anyhow::{ensure, Context, Result};
 use serde::{Deserialize, Serialize};
@@ -21,6 +22,10 @@ pub struct ReviewBundle {
 
 impl ReviewBundle {
     pub fn prepare(inventory: &Inventory, unit: &str, extra: &[String]) -> Result<Self> {
+        ensure!(
+            inventory.unit(unit)?.kind != UnitKind::FutureNote,
+            "future notes have no formalization to review"
+        );
         let mut inputs = inventory.inputs(unit)?;
         for path in extra {
             inputs.push(inventory.extra_input(path)?);
@@ -285,6 +290,10 @@ pub fn record(
 ) -> Result<PathBuf> {
     let current = Inventory::load(&inventory.root)?;
     let inventory = &current;
+    ensure!(
+        inventory.unit(&bundle.unit)?.kind != UnitKind::FutureNote,
+        "cannot record correspondence for a future note: it has no formalization"
+    );
     let mut errors = validate_bundle(inventory, bundle)?;
     errors.extend(validate_review(bundle, review));
     ensure!(
@@ -499,6 +508,14 @@ pub fn check(inventory: &Inventory) -> Result<Report> {
                 continue;
             }
         };
+        if inventory.unit(id)?.kind == UnitKind::FutureNote {
+            report.statuses.push(UnitStatus {
+                unit: id.clone(),
+                evidence: "future note",
+                correspondence: "not applicable",
+            });
+            continue;
+        }
         if inventory.unit(id)?.draft {
             report.statuses.push(UnitStatus {
                 unit: id.clone(),

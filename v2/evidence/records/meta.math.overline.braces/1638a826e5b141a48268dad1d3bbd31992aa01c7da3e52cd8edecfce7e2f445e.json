@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "a386c5eb3da9941500bacbc0674fe8679e1c99079bf893653b841ede6581fcd1",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lint.rs:check_latex",
+    "test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions",
+    "test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex",
+    "test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf",
+    "test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed",
+    "test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space",
+    "unit:meta.math.overline.braces"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "check_latex matches the overline command followed by a non-ASCII-letter boundary/end, requires an immediately preceding opening brace and following literal ASCII space, and counts source newlines for diagnostics. It operates on all raw text rather than parsed math. Tests reject missing group/space and tabs/newlines/nonbreaking spaces, accept grouped/nested forms and longer control words, verify Unicode/CRLF line numbering, exercise preprocessor invocation on literal/directive examples and recursively scan all Markdown below md. The unit introduces the command spelling as an authoring convention and correctly disclaims brace balancing or TeX parsing.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence."
+  ],
+  "supersedes": [
+    "937b26b8b69d928e31f6c1ecc1927d462ad603d6f107a1ee900180a97c46bf7b"
+  ]
+}

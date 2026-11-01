@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "8ebca81ba83ac07da40f2eca7fc85e56db72b2f2af5edaaeb18d482b297530dc",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::check_context",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::load",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::markdown_root",
+    "rust:mdbook-dada/src/inventory.rs:Inventory::inputs",
+    "rust:mdbook-dada/src/lib.rs:process_configured",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_lean_root_is_shared_by_rendering_and_evidence",
+    "tool:book.toml",
+    "tool:mdbook-dada/src/inventory.rs",
+    "unit:meta.sources.configuration"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "SourceConfiguration::load, markdown_root and lean_root use book.toml and contained input_path resolution; check_context rejects conflicting runtime source roots. process_configured checks that configuration before source validation and passes the independent project root for Rust selections. Inventory::inputs includes tool:book.toml and derives Lean context from the configured root. The configured_lean_root test changes to formal/model, checks both renderer and selection use its changed declaration, observes stale prior evidence, rejects the old runtime override, and verifies Rust still resolves at the project root. Canonical containment follows the inventory input_path helper inspected in the retained tool snapshot. These are paths and configuration names introduced in the unit, not undeclared mathematical symbols.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence."
+  ],
+  "supersedes": [
+    "2b0ccd792cf85a1e77604320a68f8ea9a4c08882d62b73aa3169cefcc6d13564"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "fa0a0aa6c6a4ccbd371ee27d6ba4a9a3c5417e061c0f16dba04b37d2b58ef8c6",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/lib.rs:directive_blocks",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/book.rs:block_directives_are_distinct_from_literal_code_and_inline_roles",
+    "test:mdbook-dada/tests/book.rs:generated_grammar_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:inferred_judgment_and_rule_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:informational_paragraphs_preserve_markdown_and_literal_examples",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:draft_status_is_explicit_and_does_not_relax_citation_checks",
+    "test:mdbook-dada/tests/units.rs:drafts_keep_their_semantic_kind_without_claiming_a_formalization",
+    "test:mdbook-dada/tests/units.rs:removed_obligation_syntax_is_rejected_at_every_authoring_entry_point",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "unit:meta.syntax.inline_and_block",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "directive_blocks recognizes brace directives while ordinary language fences remain code; render handles their distinct cases and paragraph Informational replacement. parse_block separates stable identity, options/body, semantic kind and draft state, allowing missing draft citations while selected supplied targets retain kind checks. The tests cover literal fences/roles, migration diagnostics for removed inferred forms and obligations, draft kind/indicator/no-selector behavior, invalid status values and wrong-kind citations, and preservation of informational Markdown. meta.units.closed_body supplies the expansion/nesting boundary. The legacy block list is descriptive of those forms; the separate meta.future_notes unit specifies the additional exploratory form. Syntax names are literal code, not undefined mathematical notation.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence."
+  ],
+  "supersedes": [
+    "4640f25a05bc9420be3f8217864d65531a36da474eb5cd21a3e7e846eb845acc"
+  ]
+}

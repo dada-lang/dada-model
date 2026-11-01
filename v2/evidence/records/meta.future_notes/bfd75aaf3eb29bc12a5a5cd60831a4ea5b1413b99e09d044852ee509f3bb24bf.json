@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "3503e23de9d6f51ee98766738b92e8eb7f41e24d6c1c78d37459ecd74072cfe8",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:ReviewBundle::prepare",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/units.rs:parse",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:future_notes_are_publishable_but_cannot_receive_correspondence_reviews",
+    "test:mdbook-dada/tests/units.rs:future_notes_reject_formalizations_and_nested_specifications",
+    "test:mdbook-dada/tests/units.rs:future_notes_render_without_formalization_or_draft_status",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/src/lib.rs",
+    "tool:mdbook-dada/src/units.rs",
+    "unit:meta.future_notes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "parse_block recognizes FutureNote separately from draft readiness, requires a stable ID/nonempty authored body and rejects all three formalization options, opening-line citations and draft status. parse explicitly rejects list/blockquote placement instead of allowing it to evade top-level inventory; nested structured/legacy citations remain rejected, while an enclosing ordinary text fence is literal. render_unit chooses no source alternate for this kind and renders a Future note shield with Markdown body. prepare and record explicitly reject the kind; check still derives inputs/dependencies before emitting future note/not applicable and bypasses correspondence requirements, while the draft branch remains blocking. Tests cover all forbidden options, list/quote bypass cases, nesting, literal samples, header/no radio/no draft, strict coverage, resolved and missing dependencies, successful evidence with an uncited note, prepare refusal and attempted reuse of a prior specification bundle. Further inspection of inventory add_unit/load and lib chapter_roles/directive_blocks confirms indexing and body references use the normal paths. The term is introduced in this unit; no mathematical syntax or proposition is asserted for a note.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence."
+  ],
+  "supersedes": []
+}

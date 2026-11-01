@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "f49234881b1710d9c7a9512991edbc1c1c0687be6f855bb39564a23ee5852e32",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:example_source",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:extract_example",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:theorem_source",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "test:mdbook-dada/src/lean.rs:tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_end_markers_that_cut_off_a_proof_continuation",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections",
+    "test:mdbook-dada/src/lean.rs:tests::requires_one_complete_anonymous_example",
+    "test:mdbook-dada/src/lean.rs:tests::selects_complete_named_theorems_without_comment_or_string_decoys",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_reject_wrong_kinds_and_malformed_directives",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_select_literal_qualified_names",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_show_the_exact_named_statement_and_proof",
+    "test:mdbook-dada/tests/book.rs:linked_example_bodies_index_anchors_and_scope_nested_selectors",
+    "test:mdbook-dada/tests/book.rs:linked_examples_fail_on_invalid_citations_bodies_or_nesting",
+    "test:mdbook-dada/tests/book.rs:linked_examples_preserve_native_markdown_and_select_one_lean_test",
+    "test:mdbook-dada/tests/book.rs:markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds",
+    "unit:meta.examples.selection",
+    "unit:meta.math.theorem.selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "extract_example locates standalone comment markers using the masked comment scan, enforces matching unique nonnested regions, one column-zero anonymous example with := body, no other command (even indented), and rejects a closing marker before continuation. example_source omits marker lines and render/chapter_roles preserve native Markdown, roles and permitted nested diagrams. Tests inspect setup/result source exclusion, Markdown lists/links/code/math, independent selectors and identity resolution; rejection tests cover missing/malformed/duplicate regions, decoys, multiple commands and proof truncation. meta.math.theorem.selection supplies the nesting boundary via the reference. ANCHOR spellings and anonymous example are introduced explicitly; selection is not execution.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence."
+  ],
+  "supersedes": [
+    "be64a8d1a7814e9918e4f71094b0ff249d6d2b4fa42a569eddfb84a305fa5737"
+  ]
+}
