@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "5a760525156a8ec1dc19346589d5fbb1172edeb1023dd06692c5821f232e8ae1",
+  "reviewer": "Independent Codex reviewer /root/review_given_renewal",
+  "provenance": "Independent source audit followed by direct reading and comparison of the immutable packet inputs on 2026-11-01. Shared unit, selection and policy snapshots were read once per identical input across this 25-unit review set. No earlier favorable decision was used as evidence for the conclusion.",
+  "examined": [
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.classes supplies C, f and the field-count convention. This unit introduces p, x, e and t before their grammars. The exact Place constructors are variable and recursive field; Value contains only give of a Place and new with a class name and List Value, permitting recursively nested constructor arguments; Statement contains destination and value. No place-only expression, call, assignment, scope or destructor constructor is present. The Step context supplies the stated runtime freshness behavior: a let step requires the destination absent from the evaluated variable keys. The syntax records names without encoding that operational condition in the raw Statement structure. This is consistent with the prose presenting freshness as what execution does, and the subsequent operational definitions make it precise.",
+  "limitations": [
+    "This is a correspondence comparison of the frozen prose, exact selected statements/definitions, and identified semantic context. No Lean build, test execution, or proof-tactic audit was performed; compilation and evidence validation are separate checks.",
+    "Listed full-source context snapshots were consulted for the supporting declarations and example states discussed in the rationale and dependency comparisons; the listing does not claim examination of every unrelated proof or declaration in those files."
+  ],
+  "supersedes": [
+    "2240cf6341d9aa92c877edd5ca62032403ad046f11896d00004d29363203e178"
+  ]
+}

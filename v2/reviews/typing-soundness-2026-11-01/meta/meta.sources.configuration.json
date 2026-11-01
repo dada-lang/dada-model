@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "36b8514ab67f27906349e5b4f3ea45b6f68a764b301ee2a5bd4aeb4e8e16548c",
+  "reviewer": "Codex independent renewal reviewer /root/review_meta_renewal",
+  "provenance": "Fresh correspondence review by the Codex GPT-6 subagent on 2026-11-01. Read the immutable packet's required raw units, exact implementation/test selections, and policy, then inspected the supporting bundled context identified in the rationale. Shared inputs were checked identical across the five packets; no previous review rationale was used as a substitute for comparison. No source edits or test executions were performed by this reviewer.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/authoring.md",
+    "context:md/repo/spec-system.md",
+    "context:md/repo/writing-style.md",
+    "context:mdbook-dada/src/configuration.rs",
+    "context:mdbook-dada/src/inventory.rs",
+    "context:mdbook-dada/src/lib.rs",
+    "context:mdbook-dada/tests/evidence_validation.rs",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::check_context",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::load",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::markdown_root",
+    "rust:mdbook-dada/src/inventory.rs:Inventory::inputs",
+    "rust:mdbook-dada/src/lib.rs:process_configured",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_lean_root_is_shared_by_rendering_and_evidence",
+    "tool:book.toml",
+    "tool:mdbook-dada/src/evidence.rs",
+    "tool:spec.json",
+    "unit:meta.sources.configuration"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:meta.sources.configuration specifies agreement on book/Lean roots, rejection of disagreeing overrides, containment, separate project-relative Rust citations, and freshness after configuration edits. SourceConfiguration::load deserializes book.src and preprocessor.dada.lean-source from book.toml; its derived equality and check_context compare those same two effective fields against mdBook context. Both root accessors call inventory::input_path, whose complete bundled implementation rejects empty/non-normal/absolute/traversal paths, canonicalizes, and rejects paths escaping the canonical project or entering generated outputs. Inventory::load and add_unit use this shared configuration for Markdown discovery and Lean selection. process_configured loads the same file, checks overrides and original chapters, then passes separate Lean and project roots to process_with_roots. The inspected render_unit path in lib.rs selects Rust citations from project_root, so a nested Lean root cannot redirect them.\n\nInventory::inputs retains tool:book.toml; validate_bundle in the bundled evidence.rs snapshot compares its exact current content/path/hash. The cited configured_lean_root_is_shared_by_rendering_and_evidence test begins with completed reviews, moves the formalization to formal/model, changes its declaration to [2], edits book.toml, and asserts old evidence fails. The new exact declaration and containing-context paths use formal/model with no old lean/ inputs, configured rendering exposes [2], an old-root override is rejected, and a Rust citation still resolves from the project root. I also inspected Fixture::new, configured_context, chapter, and the test's rendering entry point. Root containment and book.src override parity follow directly from input_path and structural equality; this particular cited test exercises Lean-root relocation/override rather than every book-root or escaping-path case.\n\nThe terminology is established in the bundled authoring guide and spec-system.md's opening, Evidence and validation, and Selecting formalizations sections: units have IDs/raw bodies, citations select source, and bundles/records preserve inputs/decisions. This implementation contract uses ordinary prose and code identifiers rather than mathematical metavariables; no undefined judgment or forward mathematical reference is needed.",
+  "limitations": [
+    "This is a source correspondence review. I inspected the cited test bodies and their fixtures but did not execute Cargo, mdBook, or Lean in this review; it supplies no mechanical pass claim.",
+    "For conservative snapshots, examined records use of the relevant portions, not a claim to have audited every line. I read spec-system.md lines 1-217 and 282-385; supporting Rust/test portions are identified in the rationale. Unrelated renderer features and Lean proof bodies were not reviewed.",
+    "The cited scenario tests a nested Lean root and a disagreeing Lean-root override. Containment and rejection of a differing Markdown root are supported by implementation inspection, not an exhaustive family of path tests in this unit's selected test."
+  ],
+  "supersedes": [
+    "019472579ce432b561d9b99ff5bfa4ca5a7e482756428298996f1d1d23fcd71b"
+  ]
+}

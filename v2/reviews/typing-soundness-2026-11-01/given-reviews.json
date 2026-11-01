@@ -1,0 +1,127 @@
+[
+  {
+    "unit": "evidence.map",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/d0bb52f76b272b69752ab5c0d209bf42fa52a5eac0e3b73f5bd6076e8a4be3d0.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/evidence.map.json"
+  },
+  {
+    "unit": "evidence.map.empty",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/1dc4cc59d8892846d97d2fbad1b2a3e77fe2a78a9dd5da7333b0416e0f94eb47.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/evidence.map.empty.json"
+  },
+  {
+    "unit": "evidence.map.value_unique",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/b74eca16ffa0296333e4ca3f40f1dcc6d3335e4e1b88d7e47c6b62c533deed90.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/evidence.map.value_unique.json"
+  },
+  {
+    "unit": "given.classes",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/8ecdc8a4db8a72466dbbcbc4600ebf4ae53c6bdcdb3255467d926fc85643b2c7.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.classes.json"
+  },
+  {
+    "unit": "given.evaluation",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/0ae431296e1f81d3ebb7de30f9098e2bf7a91b5632b359b78c7e44d76cf31ac4.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.evaluation.json"
+  },
+  {
+    "unit": "given.example.empty_field",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/aecb9985d31a30bc3bb4eb3a8adf10991ae83f2b60cb65b8b202a34b18b04990.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.example.empty_field.json"
+  },
+  {
+    "unit": "given.example.field",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/6268bdbeb2944bd36ff0a514300cdec619920643bff4852c079bb9923b445f6e.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.example.field.json"
+  },
+  {
+    "unit": "given.example.nested",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/76ee9eda41599edd191dc085e0ad3fc6134360561a6c79dc7fa519b1be1628e0.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.example.nested.json"
+  },
+  {
+    "unit": "given.example.token",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/a907c877da32535402617c80e006c3ef42631513ee6a3668bed3f682186b66d3.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.example.token.json"
+  },
+  {
+    "unit": "given.example.unpack",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/fc055f26d6c8e6ecbe9f41dd72fa190da51d0a49667da7c3f11cc2ea385d3d18.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.example.unpack.json"
+  },
+  {
+    "unit": "given.executions",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/dd6e727d037c1cea3494860d506d9f758fdaf4c3e3ad4d5f168ba2356b609254.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.executions.json"
+  },
+  {
+    "unit": "given.liveness",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/c8d3dc4410e685d81b770db55c260eeb04a8e6b84b5c54a3d63d5db8895032f4.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.liveness.json"
+  },
+  {
+    "unit": "given.machine",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/c02b8e417fef85e526779c78a3a1fe5e4ebb412fee064a328d1aad3263bcf5d4.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.machine.json"
+  },
+  {
+    "unit": "given.patterns",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/336938525e34a11ae56d187db68b9a8b2edc2f5d4a873e975a8e3b2bba5851ba.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.patterns.json"
+  },
+  {
+    "unit": "given.programs",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/7ad0dd992c4450ec9cd056397991db5f022e03891052e1ce957b51a512b31a93.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.programs.json"
+  },
+  {
+    "unit": "given.resolution",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/09893e805359aaf665d9d17103233d9dfa0e0bf2c08db7b0d7a339d243cad691.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.resolution.json"
+  },
+  {
+    "unit": "given.single_owner",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/82021f7b7c2725a8595c20f7030325535296325ad4f1978298cc71a35939b876.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.single_owner.json"
+  },
+  {
+    "unit": "given.soundness",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/2b5653ae9a28fac305fdd5dd786a827a2d29733af647d68e5d2132b98ae508e0.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.soundness.json"
+  },
+  {
+    "unit": "given.state",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/870afada9da067e0534b27ee55347aa14355fc44dda149a4387586db721d452f.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.state.json"
+  },
+  {
+    "unit": "given.steps",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/9fc2c5bc20ef6ba9c4330b958e168f0e7b42b49bddf7138fe0834a745500fcf9.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.steps.json"
+  },
+  {
+    "unit": "given.storage_places",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/7cd9a82acac3b065ce5cd402efd1de75e240b2960ac05f8fbd226984cd855e9f.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.storage_places.json"
+  },
+  {
+    "unit": "given.syntax",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/5a760525156a8ec1dc19346589d5fbb1172edeb1023dd06692c5821f232e8ae1.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.syntax.json"
+  },
+  {
+    "unit": "given.unpacking",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/f0a1691ba0e6bec6b2e013ec07ceb57549228da7c47ce8bd71ba5292aba66720.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.unpacking.json"
+  },
+  {
+    "unit": "given.unpacking.soundness",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/44b1721e25754c6ba5bf2722e77349032c4478435ee3f72d739ff2092617578d.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.unpacking.soundness.json"
+  },
+  {
+    "unit": "given.well_formed",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/aa5ac4475e3e93b72dc9272f80bfba3b52a3d80ac35474df7450556c132616ce.json",
+    "review": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/reviews/typing-soundness-2026-11-01/given/given.well_formed.json"
+  }
+]

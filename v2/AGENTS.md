@@ -124,9 +124,16 @@ The intervening chapter `md/given-typing.md` has Lean definitions for signed
 views, typing judgments, and storage realization in `Unique/Views`,
 `Unique/Typing`, `Unique/TypingRealization`, and `Unique/TypedConfigurations`.
 `Unique/ViewChecks`, `Unique/TypingChecks`, and `Unique/TypingExecutionChecks`
-check the linked examples, including their complete runtime executions. General
-normalization-correctness lemmas and static progress/preservation proofs remain
-unfinished; keep those theorem blocks Draft and do not claim type safety.
+check the linked examples, including their complete runtime executions.
+`Unique/TypingSafety` proves expression soundness, progress, preservation,
+and completion after exactly one step per statement. Expression soundness
+includes evaluation existence and preservation for every evaluation, with
+arbitrary pending values. `Unique/TypingGiveSoundness` and
+`Unique/TypingBindingSoundness` connect the static rules to the operational
+semantics; no operational-success premises are added to typing.
+`Unique/ViewNormalization` proves preservation of positive and negative
+observations. `Unique/ViewCanonical` proves well-formedness preservation
+and independence from entry order.
 The separate `Unique/Unpacking` extension has operational rules, structural
 well-formedness preservation, and a faithful embedding/reflection of the base
 Given machine. `Unique/UnpackingChecks` checks field-order permutations, empty

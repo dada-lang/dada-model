@@ -1,0 +1,65 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running tests/evidence_validation.rs (target/debug/deps/evidence_validation-8f216222e6037633)
+
+running 26 tests
+test actual_mdbook_pipeline_rejects_includes_in_reviewed_content ... ignored, requires the mdbook executable; run with --ignored after installing book tools
+test authored_includes_and_nested_citations_cannot_acquire_evidence ... ok
+test preexpanded_includes_cannot_bypass_original_source_validation ... ok
+test draft_status_cannot_hide_missing_or_wrong_kind_citations ... ok
+test draft_definitions_can_be_prepared_but_require_formalization_before_review ... ok
+test explicit_dependencies_and_unit_links_must_resolve ... ok
+test generated_inputs_cannot_be_reintroduced_through_symlink_aliases ... ok
+test recording_rechecks_sources_even_with_an_existing_inventory ... ok
+test prepared_bundles_are_not_completed_reviews ... ok
+test review_must_examine_exact_citations_and_provide_a_rationale ... ok
+test additional_consulted_inputs_are_examined_and_invalidated_on_change ... ok
+test reviewed_unit_depending_on_a_draft_cannot_complete_the_required_inventory ... ok
+test complete_current_reviews_pass_and_remain_distinct_from_mechanical_checks ... ok
+test snapshot_and_manifest_tampering_are_rejected ... ok
+test rust_test_citations_require_the_named_test_function_itself ... ok
+test rejects_missing_or_substituted_required_inputs ... ok
+test moving_a_unit_without_changing_its_contents_preserves_review ... ok
+test changing_an_approved_unit_to_draft_cannot_reuse_or_forge_approval ... ok
+test configured_lean_root_is_shared_by_rendering_and_evidence ... ok
+test renderer_lean_fixtures_are_required_freshness_inputs ... ok
+test malformed_and_rewritten_records_are_reported ... ok
+test revised_review_can_supersede_same_unit_after_consulting_more_context ... ok
+test mismatch_and_inconclusive_reviews_never_count_as_correspondence ... ok
+test stale_supersession_cannot_fall_back_to_an_independent_positive_review ... ok
+test authored_and_formal_source_changes_stale_existing_reviews ... ok
+test removed_obligations_cannot_evade_evidence_validation ... ok
+
+test result: ok. 25 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.79s
+
+     Running tests/latex.rs (target/debug/deps/latex-435ab7f2370e80d5)
+
+running 5 tests
+test diagnostics_count_source_lines_including_unicode_and_crlf ... ok
+test grouped_overbars_and_other_control_words_are_allowed ... ok
+test book_build_checks_math_directives_examples_and_literal_tex ... ok
+test overbars_require_a_preceding_brace_and_following_literal_space ... ok
+test all_book_markdown_follows_latex_conventions ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/units.rs (target/debug/deps/units-e66a639a001cafea)
+
+running 16 tests
+test legacy_blocks_and_literal_authoring_examples_are_not_units ... ok
+test links_form_dependencies_but_literals_do_not ... ok
+test coverage_rejects_unattached_prose_and_legacy_blocks ... ok
+test exact_authored_units_preserve_unicode_latex_and_crlf ... ok
+test duplicate_and_nested_units_fail ... ok
+test removed_syntax_remains_literal_in_code_samples_and_escaped_roles ... ok
+test meta_units_show_named_rust_implementation_and_test ... ok
+test removed_obligation_syntax_is_rejected_at_every_authoring_entry_point ... ok
+test malformed_units_fail_with_source_location ... ok
+test new_units_retain_kind_checks ... ok
+test rule_citations_cannot_select_an_indented_siblings_constructor ... ok
+test draft_status_is_explicit_and_does_not_relax_citation_checks ... ok
+test drafts_keep_their_semantic_kind_without_claiming_a_formalization ... ok
+test structured_units_reject_includes_and_nested_legacy_citations ... ok
+test structured_units_render_identified_headers_and_exact_lean_views ... ok
+test rule_selections_preserve_final_literal_tokens ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s

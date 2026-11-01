@@ -8,9 +8,9 @@ without requiring every object to occupy its own allocation.
 The book is organized into language layers:
 
 1. [Given](../given-overview.md) begins with [operational semantics](../given.md)
-   for unique ownership, followed by a draft [type system](../given-typing.md)
-   that tracks initialized, empty, and unknown places with views and proposes
-   progress and preservation statements.
+   for unique ownership, followed by a [type system](../given-typing.md)
+   that tracks initialized, empty, and unknown places with views and proves
+   progress and preservation.
 2. [Shared](../shared-overview.md) adds [operational semantics](../shared.md)
    for shared ownership. Its [type-system chapter](../shared-typing.md) is coming.
 3. [CFlow](../cflow.md) reserves the next part for control flow.
@@ -20,9 +20,8 @@ A correspondence theorem shows that the translation of a Given program has
 exactly its original execution behavior in Shared. The checked operational
 models cover construction and fresh-variable bindings. Given also contains an
 unpacking extension used by the typing chapter. Its operations and structural
-preservation are checked; the typing rules have Lean definitions, while static
-progress and preservation remain unproved. The existing preservation proofs concern
-heap well-formedness. Assignment, drop, primitives, function calls, and borrowing
+preservation are checked, as are static progress and preservation for the
+Given type system. Assignment, drop, primitives, function calls, and borrowing
 remain outside these models.
 
 Later chapters will add features to this foundation one layer at a time. The

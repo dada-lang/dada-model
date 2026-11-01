@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "c02b8e417fef85e526779c78a3a1fe5e4ebb412fee064a328d1aad3263bcf5d4",
+  "reviewer": "Independent Codex reviewer /root/review_given_renewal",
+  "provenance": "Independent source audit followed by direct reading and comparison of the immutable packet inputs on 2026-11-01. Shared unit, selection and policy snapshots were read once per identical input across this 25-unit review set. No earlier favorable decision was used as evidence for the conclusion.",
+  "examined": [
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Configuration",
+    "lean:Unique/State:Configuration.finished",
+    "lean:Unique/State:Configuration.initial",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Step:Steps",
+    "lean:Unique/Step:Stuck",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.machine",
+    "unit:given.programs",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.programs introduces Π, Δ and P and unit:given.state introduces S and the empty state. Configuration contains state and code, Configuration.initial combines State.empty with program.body, and Configuration.finished is code = [], matching K = ⟨S,P⟩, the initial configuration and the finished predicate. Step is parameterized by an unchanged class table and consumes exactly the head Statement after a complete Eval. It exposes only configurations before/after the whole statement; there is no intermediate-expression configuration constructor. The unit introduces step notation and explicitly announces that its rules follow in the operational section, rather than deriving a theorem from an undefined relation. Finishing imposes no condition on or mutation of storage.",
+  "limitations": [
+    "This is a correspondence comparison of the frozen prose, exact selected statements/definitions, and identified semantic context. No Lean build, test execution, or proof-tactic audit was performed; compilation and evidence validation are separate checks.",
+    "Listed full-source context snapshots were consulted for the supporting declarations and example states discussed in the rationale and dependency comparisons; the listing does not claim examination of every unrelated proof or declaration in those files."
+  ],
+  "supersedes": [
+    "f30ea85216037b21d6d32544ff86dde0075f487665298a8749abf1a401cbd845"
+  ]
+}

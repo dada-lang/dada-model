@@ -46,9 +46,9 @@ and `v2/md/cflow.md` are editorial placeholders, with no semantic units yet.
 The existing chapter paths remain unchanged. `v2/md/given-typing.md` contains
 strictly covered units for signed views, typing rules, and storage realization,
 with formal definitions and examples in `Unique/Views`, `Unique/Typing`,
-`Unique/TypingRealization`, and their checks. General normalization properties
-and static progress/preservation are not yet proved; their draft status remains
-explicit. `Unique/Unpacking` adds `Class → { fields }` patterns with structural
+`Unique/TypingRealization`, and their checks. `Unique/TypingSafety` proves
+expression soundness for arbitrary pending values, machine progress and
+preservation, and completion after exactly one step per statement. `Unique/Unpacking` adds `Class → { fields }` patterns with structural
 preservation and embedding/reflection of the base machine. Shared correspondence
 still covers the base fragment. See `v2/AGENTS.md` for the formalization boundary.
 View omissions mean unknown and inaccessible, not empty. Positive entries expose

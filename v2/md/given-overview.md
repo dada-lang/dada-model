@@ -1,4 +1,4 @@
 # Given
 
 - [Operational semantics](given.md)
-- [Type system](given-typing.md) — draft for review.
+- [Type system](given-typing.md).

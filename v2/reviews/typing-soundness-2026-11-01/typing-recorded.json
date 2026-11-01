@@ -1,0 +1,140 @@
+[
+  {
+    "unit": "given.typing.bindings",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.bindings/d9d0b3b08416780896929136c0f39b28bc87237ee8a8f4384f12bee1e99a8105.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.configurations",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.configurations/7649332a0b217810d665c15ae4d679dd5cbfae25707c6c792352714bef5b9722.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.declarations",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.declarations/f45516f8c27262ef6c7cbeb35b204e90e1768d86edd776d0e9728ad1880cafed.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.emptying",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.emptying/95a839aeb4559867b7b195096992cbfca2d05de6c9be68a9d669ed855477c7a7.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.environments",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.environments/9de59adafd917d3bb42047d8c28bcb4910bbe254f099ac5f6679f656215ce305.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.example.moves",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.example.moves/1a977a0a6c5ec677d138934abf0cd8e132de9f5328bd77c10b63f066f747094b.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.example.normalization",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.example.normalization/457c706159063771e1d186f24e17b70e3bd9e980ce9b6ad49b26513577e59006.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.example.rejections",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.example.rejections/775bafc735ce2e0098039f7a07b8df67df4e682d6013754565ddf05d8e60329a.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.example.take",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.example.take/38e3aa2d9713f39326b8d1eda64802c480001a3c0fff107dad23d6d314c6cc41.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.example.views",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.example.views/8d667e38af63ebb4df912510aaa4a88b9ef338abede562e3ba0e35fd360b87bb.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.expression_soundness",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.expression_soundness/36b9a201f35901111a4ac497b693da4a315b58553b8335a1780d2e5b6fa9e18f.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.expressions",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.expressions/d9095af51a26fa9df9a0374648329b9980cece408375cba934a7827fe1068100.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.focus",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.focus/f75be43288288c6466849b263398448fdaa0badb4a88d57ad2902bc35f840829.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.forgetting",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.forgetting/f05a8841c02f7723e96dabbaa51847295f1167932c5d89f7498a626bda69ede9.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.normalization",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.normalization/1e474176634a81b0a77730b7b354bbe828c4ff46a7a5e986713bfe0af1bcc25b.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.observations",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.observations/c78f0e2e29fb5dce771464f083a66011541c25f264d5587d9d386082dbf4226b.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.preservation",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.preservation/b07e4cb7e886edc3ef9abc2c57a98219db9a02a2b18639b6c9b405d8ac4a1a83.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.progress",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.progress/c04b8a40e089bfc623aec16b5c22041e72bbe44f0c80a76f7a4a23d4c4884bac.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.realization",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.realization/544bd4df36dc54a56f846cd0e2d6897c22dd17f059babc3061a0de0b5fcf0563.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.safety",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.safety/af24208304f7e1de7d66b93a8f38de4dc3d1411cba6454172ee26dea2caafa96.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.statements",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.statements/e2076afca9549fdade71e89d4d54879db660595e1d477057529f7bd1dc5e441f.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.views",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.views/439e91d2126c0d3ca34ac15c33e28b4385bffe851b3246cee9347af3ec27552d.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.typing.normalization_correct",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.typing.normalization_correct/693033907ab9d9a228f681fdf582aca47f6b75ec9e8b3ce522b380366875016a.json\n",
+    "stderr": ""
+  }
+]

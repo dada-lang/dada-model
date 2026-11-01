@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "bundle": "1dc4cc59d8892846d97d2fbad1b2a3e77fe2a78a9dd5da7333b0416e0f94eb47",
+  "reviewer": "Independent Codex reviewer /root/review_given_renewal",
+  "provenance": "Independent source audit followed by direct reading and comparison of the immutable packet inputs on 2026-11-01. Shared unit, selection and policy snapshots were read once per identical input across this 25-unit review set. No earlier favorable decision was used as evidence for the conclusion.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMapExamples:empty_map",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.empty"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The dependency unit:evidence.map introduces M, its key/value domains, the entry list, and the empty map before this example. The exact Common/FiniteMapExamples:empty_map proposition specializes both type parameters to Nat and states that (FiniteMap.empty : FiniteMap Nat Nat).entries = []. This is precisely the displayed natural-number empty map and entails that no pair is stored. The example makes no claim about lookup, insertion, or a different key type.",
+  "limitations": [
+    "This is a correspondence comparison of the frozen prose, exact selected statements/definitions, and identified semantic context. No Lean build, test execution, or proof-tactic audit was performed; compilation and evidence validation are separate checks."
+  ],
+  "supersedes": [
+    "b141bc4b83dd73216e055a483975050a90a67f5acb6178dfdc397caf3993f295"
+  ]
+}

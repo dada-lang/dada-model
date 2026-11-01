@@ -1,0 +1,143 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running unittests src/lib.rs (target/debug/deps/mdbook_dada-320b86c2977f6769)
+
+running 37 tests
+test graph::tests::labels_are_escaped_and_quoted_commas_are_preserved ... ok
+test graph::tests::arrays_materialize_uninitialized_slots_and_validate_indices ... ok
+test graph::tests::bad_facts_fail_instead_of_silently_changing_the_graph ... ok
+test graph::tests::variable_store_groups_slots_without_becoming_a_reference_target ... ok
+test graph::tests::facts_render_unicode_fields_and_reference_kinds ... ok
+test lean::tests::rejects_malformed_theorem_name_components_even_when_source_matches ... ok
+test graph::lease_tests::leases_join_edges_and_shleases_target_objects ... ok
+test lean::tests::rejects_missing_and_malformed_example_anchors ... ok
+test lean::tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments ... ok
+test lean::tests::masks_raw_strings_and_character_literals_without_masking_identifier_primes ... ok
+test lean::tests::rejects_end_markers_that_cut_off_a_proof_continuation ... ok
+test lean::tests::selects_a_case_without_interpreting_its_binders ... ok
+test lean::tests::definition_selection_ignores_comment_and_literal_decoys ... ok
+test graph::cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically ... ok
+test lean::tests::structure_definitions_allow_command_names_as_typed_fields ... ok
+test lean::tests::selects_one_anonymous_example_with_comments_and_multiline_proof ... ok
+test lean::tests::selects_complete_named_theorems_without_comment_or_string_decoys ... ok
+test routing::tests::routes_around_boxes_and_through_column_gaps ... ok
+test lean::tests::mutual_validation_ignores_comment_and_literal_decoys ... ok
+test lean::tests::qualified_theorem_names_match_only_the_literal_declaration_name ... ok
+test lean::tests::requires_one_complete_anonymous_example ... ok
+test rust_source::tests::selects_complete_test_with_attributes_and_unicode ... ok
+test rust_source::tests::rejects_missing_ambiguous_and_generated_items ... ok
+test rust_source::tests::rejects_unsafe_paths_and_non_rust_files ... ok
+test rust_source::tests::rejects_symlinks_outside_root ... ok
+test rust_source::tests::selects_named_data_and_trait_items_without_reformatting ... ok
+test rust_source::tests::selects_module_qualified_functions_methods_and_types ... ok
+test lean::tests::extracts_complete_declarations_and_ignores_comment_decoys ... ok
+test lean::tests::declaration_extent_keeps_final_literal_expressions_and_comment_text_inside_literals ... ok
+test lean::tests::declaration_boundaries_accept_modifiers_only_before_supported_declarations ... ok
+test lean::tests::declaration_extent_excludes_trailing_comments_but_keeps_body_and_inline_comments ... ok
+test lean::tests::structure_definitions_still_reject_indented_sibling_commands ... ok
+test lean::tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection ... ok
+test lean::tests::definitions_select_complete_equations_structure_literals_and_multiline_bodies ... ok
+test lean::tests::rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections ... ok
+test lean::tests::selects_mutual_inductive_members_and_surrounding_declarations ... ok
+test lean::tests::definitions_reject_unsupported_incomplete_and_ambiguous_sources ... ok
+
+test result: ok. 37 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests src/bin/dada-spec.rs (target/debug/deps/dada_spec-7e1e95604296a6d3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/mdbook_dada-ee7e320332568239)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/book.rs (target/debug/deps/book-21d5a92656f9ccf9)
+
+running 39 tests
+test authored_directive_examples_remain_literal_inside_other_code ... ok
+test current_mdbook_schema_is_processed_and_unknown_schema_fails ... ok
+test block_directives_are_distinct_from_literal_code_and_inline_roles ... ok
+test explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles ... ok
+test generated_grammar_directives_require_migration ... ok
+test authored_math_requires_one_opening_argument_and_a_body ... ok
+test cross_references_traverse_to_parent_and_bad_references_fail ... ok
+test authored_grammar_accepts_single_citations_and_escapes_html ... ok
+test authored_theorems_show_the_exact_named_statement_and_proof ... ok
+test authored_math_escapes_html_without_interpreting_placeholders ... ok
+test heap_fences_render_and_preserve_source ... ok
+test informational_paragraphs_preserve_markdown_and_literal_examples ... ok
+test inferred_judgment_and_rule_directives_require_migration ... ok
+test inline_roles_preserve_paragraph_and_double_backticks_are_literal ... ok
+test indexes_forward_references_and_nested_chapters ... ok
+test heading_anchors_do_not_replace_the_required_markdown_statement ... ok
+test authored_grammar_keeps_math_and_groups_citations_in_order ... ok
+test literal_examples_are_not_anchors ... ok
+test authored_theorems_select_literal_qualified_names ... ok
+test header_selection_ignores_roles_inside_explicit_math ... ok
+test authored_grammar_rejects_invalid_citations_and_missing_bodies ... ok
+test linked_examples_fail_on_invalid_citations_bodies_or_nesting ... ok
+test authored_math_rejects_missing_or_wrong_kind_source_selections ... ok
+test proof_markdown_is_linted_with_original_chapter_lines ... ok
+test linked_examples_preserve_native_markdown_and_select_one_lean_test ... ok
+test authored_theorems_reject_wrong_kinds_and_malformed_directives ... ok
+test unlinked_example_labels_require_migration_but_literal_mentions_do_not ... ok
+test definition_blocks_reject_missing_wrong_kind_and_malformed_citations ... ok
+test explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies ... ok
+test typed_anchor_roles_share_ids_and_references_without_implying_proofs ... ok
+test linked_example_bodies_index_anchors_and_scope_nested_selectors ... ok
+test theorem_and_lemma_bodies_preserve_markdown_math_and_proof_outlines ... ok
+test leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup ... ok
+test nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body ... ok
+test authored_judgments_and_rules_keep_tex_and_show_cited_source ... ok
+test unanchored_rendered_blocks_share_named_headers_and_grouped_choices ... ok
+test proof_blocks_index_cross_chapter_anchors_and_scope_supported_nested_blocks ... ok
+test markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds ... ok
+test definition_blocks_select_multiple_complete_declarations_and_preserve_markdown ... ok
+
+test result: ok. 39 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/evidence.rs (target/debug/deps/evidence-417539d30d190e55)
+
+running 1 test
+test evidence_is_complete_and_current ... FAILED
+
+failures:
+
+---- evidence_is_complete_and_current stdout ----
+
+thread 'evidence_is_complete_and_current' (23335425) panicked at mdbook-dada/tests/evidence.rs:11:5:
+
+error: draft unit future.generic_views requires formalization
+ --> md/dada/future-extensions.md:5:1
+  |
+5 | / ````{example} future.generic_views
+6 | | :status: draft
+7 | | :uses: given.typing.views given.typing.expressions
+  | |__________________________________________________^ evidence required for this unit
+  |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for future.generic_views, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit meta.system.remaining_coverage requires formalization
+   --> md/repo/spec-system.md:123:1
+    |
+123 | / ```{definition} meta.system.remaining_coverage
+124 | | :status: draft
+    | |______________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for meta.system.remaining_coverage, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    evidence_is_complete_and_current
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 48.00s
+
+error: test failed, to rerun pass `--test evidence`

@@ -1,0 +1,152 @@
+[
+  {
+    "unit": "evidence.map",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/evidence.map/917eaa76a238ec5f07f9259d63c9bd0546a155ecf7ccadbcc89a75e9436f7e0c.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "evidence.map.empty",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/evidence.map.empty/04f75c6daa806ba64c317b20fcf60e9348706045ec7998d147890d37bacf54cb.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "evidence.map.value_unique",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/evidence.map.value_unique/43864f1098124be2e487b9194e7d1bff2de135e15a1889ef72caa16243266c3d.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.classes",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.classes/574a14294527739471d53d2dee64ef62ad5248779830276412b3e7a7605aeebf.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.evaluation",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.evaluation/fb482e98f1bb6681593a8743f6e1d14f97eeb0ee0c717060c4d61963faeda942.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.example.empty_field",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.example.empty_field/4fbfb34f3b6d64d6108bbfd735955d88c4f10fe6a31a1c6cd17e2b9a0bec7984.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.example.field",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.example.field/3feea7b7e7f67fcf111a9bcc5b88814caab19796174b7d4d9aeec3252a504142.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.example.nested",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.example.nested/1cb7daa10e94a7d0640600150bbab311e0e137edab20c63dabf1321200444482.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.example.token",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.example.token/a8b44130e32cc7f74c9d6a4516801001ed386cfdc0c6355e8c1be7e4b86885f2.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.example.unpack",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.example.unpack/1b8d4024c622c75c6bc3751cf2cdb6da429c25dbd6d5a38a69cf54361756e5d9.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.executions",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.executions/c10761aaf62d2f7abab95ce2a65d89ec3d720693159caf76c27977ac17777ede.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.liveness",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.liveness/4ab87d386d3c9dd70d938f7d30a386fb0bcd7f0bbd0c1cf458dcbfa6ac643cca.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.machine",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.machine/1cd840d71634a7dd1f93b2fa5336068d9446e26052a9240f42ad0badfcfba1bc.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.patterns",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.patterns/f02294c006cee05b8cd58e91b0ca53d1d26134846be420c7b2eb4662fdf86eef.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.programs",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.programs/30652951bac63fd5117d05eb0d65da15a468eda6d5fe86ef63a75285ba3fe379.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.resolution",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.resolution/77482133b7faea7fa88503a63d832cfff26149a93c8128c1e84ad71da7444e9f.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.single_owner",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.single_owner/a9e7765fc747442ad8fa293547758b7f6e2481026c0eabde468afcddde5f471e.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.soundness",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.soundness/a0f7b93c6b20d0c33667bd0188cd2fbba79d640370d3ba430bf8ee3e53aa2687.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.state",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.state/8f11a8291f1c89cbc4cd31a93ebb7a4ed1c81c1760b3fca6c96df8a25973797c.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.steps",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.steps/b3bc04a01b8c91b860260f48bc287d8f94ca0f3d43e1d9cec96e24441273d5c5.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.storage_places",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.storage_places/795a18fa05646a4fa0f72f3868d381806fe98388d89c022b1ffe79f95165a39c.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.syntax",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.syntax/d050da58121633dc59d42c9db6102820faa17f662a4ca0cb290f9743d8273d7b.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.unpacking",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.unpacking/8cb9d9223640cdbb9ebceb4f237d25737a38081ecb919942b3f8cf0910ea00e4.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.unpacking.soundness",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.unpacking.soundness/7031c9980b7c0aef24a1ddde9c6913c7733d227ab17144265d444bbcfceffc40.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "given.well_formed",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.well_formed/58fadaecb9a29600cc8b1923d3837f1f6359e38feca00adf0bbb57c91f743190.json\n",
+    "stderr": ""
+  }
+]

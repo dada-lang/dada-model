@@ -346,9 +346,11 @@ final stored reference.
 
 ```{definition} shared.embedding
 :lean: Correspondence/UniqueShared:embedId Correspondence/UniqueShared:embedReference Correspondence/UniqueShared:embedSlots Correspondence/UniqueShared:embedObject Correspondence/UniqueShared:embedState Correspondence/UniqueShared:embedPlace Correspondence/UniqueShared:embedValue Correspondence/UniqueShared:embedStatement Correspondence/UniqueShared:embedClasses Correspondence/UniqueShared:embedProgram Correspondence/UniqueShared:embedConfiguration
-:uses: given.classes given.state given.syntax shared.state shared.syntax
+:uses: given.classes given.state given.syntax given.unpacking shared.state shared.syntax
 
-The Shared language contains a translation of the Given language. Write
+The Shared language contains a translation of the Given fragment with
+single-variable bindings. The {anchor-ref}`given.unpacking` extension has no
+Shared counterpart yet. Write
 \\(E\\) for this translation, applied to programs, configurations, and their
 components.
 
@@ -368,8 +370,8 @@ unique mode tags in the Shared state.
 :lean: Correspondence/UniqueShared:step_correspondence
 :uses: given.steps shared.steps shared.embedding
 
-For every class table \\(\Delta\\) and Given configuration \\(c\\), the
-embedding matches steps in both directions:
+For every class table \\(\Delta\\) and configuration \\(c\\) of this Given
+fragment, the embedding matches steps in both directions:
 
 - If \\(\Delta\vdash c\longrightarrow c'\\), then
   \\(E(\Delta)\vdash E(c)\longrightarrow E(c')\\).
@@ -387,10 +389,11 @@ no behavior to translated Given computations, and loses none of their steps.
 :lean: Correspondence/UniqueShared:boundary_correspondence
 :uses: given.syntax given.steps shared.syntax shared.steps shared.embedding shared.correspondence
 
-For every Given program, translating its initial configuration gives exactly the
-initial configuration of its translated Shared program.
+For every program in the Given fragment with single-variable bindings,
+translating its initial configuration gives exactly the initial configuration
+of its translated Shared program.
 
-For every Given configuration, the translated configuration is finished exactly
+For every configuration in this fragment, the translated configuration is finished exactly
 when the original is finished. Using the program's class table, the translated
 configuration is stuck exactly when the original is stuck. The correspondence
 therefore agrees on how execution starts, on successful completion, and on the

@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "0ae431296e1f81d3ebb7de30f9098e2bf7a91b5632b359b78c7e44d76cf31ac4",
+  "reviewer": "Independent Codex reviewer /root/review_given_renewal",
+  "provenance": "Independent source audit followed by direct reading and comparison of the immutable packet inputs on 2026-11-01. Shared unit, selection and policy snapshots were read once per identical input across this 25-unit review set. No earlier favorable decision was used as evidence for the conclusion.",
+  "examined": [
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/State:Updated",
+    "lean:Unique/Step:Eval",
+    "lean:Unique/Step:EvalArgs",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Step:State.allocate",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.evaluation",
+    "unit:given.programs",
+    "unit:given.resolution",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The explicit dependencies introduce classes, expression grammar, class-table lookup, states, slots and the already-defined resolution judgment. Eval.give requires Resolve and Take; the Take definition in the packet's Step context replaces the resolved occupied slot by none, which is the authored S[q←⊥] operation on the stated distinct-key representation. Eval.new requires declaration membership, EvalArgs, matching argument/field lengths and absence of the nextId from allocated keys. EvalArgs.nil and cons give exactly the empty case and left-to-right threading S0 through Sn. State.allocate zips the declared fields with the resulting references, adds the nextId object and increments the evaluated counter, matching β, O′ and S′ in the local where clause. Arity, freshness, temporary ownership, and failure of a second give are represented without adding an operational-success premise beyond the defining evaluation rules.",
+  "limitations": [
+    "This is a correspondence comparison of the frozen prose, exact selected statements/definitions, and identified semantic context. No Lean build, test execution, or proof-tactic audit was performed; compilation and evidence validation are separate checks.",
+    "Listed full-source context snapshots were consulted for the supporting declarations and example states discussed in the rationale and dependency comparisons; the listing does not claim examination of every unrelated proof or declaration in those files."
+  ],
+  "supersedes": [
+    "72ef0d027c4974353cc4713731bd6568cc8d02db0d73efd4c423a663d6878f40"
+  ]
+}

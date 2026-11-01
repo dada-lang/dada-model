@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "870afada9da067e0534b27ee55347aa14355fc44dda149a4387586db721d452f",
+  "reviewer": "Independent Codex reviewer /root/review_given_renewal",
+  "provenance": "Independent source audit followed by direct reading and comparison of the immutable packet inputs on 2026-11-01. Shared unit, selection and policy snapshots were read once per identical input across this 25-unit review set. No earlier favorable decision was used as evidence for the conclusion.",
+  "examined": [
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The dependency units introduce C, f, x, programs and finite-map notation. This unit defines identities α/β with index, slot contents s, objects o, tables O/V, natural counter ν and storage S before their uses. ObjectId wraps Nat; Slot is Option ObjectId; Object has className and ordered named Slot fields; State has object and variable lists and nextId; State.empty is ⟨[],[],0⟩. These exactly match tagged identities, empty/occupied contents, and the empty state. State.allocate in the Step context uses the evaluated nextId and increments it. The authored sentence explicitly makes distinct keys a convention of finite-map notation, with well-formedness enforcing it; the review therefore does not mistake raw List fields for an intrinsically unique finite-map data type. Empty slots remain entries rather than absent keys.",
+  "limitations": [
+    "This is a correspondence comparison of the frozen prose, exact selected statements/definitions, and identified semantic context. No Lean build, test execution, or proof-tactic audit was performed; compilation and evidence validation are separate checks.",
+    "Listed full-source context snapshots were consulted for the supporting declarations and example states discussed in the rationale and dependency comparisons; the listing does not claim examination of every unrelated proof or declaration in those files."
+  ],
+  "supersedes": [
+    "fc4e2e323865149e728e103135e1dac96f1bd29e00d31a4a86eb2535ca59f5cc"
+  ]
+}

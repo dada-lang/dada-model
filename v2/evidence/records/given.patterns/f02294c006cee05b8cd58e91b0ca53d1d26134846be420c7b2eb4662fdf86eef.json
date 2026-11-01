@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "336938525e34a11ae56d187db68b9a8b2edc2f5d4a873e975a8e3b2bba5851ba",
+  "reviewer": "Independent Codex reviewer /root/review_given_renewal",
+  "provenance": "Independent source audit followed by direct reading and comparison of the immutable packet inputs on 2026-11-01. Shared unit, selection and policy snapshots were read once per identical input across this 25-unit review set. No earlier favorable decision was used as evidence for the conclusion.",
+  "examined": [
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:lean/Unique/Unpacking.lean",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "lean:Unique/Unpacking:Configuration",
+    "lean:Unique/Unpacking:Pattern",
+    "lean:Unique/Unpacking:Statement",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.patterns",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.classes supplies C and f and unit:given.syntax supplies x, e and the original statements. This unit introduces binding pattern b before its grammar. Pattern has only variable name and unpack className (List (FieldName × VariableId)); the new Statement pairs Pattern with the unchanged Value type, and its Configuration uses a list of those statements. Hence patterns are flat, including the empty list, with no wildcard/rest or recursive-pattern form. Bind/Transfer in the packet's Unpacking context enforce the stated distinct fields/destinations and exhaustive transfer while permitting selection in arbitrary pattern order. Their implementation removes the container, unlike a field Take in the base Step context. The f shorthand is an authored notation for the explicit (f,f) pair; it is not asserted to be a separate Lean syntax constructor. Prior results are explicitly scoped to the original variable-binding fragment.",
+  "limitations": [
+    "This is a correspondence comparison of the frozen prose, exact selected statements/definitions, and identified semantic context. No Lean build, test execution, or proof-tactic audit was performed; compilation and evidence validation are separate checks.",
+    "Listed full-source context snapshots were consulted for the supporting declarations and example states discussed in the rationale and dependency comparisons; the listing does not claim examination of every unrelated proof or declaration in those files."
+  ],
+  "supersedes": [
+    "de6466f3414e3cd662606f8564358f0aa02d71879f1bbeafb043c1b0279d8d6f"
+  ]
+}

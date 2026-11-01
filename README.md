@@ -34,10 +34,9 @@ See [v1 instructions](v1/AGENTS.md) and [work in progress](v1/WIP.md).
 
 Run `just book-v2` to build it, or `cd v2 && mdbook serve` for a local preview.
 The book groups operational semantics and type-system chapters under Given and
-Shared, followed by CFlow. Given's type-system chapter is a draft; Shared's type
-system and CFlow are coming. Given has formalized signed views, typing rules,
-and an unpacking extension, with checked examples. General normalization
-properties and static progress/preservation proofs are still pending.
+Shared, followed by CFlow. Shared's type system and CFlow are coming.
+Given has formalized signed views, typing rules, and an unpacking extension,
+with checked examples and proofs of progress, preservation, and termination.
 The existing operational models
 have syntax, transitions, examples, and checked heap invariants; a Lean proof
 establishes that Shared preserves the behavior of the Given fragment.

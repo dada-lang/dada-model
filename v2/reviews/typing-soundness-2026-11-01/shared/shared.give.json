@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "1e29e0e3cd54c86b7e78e47ec1a284fe19dbc87c51567b2b4ffbd2461235ad43",
+  "reviewer": "Codex GPT-6 independent Shared correspondence reviewer /root/review_shared_renewal",
+  "provenance": "Independent subagent review on 2026-11-01. Read the immutable packet required unit, exact Lean-selection, and policy inputs, then compared prose, notation, example setup/results, theorem statements, implicit parameters and side conditions against the listed supporting source context. Found and reported the original unpacking-scope ambiguity; reviewed the corrected replacement packets before this decision. No mechanical tests were executed by this reviewer.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:md/repo/writing-style.md",
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Place",
+    "policy:md/repo/correspondence-review.md",
+    "tool:book.toml",
+    "tool:spec.json",
+    "unit:shared.give"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit introduces a place expression p by its variable-rooted field route and gives the three operational cases in ordinary language before using formal judgments. Mode and Reference put unique/shared on references, and the supporting State.Object definition has no ownership-mode field. Resolve.variable begins with the stored mode; Resolve.field propagates the join of prefix and final-reference modes. Give.move requires unique resolution plus Take, Give.copy requires shared resolution and a stored shared reference and returns the original state, and Give.promote requires shared resolution plus Promote. Take replaces the final unique reference with none; Promote replaces precisely that occurrence with a shared reference of the same object. Their constructors preserve other entries and the counter. Thus the result identity, initialized-source behavior, and final-slot-only promotion in all three table rows match. The inspected Eval.giveShare definition in context:lean/Shared/Step.lean changes the returned reference's mode only, so sharing a container does not recursively change field modes. Compatible constrains multiple owners to shared occurrences, consistently with the introductory motivation.",
+  "limitations": [
+    "This decision concerns prose/formal-statement correspondence. It does not attest Lean proof checking, Cargo tests, book rendering, or evidence-validator execution.",
+    "Supporting full-source context was inspected for the definitions, example state values, theorem statements and surrounding assumptions relevant to this comparison; this is not a claim to audit every proof tactic or every conservative source snapshot."
+  ],
+  "supersedes": [
+    "7c35a46ffa4fb4dcca19439b08e218763dba02e8e104778ad448d5a46b6c7eb4"
+  ]
+}

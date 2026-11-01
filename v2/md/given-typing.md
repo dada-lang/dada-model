@@ -1,4 +1,4 @@
-# Given: typing and soundness (draft)
+# Given: typing and soundness
 
 ```{definition} given.typing.declarations
 :lean: Unique/Views:TypedClass Unique/Views:ClassTable Unique/Views:ClassTable.erase Unique/Views:ClassTable.WellFormed
@@ -8,10 +8,8 @@ The type system checks that each give finds a value and that each binding can
 receive its result. A move changes the source's type description as well as its
 contents.
 
-The view operations and typing judgments below have Lean definitions. General
-progress and preservation remain draft statements awaiting proofs. This chapter
-uses the unpacking extension {anchor-ref}`given.unpacking`; expression evaluation
-is unchanged.
+This chapter uses the unpacking extension {anchor-ref}`given.unpacking`;
+expression evaluation is unchanged.
 
 A *typed class table* \\(\Sigma\\) gives each field a declared class:
 
@@ -210,6 +208,27 @@ class is empty. The root is already known to exist, so for an empty class
 Print \\(C.\{\epsilon\}\\) as \\(C\\). Expanded spellings remain valid input.
 The typing rules use normalized types throughout, including when comparing
 constructor arguments with their declared types.
+```
+
+```{theorem} given.typing.normalization_correct
+:lean: Unique/Normalization:normalization_correct
+:uses: given.typing.normalization given.typing.observations
+
+For a well-formed class table \\(\Sigma\\) and type \\(T\\), normalization preserves
+the base class, well-formedness, and every initialization fact:
+
+\\[
+\begin{aligned}
+\operatorname{pos}_{\Sigma}(\mathsf N_{\Sigma}(T))
+  &= \operatorname{pos}_{\Sigma}(T),\\
+\operatorname{neg}_{\Sigma}(\mathsf N_{\Sigma}(T))
+  &= \operatorname{neg}_{\Sigma}(T),\\
+\mathsf N_{\Sigma}(\mathsf N_{\Sigma}(T)) &= \mathsf N_{\Sigma}(T).
+\end{aligned}
+\\]
+
+Reordering a view's entries gives the same normalized type. Once normalized,
+a second pass makes no further change.
 ```
 
 ## Reading and updating a view
@@ -547,7 +566,7 @@ Nor can `p→` be repeated.
 ````
 
 ````{example} given.typing.example.rejections
-:status: draft
+:lean: Unique/TypingRejectionChecks:rejected_moves
 :uses: given.typing.example.views given.typing.expressions given.typing.bindings
 
 The rules distinguish failure from lack of knowledge:
@@ -626,7 +645,7 @@ class type. That would rule out the very field moves the views describe.
 ```
 
 ```{definition} given.typing.configurations
-:lean: Unique/TypedConfigurations:ConfigurationTyped Unique/Unpacking:Steps Unique/Unpacking:Stuck
+:lean: Unique/TypedConfigurations:ConfigurationTyped Unique/Unpacking:Steps Unique/Unpacking:Stuck Unique/TypingSafety:StepsExactly
 :uses: given.typing.realization given.typing.statements given.machine given.unpacking given.executions
 
 A configuration is *well typed with final environment* \\(\Gamma_f\\) when its
@@ -648,6 +667,7 @@ the execution.
 Write \\(\longrightarrow_u^{*}\\) for zero or more extended steps, using the
 reflexive and transitive rules of {anchor-ref}`given.executions` with
 \\(\longrightarrow_u\\) in place of \\(\longrightarrow\\).
+Write \\(K\longrightarrow_u^k K'\\) for exactly \\(k\\) extended steps.
 A configuration is *stuck in the extended language* when it is not finished and
 has no \\(\longrightarrow_u\\) successor. Finishing still means that no
 statements remain.
@@ -656,10 +676,10 @@ statements remain.
 ## Progress and preservation
 
 ```{lemma} given.typing.expression_soundness
-:status: draft
+:lean: Unique/TypingSafety:expression_soundness
 :uses: given.typing.expressions given.typing.realization given.evaluation
 
-Expression typing must guarantee both successful evaluation and the
+Expression typing guarantees both successful evaluation and the
 description of its result. For every well-formed \\(\Sigma\\), environment
 \\(\Gamma\\), storage \\(S\\), and pending-value list \\(R\\), assume:
 
@@ -684,13 +704,13 @@ Moreover, **every** such evaluation satisfies:
 \\]
 
 Here \\(+\!\!+\\) appends lists. Earlier constructor arguments are included in
-\\(R\\) while later arguments run. The lemma must preserve their types as well
+\\(R\\) while later arguments run. The lemma preserves their types as well
 as the variables' types. Evaluation leaves the variable domain unchanged, so
 the typing rules' freshness checks also hold at the point of runtime binding.
 ```
 
 ```{theorem} given.typing.progress
-:status: draft
+:lean: Unique/TypingSafety:ConfigurationTyped.progress
 :uses: given.typing.configurations given.typing.expression_soundness given.typing.bindings
 
 For every well-typed configuration, either execution has finished or a next
@@ -709,7 +729,7 @@ for an otherwise failing operation.
 ```
 
 ```{theorem} given.typing.preservation
-:status: draft
+:lean: Unique/TypingSafety:ConfigurationTyped.preservation
 :uses: given.typing.configurations given.typing.expression_soundness given.typing.bindings
 
 Every step from a well-typed configuration preserves its typing:
@@ -729,7 +749,7 @@ every operational successor, including unpacking an object with empty fields.
 ```
 
 ```{theorem} given.typing.safety
-:status: draft
+:lean: Unique/TypingSafety:program_safety
 :uses: given.typing.configurations given.typing.progress given.typing.preservation given.typing.statements
 
 A well-typed program cannot reach a stuck configuration. For a well-formed
