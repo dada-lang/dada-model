@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "d91c2deebc2f8800c86dd8e58550ebf44bfa3d4bcbd9ac70f20d62eb55f51c8a",
+  "reviewer": "/root/review_formal_unpacking",
+  "provenance": "Fresh independent Codex subagent assigned only to correspondence review of the four immutable unpacking bundles. I did not author or edit their book or Lean sources, and compared the complete retained units and selected source with the retained dependency and policy inputs. User design approval was not treated as source-correspondence evidence. Targeted independent re-review of refreshed bundle d91c2deebc2f8800c86dd8e58550ebf44bfa3d4bcbd9ac70f20d62eb55f51c8a after initial review of 8ecb0804c97d7b79fe2f90b7fe216f3fd6c3807f5aee13a972beb9cb17a9cdb6: I compared the complete old/new input maps, verified all required authored units, selected declarations, and policy content are identical, and inspected the changed v2 AGENTS text, changed TypingChecks declarations in their full source, and the complete newly added TypingExecutionChecks source. This is a new comparison of the refreshed packet, not an unexamined hash refresh.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:lean/Unique/TypingChecks.lean",
+    "context:lean/Unique/TypingExecutionChecks.lean",
+    "context:lean/Unique/Unpacking.lean",
+    "context:lean/Unique/UnpackingChecks.lean",
+    "context:md/repo/authoring.md",
+    "context:md/repo/spec-system.md",
+    "context:md/repo/writing-style.md",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "lean:Unique/Unpacking:Configuration",
+    "lean:Unique/Unpacking:Pattern",
+    "lean:Unique/Unpacking:Statement",
+    "policy:md/repo/correspondence-review.md",
+    "tool:spec.json",
+    "unit:given.classes",
+    "unit:given.patterns",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The complete unit:given.patterns introduces binding pattern b with variable and flat class/field-to-variable alternatives. Its selected Unique/Unpacking.Pattern and Statement have exactly these alternatives and pair a pattern with the unchanged Unique.Value; Configuration contains the extended statement list and the same storage state. unit:given.classes introduces C, f and the field count n, and unit:given.syntax introduces x, p, e and t, so the grammar and give-versus-pattern explanation have defined notation. Source shorthand f for f:f is a presentation abbreviation of the field/name pair, not an additional evaluator form. I inspected the captured full Unpacking module for the behavioral sentences: Transfer selects/removes one matching field per pair and succeeds at its empty base case only when no fields remain; Bind.unpack also requires distinct field names, distinct variable names, and freshness. Thus all declaration fields occur exactly once in any order, and a fieldless object admits the empty pattern. Bind.unpack deletes the consumed container, while Unique.Take.field only clears a field and keeps the container. Pattern contains no recursive pattern, wildcard or rest alternative. Expression evaluation is literally reused, and embed_step/reflect_step state preservation of old single-variable behavior, with reflection allowing an arbitrary extended successor. The preservation result described as following this introduction is confined to structural well-formedness. No undefined notation or mismatched syntactic/semantic distinction was found. Refreshed-context assessment: the only changed inputs in this packet are context:AGENTS.md, context:lean/Unique/TypingChecks.lean, and the new context:lean/Unique/TypingExecutionChecks.lean. AGENTS now names the execution-check module and clarifies complete runtime example coverage; its explicit boundary leaving general static progress/preservation unfinished remains intact. TypingChecks changes four intermediate typing lemmas from private to public without changing their propositions. TypingExecutionChecks supplies a separate four-statement Box/Pair runtime execution and combines it with the typing assertions; it imports TypingChecks, whereas the reviewed Unpacking and UnpackingChecks modules do not import it. It neither redefines the operational rules nor changes the exact three-statement example under this review. The selected source and all dependent unit bodies and policy inputs are unchanged. These captured context changes therefore do not alter this correspondence conclusion.",
+  "limitations": [
+    "This is a source correspondence review, not execution of Lean, Cargo, rendering or evidence validation. Lean is responsible for proof correctness; tactic bodies were not independently re-proved.",
+    "The review covers this unit and the dependencies needed to interpret it. Conservative full-source snapshots were inspected only where listed in examined; no claim is made about static type safety or correspondence of unpacking with Shared."
+  ],
+  "supersedes": []
+}

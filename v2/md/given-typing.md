@@ -1,16 +1,17 @@
 # Given: typing and soundness (draft)
 
 ```{definition} given.typing.declarations
-:status: draft
+:lean: Unique/Views:TypedClass Unique/Views:ClassTable Unique/Views:ClassTable.erase Unique/Views:ClassTable.WellFormed
 :uses: given.classes given.programs given.patterns given.unpacking
 
 The type system checks that each give finds a value and that each binding can
 receive its result. A move changes the source's type description as well as its
 contents.
 
-This chapter is a first design draft. Its definitions and theorem statements
-await Lean formalization. It uses the proposed unpacking extension
-{anchor-ref}`given.unpacking`; expression evaluation is unchanged.
+The view operations and typing judgments below have Lean definitions. General
+progress and preservation remain draft statements awaiting proofs. This chapter
+uses the unpacking extension {anchor-ref}`given.unpacking`; expression evaluation
+is unchanged.
 
 A *typed class table* \\(\Sigma\\) gives each field a declared class:
 
@@ -36,7 +37,7 @@ chapter are nominal types; ownership is unique.
 ## Types describe accessible places
 
 ```{definition} given.typing.views
-:status: draft
+:lean: Unique/Views:Path Unique/Views:classAt Unique/Views:Entry Unique/Views:ViewType Unique/Views:ViewType.whole Unique/Views:Entry.valid Unique/Views:entriesDisjoint Unique/Views:ViewType.WellFormed
 :uses: given.typing.declarations
 
 A *relative place* \\(\rho\\) is a finite sequence of field names.
@@ -88,7 +89,7 @@ illustrate this distinction before its formal definition.
 ```
 
 ````{example} given.typing.example.views
-:status: draft
+:lean: Unique/ViewChecks:view_information
 :uses: given.typing.views
 
 Consider these declarations:
@@ -112,7 +113,7 @@ does not make the containing field empty.
 ````
 
 ```{definition} given.typing.observations
-:status: draft
+:lean: Unique/Views:positive Unique/Views:negative Unique/Views:Pos Unique/Views:Neg Unique/Views:Full
 :uses: given.typing.views
 
 Each type determines a set of *known-initialized paths*
@@ -152,7 +153,7 @@ initialized.
 ## Normalizing a view
 
 ````{example} given.typing.example.normalization
-:status: draft
+:lean: Unique/ViewChecks:normalize_nested_whole
 :uses: given.typing.observations
 
 Several spellings can describe the same accessible fields:
@@ -181,7 +182,7 @@ intermediate object.
 ````
 
 ```{definition} given.typing.normalization
-:status: draft
+:lean: Unique/Views:Entry.dropPrefix Unique/Views:Entry.prepend Unique/Views:normalizeEntries Unique/Views:normalize Unique/Views:Normalized
 :uses: given.typing.observations given.typing.example.normalization
 
 *Normalization* \\(\mathsf{N}_{\Sigma}(T)\\) replaces a completely exposed
@@ -214,7 +215,7 @@ constructor arguments with their declared types.
 ## Reading and updating a view
 
 ```{definition} given.typing.focus
-:status: draft
+:lean: Unique/Views:focus
 :uses: given.typing.normalization given.typing.example.views
 
 *Focusing* a type at an initialized relative place returns the current type of
@@ -243,7 +244,7 @@ This operation does not restore fields that have been moved or hidden.
 ```
 
 ```{definition} given.typing.emptying
-:status: draft
+:lean: Unique/Views:remainingAfterMove Unique/Views:emptyPath
 :uses: given.typing.focus
 
 *Emptying* an initialized nonempty path updates its enclosing type. Write
@@ -278,8 +279,8 @@ An empty or unknown target has no emptying operation.
 ```
 
 ```{definition} given.typing.forgetting
-:status: draft
-:uses: given.typing.normalization
+:lean: Unique/Views:Subtype
+:uses: given.typing.normalization given.typing.example.views
 
 A value can be used through a view that provides less information.
 To compare types, first normalize them. For the normalized types \\(T\\) and
@@ -304,7 +305,7 @@ ownership. Hidden fields remain part of the owned object graph.
 ## Typing expressions
 
 ```{definition} given.typing.environments
-:status: draft
+:lean: Unique/Typing:SlotDescription Unique/Typing:Environment Unique/Typing:Admissible Unique/Typing:Environment.WellFormed Unique/Typing:Environment.lookup Unique/Typing:Environment.replace Unique/Typing:splitPlace Unique/Typing:take
 :uses: given.typing.views given.typing.emptying given.syntax
 
 A *slot description* \\(B\\) says that a slot is empty or contains a value of
@@ -347,7 +348,7 @@ Taking an absent variable, an empty slot, or an unknown field is undefined.
 ```
 
 ```{example} given.typing.example.take
-:status: draft
+:lean: Unique/TypingChecks:take_root_and_field
 :uses: given.typing.environments given.typing.example.views
 
 Suppose \\(\Gamma(b)=\mathsf{Box}\\), using the `Box`, `Pair`, and `Token`
@@ -365,7 +366,7 @@ variable's description unchanged.
 ```
 
 ```{definition} given.typing.expressions
-:status: draft
+:lean: Unique/Typing:ExprTyped Unique/Typing:ArgsTyped
 :uses: given.typing.declarations given.typing.environments given.typing.forgetting given.evaluation
 
 *Expression typing* records both the value produced and the environment after
@@ -426,7 +427,7 @@ chapter records the proposed generic-view constructor signatures.
 ## Typing bindings and statements
 
 ```{definition} given.typing.bindings
-:status: draft
+:lean: Unique/Typing:fieldDescription Unique/Typing:FieldBindings Unique/Typing:BindingTyped
 :uses: given.patterns given.typing.environments given.typing.focus
 
 *Binding typing*, written \\(\Sigma;\Gamma\vdash b:T\Rightarrow\Gamma'\\),
@@ -479,7 +480,7 @@ initialization status.
 ```
 
 ```{definition} given.typing.statements
-:status: draft
+:lean: Unique/Typing:StatementTyped Unique/Typing:SequenceTyped Unique/Typing:ProgramTyped
 :uses: given.typing.expressions given.typing.bindings given.patterns
 
 *Statement typing*, written \\(\Sigma;\Gamma\vdash t\Rightarrow\Gamma'\\),
@@ -518,7 +519,7 @@ be empty. Scope exit and destruction are not part of this language.
 ## A nested move followed by unpacking
 
 ````{example} given.typing.example.moves
-:status: draft
+:lean: Unique/TypingExecutionChecks:moves_and_unpacking
 :uses: given.typing.example.views given.typing.statements given.unpacking
 
 With the `Token`, `Pair`, and `Box` declarations above:
@@ -577,7 +578,7 @@ derivation. Constructor arguments are checked in the same order as evaluation.
 ## Relating types to storage
 
 ```{definition} given.typing.realization
-:status: draft
+:lean: Unique/TypingRealization:readPath Unique/TypingRealization:Satisfies Unique/TypingRealization:FieldsMatchClasses Unique/TypingRealization:PendingValues Unique/TypingRealization:Realizes
 :uses: given.typing.observations given.typing.environments given.well_formed given.state given.storage_places
 
 A type must describe the actual slots, including holes. Define
@@ -625,7 +626,7 @@ class type. That would rule out the very field moves the views describe.
 ```
 
 ```{definition} given.typing.configurations
-:status: draft
+:lean: Unique/TypedConfigurations:ConfigurationTyped Unique/Unpacking:Steps Unique/Unpacking:Stuck
 :uses: given.typing.realization given.typing.statements given.machine given.unpacking given.executions
 
 A configuration is *well typed with final environment* \\(\Gamma_f\\) when its

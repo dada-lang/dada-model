@@ -18,9 +18,10 @@ The book is organized into language layers:
 Each language has its own syntax, execution rules, examples, and invariants.
 A correspondence theorem shows that the translation of a Given program has
 exactly its original execution behavior in Shared. The checked operational
-models cover construction and fresh-variable bindings. Given also contains a
-draft unpacking extension used by the typing chapter; neither unpacking nor
-typing has been formalized in Lean yet. The existing preservation proofs concern
+models cover construction and fresh-variable bindings. Given also contains an
+unpacking extension used by the typing chapter. Its operations and structural
+preservation are checked; the typing rules have Lean definitions, while static
+progress and preservation remain unproved. The existing preservation proofs concern
 heap well-formedness. Assignment, drop, primitives, function calls, and borrowing
 remain outside these models.
 

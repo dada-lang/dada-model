@@ -120,10 +120,18 @@ small utility example. Renderer fixtures live separately under
 forward/backward steps, finite traces, initial states, completion, and stuckness.
 The backward theorem quantifies over arbitrary Shared successors.
 
-The intervening chapter `md/given-typing.md` is a Markdown-first design draft,
-with signed views, typing judgments, storage realization, and proposed
-progress/preservation statements. It targets the draft unpacking extension
-appended to `md/given.md`. Neither addition is implemented in Lean yet.
+The intervening chapter `md/given-typing.md` has Lean definitions for signed
+views, typing judgments, and storage realization in `Unique/Views`,
+`Unique/Typing`, `Unique/TypingRealization`, and `Unique/TypedConfigurations`.
+`Unique/ViewChecks`, `Unique/TypingChecks`, and `Unique/TypingExecutionChecks`
+check the linked examples, including their complete runtime executions. General
+normalization-correctness lemmas and static progress/preservation proofs remain
+unfinished; keep those theorem blocks Draft and do not claim type safety.
+The separate `Unique/Unpacking` extension has operational rules, structural
+well-formedness preservation, and a faithful embedding/reflection of the base
+Given machine. `Unique/UnpackingChecks` checks field-order permutations, empty
+slots, and the complete book example. Shared correspondence still targets the
+original single-variable-binding fragment, not unpacking.
 Positive view entries expose whole declared subtrees; negative entries mark
 existing empty slots; unlisted branches are unknown and inaccessible.
 View entries must have distinct, prefix-incomparable paths. Expanded views are

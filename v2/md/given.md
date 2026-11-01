@@ -549,10 +549,10 @@ reference. The theorem covers successful execution; it does not promise that a
 program can always take another step.
 ```
 
-## Proposed extension: unpacking
+## Unpacking
 
 ```{definition} given.patterns
-:status: draft
+:lean: Unique/Unpacking:Pattern Unique/Unpacking:Statement Unique/Unpacking:Configuration
 :uses: given.classes given.syntax
 
 An *unpacking pattern* consumes an object and transfers its field slots into
@@ -576,13 +576,13 @@ The expression `p→` transfers the reference out of `p`. The pattern
 An ordinary field give leaves the enclosing object in place. An empty class
 can be consumed with `C → {}`.
 
-This section proposes the operational extension used by the typing chapter.
-The preceding Lean definitions and proved results cover the original
-single-variable bindings; they do not yet include unpacking.
+This extension adds patterns while keeping expression evaluation unchanged.
+The preceding results concern single-variable bindings; the preservation result
+below also covers unpacking.
 ```
 
 ```{definition} given.unpacking
-:status: draft
+:lean: Unique/Unpacking:Transfer Unique/Unpacking:Bind Unique/Unpacking:Step
 :uses: given.patterns given.state given.evaluation given.steps
 
 To execute `let C → { ... } = e`, evaluate `e`, check that its result names a
@@ -634,8 +634,17 @@ destination variable gives this rule no transition, even when that variable's
 slot is empty.
 ```
 
+```{theorem} given.unpacking.soundness
+:lean: Unique/Unpacking:Step.preserves_wellFormed
+:uses: given.unpacking given.well_formed
+
+For a well-formed class table, every extended step from well-formed storage
+preserves well-formedness. Unpacking transfers every field slot and removes
+only the consumed container, so its children retain their owners.
+```
+
 ````{example} given.example.unpack
-:status: draft
+:lean: Unique/UnpackingChecks:unpack_after_move
 :uses: given.patterns given.unpacking given.machine
 
 Unpacking also works after a field has been moved:
@@ -649,7 +658,7 @@ let taken = p.left→;
 let Pair → { left, right } = p→;
 ```
 
-After the proposed three-step execution, `taken` owns the first token and
+After the three-step execution, `taken` owns the first token and
 `right` owns the second. Variables `p` and `left` have empty slots. The pair
 object has been removed; both token objects remain. No statements remain.
 

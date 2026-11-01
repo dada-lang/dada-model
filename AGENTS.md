@@ -44,11 +44,13 @@ under Given and Shared, followed by CFlow. Navigation pages are
 `v2/md/given-overview.md` and `v2/md/shared-overview.md`; `v2/md/shared-typing.md`
 and `v2/md/cflow.md` are editorial placeholders, with no semantic units yet.
 The existing chapter paths remain unchanged. `v2/md/given-typing.md` contains
-strictly covered draft units for signed views, typing rules, storage realization,
-and progress/preservation statements. A draft section in `v2/md/given.md` adds
-unpacking through `Class → { fields }` patterns; it distinguishes the proposed
-extended step from the checked base language. Neither addition has Lean
-formalization yet, and their draft status intentionally fails evidence checking.
+strictly covered units for signed views, typing rules, and storage realization,
+with formal definitions and examples in `Unique/Views`, `Unique/Typing`,
+`Unique/TypingRealization`, and their checks. General normalization properties
+and static progress/preservation are not yet proved; their draft status remains
+explicit. `Unique/Unpacking` adds `Class → { fields }` patterns with structural
+preservation and embedding/reflection of the base machine. Shared correspondence
+still covers the base fragment. See `v2/AGENTS.md` for the formalization boundary.
 View omissions mean unknown and inaccessible, not empty. Positive entries expose
 whole declared subtrees; negative entries describe existing empty slots.
 View entries are prefix-incomparable. Expanded views are valid and normalize
