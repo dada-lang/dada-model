@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "f315270e4bbeac33cd54e502440fe80d01f5fe07ccb6bfff15f2c8f9688a505c",
+  "reviewer": "Codex independent repair reviewer /root/review_repaired_meta",
+  "provenance": "Independent fresh-context adversarial correspondence review, continued after a scope correction requested by this reviewer. I did not author the repairs. I read all required unit, exact Rust/test selections, policy, and frozen extra inputs; inspected relevant helper/source context; directly executed the units and evidence_validation test suites plus the explicitly ignored actual-mdBook test; and probed the received-chapter boundary through the production executable. I compared the new immutable packet with the prior reviewed snapshot and read the changed wording. This is my actual comparison judgment, not human approval or a universal correctness claim.",
+  "examined": [
+    "context:mdbook-dada/src/configuration.rs",
+    "context:mdbook-dada/src/units.rs",
+    "context:mdbook-dada/tests/evidence_validation.rs",
+    "context:mdbook-dada/tests/units.rs",
+    "extra:reviews/adversarial-2026-10-24/tooling.md",
+    "extra:reviews/repair-2026-10-24/reviewed-original-harness.py",
+    "extra:reviews/repair-2026-10-24/tooling-checks.txt",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/src/lib.rs",
+    "tool:mdbook-dada/src/main.rs",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The revised unit accurately limits its guarantee to each chapter received at the Dada preprocessing boundary. parse_block rejects include/rustdoc_include/playground syntax anywhere in the complete raw structured unit, including fenced literal samples. It parses the body for legacy source-citation blocks and rejects those instead of allowing an uncaptured nested selection. validate_chapters obtains each incoming chapter's original file from the configured Markdown root, parses original and processed text with the same units parser, and compares the ordered (id, raw) pairs; process_configured calls this before rendering. The cited parser and inventory tests cover include forms and nested legacy grammar/judgment/rule blocks, including Rust-backed parents. The preexpanded-input test rejects already substituted include text, an include outside a unit that adds a unit, and changed claim wording. The actual mdBook test runs links before Dada and rejects two different included prose values. I inspected those tests and directly executed the units and evidence_validation test binaries, then separately ran the ignored actual-mdBook test; all 33 executed cases passed. My additional direct production-executable probe accepted an unchanged chapter, rejected deleting its unit while retaining that chapter, and accepted an empty sections array that omits the chapter altogether. That last result motivated the explicit received-chapter/later-processing limitation now present in this frozen unit. The wording no longer asserts whole-book presence or final-page fidelity. The original include and nested-citation counterexamples are closed at the stated boundary.",
+  "limitations": [
+    "This is a source-identity check for received chapters at the Dada preprocessor stage. Whole-chapter omission and modifications by later preprocessors/output processing are intentionally outside the contract; the direct omission probe confirmed that limit.",
+    "The literal-include rejection is deliberately conservative. Passing these regression tests is not a universal proof of parser correctness or of final HTML, Markdown, TeX, diagram, or browser rendering fidelity.",
+    "Source-file context listed as examined was read for the unit parser, source validation, production call chain, and cited fixture helpers; unrelated source was not exhaustively audited."
+  ],
+  "supersedes": []
+}

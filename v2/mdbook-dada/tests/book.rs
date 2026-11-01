@@ -1,5 +1,11 @@
 use mdbook_dada::process;
 use serde_json::{json, Value};
+// Source selection tests use deliberately small fixtures, independent of the
+// current language layers and their formalization.
+fn lean_fixtures() -> std::path::PathBuf {
+    std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/lean")
+}
+
 fn chapter(path: &str, content: &str) -> Value {
     json!({"Chapter":{"path":path,"content":content,"sub_items":[]}})
 }
@@ -61,12 +67,12 @@ fn heap_fences_render_and_preserve_source() {
 fn leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup() {
     use pulldown_cmark::{Event, Parser, Tag};
 
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for (kind, citation) in [
-        ("definition", "Places:readSlot"),
-        ("theorem", "Heap:deallocVariable_requires_top"),
-        ("lemma", "Heap:deallocVariable_requires_top"),
-        ("example", "Heap:integer_primitive"),
+        ("definition", "Renderer:readSlot"),
+        ("theorem", "Renderer:deallocVariable_requires_top"),
+        ("lemma", "Renderer:deallocVariable_requires_top"),
+        ("example", "Renderer:integer_primitive"),
     ] {
         let source = format!(
             "```{{{kind}}} {citation}\n\n {{anchor}}`lookup`\n{{definition}}`second` **Statement.** See {{anchor-ref}}`lookup`.\n\n\\\\[S(p)=s\\\\]\n\n{{anchor}}`later` Details.\n```"
@@ -100,16 +106,15 @@ fn leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup
 
 #[test]
 fn nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for prefix in [
         "Opening prose.\n\n{anchor}`body`",
-        "{obligation}`body`",
         "{anchor-ref}`outside`\n\n{anchor}`body`",
         "`{anchor}`literal\n\n{anchor}`body`",
         "<!-- Heading comment. -->\n\n{anchor}`body`",
     ] {
         let source = format!(
-            "{{anchor}}`outside`\n\n````{{definition}} Places:readSlot\n{prefix} Statement.\n\n```{{heap}}\nvars = variables()\nvars.x = uninitialized()\n```\n````"
+            "{{anchor}}`outside`\n\n````{{definition}} Renderer:readSlot\n{prefix} Statement.\n\n```{{heap}}\nvars = variables()\nvars.x = uninitialized()\n```\n````"
         );
         let mut book = json!({"items": [chapter("state.md", &source)]});
         mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
@@ -128,40 +133,40 @@ fn nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body() {
 
 #[test]
 fn unanchored_rendered_blocks_share_named_headers_and_grouped_choices() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     let radio_names = regex::Regex::new(r#"type="radio" name="([^"]+)""#).unwrap();
     for (kind, label, citation, body, alternate) in [
         (
             "definition",
             "Definition",
-            "Places:readSlot",
+            "Renderer:readSlot",
             "Statement.",
             "Lean",
         ),
         (
             "theorem",
             "Theorem",
-            "Heap:deallocVariable_requires_top",
+            "Renderer:deallocVariable_requires_top",
             "Statement.",
             "Lean",
         ),
         (
             "lemma",
             "Lemma",
-            "Heap:deallocVariable_requires_top",
+            "Renderer:deallocVariable_requires_top",
             "Statement.",
             "Lean",
         ),
         (
             "example",
             "Example",
-            "Heap:integer_primitive",
+            "Renderer:integer_primitive",
             "Statement.",
             "Lean",
         ),
-        ("grammar", "Grammar", "Heap:Slot", "s ::= r", "Lean"),
-        ("judgment", "Judgment", "Heap:Step", "S \\to S'", "Lean"),
-        ("rule", "Rule", "Heap:Step.allocVariable", "P", "Lean"),
+        ("grammar", "Grammar", "Renderer:Slot", "s ::= r", "Lean"),
+        ("judgment", "Judgment", "Renderer:Step", "S \\to S'", "Lean"),
+        ("rule", "Rule", "Renderer:Step.allocVariable", "P", "Lean"),
         ("heap", "Diagram", "", "vars = variables()", "Facts"),
     ] {
         let source = format!("```{{{kind}}} {citation}\n{body}\n```");
@@ -183,8 +188,8 @@ fn unanchored_rendered_blocks_share_named_headers_and_grouped_choices() {
 
 #[test]
 fn heading_anchors_do_not_replace_the_required_markdown_statement() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let source = "```{definition} Places:readSlot\n{anchor}`lookup`\n{definition}`alias`\n```";
+    let root = lean_fixtures();
+    let source = "```{definition} Renderer:readSlot\n{anchor}`lookup`\n{definition}`alias`\n```";
     let mut book = json!({"items": [chapter("state.md", source)]});
     let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap_err();
     assert!(format!("{error:#}").contains("requires a Markdown body after its heading anchors"));
@@ -192,10 +197,10 @@ fn heading_anchors_do_not_replace_the_required_markdown_statement() {
 
 #[test]
 fn header_selection_ignores_roles_inside_explicit_math() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for prefix in ["", "{anchor}`lookup`\n"] {
         let source = format!(
-            "```{{definition}} Places:readSlot\n{prefix}\\\\[\\text{{{{anchor}}`not an ID`}}\\\\]\n\n{{anchor}}`later` Statement.\n```"
+            "```{{definition}} Renderer:readSlot\n{prefix}\\\\[\\text{{{{anchor}}`not an ID`}}\\\\]\n\n{{anchor}}`later` Statement.\n```"
         );
         let mut book = json!({"items": [chapter("state.md", &source)]});
         mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
@@ -260,10 +265,10 @@ fn unlinked_example_labels_require_migration_but_literal_mentions_do_not() {
 fn linked_examples_preserve_native_markdown_and_select_one_lean_test() {
     use pulldown_cmark::{Event, Parser, Tag};
 
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     let source = r"Before.
 
-````{example} Heap:integer_primitive
+````{example} Renderer:integer_primitive
 **Create an integer.** See [the state](state.md).
 
 1. Allocate `x`.
@@ -282,7 +287,7 @@ After.
     mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
     let output = book["items"][0]["Chapter"]["content"].as_str().unwrap();
     assert!(output.contains("aria-label=\"Example view\""));
-    assert!(output.contains("Heap:integer_primitive"));
+    assert!(output.contains("Renderer:integer_primitive"));
     assert!(output.contains("Step Int allocated (.createPrimitive 22 x) created"));
     assert!(!output.contains("createAggregate"));
     assert!(!output.contains("ANCHOR_END"));
@@ -305,7 +310,7 @@ After.
         .iter()
         .any(|e| matches!(e, Event::Text(text) if text.as_ref() == "After.")));
 
-    let mut indented = json!({"items": [chapter("examples.md", "```{example} Heap:integer_primitive\n    createPrimitive(22, x)\n```")]});
+    let mut indented = json!({"items": [chapter("examples.md", "```{example} Renderer:integer_primitive\n    createPrimitive(22, x)\n```")]});
     mdbook_dada::process_with_lean(&mut indented, Some(&root)).unwrap();
     let output = indented["items"][0]["Chapter"]["content"].as_str().unwrap();
     assert!(Parser::new(output).any(|e| matches!(
@@ -316,8 +321,8 @@ After.
 
 #[test]
 fn linked_example_bodies_index_anchors_and_scope_nested_selectors() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let example = r"````{example} Heap:nested_variables
+    let root = lean_fixtures();
+    let example = r"````{example} Renderer:nested_variables
 See {anchor-ref}`outer`.
 
 {anchor}`inner` The inner scope is removed.
@@ -327,7 +332,7 @@ vars = variables()
 vars.x = uninitialized()
 ```
 
-```{grammar} Heap:Slot
+```{grammar} Renderer:Slot
 s ::= \bot
 ```
 ````";
@@ -373,22 +378,22 @@ s ::= \bot
 
 #[test]
 fn linked_examples_fail_on_invalid_citations_bodies_or_nesting() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for source in [
         "```{example}\nBody.\n```",
-        "```{example}Heap:integer_primitive\nBody.\n```",
-        "```{example} Heap:integer_primitive Heap:empty_array\nBody.\n```",
-        "```{example} Heap:integer_primitive\n  \n```",
-        "```{example} Heap:missing\nBody.\n```",
-        "```{example} Heap:Step\nBody.\n```",
-        "```{example} ../Heap:integer_primitive\nBody.\n```",
-        "````{example} Heap:integer_primitive\n```{example} Heap:empty_array\nNested.\n```\n````",
+        "```{example}Renderer:integer_primitive\nBody.\n```",
+        "```{example} Renderer:integer_primitive Renderer:empty_array\nBody.\n```",
+        "```{example} Renderer:integer_primitive\n  \n```",
+        "```{example} Renderer:missing\nBody.\n```",
+        "```{example} Renderer:Step\nBody.\n```",
+        "```{example} ../Renderer:integer_primitive\nBody.\n```",
+        "````{example} Renderer:integer_primitive\n```{example} Renderer:empty_array\nNested.\n```\n````",
     ] {
         let mut book = json!({"items": [chapter("examples.md", source)]});
         let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).expect_err(source);
         assert!(format!("{error:#}").contains("examples.md"), "{source}");
     }
-    let mut missing_root = json!({"items": [chapter("examples.md", "```{example} Heap:integer_primitive\nBody.\n```")]});
+    let mut missing_root = json!({"items": [chapter("examples.md", "```{example} Renderer:integer_primitive\nBody.\n```")]});
     assert!(process(&mut missing_root).is_err());
     let literal = "````text\n```{example} Missing:nope\nLiteral.\n```\n````\n\n    ```{example} Missing:nope\n    Literal.\n    ```";
     let mut book = json!({"items": [chapter("examples.md", literal)]});
@@ -398,8 +403,8 @@ fn linked_examples_fail_on_invalid_citations_bodies_or_nesting() {
 
 #[test]
 fn authored_grammar_keeps_math_and_groups_citations_in_order() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let source = r"```{grammar} Heap:Slot Heap.lean:Object
+    let root = lean_fixtures();
+    let source = r"```{grammar} Renderer:Slot Renderer.lean:Object
 \begin{aligned}
 s &::= \bot \mid r \\
 o &::= p \mid \{f \mapsto s\} \mid {\overline s}
@@ -410,7 +415,7 @@ o &::= p \mid \{f \mapsto s\} \mid {\overline s}
     let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
     assert!(html.contains(r"s &amp;::= \bot \mid r"));
     assert!(html.contains(r"o &amp;::= p \mid \{f \mapsto s\} \mid {\overline s}"));
-    assert!(html.find("Heap:Slot").unwrap() < html.find("Heap.lean:Object").unwrap());
+    assert!(html.find("Renderer:Slot").unwrap() < html.find("Renderer.lean:Object").unwrap());
     let lean = html.split("class=\"lean-source\"").nth(1).unwrap();
     assert!(lean.find("Slot").unwrap() < lean.find("Object").unwrap());
     assert!(lean.contains("| uninitialized"));
@@ -426,8 +431,8 @@ o &::= p \mid \{f \mapsto s\} \mid {\overline s}
 
 #[test]
 fn authored_grammar_accepts_single_citations_and_escapes_html() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let source = r"```{grammar} Heap:ObjectId
+    let root = lean_fixtures();
+    let source = r"```{grammar} Renderer:ObjectId
 \text{chosen by author} & a < b > c \quad ${uninterpreted}
 ```";
     let mut book = json!({"items": [chapter("state.md", source)]});
@@ -441,14 +446,14 @@ fn authored_grammar_accepts_single_citations_and_escapes_html() {
 
 #[test]
 fn authored_grammar_rejects_invalid_citations_and_missing_bodies() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for target in [
         "Missing:Place",
-        "Heap:Missing",
-        "Heap:Step.allocVariable",
-        "Heap:allocVariable_contents",
-        "../Heap:Place",
-        "Heap:Object Heap:Missing",
+        "Renderer:Missing",
+        "Renderer:Step.allocVariable",
+        "Renderer:allocVariable_contents",
+        "../Renderer:Place",
+        "Renderer:Object Renderer:Missing",
     ] {
         let mut book =
             json!({"items": [chapter("state.md", &format!("```{{grammar}} {target}\nP\n```"))]});
@@ -456,15 +461,16 @@ fn authored_grammar_rejects_invalid_citations_and_missing_bodies() {
         assert!(format!("{error:#}").contains("state.md"), "{target}");
     }
     for source in [
-        "```{grammar} Heap:Object\n```",
-        "```{grammar} Heap:Object\n  \n```",
-        "```{grammar}Heap:Object\nP\n```",
+        "```{grammar} Renderer:Object\n```",
+        "```{grammar} Renderer:Object\n  \n```",
+        "```{grammar}Renderer:Object\nP\n```",
     ] {
         let mut book = json!({"items": [chapter("state.md", source)]});
         let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).expect_err(source);
         assert!(format!("{error:#}").contains("state.md"), "{source}");
     }
-    let mut book = json!({"items": [chapter("state.md", "```{grammar} Heap:Slot\ns ::= r\n```")]});
+    let mut book =
+        json!({"items": [chapter("state.md", "```{grammar} Renderer:Slot\ns ::= r\n```")]});
     assert!(
         process(&mut book).is_err(),
         "Lean citations require a source root"
@@ -478,16 +484,16 @@ fn block_directives_are_distinct_from_literal_code_and_inline_roles() {
     let mut book = json!({"items": [chapter("a.md", literal)]});
     process(&mut book).unwrap();
     assert_eq!(book["items"][0]["Chapter"]["content"], literal);
-    let mut old = json!({"items": [chapter("a.md", "{lean.type}`Heap:Place`")]});
+    let mut old = json!({"items": [chapter("a.md", "{lean.type}`Renderer:Place`")]});
     let error = process(&mut old).unwrap_err();
     assert!(format!("{error:#}").contains("lean.type"));
 }
 
 #[test]
 fn generated_grammar_directives_require_migration() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for source in [
-        "```{lean.type}\nHeap:Place\n```",
+        "```{lean.type}\nRenderer:Place\n```",
         "```{grammar}\nSlot = Empty | Ref(target: Id);\n```",
     ] {
         let mut book = json!({"items": [chapter("state.md", source)]});
@@ -503,12 +509,12 @@ fn generated_grammar_directives_require_migration() {
 // preprocessor does not establish that the two representations correspond.
 #[test]
 fn authored_judgments_and_rules_keep_tex_and_show_cited_source() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let source = r"```{judgment} Heap:Step
+    let root = lean_fixtures();
+    let source = r"```{judgment} Renderer:Step
 S \xrightarrow{op} S'
 ```
 
-```{rule} Heap.lean:Step.allocVariable
+```{rule} Renderer.lean:Step.allocVariable
 \frac{\mathrm{authorPremise}}{\mathrm{authorConclusion}}
 ```
 ";
@@ -517,8 +523,8 @@ S \xrightarrow{op} S'
     let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
     assert!(html.contains(r"S \xrightarrow{op} S&#39;"));
     assert!(html.contains(r"\frac{\mathrm{authorPremise}}{\mathrm{authorConclusion}}"));
-    assert!(html.contains("Heap:Step"));
-    assert!(html.contains("Heap.lean:Step.allocVariable"));
+    assert!(html.contains("Renderer:Step"));
+    assert!(html.contains("Renderer.lean:Step.allocVariable"));
     assert!(html.contains("| allocVariable"));
     let selected_rule = html.rsplit("class=\"lean-source\"").next().unwrap();
     assert!(selected_rule.contains("| allocVariable"));
@@ -548,7 +554,7 @@ S \xrightarrow{op} S'
         "createArray",
     ];
     for case in cases {
-        let source = format!("```{{rule}} Heap:Step.{case}\nP\n```");
+        let source = format!("```{{rule}} Renderer:Step.{case}\nP\n```");
         let mut book = json!({"items": [chapter("ops.md", &source)]});
         mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
         let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
@@ -565,8 +571,8 @@ S \xrightarrow{op} S'
 
 #[test]
 fn authored_math_escapes_html_without_interpreting_placeholders() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let source = r"```{rule} Heap:Step.allocVariable
+    let root = lean_fixtures();
+    let source = r"```{rule} Renderer:Step.allocVariable
 \frac{a < b & c > d}{${authorChosenName}}
 ```
 ";
@@ -582,8 +588,8 @@ fn authored_math_escapes_html_without_interpreting_placeholders() {
 
 #[test]
 fn authored_theorems_show_the_exact_named_statement_and_proof() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let source = r"```{theorem} Heap.lean:deallocVariable_requires_top
+    let root = lean_fixtures();
+    let source = r"```{theorem} Renderer.lean:deallocVariable_requires_top
 A successful deallocation removes the top slot.
 
 \\[
@@ -596,7 +602,7 @@ S \xrightarrow{\mathsf{deallocVariable}(x)} S' \implies \operatorname{top}(V) = 
     mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
     let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
     assert!(html.contains(r"\implies \operatorname{top}(V) = x"));
-    assert!(html.contains("Heap.lean:deallocVariable_requires_top"));
+    assert!(html.contains("Renderer.lean:deallocVariable_requires_top"));
     assert!(html.contains("lean-keyword\">theorem</span> deallocVariable_requires_top"));
     assert!(html.contains("cases step"));
     assert!(!html.contains("theorem</span> deallocVariable_pops"));
@@ -607,24 +613,24 @@ S \xrightarrow{\mathsf{deallocVariable}(x)} S' \implies \operatorname{top}(V) = 
 
 #[test]
 fn authored_theorems_select_literal_qualified_names() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let source = r"```{theorem} Moves:MoveReference.dependent_follows
-Dependent leases follow the reference.
+    let root = lean_fixtures();
+    let source = r"```{theorem} Renderer:Transfer.preserves_count
+Copying a list preserves its length.
 
 \\[P \implies Q\\]
 ```";
     let mut book = json!({"items": [chapter("moves.md", source)]});
     mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
     let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
-    assert!(html.contains("Moves:MoveReference.dependent_follows"));
-    assert!(html.contains("lean-keyword\">theorem</span> MoveReference.dependent_follows"));
-    assert!(html.contains("move.other_references"));
-    assert!(!html.contains("theorem</span> MoveReference.other_references"));
+    assert!(html.contains("Renderer:Transfer.preserves_count"));
+    assert!(html.contains("lean-keyword\">theorem</span> Transfer.preserves_count"));
+    assert!(html.contains("copy_preserves_count written"));
+    assert!(!html.contains("theorem</span> Transfer.read"));
     for citation in [
-        "Moves:Dada.Heap.MoveReference.dependent_follows",
-        "Moves:MoveReference..dependent_follows",
-        "Moves:.MoveReference.dependent_follows",
-        "Moves:MoveReference.dependent_follows.",
+        "Renderer:RendererFixture.Transfer.preserves_count",
+        "Renderer:Transfer..preserves_count",
+        "Renderer:.Transfer.preserves_count",
+        "Renderer:Transfer.preserves_count.",
     ] {
         let source = format!("```{{theorem}} {citation}\nP\n```");
         let mut book = json!({"items": [chapter("moves.md", &source)]});
@@ -634,25 +640,25 @@ Dependent leases follow the reference.
 
 #[test]
 fn authored_theorems_reject_wrong_kinds_and_malformed_directives() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for source in [
         "```{theorem}\nP\n```",
-        "```{theorem}Heap:deallocVariable_requires_top\nP\n```",
-        "```{theorem} Heap:deallocVariable_requires_top Heap:deallocVariable_pops\nP\n```",
-        "```{theorem} Heap:deallocVariable_requires_top\n \n```",
-        "```{theorem} Heap:Step\nP\n```",
-        "```{theorem} Heap:Step.allocVariable\nP\n```",
-        "```{theorem} Heap:integer_primitive\nP\n```",
-        "```{theorem} Heap:initialFields\nP\n```",
-        "```{theorem} Heap:missing\nP\n```",
+        "```{theorem}Renderer:deallocVariable_requires_top\nP\n```",
+        "```{theorem} Renderer:deallocVariable_requires_top Renderer:deallocVariable_pops\nP\n```",
+        "```{theorem} Renderer:deallocVariable_requires_top\n \n```",
+        "```{theorem} Renderer:Step\nP\n```",
+        "```{theorem} Renderer:Step.allocVariable\nP\n```",
+        "```{theorem} Renderer:integer_primitive\nP\n```",
+        "```{theorem} Renderer:initialFields\nP\n```",
+        "```{theorem} Renderer:missing\nP\n```",
         "```{theorem} Missing:theorem\nP\n```",
-        "```{theorem} ../Heap:deallocVariable_requires_top\nP\n```",
+        "```{theorem} ../Renderer:deallocVariable_requires_top\nP\n```",
     ] {
         let mut book = json!({"items": [chapter("invariants.md", source)]});
         let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).expect_err(source);
         assert!(format!("{error:#}").contains("invariants.md"), "{source}");
     }
-    let mut missing_root = json!({"items": [chapter("invariants.md", "```{theorem} Heap:deallocVariable_requires_top\nP\n```")]});
+    let mut missing_root = json!({"items": [chapter("invariants.md", "```{theorem} Renderer:deallocVariable_requires_top\nP\n```")]});
     assert!(process(&mut missing_root).is_err());
     let literal = "````text\n```{theorem} Missing:nope\nP\n```\n````";
     let mut book = json!({"items": [chapter("invariants.md", literal)]});
@@ -662,21 +668,21 @@ fn authored_theorems_reject_wrong_kinds_and_malformed_directives() {
 
 #[test]
 fn authored_math_requires_one_opening_argument_and_a_body() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for source in [
-        "```{rule}\nHeap:Step.allocVariable\n\\frac{P}{Q}\n```",
-        "```{judgment}\nHeap:Step\nS \\to S'\n```",
-        "```{rule} Heap:Step.allocVariable\n```",
-        "```{judgment} Heap:Step\n  \n```",
-        "```{rule} Heap:Step.allocVariable Heap:Step.allocVariable\nP\n```",
-        "```{judgment}Heap:Step\nP\n```",
+        "```{rule}\nRenderer:Step.allocVariable\n\\frac{P}{Q}\n```",
+        "```{judgment}\nRenderer:Step\nS \\to S'\n```",
+        "```{rule} Renderer:Step.allocVariable\n```",
+        "```{judgment} Renderer:Step\n  \n```",
+        "```{rule} Renderer:Step.allocVariable Renderer:Step.allocVariable\nP\n```",
+        "```{judgment}Renderer:Step\nP\n```",
     ] {
         let mut book = json!({"items": [chapter("ops.md", source)]});
         let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).expect_err(source);
         assert!(format!("{error:#}").contains("ops.md"), "{source}");
     }
     let mut book =
-        json!({"items": [chapter("ops.md", "```{rule} Heap:Step.allocVariable\nP\n```")]});
+        json!({"items": [chapter("ops.md", "```{rule} Renderer:Step.allocVariable\nP\n```")]});
     assert!(
         process(&mut book).is_err(),
         "Lean selection requires a source root"
@@ -685,22 +691,22 @@ fn authored_math_requires_one_opening_argument_and_a_body() {
 
 #[test]
 fn authored_math_rejects_missing_or_wrong_kind_source_selections() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for (kind, target) in [
         ("judgment", "Missing:Step"),
-        ("judgment", "Heap:Missing"),
-        ("judgment", "Heap:VariableId"),
-        ("rule", "Heap:Step.missing"),
-        ("rule", "Heap:Step"),
-        ("rule", "Heap:VariableId.index"),
-        ("rule", "../Heap:Step.allocVariable"),
+        ("judgment", "Renderer:Missing"),
+        ("judgment", "Renderer:VariableId"),
+        ("rule", "Renderer:Step.missing"),
+        ("rule", "Renderer:Step"),
+        ("rule", "Renderer:VariableId.index"),
+        ("rule", "../Renderer:Step.allocVariable"),
     ] {
         let mut book =
             json!({"items": [chapter("ops.md", &format!("```{{{kind}}} {target}\nP\n```"))]});
         let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap_err();
         let message = format!("{error:#}");
         assert!(message.contains("ops.md"), "{kind} {target}");
-        if target.starts_with("Heap:VariableId") {
+        if target.starts_with("Renderer:VariableId") {
             assert!(
                 message.contains("must select inductive declarations"),
                 "{kind} {target}: {message}"
@@ -744,10 +750,10 @@ Missing:J.r
 
 #[test]
 fn inferred_judgment_and_rule_directives_require_migration() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for (kind, target) in [
-        ("judgment", "Heap:Step"),
-        ("rule", "Heap:Step.allocVariable"),
+        ("judgment", "Renderer:Step"),
+        ("rule", "Renderer:Step.allocVariable"),
     ] {
         let source = format!("```{{lean.{kind}}}\n{target}\n```");
         let mut book = json!({"items": [chapter("ops.md", &source)]});
@@ -762,10 +768,10 @@ fn inferred_judgment_and_rule_directives_require_migration() {
 #[test]
 fn theorem_and_lemma_bodies_preserve_markdown_math_and_proof_outlines() {
     use pulldown_cmark::{Event, Parser, Tag};
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for (kind, label) in [("theorem", "Theorem"), ("lemma", "Lemma")] {
         let source = format!(
-            r"````{{{kind}}} Heap:deallocVariable_requires_top
+            r"````{{{kind}}} Renderer:deallocVariable_requires_top
 {{anchor}}`top-slot` A successful deallocation removes the **top** slot.
 
 \\[
@@ -814,8 +820,8 @@ After the proof."
 #[test]
 fn definition_blocks_select_multiple_complete_declarations_and_preserve_markdown() {
     use pulldown_cmark::{Event, Parser, Tag};
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let source = r"````{definition} Places:readSlot Invariants:Stored Invariants:AllocatedObject Heap:State.initial Heap:FieldName Heap:VariableId Heap:Slot
+    let root = lean_fixtures();
+    let source = r"````{definition} Renderer:readSlot Renderer:Stored Renderer:AllocatedObject Renderer:State.initial Renderer:FieldName Renderer:VariableId Renderer:Slot
 {anchor}`slot-lookup` Write **lookup** as \\(S(p)=s\\).
 
 \\[
@@ -825,7 +831,7 @@ S(p)=s \iff \mathsf{readSlot}(S,p)=\mathsf{some}(s)
 1. A variable selects a slot.
 2. A missing place has no slot.
 
-```{grammar} Heap:Place
+```{grammar} Renderer:Place
 p ::= x
 ```
 ````";
@@ -865,7 +871,7 @@ p ::= x
         .as_str()
         .unwrap()
         .contains("state.html#claim-slot-lookup"));
-    let mut duplicate = json!({"items": [chapter("state.md", source), chapter("other.md", "{obligation}`slot-lookup`")]});
+    let mut duplicate = json!({"items": [chapter("state.md", source), chapter("other.md", "{anchor}`slot-lookup`")]});
     assert!(format!(
         "{:#}",
         mdbook_dada::process_with_lean(&mut duplicate, Some(&root)).unwrap_err()
@@ -875,16 +881,16 @@ p ::= x
 
 #[test]
 fn definition_blocks_reject_missing_wrong_kind_and_malformed_citations() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for source in [
         "```{definition}\nBody.\n```",
-        "```{definition}Heap:State\nBody.\n```",
-        "```{definition} Heap:State\n \n```",
-        "```{definition} Heap:deallocVariable_requires_top\nBody.\n```",
-        "```{definition} Heap:integer_primitive\nBody.\n```",
-        "```{definition} Heap:Step.allocVariable\nBody.\n```",
-        "```{definition} Heap:State Heap:missing\nBody.\n```",
-        "```{definition} ../Heap:State\nBody.\n```",
+        "```{definition}Renderer:State\nBody.\n```",
+        "```{definition} Renderer:State\n \n```",
+        "```{definition} Renderer:deallocVariable_requires_top\nBody.\n```",
+        "```{definition} Renderer:integer_primitive\nBody.\n```",
+        "```{definition} Renderer:Step.allocVariable\nBody.\n```",
+        "```{definition} Renderer:State Renderer:missing\nBody.\n```",
+        "```{definition} ../Renderer:State\nBody.\n```",
         "```{definition} Missing:State\nBody.\n```",
     ] {
         let mut book = json!({"items": [chapter("state.md", source)]});
@@ -892,7 +898,7 @@ fn definition_blocks_reject_missing_wrong_kind_and_malformed_citations() {
         assert!(format!("{error:#}").contains("state.md"), "{source}");
     }
     let mut no_root =
-        json!({"items": [chapter("state.md", "```{definition} Heap:State\nBody.\n```")]});
+        json!({"items": [chapter("state.md", "```{definition} Renderer:State\nBody.\n```")]});
     assert!(process(&mut no_root).is_err());
     let literal = "````text\n```{definition} Missing:nope\nBody.\n```\n````\n\n    ```{definition} Missing:nope\n    Body.\n    ```";
     let mut book = json!({"items": [chapter("literal.md", literal)]});
@@ -902,11 +908,11 @@ fn definition_blocks_reject_missing_wrong_kind_and_malformed_citations() {
 
 #[test]
 fn proof_blocks_index_cross_chapter_anchors_and_scope_supported_nested_blocks() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let proof = r"````{lemma} Heap:deallocVariable_requires_top
+    let root = lean_fixtures();
+    let proof = r"````{lemma} Renderer:deallocVariable_requires_top
 {anchor}`top` See {anchor-ref}`state`.
 
-```{grammar} Heap:Slot
+```{grammar} Renderer:Slot
 s ::= \bot
 ```
 
@@ -954,8 +960,8 @@ vars.x = uninitialized()
     );
 
     let mut duplicate = json!({"items": [
-        chapter("proof.md", "```{lemma} Heap:deallocVariable_requires_top\n{anchor}`top` Statement.\n```"),
-        chapter("other.md", "{obligation}`top`"),
+        chapter("proof.md", "```{lemma} Renderer:deallocVariable_requires_top\n{anchor}`top` Statement.\n```"),
+        chapter("other.md", "{anchor}`top`"),
     ]});
     assert!(format!(
         "{:#}",
@@ -966,18 +972,18 @@ vars.x = uninitialized()
 
 #[test]
 fn markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds() {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     for kind in ["theorem", "lemma"] {
         for citation in [
             "",
-            "Heap:Step",
-            "Heap:Step.allocVariable",
-            "Heap:initialFields",
-            "Heap:integer_primitive",
-            "Heap:missing",
+            "Renderer:Step",
+            "Renderer:Step.allocVariable",
+            "Renderer:initialFields",
+            "Renderer:integer_primitive",
+            "Renderer:missing",
             "Missing:proof",
-            "../Heap:deallocVariable_requires_top",
-            "Heap:deallocVariable_requires_top Heap:deallocVariable_pops",
+            "../Renderer:deallocVariable_requires_top",
+            "Renderer:deallocVariable_requires_top Renderer:deallocVariable_pops",
         ] {
             let source = format!("```{{{kind}}} {citation}\nClaim.\n```");
             let mut book = json!({"items": [chapter("proofs.md", &source)]});
@@ -987,8 +993,8 @@ fn markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds() {
             );
         }
         for source in [
-            format!("```{{{kind}}}Heap:deallocVariable_requires_top\nClaim.\n```"),
-            format!("```{{{kind}}} Heap:deallocVariable_requires_top\n \n```"),
+            format!("```{{{kind}}}Renderer:deallocVariable_requires_top\nClaim.\n```"),
+            format!("```{{{kind}}} Renderer:deallocVariable_requires_top\n \n```"),
         ] {
             let mut book = json!({"items": [chapter("proofs.md", &source)]});
             assert!(
@@ -998,10 +1004,10 @@ fn markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds() {
         }
     }
     let targets = [
-        ("definition", "Places:readSlot"),
-        ("example", "Heap:integer_primitive"),
-        ("theorem", "Heap:deallocVariable_requires_top"),
-        ("lemma", "Heap:deallocVariable_requires_top"),
+        ("definition", "Renderer:readSlot"),
+        ("example", "Renderer:integer_primitive"),
+        ("theorem", "Renderer:deallocVariable_requires_top"),
+        ("lemma", "Renderer:deallocVariable_requires_top"),
     ];
     for (outer, outer_target) in targets {
         for (inner, inner_target) in targets {
@@ -1026,7 +1032,7 @@ fn markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds() {
 fn proof_markdown_is_linted_with_original_chapter_lines() {
     for kind in ["definition", "theorem", "lemma"] {
         let source = format!(
-            "# Proof\n\n```{{{kind}}} Heap:deallocVariable_requires_top\nBad \\overline x.\n```"
+            "# Proof\n\n```{{{kind}}} Renderer:deallocVariable_requires_top\nBad \\overline x.\n```"
         );
         let mut book = json!({"items": [chapter("proofs.md", &source)]});
         let error = process(&mut book).unwrap_err().to_string();
@@ -1037,21 +1043,21 @@ fn proof_markdown_is_linted_with_original_chapter_lines() {
 #[test]
 fn typed_anchor_roles_share_ids_and_references_without_implying_proofs() {
     let mut book = json!({"items": [
-        chapter("index.md", "{anchor}`navigation` See {anchor-ref}`state` and {anchor-ref}`safety`."),
-        chapter("model/state.md", "{definition}`state` State components.\n\n{obligation}`safety` This property has no proof yet."),
+        chapter("index.md", "{anchor}`navigation` See {anchor-ref}`state` and {anchor-ref}`slots`."),
+        chapter("model/state.md", "{definition}`state` State components.\n\n{definition}`slots` Slots hold references."),
     ]});
     process(&mut book).unwrap();
     let intro = book["items"][0]["Chapter"]["content"].as_str().unwrap();
     assert!(intro.contains("aria-label=\"anchor: navigation\""));
     assert!(intro.contains("model/state.html#claim-state"));
-    assert!(intro.contains("model/state.html#claim-safety"));
+    assert!(intro.contains("model/state.html#claim-slots"));
     let body = book["items"][1]["Chapter"]["content"].as_str().unwrap();
     assert!(body.contains("aria-label=\"definition: state\""));
-    assert!(body.contains("aria-label=\"proof obligation: safety\""));
+    assert!(body.contains("aria-label=\"definition: slots\""));
     assert!(!body.contains("lean-selector"));
     assert!(!body.contains("Theorem"));
-    for first in ["anchor", "definition", "obligation"] {
-        for second in ["anchor", "definition", "obligation"] {
+    for first in ["anchor", "definition"] {
+        for second in ["anchor", "definition"] {
             let mut duplicate = json!({"items": [
                 chapter("a.md", &format!("{{{first}}}`same`")),
                 chapter("b.md", &format!("{{{second}}}`same`")),
@@ -1070,17 +1076,17 @@ fn typed_anchor_roles_share_ids_and_references_without_implying_proofs() {
 #[test]
 fn explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies() {
     use pulldown_cmark::{Event, Options, Parser};
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let root = lean_fixtures();
     let formula = r"\frac{S'=S[p\mapsto s]}{S'(q)=\begin{cases}s&q=p\\S(q)&q\ne p\end{cases}}";
     let body = format!(
         "**Statement.** The result is \\\\(S'_x \\ne S_x\\\\).\n\n\\\\[\n{formula}\n\\\\]\n\n**Proof outline.** Apply the rule."
     );
     for opening in [
         None,
-        Some("{example} Heap:integer_primitive"),
-        Some("{definition} Places:readSlot"),
-        Some("{theorem} Heap:deallocVariable_requires_top"),
-        Some("{lemma} Heap:deallocVariable_requires_top"),
+        Some("{example} Renderer:integer_primitive"),
+        Some("{definition} Renderer:readSlot"),
+        Some("{theorem} Renderer:deallocVariable_requires_top"),
+        Some("{lemma} Renderer:deallocVariable_requires_top"),
     ] {
         let source = opening.map_or_else(|| body.clone(), |info| format!("```{info}\n{body}\n```"));
         let mut book = json!({"items": [chapter("proofs.md", &source)]});

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "03bd6a7f8b6154a0c9449ba89f82da6b9db0621144da8c59fde795dab6f101bf",
+  "reviewer": "Codex independent renewal reviewer /root/review_meta_renewal",
+  "provenance": "Fresh correspondence review by the Codex GPT-6 subagent on 2026-11-01. Read the immutable packet's required raw units, exact implementation/test selections, and policy, then inspected the supporting bundled context identified in the rationale. Shared inputs were checked identical across the five packets; no previous review rationale was used as a substitute for comparison. No source edits or test executions were performed by this reviewer.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/authoring.md",
+    "context:md/repo/spec-system.md",
+    "context:md/repo/writing-style.md",
+    "context:mdbook-dada/src/configuration.rs",
+    "context:mdbook-dada/src/units.rs",
+    "context:mdbook-dada/tests/evidence_validation.rs",
+    "context:mdbook-dada/tests/units.rs",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "tool:book.toml",
+    "tool:mdbook-dada/src/lib.rs",
+    "tool:spec.json",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:meta.units.closed_body explicitly limits its boundary to each chapter received by the Dada preprocessor. parse_block retains the whole raw fenced unit, scans that raw text for the three mdBook expansion directives, including occurrences inside literal examples, and rejects parsed nested legacy citation blocks. Its recursive structured-unit parse also prevents nested named units and points authors toward separate units and :uses:. The inspected UnitKind/parse definitions establish which directives are recognized and that only original top-level ID-first units enter the reviewed inventory.\n\nSourceConfiguration::validate_chapters resolves each received chapter's original source through the configured Markdown root, parses both original and supplied content, and compares their ordered (id, raw) sequences. It therefore rejects unit additions, deletions, reordering, or text edits, and parsing the original source catches an include already expanded out of supplied content. The inspected process_configured and recursive walk in the bundled lib.rs snapshot show that this validation runs before rendering received nested chapters. The implementation does not enumerate omitted chapters or inspect later output processors, matching the two explicit limitations in the unit.\n\nstructured_units_reject_includes_and_nested_legacy_citations exercises include/rustdoc/playground forms (including a code sample), nested grammar/judgment/rule legacy citations, both Lean- and Rust-backed units, and retained legacy behavior outside structured units. authored_includes_and_nested_citations_cannot_acquire_evidence tests rejection at Inventory::load. preexpanded_includes_cannot_bypass_original_source_validation covers a raw include replaced in the supplied content, units introduced by an outside include, and an otherwise valid unit rewritten from natural number to Boolean. The actual mdBook pipeline test configures the Dada preprocessor after links and expects rejection before/after changing the included file; its ignore attribute clearly requires separate execution. The Fixture/Sources/render/configured_context/chapter helpers were inspected to establish the entry points used. Removal/reordering rejection follows from ordered iterator equality rather than a dedicated assertion in these selected test bodies.\n\nThe terminology is established in the bundled authoring guide and spec-system.md's opening, Evidence and validation, and Selecting formalizations sections: units have IDs/raw bodies, citations select source, and bundles/records preserve inputs/decisions. This implementation contract uses ordinary prose and code identifiers rather than mathematical metavariables; no undefined judgment or forward mathematical reference is needed.",
+  "limitations": [
+    "This is a source correspondence review. I inspected the cited test bodies and their fixtures but did not execute Cargo, mdBook, or Lean in this review; it supplies no mechanical pass claim.",
+    "For conservative snapshots, examined records use of the relevant portions, not a claim to have audited every line. I read spec-system.md lines 1-217 and 282-385; supporting Rust/test portions are identified in the rationale. Unrelated renderer features and Lean proof bodies were not reviewed.",
+    "actual_mdbook_pipeline_rejects_includes_in_reviewed_content is ignored by default and requires a separate run with an installed mdbook; I inspected its body but did not execute it.",
+    "This comparison covers the original-versus-supplied units of received chapters at process_configured. It does not certify whole-book chapter inclusion, later output transformations, or external content outside structured units; those exclusions are explicit in the authored claim."
+  ],
+  "supersedes": [
+    "893a009087f5bb8e9e0cb29a4c22660359b937195b19d18b2829723024592bc3"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "bundle": "f5ebb2df3d0d8b3f7f517d6f29058126f8e29e1e9fce5f3ee90fa7eedf15e1a7",
+  "reviewer": "Codex delegated reviewer /root/layer_evidence_review",
+  "provenance": "Independent agent review: I did not author the Given/Shared chapters, Lean modules, or evidence validator. I read the frozen unit bodies, exact cited statements, dependencies, review policy, concrete example definitions, and relevant source helpers, compared their semantics, and confirmed the prepared required snapshots match those sources. The distinct-key qualification was added after my review finding and was inspected in the frozen packet. This record is not human approval or a mechanical proof/test result.",
+  "examined": [
+    "lean:Heap:FiniteMap",
+    "lean:Heap:FiniteMap.empty",
+    "lean:Heap:FiniteMap.value_unique",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.value_unique"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "FiniteMap.value_unique takes arbitrary Key/Value types, one map, a key, two values, and membership of both corresponding pairs, then concludes equality of the values. There is no DecidableEq or order premise. The prose states those same universal objects, assumptions, and result. Proof correctness remains a separate Lean responsibility.",
+  "limitations": [
+    "This is a correspondence review of authored intent, declaration statements, and relevant definitions; it does not record Lean compilation or test execution and does not recheck proof tactics. Conservative context snapshots were inspected for the relevant definitions and helper behavior, not as a claim to audit every proof or implementation line."
+  ],
+  "supersedes": [
+    "4379c0dbff50a60700dc946e87df229074aa56bb347799c71afc8fd4e4366d12"
+  ]
+}

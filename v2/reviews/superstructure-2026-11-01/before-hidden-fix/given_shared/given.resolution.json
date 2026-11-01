@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "34f5cde7bc6e8b0c5f795cd3aec2d09c535be85b21a2b8eaf612ca6d8447c190",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/State:Updated",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.resolution",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "given.storage_places already distinguishes source paths from direct locations and defines partial lookup. Resolve.variable requires an initialized variable slot; Resolve.field recursively resolves the prefix, requires the containing object, and reads an initialized named field. These are precisely the two displayed inference rules, with no state output or mutation. Empty/missing slots cannot satisfy their premises.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "77482133b7faea7fa88503a63d832cfff26149a93c8128c1e84ad71da7444e9f"
+  ]
+}

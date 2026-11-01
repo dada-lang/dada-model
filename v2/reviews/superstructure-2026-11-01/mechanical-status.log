@@ -1,0 +1,4 @@
+book: recorded pass (1bd9f5ef1c37557d653bf583eb571d4116a52bfd36c2c6de62a35ac59b278b1c)
+lean: recorded pass (92ed56ba09f1e5a87575c90545b5fada5c01d42665524cb7c1025fbeab9086eb)
+lean-assumptions: recorded pass (8ef88f8861352937575cc0021daf15590d8db6e6d1f657a4293ab297c952ef64)
+rust: recorded failure (31cea9088e78bdef2a42ee257364131dda81170f26b240ca08959091f40ac290)

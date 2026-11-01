@@ -1,0 +1,122 @@
+[
+  {
+    "unit": "meta.evidence.active_decisions",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/69357467b908e7c2de9055316767e2887d5c8913ca2249e5e81e9901778e5ebd.json",
+    "supersedes": [
+      "6d237cc08089d74610f8977e5bf7324a3005f8ca0b51955376f2b345c1b78015"
+    ]
+  },
+  {
+    "unit": "meta.evidence.mechanical_execution",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/b5740f1b7d093a25fb128b5a47f84f79b50dbfb52614b27d3a6609014c7462bc.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.evidence.required_inputs",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/b1b690a90b085835063e0f1e216ad84003593675364f9591615912feccf67872.json",
+    "supersedes": [
+      "b637e21ff13211ee2ba878f091e16bd733a9281a194fea098f1862a10c192890"
+    ]
+  },
+  {
+    "unit": "meta.examples.selection",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/a048dcfc327b368ab4de28a4c2d7e00cfde9109756bb786ad0754a7f2e470106.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.lean.definitions.navigation",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/5ab83d11c28688d881453d7bd303fe36dc6b0b582a0de3bc6445b7aab451dd22.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.math.definition.selection",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/30975010014983d23c5d4d57783cbb3a5bec5d9ca2a8ed4cf4da7aa9d906a2d7.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.math.judgment.selection",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/92221c4b4f287cb790757dcc531b4199d17c3b1800a110cf8ef70d31f5af2e00.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.math.overline.braces",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/f3a262b3a21bef6658e91352fd1154c35173a055478b662e873730fd2f492a1d.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.math.runtime",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/95e4bbc3371fa7a892637e81bd15527a559d921c8ed79afd5ae97be7c43dd9cc.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.math.source_view",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/846068bc19e3f2a374c156e92b9d19a99102f20e45825ee9a84a5007f637c15e.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.math.theorem.selection",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/d27716461dbf708605343b7f11df42af38532cdb9a36e7bc84736ff5f2ef71b5.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.math.typesetting",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/cdb7b938258ee083314fa70bc13d8372c3832bf6ef46d5976912615c30651801.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.sources.configuration",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/2037497ccf66dbff080619055bb591bd3dab9d787492edb82ca14d4b0725f6c1.json",
+    "supersedes": [
+      "e06ba7246e1fb5bf8e0d0279508c65a2bd8e0c2b3559a59d46f55ed5fb549b6e"
+    ]
+  },
+  {
+    "unit": "meta.sources.exact_selection",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/cd0b6513e70d6b71a3bc108c46f02e1d5c9ca7b19fbb8026db1267c5cf771f9c.json",
+    "supersedes": [
+      "fba45ea9492f225c72cab1dd3f359b59c74ebe3ab1e82863a734a6ed98ec1438"
+    ]
+  },
+  {
+    "unit": "meta.syntax.anchors.identity",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/7fb5892f143a5701a47f862b79de1497e9323badcf7e83ebea5d5090095bc570.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.syntax.heap.nodes",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/9a65f186684cb16dd3bc67b5a773b691c273cf15dbba5b9af2ba04268e40265d.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.syntax.heap.rendering",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/c2c9f90bc028da469a803ba2c1f51e0f888b3bb76a7f8c98f0510d1bc880a518.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.syntax.heap.routing",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/f150aa9d5629f87f67c1daa53a3fb21d6429afe7d76c5fbcfa2a78c94e0cecf6.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.syntax.heap.validation",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/ce5c664f701e9db9608f572755e4b4fd99269dff96831d4c42c50d3b5c00cd25.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.syntax.inline_and_block",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/88abf841321a3ef7cc823ead6818e89451af0effbbf97d890024cbc4217beac2.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.system.remaining_coverage",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/e693ff0b6a917eb7cddea701dc8e797454b03ddc60c3ee1e92590ddce829729b.json",
+    "supersedes": []
+  },
+  {
+    "unit": "meta.units.closed_body",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/4c31b692705562ab072adebafaebab5790a5daf75a588c69b36ab3ce22220a9f.json",
+    "supersedes": [
+      "9d1481c4e1c08f774b690d051ca06f48a93a64d83d96f5ffd986b1ab1b663f2c"
+    ]
+  }
+]

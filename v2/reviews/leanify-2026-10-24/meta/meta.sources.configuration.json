@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "9185c3e42f227b22fe92d38f3ec683e1dc207b5ee300e86896f1bcad720a0278",
+  "reviewer": "Codex /root (meta and finite-map correspondence review)",
+  "provenance": "Prepared and read immutable current packets; compared authored prose with selected declarations and tests during the 2026-10-24 lean-ification. The reviewer integrated the surrounding documentation and earlier evidence tooling changes; the mutual selector implementation was authored by a separate subagent. This is an agent review, not a human sign-off or a Lean proof.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::check_context",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::load",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::markdown_root",
+    "rust:mdbook-dada/src/inventory.rs:Inventory::inputs",
+    "rust:mdbook-dada/src/lib.rs:process_configured",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_lean_root_is_shared_by_rendering_and_evidence",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "unit:meta.sources.configuration"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "SourceConfiguration::load obtains the source-root fields from book.toml; check_context compares effective renderer configuration with that saved configuration. lean_root and markdown_root use the contained input_path resolver, whose canonical-path check I inspected in tool:mdbook-dada/src/inventory.rs. process_configured shares this loader with Inventory, and Inventory::inputs snapshots book.toml and locates all Lean context under the configured Lean root. Its add_unit helper resolves Rust against the project root. The selected configured_lean_root test moves the Lean root, changes the selected declaration, checks that old evidence fails and new source/context paths change, rejects an old runtime root, and resolves Rust with the nested Lean root. This directly matches the root-sharing, override, and freshness claims. The review policy supplies the distinction between source selection and proof validation.",
+  "limitations": [
+    "Correspondence was assessed by inspection under the recorded policy; passing syntactic validation does not prove this reasoning correct.",
+    "Mechanical execution results are reported separately. Full context/tool snapshots were consulted at the relevant helpers; unrelated declarations and all proof tactics were not audited."
+  ],
+  "supersedes": [
+    "5abd3321b2823d5e03d9601ac8fdf90d2bc5c7ebc5ccad88d570b9c6e712a597"
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "e271b1b2f1db13909ba191dd2229a2a9215406723bc381b8417a9a03425cdf61",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Step",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:ClassName",
+    "lean:Shared/Syntax:Classes",
+    "lean:Shared/Syntax:FieldName",
+    "lean:Shared/Syntax:Place",
+    "lean:Shared/Syntax:Program",
+    "lean:Shared/Syntax:Statement",
+    "lean:Shared/Syntax:Value",
+    "lean:Shared/Syntax:VariableId",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.give",
+    "unit:shared.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The class/field/variable aliases and Class/Classes declarations provide the stated names and ordered fields; Place is recursive, and Value has exactly give, giveShare on a Place, and recursive new arguments. The absence of a share-on-arbitrary-Value constructor explains why a freshly constructed object must first be bound before giveShare. Statement/Program and the cited Step enforce fresh single-variable bindings with one ordered code list. The grammar introduces each displayed metavariable and contains no borrowing, calls, or destruction.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "47e8772ea0d6da3796dd7fdd4a744a7ca32d8fff33fb09998f4c3b14fe4ba46b"
+  ]
+}

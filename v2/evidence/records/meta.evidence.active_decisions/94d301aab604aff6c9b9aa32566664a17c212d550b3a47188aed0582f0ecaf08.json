@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "9ad38dd8e0163def475331a2752c4ec5f8d942e48bcd221e1725197a42aec3bd",
+  "reviewer": "Codex subagent /root/review_superstructure_evidence",
+  "provenance": "Fresh adversarial correspondence review on 2026-11-01. Read the immutable bundle unit, required exact Rust/test selections, review policy, and listed supporting context. Independently traced error and boundary cases; did not reuse earlier positive conclusions. Rust best-practice skill and v2/AGENTS.md were consulted. Final-bundle delta review: compared all 22 previous/current bundle input manifests and read the changed inventory helper, new hidden-Markdown regression, and revised coverage unit/context. All other required exact selections, unit bodies, policy, and three mechanical extras are byte-identical to the inputs already examined in this review.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/spec-system.md",
+    "context:mdbook-dada/src/evidence.rs",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "test:mdbook-dada/tests/evidence_validation.rs:mismatch_and_inconclusive_reviews_never_count_as_correspondence",
+    "test:mdbook-dada/tests/evidence_validation.rs:recording_rechecks_sources_even_with_an_existing_inventory",
+    "test:mdbook-dada/tests/evidence_validation.rs:revised_review_can_supersede_same_unit_after_consulting_more_context",
+    "test:mdbook-dada/tests/evidence_validation.rs:stale_supersession_cannot_fall_back_to_an_independent_positive_review",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "unit:meta.evidence.active_decisions"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "I followed record through a fresh Inventory::load and current-bundle comparison, and followed check through bundle validation, review validation, same-unit supersession, and active-decision aggregation. A second positive review cannot mask a stale active review: stale_active is tested before positive correspondence; mismatch and inconclusive active decisions also prevent success. The tests exercise all three negative states and the specific stale-supersession fallback attack. Supersession retains old records and checks their content digest and unit rather than deleting history. Draft rejection occurs independently of the positive-record path. This supports the lifecycle described, without authenticating the reviewer's assertions.",
+  "limitations": [
+    "This is a source and test-body correspondence review. It does not claim that the reviewed test suite, Lean compiler, browser, or configured command profiles were executed by this reviewer. Named context inputs were consulted for the relevant helpers, fixture declarations, or presentation rules; unrelated declarations in conservative file snapshots are not asserted to have been fully reviewed."
+  ],
+  "supersedes": [
+    "6d237cc08089d74610f8977e5bf7324a3005f8ca0b51955376f2b345c1b78015"
+  ]
+}

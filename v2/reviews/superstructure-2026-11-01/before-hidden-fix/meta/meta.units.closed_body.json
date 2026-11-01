@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "5235f192ac1e5844c37a84a867114361db59cae7cb42ab480dc5a7e05c1e5ecb",
+  "reviewer": "Codex subagent /root/review_superstructure_evidence",
+  "provenance": "Fresh adversarial correspondence review on 2026-11-01. Read the immutable bundle unit, required exact Rust/test selections, review policy, and listed supporting context. Independently traced error and boundary cases; did not reuse earlier positive conclusions. Rust best-practice skill and v2/AGENTS.md were consulted.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "tool:mdbook-dada/src/configuration.rs",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "parse_block checks the complete raw structured unit for mdBook expansion syntax, including fenced literal samples, and rejects nested legacy citation-bearing directives. The original-source validator reopens each received chapter and compares ordered structured IDs and raw blocks against the processed input before rendering. Tests attempt literal includes, nested legacy selections, and already-expanded content, and verify that these cannot receive valid evidence or bypass the configured pipeline. The mdBook executable integration test is an additional ignored-by-default check, not evidence of execution in this review. The claim explicitly limits this defense to received chapters and this processor boundary; it does not claim to detect wholly omitted chapters or later rewrites.",
+  "limitations": [
+    "This is a source and test-body correspondence review. It does not claim that the reviewed test suite, Lean compiler, browser, or configured command profiles were executed by this reviewer. Named context inputs were consulted for the relevant helpers, fixture declarations, or presentation rules; unrelated declarations in conservative file snapshots are not asserted to have been fully reviewed.",
+    "The actual-mdBook integration test is ignored by default; its body was reviewed, not executed. The validator only checks chapters supplied to the processor."
+  ],
+  "supersedes": [
+    "9d1481c4e1c08f774b690d051ca06f48a93a64d83d96f5ffd986b1ab1b663f2c"
+  ]
+}

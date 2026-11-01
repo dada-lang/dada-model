@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "e8037ef6209bb261f1d2aa15fd6302bbbd00d6416bb86c6c831989643b535768",
+  "reviewer": "Codex independent repair reviewer /root/review_repaired_shared",
+  "provenance": "Independent delegated correspondence review continued after the user's clarification. I did not author the repaired chapter, Lean declarations, decision note or earlier repository reviews. I had read the complete prior frozen required units/selections/policy and relevant contexts; for these final packets I compared the snapshots, verified 97 unchanged required inputs byte-for-byte, reread every changed required input and inspected the new Liveness declaration context. I reviewed the new path-exclusivity unit and its complete required dependencies. The explicit user-confirmation quotations are retained as the primary agent's recoverable intent input; I did not independently retrieve the originating conversation. No conclusion is inferred merely from packet preparation or the reported Lean build.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:lean/Shared/Syntax.lean",
+    "extra:reviews/repair-2026-10-24/sharing-decision.md",
+    "lean:Shared/Examples:sharing_execution",
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Step",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:Classes",
+    "lean:Shared/Syntax:Place",
+    "lean:Shared/Syntax:Program",
+    "lean:Shared/Syntax:Statement",
+    "lean:Shared/Syntax:Value",
+    "policy:md/repo/correspondence-review.md",
+    "unit:shared.example.copy_field",
+    "unit:shared.give",
+    "unit:shared.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:shared.example.copy_field matches the exact sharing_execution proposition together with definitions inspected in context:lean/Shared/Examples.lean. sharingCode is precisely the five displayed statements starting at State.empty. tokenState allocates Token 0; boxState allocates Box 1, captures t into value and leaves t empty. sharedBoxState empties b, binds s to shared 1 and retains boxState.objects, so the token field remains unique at this point. copiedState changes only that field to shared 0 and adds u; twiceCopiedState binds v to shared 0. Consequently the final configuration has exactly the two described objects, empty t and b, shared s to box 1, and three stored shared token occurrences. The inspected example_create_token, example_create_box, example_share_box, example_copy_field and example_copy_again statements also cover the narrated intermediate configurations. The exact example proves a complete finite execution with no remaining code, rather than merely the existence of a similarly named local effect. The revised wording changes the reference stored in the field rather than attributing a mode change to the token object; that distinction agrees with Reference, Object and the concrete copiedState.",
+  "limitations": [
+    "This is an independent comparison of prose, definitions, theorem assumptions/conclusions and example setups/results. Proof correctness and mechanical build/test execution are separate; this review did not rerun them.",
+    "Listed conservative source contexts were inspected for relevant definitions, concrete states and theorem signatures; listing them does not attest to a complete tactic or validator audit."
+  ],
+  "supersedes": [
+    "c9d15cf46139aab84aa6b842babaae91611ac4e914edfedc962b0106246234de"
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "record_kind": "design-audit-inputs",
+  "date": "2026-11-01",
+  "conclusion": "No remaining semantic inconsistency found in the revised draft; no Lean correspondence asserted.",
+  "lean_formalization_reviewed": false,
+  "affirmative_correspondence_decision": false,
+  "provenance": [
+    {
+      "agent": "/root",
+      "role": "Authored typing changes, integrated docs, checked rendering and mechanical results."
+    },
+    {
+      "agent": "/root/normalization_audit",
+      "role": "Advised on normalization and reviewed actual semantic draft chapters; rechecked final copyedit."
+    },
+    {
+      "agent": "/root/writing_tenets",
+      "role": "Authored style guide and reviewed narrative; advised final copyedit."
+    },
+    {
+      "agent": "/root/generic_views_future",
+      "role": "Authored generic-view proposal."
+    }
+  ],
+  "authorship_limitations": "Agents shared the conversation; some reviewed material they helped design. This is not a blind review or a dada-spec correspondence record.",
+  "inputs": [
+    {
+      "path": "v2/md/given-typing.md",
+      "sha256": "bc5968bf774f1b914b5adab52ed95aa543d1445c35c337a57db72230b4c47967",
+      "snapshot": "sources/v2/md/given-typing.md",
+      "reviewer": "/root/normalization_audit",
+      "examined_scope": "Entire chapter; final emptying copyedit rechecked. Narrative reviewer read lines 1–450."
+    },
+    {
+      "path": "v2/md/dada/future-extensions.md",
+      "sha256": "ee38066847240cff3cb3913f8e0e2c0548545c0aa0c4a65e6a1819a019677e7c",
+      "snapshot": "sources/v2/md/dada/future-extensions.md",
+      "reviewer": "/root/normalization_audit and /root/writing_tenets",
+      "examined_scope": "Entire file; future-only status and initialized-but-opaque-field limitation."
+    },
+    {
+      "path": "v2/md/repo/writing-style.md",
+      "sha256": "d2b125f3867e4ef5468aa7475a3fa0907626303baa8313b2815f0c9a55a4bdee",
+      "snapshot": "sources/v2/md/repo/writing-style.md",
+      "reviewer": "/root/writing_tenets and /root",
+      "examined_scope": "Entire file; authoring guidance and review criteria."
+    },
+    {
+      "path": "v2/md/repo/authoring.md",
+      "sha256": "e59f847781975d4fde9ead234edd34cfd49e5a75ce92923d5776a00b1d89db87",
+      "snapshot": "sources/v2/md/repo/authoring.md",
+      "reviewer": "/root",
+      "examined_scope": "Opening sections through Mathematics and examples, plus inserted style-guide link. Whole-file hash is conservative."
+    },
+    {
+      "path": "v2/md/SUMMARY.md",
+      "sha256": "8d08ea449f3cdd12e0c6f80907c50f5cd48ca08baf2b63c2435d1439bfd7961a",
+      "snapshot": "sources/v2/md/SUMMARY.md",
+      "reviewer": "/root",
+      "examined_scope": "Entire file; new chapter links and placement."
+    },
+    {
+      "path": "v2/md/introduction.md",
+      "sha256": "3fce46cba2ac330526fa7b8e6871bbf6439623daa4b45ba80e196e83d4e1f8e7",
+      "snapshot": "sources/v2/md/introduction.md",
+      "reviewer": "/root",
+      "examined_scope": "Entire file; contributor-guide links."
+    },
+    {
+      "path": "v2/AGENTS.md",
+      "sha256": "50ac43ad1227b76ae8aa7de77bcadfc6e1b3561e25644619d014561f53146dee",
+      "snapshot": "sources/v2/AGENTS.md",
+      "reviewer": "/root",
+      "examined_scope": "Entire original file and final updated style, draft model and strict-coverage paragraphs."
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "c5a83a976489e17275a4598997794eff5cf0514ae287a1d8fd6d2250824e8176",
+      "snapshot": "sources/AGENTS.md",
+      "reviewer": "/root",
+      "examined_scope": "User-supplied instructions and updated current-model/style/layout paragraphs. Whole-file hash is conservative."
+    },
+    {
+      "path": "v2/spec.json",
+      "sha256": "10aca113455eabf269de63b507809eec8ea41122b7ef0a787c434e16b64750a4",
+      "snapshot": "sources/v2/spec.json",
+      "reviewer": "/root",
+      "examined_scope": "Entire file; strict future chapter and explicit style-guide freshness context."
+    }
+  ],
+  "additional_context": [
+    "Latest nine user browser comments in this conversation, including normalization refinement and generic-view constructor proposal."
+  ],
+  "mechanical_results": {
+    "source": "Executed by /root; not by subagent reviewers.",
+    "book_build": "just book-v2 passed",
+    "renderer_tests": "cargo test -p mdbook-dada --test book: 39 passed",
+    "whitespace": "git diff --check passed",
+    "browser": "No MathJax errors in typing or future-extension chapter; examples and navigation visually inspected.",
+    "lean": "No Lean changed or compiled.",
+    "evidence": {
+      "command": "cargo run -p mdbook-dada --bin dada-spec -- status --explain",
+      "exit_code": 1,
+      "statuses": {
+        "stale": 41,
+        "draft": 27
+      }
+    }
+  }
+}

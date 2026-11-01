@@ -1,0 +1,101 @@
+evidence.map: inputs=current, correspondence=corresponds
+evidence.map.empty: inputs=current, correspondence=corresponds
+evidence.map.value_unique: inputs=current, correspondence=corresponds
+future.generic_views: inputs=draft, correspondence=not asserted
+given.classes: inputs=current, correspondence=corresponds
+given.evaluation: inputs=current, correspondence=corresponds
+given.example.empty_field: inputs=current, correspondence=corresponds
+given.example.field: inputs=current, correspondence=corresponds
+given.example.nested: inputs=current, correspondence=corresponds
+given.example.token: inputs=current, correspondence=corresponds
+given.example.unpack: inputs=current, correspondence=corresponds
+given.executions: inputs=current, correspondence=corresponds
+given.liveness: inputs=current, correspondence=corresponds
+given.machine: inputs=current, correspondence=corresponds
+given.patterns: inputs=current, correspondence=corresponds
+given.programs: inputs=current, correspondence=corresponds
+given.resolution: inputs=current, correspondence=corresponds
+given.single_owner: inputs=current, correspondence=corresponds
+given.soundness: inputs=current, correspondence=corresponds
+given.state: inputs=current, correspondence=corresponds
+given.steps: inputs=current, correspondence=corresponds
+given.storage_places: inputs=current, correspondence=corresponds
+given.syntax: inputs=current, correspondence=corresponds
+given.typing.bindings: inputs=current, correspondence=corresponds
+given.typing.configurations: inputs=current, correspondence=corresponds
+given.typing.declarations: inputs=current, correspondence=corresponds
+given.typing.emptying: inputs=current, correspondence=corresponds
+given.typing.environments: inputs=current, correspondence=corresponds
+given.typing.example.moves: inputs=current, correspondence=corresponds
+given.typing.example.normalization: inputs=current, correspondence=corresponds
+given.typing.example.rejections: inputs=current, correspondence=corresponds
+given.typing.example.take: inputs=current, correspondence=corresponds
+given.typing.example.views: inputs=current, correspondence=corresponds
+given.typing.expression_soundness: inputs=current, correspondence=corresponds
+given.typing.expressions: inputs=current, correspondence=corresponds
+given.typing.focus: inputs=current, correspondence=corresponds
+given.typing.forgetting: inputs=current, correspondence=corresponds
+given.typing.normalization: inputs=current, correspondence=corresponds
+given.typing.normalization_correct: inputs=current, correspondence=corresponds
+given.typing.observations: inputs=current, correspondence=corresponds
+given.typing.preservation: inputs=current, correspondence=corresponds
+given.typing.progress: inputs=current, correspondence=corresponds
+given.typing.realization: inputs=current, correspondence=corresponds
+given.typing.safety: inputs=current, correspondence=corresponds
+given.typing.statements: inputs=current, correspondence=corresponds
+given.typing.views: inputs=current, correspondence=corresponds
+given.unpacking: inputs=current, correspondence=corresponds
+given.unpacking.soundness: inputs=current, correspondence=corresponds
+given.well_formed: inputs=current, correspondence=corresponds
+meta.evidence.active_decisions: inputs=current, correspondence=corresponds
+meta.evidence.mechanical_execution: inputs=current, correspondence=corresponds
+meta.evidence.required_inputs: inputs=current, correspondence=corresponds
+meta.examples.selection: inputs=current, correspondence=corresponds
+meta.lean.definitions.navigation: inputs=current, correspondence=corresponds
+meta.math.definition.selection: inputs=current, correspondence=corresponds
+meta.math.judgment.selection: inputs=current, correspondence=corresponds
+meta.math.overline.braces: inputs=current, correspondence=corresponds
+meta.math.runtime: inputs=current, correspondence=corresponds
+meta.math.source_view: inputs=current, correspondence=corresponds
+meta.math.theorem.selection: inputs=current, correspondence=corresponds
+meta.math.typesetting: inputs=current, correspondence=corresponds
+meta.sources.configuration: inputs=current, correspondence=corresponds
+meta.sources.exact_selection: inputs=current, correspondence=corresponds
+meta.syntax.anchors.identity: inputs=current, correspondence=corresponds
+meta.syntax.heap.nodes: inputs=current, correspondence=corresponds
+meta.syntax.heap.rendering: inputs=current, correspondence=corresponds
+meta.syntax.heap.routing: inputs=current, correspondence=corresponds
+meta.syntax.heap.validation: inputs=current, correspondence=corresponds
+meta.syntax.inline_and_block: inputs=current, correspondence=corresponds
+meta.system.remaining_coverage: inputs=current, correspondence=corresponds
+meta.units.closed_body: inputs=current, correspondence=corresponds
+shared.boundaries: inputs=current, correspondence=corresponds
+shared.correspondence: inputs=current, correspondence=corresponds
+shared.embedding: inputs=current, correspondence=corresponds
+shared.example.copy_field: inputs=current, correspondence=corresponds
+shared.example.share_value: inputs=current, correspondence=corresponds
+shared.example.shared_middle: inputs=current, correspondence=corresponds
+shared.give: inputs=current, correspondence=corresponds
+shared.liveness: inputs=current, correspondence=corresponds
+shared.path_exclusivity: inputs=current, correspondence=corresponds
+shared.resolution: inputs=current, correspondence=corresponds
+shared.soundness: inputs=current, correspondence=corresponds
+shared.state: inputs=current, correspondence=corresponds
+shared.steps: inputs=current, correspondence=corresponds
+shared.syntax: inputs=current, correspondence=corresponds
+shared.well_formed: inputs=current, correspondence=corresponds
+check book: recorded pass
+check lean: recorded pass
+check lean-assumptions: recorded pass
+check rust: not recorded
+error: draft unit future.generic_views requires formalization
+ --> md/dada/future-extensions.md:5:1
+  |
+5 | / ````{example} future.generic_views
+6 | | :status: draft
+7 | | :uses: given.typing.views given.typing.expressions
+  | |__________________________________________________^ evidence required for this unit
+  |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for future.generic_views, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs

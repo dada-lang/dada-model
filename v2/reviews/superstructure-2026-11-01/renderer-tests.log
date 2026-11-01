@@ -1,0 +1,11 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running tests/renderer_contracts.rs (target/debug/deps/renderer_contracts-681d8085664d4d99)
+
+running 5 tests
+test diagram_forward_references_and_aliases_preserve_distinct_edges ... ok
+test diagram_array_size_boundary_preserves_all_slots ... ok
+test pinned_mathjax_configuration_uses_one_loader ... ok
+test view_styles_keep_headers_and_nested_choices_independent ... ok
+test lean_citations_accept_subdirectories_but_reject_source_root_escapes ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s

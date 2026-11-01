@@ -1,0 +1,422 @@
+{
+  "lean:Unique/Syntax:Class": {
+    "key": "lean:Unique/Syntax:Class",
+    "path": "lean/Unique/Syntax.lean",
+    "line": 14,
+    "content": "structure Class where\n  fields : List FieldName\n  deriving DecidableEq, Repr",
+    "sha256": "dc8a2e7e68a86d29ea2b010d85f7713799685e069f7851eef52b91d893e1670c"
+  },
+  "lean:Unique/Syntax:ClassName": {
+    "key": "lean:Unique/Syntax:ClassName",
+    "path": "lean/Unique/Syntax.lean",
+    "line": 12,
+    "content": "abbrev ClassName := String",
+    "sha256": "8599ef5352ee56e3743cb0b2aec5be20584540f488c6e75257cdcf7f1d07fa90"
+  },
+  "lean:Unique/Syntax:FieldName": {
+    "key": "lean:Unique/Syntax:FieldName",
+    "path": "lean/Unique/Syntax.lean",
+    "line": 11,
+    "content": "abbrev FieldName := String",
+    "sha256": "fed43612b440d724795cbd8a3e309e363c40f19d1473a7f29fc9611d9a62a427"
+  },
+  "policy:md/repo/correspondence-review.md": {
+    "key": "policy:md/repo/correspondence-review.md",
+    "path": "md/repo/correspondence-review.md",
+    "line": 1,
+    "content": "# Correspondence review\n\nA correspondence review asks whether a unit's prose and mathematics express the\nintended meaning of its cited formalization. Lean checks the proof of a theorem;\nthe review checks that its statement is the theorem we intended to prove.\nEvidence retains both the inputs and the reasoning behind that judgment.\n\n## Scope and configuration\n\n`spec.json` makes the validation scope explicit. Its JSON uses `schema: 1`, a\n`chapters` array of paths relative to `v2/`, a `policies` array of review-policy\nfiles, and a `context` array for additional required input files. The book and Lean roots come from `book.toml`; this repository uses `md/`\nand `lean/`. Every new-style unit under `md/` participates in the evidence\ninventory. Adding\na strict chapter additionally rejects prose outside unit boundaries in that\nchapter; removing it is a coverage change, not a remedy for missing evidence.\n\nPolicy and extra context files become inputs to the comparison. Changes to\nthose files, the configuration, or validator implementation can invalidate\nexisting reviews. Evidence files themselves are outputs and do not recursively\nparticipate in their own input digests.\n\n## Prepare the comparison\n\nRun these commands from `v2/`. Inspect the current inventory and failures with:\n\n```sh\ncargo run -p mdbook-dada --bin dada-spec -- status --explain\ncargo run -p mdbook-dada --bin dada-spec -- check\n```\n\nPrepare one unit's packet:\n\n```sh\ncargo run -p mdbook-dada --bin dada-spec -- prepare UNIT_ID\n```\n\nPreparation writes a JSON bundle under `evidence/bundles/` and prints its path.\nIt snapshots the complete authored unit, the required source selections and\ncontext, dependent units, and review policy. It records content hashes so that\nrecording and validation can reject a comparison made against changed inputs.\nPreparation does not supply a verdict.\n\nA unit marked `:status: draft` retains its semantic kind but is unfinished.\nDrafts may omit citations; supplied citations are still checked by kind.\nEvidence validation rejects drafts, and recording an affirmative correspondence\ndecision for one is forbidden. Complete the formalization and remove draft\nstatus before attempting that review. A definition needs a matching Lean\ndefinition, not a proof; only a claimed result needs a proof.\n\nThe input set is constructed from the current specification. At minimum it\nincludes the exact unit being reviewed and every cited Lean declaration. All\nlocal Lean source files are retained conservatively for a Lean-backed unit,\nrather than claiming that a textual scan discovered elaborated semantic\ndependencies. The Lean toolchain and Lake metadata, configured policy and context,\nand validator source/tests, `book.toml`, and Cargo metadata are also inputs. Rust-backed units\nretain their selected implementation/test sources and complete containing files.\nStructured units reject mdBook expansion directives and nested legacy source\ncitations, so neither can introduce uncaptured content into a reviewed body.\nThis may invalidate evidence after an edit elsewhere in the formalization or\na proof-only change. That conservative scope is explicit and reproducible.\n\n## Review the packet\n\nPrefer a reviewer with fresh context. Give the reviewer the immutable packet,\nthis procedure, and the task of finding discrepancies; an earlier author's\nassurance is not evidence. Read the authored units, exact source selections,\npolicy, and explicitly added context that the packet marks as required review\ninputs, and record their keys\nin the review. Inspect additional source context needed for the comparison and\nrecord those inputs too. The bundle also retains conservative full-source and\ntool snapshots for freshness; listing those snapshots does not require claiming\nthat every line of every existing proof was examined. For each unit:\n\n1. Identify its intended objects, operations, quantifiers, and assumptions.\n2. Compare the complete prose and math with the selected source, including\n   hidden parameters, side conditions, and omitted representation details.\n3. Check that concepts are introduced with an italicized name and inline\n   metavariable, and that every metavariable has a grammar or domain before use.\n   Check that judgments have defining rules before results rely on them. Inspect\n   the introducing units, including those cited through `:uses:`.\n4. Look for a case admitted by one account and excluded by the other. For an\n   example, check its setup and stated result rather than merely finding a\n   similarly named test.\n5. Record what matches, any discrepancy, the scope of the comparison, and its\n   limitations with references to the examined inputs.\n\nIn the rationale, identify the units that introduce the notation and judgments\nneeded for the comparison. Report undefined symbols and forward references as\ndiscrepancies; if their meaning cannot be established, mark the review\ninconclusive. These are review criteria. The validator does not check notation\nintroductions or the order of mathematical definitions.\n\nDo not re-prove a theorem or audit its tactic choices as part of this review.\nDo inspect assumptions that affect its statement. A successfully checked proof\nof a narrower proposition does not cover a broader prose claim. Draft status\nmust remain explicit and does not permit approval.\n\nFor a meta requirement, compare its body with the cited implementation and\ntests. Explain which paths or rejection cases the tests cover and which parts\nof the behavior are supported only by inspection. Do not infer universal\ncorrectness from a passing test.\n\nIf the comparison needs another unit, add it to the authored dependencies and\nprepare a new packet. Additional consulted files can be included with repeatable\n`--input` arguments, for example:\n\n```sh\ncargo run -p mdbook-dada --bin dada-spec -- prepare UNIT_ID --input md/repo/authoring.md\n```\n\nThese extra file inputs must also appear in `examined`. Configured `context`\nfiles are conservative freshness inputs; they are not automatically an attestation\nthat the reviewer read the whole file. Do not silently consult material\nthat another reviewer cannot recover from the evidence. If the intended design\nis ambiguous, record an inconclusive result or mismatch and describe the choice\nthat needs resolution. Do not change the design just to obtain approval.\n\n## Record the decision\n\nThe review file identifies the prepared bundle, the reviewer and provenance,\nexamined input keys, a conclusion, comparison rationale, and limitations. The\nthree conclusions are `corresponds`, `mismatch`, and `inconclusive`. The rationale\nmust explain the comparison rather than report that filenames exist or tests\npassed. The review JSON has this shape; use the actual digest and required\nreview input keys from the bundle, plus any further inputs actually examined:\n\n```json\n{\n  \"schema\": 1,\n  \"bundle\": \"DIGEST_FROM_PREPARED_BUNDLE\",\n  \"reviewer\": \"Reviewer identity\",\n  \"provenance\": \"How this review was performed; agent/model identity when applicable\",\n  \"examined\": [\"EVERY_REQUIRED_REVIEW_INPUT_KEY\"],\n  \"conclusion\": \"corresponds\",\n  \"rationale\": \"Specific comparison of the authored claim and formal statement, with input references\",\n  \"limitations\": [],\n  \"supersedes\": []\n}\n```\n\nThis is a schema illustration, not a review to copy and approve. Retain an\nexplicit empty limitations list when none were identified. `examined` is an\nattestation that the reviewer read the listed inputs; the validator can check its\ncoverage of the required review inputs, but cannot establish that the reading\nactually happened. Do not claim to have examined a whole conservative source\nsnapshot just because the packet contains it.\n`supersedes` records the digests of earlier decisions for the same unit that the\nnew decision intentionally replaces; it does not conceal them. A replacement\nmay use a different bundle, for example after adding context needed to resolve\na disagreement. Recording still validates the new bundle against current inputs.\nEvery unsuperseded decision for a unit must apply to current inputs and conclude\n`corresponds` for the evidence check to pass. When reviewing changed inputs,\nexplicitly supersede the earlier active decisions; creating an unrelated positive\nrecord does not silently discard a negative or stale one. If a replacement later\nbecomes stale, the check fails rather than falling back to an older positive\nreview.\n\nRecord a completed review with:\n\n```sh\ncargo run -p mdbook-dada --bin dada-spec -- record BUNDLE_PATH REVIEW_JSON_PATH\n```\n\nRecording validates the review and recomputes required inputs from current\nsource. If the unit, formalization, dependencies, or policy changed after\npreparation, it refuses the obsolete comparison. Prepare again and review the\nchanged packet. Accepted records are retained under `evidence/records/` alongside\ntheir retrievable bundles. Never manufacture a favorable review or rewrite old\ninput hashes to satisfy the workspace test.\n\n## Interpret the result\n\n`dada-spec check` and the Cargo integration test perform syntactic validation.\nThey check that required evidence exists, includes the independently derived\nminimum inputs, has valid contents and hashes, and applies to current sources.\nThey also distinguish a positive review from an unresolved mismatch or\ninconclusive comparison. Draft units fail validation and cannot receive\naffirmative correspondence decisions. The checks do not judge whether the recorded reasoning is\ncorrect, launch a reviewer, compile Lean, or run the cited tests.\n\nRun the mechanical checks separately:\n\n```sh\ncargo test --workspace\ncargo clippy --workspace --all-targets -- -D warnings\n```\n\nFrom the repository root, `just test-lean` checks the formalization with\n`lake build --wfail`, rejecting warnings such as those emitted by `sorry`.\n`just book-v2` checks the rendered book and citations. Report those results\nseparately from the correspondence conclusion. A current review can coexist\nwith a failing proof check, and a passing proof check can coexist with a\nmissing or negative review.\n\nThe validator's `annotate-snippets` diagnostics point to the affected unit or\ncitation and give the preparation command. Read the reported cause before\npreparing again: an invalid source target needs a source or citation fix, while\na stale packet needs renewed comparison. The test is a guard against missing\nor stale work, not a semantic oracle.\n",
+    "sha256": "8cc4c59d863f8558cf94129f3782f93c037473c8945669ef77ed65befa99cddb"
+  },
+  "unit:given.classes": {
+    "key": "unit:given.classes",
+    "path": "md/given.md",
+    "line": 3,
+    "content": "```{definition} given.classes\n:lean: Unique/Syntax:ClassName Unique/Syntax:FieldName Unique/Syntax:Class\n\nThis language studies transfer of ownership. Variables and object fields hold\nreferences to objects. Giving a reference moves it to its destination and leaves\nits source empty; constructing an object moves references into its fields.\n\nA *class declaration* \\\\(d\\\\) names a class and its fields. Write \\\\(C\\\\) for\na class name in \\\\(\\mathsf{ClassName}\\\\), and \\\\(f\\\\) for a field name in\n\\\\(\\mathsf{FieldName}\\\\). The field count \\\\(n\\\\) is a natural number,\nincluding zero:\n\n\\\\[\nd ::= \\mathsf{class}\\ C\\ \\{f_1,\\ldots,f_n\\}.\n\\\\]\n\nFields are distinct and listed in constructor-argument order. They have names\nbut no declared types.\nAn empty class still has objects, so this language needs no primitive values.\nSubscripts and primes distinguish names in the same category.\n```",
+    "sha256": "eebdd73f8ec786906490b7de6a5a1dfa955d1fbfbdc8eeb67039fe1a16bffd4b"
+  },
+  "lean:Unique/Syntax:Place": {
+    "key": "lean:Unique/Syntax:Place",
+    "path": "lean/Unique/Syntax.lean",
+    "line": 21,
+    "content": "inductive Place where\n  | variable (name : VariableId)\n  | field (base : Place) (name : FieldName)\n  deriving DecidableEq, Repr",
+    "sha256": "b1177c53776f1b3711ae2faaf4437c168d2c37c2cdbb5a052b7f5b9bd14fbec7"
+  },
+  "lean:Unique/Syntax:Statement": {
+    "key": "lean:Unique/Syntax:Statement",
+    "path": "lean/Unique/Syntax.lean",
+    "line": 33,
+    "content": "structure Statement where\n  letValue ::\n  destination : VariableId\n  value : Value\n  deriving Repr",
+    "sha256": "548e2c6b22a4436e6186ed5df1fc08e51d778cdc91e9e2d2fd797d02c61dc460"
+  },
+  "lean:Unique/Syntax:Value": {
+    "key": "lean:Unique/Syntax:Value",
+    "path": "lean/Unique/Syntax.lean",
+    "line": 28,
+    "content": "inductive Value where\n  | give (source : Place)\n  | new (className : ClassName) (arguments : List Value)\n  deriving Repr",
+    "sha256": "38a7646ca923d2dc50dab3874f9fe3d98a5e8a16fc209ab44cfed34187c113b7"
+  },
+  "lean:Unique/Syntax:VariableId": {
+    "key": "lean:Unique/Syntax:VariableId",
+    "path": "lean/Unique/Syntax.lean",
+    "line": 10,
+    "content": "abbrev VariableId := String",
+    "sha256": "186602e8b2aab5dde3d9cd6f1335fe74b7da5fbecffc98161c1c108392aef797"
+  },
+  "unit:given.syntax": {
+    "key": "unit:given.syntax",
+    "path": "md/given.md",
+    "line": 27,
+    "content": "```{definition} given.syntax\n:lean: Unique/Syntax:VariableId Unique/Syntax:Place Unique/Syntax:Value Unique/Syntax:Statement\n:uses: given.classes\n\nA *place expression* \\\\(p\\\\) follows a route from a variable through zero or\nmore fields. Write \\\\(x\\\\) for a variable name in \\\\(\\mathsf{VariableId}\\\\).\nA *value expression* \\\\(e\\\\) produces an owning reference. Giving a place,\n`p→`, is the only way to obtain a value from an existing place. A constructor\ncreates an object from the values of its argument expressions:\n\n\\\\[\n\\begin{aligned}\np &::= x \\mid p.f \\\\\ne &::= p\\mathord{\\to} \\mid \\mathsf{new}\\ C(e_1,\\ldots,e_n).\n\\end{aligned}\n\\\\]\n\nConstructor arguments can themselves be constructors or gives of places.\n\nA *statement* \\\\(t\\\\) determines what the machine executes next. In this\nlanguage, the only statement evaluates an expression and binds its result to a\nfresh variable:\n\n\\\\[\nt ::= \\mathsf{let}\\ x=e.\n\\\\]\n\nExpressions evaluate within a statement; they do not choose the next statement.\nEach `let` introduces a distinct runtime variable. This fragment has no shadowing,\nscopes, function calls, assignment, or destruction.\n```",
+    "sha256": "d1b7bc9e5f43d8e54dd882a686e56aad9d0c0ef62e86a57bbe26a2258d2f9728"
+  },
+  "lean:Unique/Soundness:ClassesWellFormed": {
+    "key": "lean:Unique/Soundness:ClassesWellFormed",
+    "path": "lean/Unique/Soundness.lean",
+    "line": 6,
+    "content": "def ClassesWellFormed (classes : Classes) : Prop :=\n  (classes.map Prod.fst).Nodup ∧\n    ∀ name declaration, (name, declaration) ∈ classes → declaration.fields.Nodup",
+    "sha256": "7d516c5253aca5ada8aed127cd4c13678fed27dc02e17c17873f914756fcf9af"
+  },
+  "lean:Unique/Syntax:Classes": {
+    "key": "lean:Unique/Syntax:Classes",
+    "path": "lean/Unique/Syntax.lean",
+    "line": 18,
+    "content": "abbrev Classes := List (ClassName × Class)",
+    "sha256": "b5f8fbf9b2081d85050f5c4089cd271b7bb208908f9dc2c2ac3be0bf82bb150f"
+  },
+  "lean:Unique/Syntax:Program": {
+    "key": "lean:Unique/Syntax:Program",
+    "path": "lean/Unique/Syntax.lean",
+    "line": 39,
+    "content": "structure Program where\n  classes : Classes\n  body : List Statement\n  deriving Repr",
+    "sha256": "e5ddd54af342825b1e65c1fc297a165ce8549ae1cacbc1eeb817e7767b986aec"
+  },
+  "unit:given.programs": {
+    "key": "unit:given.programs",
+    "path": "md/given.md",
+    "line": 61,
+    "content": "```{definition} given.programs\n:lean: Unique/Syntax:Classes Unique/Syntax:Program Unique/Soundness:ClassesWellFormed\n:uses: given.classes given.syntax\n\nA *program* \\\\(\\Pi\\\\) supplies class declarations and an ordered sequence of\nstatements. Its *class table* \\\\(\\Delta\\\\) maps each declared class name to\nits field names in declaration order. Each class name is declared once.\n\nWrite \\\\(A\\rightharpoonup B\\\\) for finite partial maps from domain \\\\(A\\\\)\nto codomain \\\\(B\\\\), and \\\\(\\mathsf{List}(A)\\\\) for finite ordered sequences\nof elements of \\\\(A\\\\). A *statement sequence* \\\\(P\\\\) is empty, written\n\\\\([]\\\\), or has a first statement \\\\(t\\\\) followed by a sequence \\\\(P\\\\),\nwritten \\\\(t::P\\\\):\n\n\\\\[\n\\begin{aligned}\n\\Delta &\\in \\mathsf{ClassName}\\rightharpoonup\\mathsf{List}(\\mathsf{FieldName}) \\\\\nP &::= [] \\mid t::P \\\\\n\\Pi &::= \\langle\\Delta,P\\rangle.\n\\end{aligned}\n\\\\]\n\nFor a declaration \\\\(\\mathsf{class}\\ C\\ \\{f_1,\\ldots,f_n\\}\\\\), the table\ncontains \\\\(\\Delta(C)=[f_1,\\ldots,f_n]\\\\). The class table is *well formed*\nwhen each such list has distinct field names.\n```",
+    "sha256": "becc300aea8f856c5d248c59fb3d155d23fa7712c0769bef6c2183308f6b6789"
+  },
+  "lean:Unique/State:Object": {
+    "key": "lean:Unique/State:Object",
+    "path": "lean/Unique/State.lean",
+    "line": 8,
+    "content": "structure Object where\n  className : ClassName\n  fields : List (FieldName × Slot)\n  deriving DecidableEq, Repr",
+    "sha256": "2c78c145ab2c6bcc3e0f121a2327b1a83d1d6ccd22aaa9f34643f29eb3ea505f"
+  },
+  "lean:Unique/State:Slot": {
+    "key": "lean:Unique/State:Slot",
+    "path": "lean/Unique/State.lean",
+    "line": 6,
+    "content": "abbrev Slot := Option ObjectId",
+    "sha256": "059867a7ca01e0388a9567705cba6ec4da70477e0b03e5eadc4ba67fdf96e3ef"
+  },
+  "lean:Unique/State:State": {
+    "key": "lean:Unique/State:State",
+    "path": "lean/Unique/State.lean",
+    "line": 13,
+    "content": "structure State where\n  objects : List (ObjectId × Object)\n  variables : List (VariableId × Slot)\n  nextId : Nat\n  deriving DecidableEq, Repr",
+    "sha256": "35c237d556846127fa3a23ca890777db6abc4a3fefc6d67bb4cf7ae8ebdbc439"
+  },
+  "lean:Unique/State:State.empty": {
+    "key": "lean:Unique/State:State.empty",
+    "path": "lean/Unique/State.lean",
+    "line": 19,
+    "content": "def State.empty : State := ⟨[], [], 0⟩",
+    "sha256": "eef724188bf8a1e91c88c94f377eef77f80c9d63dce0e42bb023b4f7191452d1"
+  },
+  "lean:Unique/Syntax:ObjectId": {
+    "key": "lean:Unique/Syntax:ObjectId",
+    "path": "lean/Unique/Syntax.lean",
+    "line": 5,
+    "content": "structure ObjectId where\n  index : Nat\n  deriving DecidableEq, Repr",
+    "sha256": "a8d17bd98fdf25ebdf64f72be69b6599bede18ff1df73284f55c217b5effc75f"
+  },
+  "unit:given.state": {
+    "key": "unit:given.state",
+    "path": "md/given.md",
+    "line": 90,
+    "content": "```{definition} given.state\n:lean: Unique/Syntax:ObjectId Unique/State:Slot Unique/State:Object Unique/State:State Unique/State:State.empty\n:uses: given.classes given.syntax given.programs\n\nAn *object identity* \\\\(\\alpha\\\\) is a tagged natural number. The tag keeps\nidentities distinct from ordinary numbers. We also use \\\\(\\beta\\\\) for an\nobject identity; \\\\(\\operatorname{index}\\\\) extracts its number:\n\n\\\\[\n\\alpha,\\beta\\in\\mathsf{ObjectId}\n  =\\{\\mathsf{obj}(n)\\mid n\\in\\mathbb N\\},\n\\qquad\n\\operatorname{index}(\\mathsf{obj}(n))=n.\n\\\\]\n\nA *slot* is a variable or object field. Its *contents* \\\\(s\\\\), in the\ncategory \\\\(\\mathsf{Slot}\\\\), are empty, written \\\\(\\bot\\\\), or hold a\nreference to an object. An *object* \\\\(o\\\\), in the category\n\\\\(\\mathsf{Object}\\\\), has a class name and an ordered list of named field\nslots. All references in this language are owners:\n\n\\\\[\n\\begin{aligned}\ns &::= \\bot \\mid \\alpha \\\\\no &::= C\\{f_1:s_1,\\ldots,f_n:s_n\\}.\n\\end{aligned}\n\\\\]\n\nA *storage state* \\\\(S\\\\) has an *object table* \\\\(O\\\\), a *variable table*\n\\\\(V\\\\), and an *allocation counter* \\\\(\\nu\\\\):\n\n\\\\[\n\\begin{aligned}\nO &\\in \\mathsf{ObjectId}\\rightharpoonup\\mathsf{Object} \\\\\nV &\\in \\mathsf{VariableId}\\rightharpoonup\\mathsf{Slot} \\\\\n\\nu &\\in \\mathbb N \\\\\nS &::= \\langle O,V,\\nu\\rangle.\n\\end{aligned}\n\\\\]\n\nThe counter supplies \\\\(\\mathsf{obj}(\\nu)\\\\) for the next allocation, then\nincreases by one. Write \\\\(\\varnothing\\\\) for an empty map; the *empty state*\nis \\\\(S_{\\emptyset}=\\langle\\varnothing,\\varnothing,0\\rangle\\\\).\nFinite-map notation assumes distinct keys. The well-formedness conditions below\nenforce this for the tables and field lists.\nThe tables and field lists record empty slots as well as occupied ones.\n```",
+    "sha256": "28f68cb043f12ae1b82c65c2aff1e5441b2bce9f65494e25f71e74e2f5a6c3f8"
+  },
+  "lean:Unique/State:StoragePlace": {
+    "key": "lean:Unique/State:StoragePlace",
+    "path": "lean/Unique/State.lean",
+    "line": 21,
+    "content": "inductive StoragePlace where\n  | variable (name : VariableId)\n  | field (object : ObjectId) (name : FieldName)\n  deriving DecidableEq, Repr",
+    "sha256": "426237ac7e5cfd9b69b7fb504cf077cce6bef91008c41992cc93359e104a7c4a"
+  },
+  "lean:Unique/State:Stored": {
+    "key": "lean:Unique/State:Stored",
+    "path": "lean/Unique/State.lean",
+    "line": 26,
+    "content": "def Stored (state : State) (place : StoragePlace) (slot : Slot) : Prop :=\n  match place with\n  | .variable name => (name, slot) ∈ state.variables\n  | .field object name =>\n      ∃ data, (object, data) ∈ state.objects ∧ (name, slot) ∈ data.fields",
+    "sha256": "78e944156655a28df9a7124c0e409749692d5a9b0d85defde24ffe656504ab3a"
+  },
+  "lean:Unique/State:Updated": {
+    "key": "lean:Unique/State:Updated",
+    "path": "lean/Unique/State.lean",
+    "line": 34,
+    "content": "inductive Updated : State → StoragePlace → Slot → State → Prop where\n  | variable (objects : List (ObjectId × Object)) (nextId : Nat)\n      (leading suffix : List (VariableId × Slot)) (name : VariableId) (old new : Slot) :\n      Updated ⟨objects, leading ++ (name, old) :: suffix, nextId⟩ (.variable name) new\n        ⟨objects, leading ++ (name, new) :: suffix, nextId⟩\n  | field (variables : List (VariableId × Slot)) (nextId : Nat)\n      (before after : List (ObjectId × Object)) (parent : ObjectId) (className : ClassName)\n      (leading suffix : List (FieldName × Slot)) (name : FieldName) (old new : Slot) :\n      Updated ⟨before ++ (parent, ⟨className, leading ++ (name, old) :: suffix⟩) :: after,\n          variables, nextId⟩ (.field parent name) new\n        ⟨before ++ (parent, ⟨className, leading ++ (name, new) :: suffix⟩) :: after,\n          variables, nextId⟩",
+    "sha256": "efb0767a826496e1dbee0f589ae53379ddba9bef7096547cd0238d601bc74d3a"
+  },
+  "unit:given.storage_places": {
+    "key": "unit:given.storage_places",
+    "path": "md/given.md",
+    "line": 138,
+    "content": "```{definition} given.storage_places\n:lean: Unique/State:StoragePlace Unique/State:Stored Unique/State:Updated\n:uses: given.syntax given.state\n\nA *storage place* \\\\(q\\\\) selects one slot directly: either a variable or a\nfield of a particular object:\n\n\\\\[\nq ::= x \\mid \\alpha.f.\n\\\\]\n\nA place expression such as `b.value` describes a route to a slot; a storage place\nsuch as \\\\(\\mathsf{obj}(1).\\mathsf{value}\\\\) identifies the slot itself.\n\nFor \\\\(S=\\langle O,V,\\nu\\rangle\\\\), write \\\\(S[q]=s\\\\) for *slot lookup*.\nIt is a partial operation, defined by:\n\n\\\\[\n\\begin{aligned}\nS[x] &= V(x) &&\\text{when }V(x)\\text{ is defined}, \\\\\nS[\\alpha.f_i] &= s_i\n  &&\\text{when }O(\\alpha)=C\\{f_1:s_1,\\ldots,f_n:s_n\\},\\ 1\\leq i\\leq n.\n\\end{aligned}\n\\\\]\n\nLookup has no result for an absent variable, object, or field. An existing empty\nslot has the defined result \\\\(\\bot\\\\). An occupied slot contains an object\nidentity, not that object's data; the data is in \\\\(O\\\\).\n\nFor an existing slot, \\\\(S[q\\leftarrow s]\\\\) replaces its contents and leaves\nall other slots, object identities, class names, and the counter unchanged.\nThis update preserves the slot even when its new contents are \\\\(\\bot\\\\).\n```",
+    "sha256": "5fd149d5b90fbd485e079d2d0e7877d08f348b0dc49c58d983f064b9b6485e2c"
+  },
+  "lean:Unique/State:Configuration": {
+    "key": "lean:Unique/State:Configuration",
+    "path": "lean/Unique/State.lean",
+    "line": 61,
+    "content": "structure Configuration where\n  state : State\n  code : List Statement\n  deriving Repr",
+    "sha256": "6c01cc6bf88dfdd16c7bda6d83565188cbebfe11cac86b73f6915941269b3539"
+  },
+  "lean:Unique/State:Configuration.finished": {
+    "key": "lean:Unique/State:Configuration.finished",
+    "path": "lean/Unique/State.lean",
+    "line": 69,
+    "content": "def Configuration.finished (configuration : Configuration) : Prop :=\n  configuration.code = []",
+    "sha256": "494f3c989d8cdeb00485b6ecba790ccb156d0a456aeec77df869381285ce55f4"
+  },
+  "lean:Unique/State:Configuration.initial": {
+    "key": "lean:Unique/State:Configuration.initial",
+    "path": "lean/Unique/State.lean",
+    "line": 66,
+    "content": "def Configuration.initial (program : Program) : Configuration :=\n  ⟨State.empty, program.body⟩",
+    "sha256": "c2e54e3859bc09ffdf13d6362ec7a82cc289d73edcdc41eb001bcbf2f4b9292a"
+  },
+  "lean:Unique/Step:Step": {
+    "key": "lean:Unique/Step:Step",
+    "path": "lean/Unique/Step.lean",
+    "line": 67,
+    "content": "inductive Step (classes : Classes) : Configuration → Configuration → Prop where\n  | letValue {state evaluated : State} {destination : VariableId} {value : Value}\n      {object : ObjectId} {rest : List Statement} :\n      destination ∉ evaluated.variables.map Prod.fst →\n      Eval classes state value evaluated object →\n      Step classes ⟨state, ⟨destination, value⟩ :: rest⟩\n        ⟨evaluated.bind destination object, rest⟩",
+    "sha256": "f4c77782bec19fd8e0e4f005075fa087c03cb6484cc53c2b0a76c6316aa8f613"
+  },
+  "lean:Unique/Step:Steps": {
+    "key": "lean:Unique/Step:Steps",
+    "path": "lean/Unique/Step.lean",
+    "line": 75,
+    "content": "inductive Steps (classes : Classes) : Configuration → Configuration → Prop where\n  | refl (configuration : Configuration) : Steps classes configuration configuration\n  | step {before middle after} :\n      Step classes before middle → Steps classes middle after → Steps classes before after",
+    "sha256": "ab33ab1dd1e948ba870ab1e394cfb07ac9e015fc248cd5474add696cb02b22f0"
+  },
+  "lean:Unique/Step:Stuck": {
+    "key": "lean:Unique/Step:Stuck",
+    "path": "lean/Unique/Step.lean",
+    "line": 80,
+    "content": "def Stuck (classes : Classes) (configuration : Configuration) : Prop :=\n  ¬ configuration.finished ∧ ¬ ∃ after, Step classes configuration after",
+    "sha256": "1bd18eb66f0253c6fa19f3712fe6aa458e4080590a155c9a6781d780adc054b1"
+  },
+  "unit:given.machine": {
+    "key": "unit:given.machine",
+    "path": "md/given.md",
+    "line": 174,
+    "content": "```{definition} given.machine\n:lean: Unique/State:Configuration Unique/State:Configuration.initial Unique/State:Configuration.finished Unique/Step:Step Unique/Step:Steps Unique/Step:Stuck\n:uses: given.programs given.state\n\nA *machine configuration* \\\\(K\\\\) pairs its storage with the statements\nstill to run:\n\n\\\\[\nK ::= \\langle S,P\\rangle.\n\\\\]\n\nFor a program \\\\(\\Pi=\\langle\\Delta,P\\rangle\\\\), execution starts at\n\\\\(\\langle S_{\\emptyset},P\\rangle\\\\). The class table \\\\(\\Delta\\\\) stays\nfixed during execution.\n\nOne *step*, written \\\\(\\Delta\\vdash K\\longrightarrow K'\\\\), executes the\nfirst statement, updates storage, and removes that statement from the sequence.\nThe operational rules below define this judgment. Expression evaluation completes\nwithin a step; the machine never exposes a partially evaluated expression.\n\nA configuration is *finished* exactly when no statements remain:\n\n\\\\[\n\\mathsf{Finished}(\\langle S,P\\rangle)\\iff P=[].\n\\\\]\n\nThe final storage remains available; finishing does not discard its objects or\nvariables.\n```",
+    "sha256": "94b215d5f83f35507025d8a28ce9650dff0d3e3067dca0827145e87b4d30924b"
+  },
+  "lean:Unique/Step:Resolve": {
+    "key": "lean:Unique/Step:Resolve",
+    "path": "lean/Unique/Step.lean",
+    "line": 6,
+    "content": "inductive Resolve (state : State) : Place → StoragePlace → ObjectId → Prop where\n  | variable {name object} :\n      (name, some object) ∈ state.variables →\n      Resolve state (.variable name) (.variable name) object\n  | field {base source parent data name object} :\n      Resolve state base source parent →\n      (parent, data) ∈ state.objects →\n      (name, some object) ∈ data.fields →\n      Resolve state (.field base name) (.field parent name) object",
+    "sha256": "a8db0aa44c8b2334e7c1e959a98b6a91b91d31010d0f48cfcc667c9105372e23"
+  },
+  "unit:given.resolution": {
+    "key": "unit:given.resolution",
+    "path": "md/given.md",
+    "line": 208,
+    "content": "```{definition} given.resolution\n:lean: Unique/Step:Resolve\n:uses: given.storage_places\n\n*Place resolution*, written \\\\(S\\vdash p\\Downarrow q:\\alpha\\\\), follows\nroute \\\\(p\\\\) to a storage place \\\\(q\\\\) holding reference \\\\(\\alpha\\\\).\nThese two rules define it:\n\n\\\\[\n\\frac{S[x]=\\alpha}{S\\vdash x\\Downarrow x:\\alpha}\n\\quad\\text{Variable}\n\\\\]\n\n\\\\[\n\\frac{\n  S\\vdash p\\Downarrow q:\\beta\n  \\qquad S[\\beta.f]=\\alpha\n}{S\\vdash p.f\\Downarrow\\beta.f:\\alpha}\n\\quad\\text{Field}\n\\\\]\n\nEach slot along the route must hold a reference. Undefined lookup and the empty\ncontents \\\\(\\bot\\\\) satisfy neither rule's lookup premise. Resolution itself\nchanges nothing.\n```",
+    "sha256": "95a62a019d4c9fb3d586761949b56387c690c8c23a87abef580d208a4c7174cb"
+  },
+  "lean:Unique/Step:Eval": {
+    "key": "lean:Unique/Step:Eval",
+    "path": "lean/Unique/Step.lean",
+    "line": 44,
+    "content": "inductive Eval (classes : Classes) : State → Value → State → ObjectId → Prop where\n  | give {state cleared : State} {path : Place} {source : StoragePlace} {object : ObjectId} :\n      Resolve state path source object →\n      Take state source object cleared →\n      Eval classes state (.give path) cleared object\n  | new {state evaluated : State} {className : ClassName} {declaration : Class}\n      {arguments : List Value} {objects : List ObjectId} :\n      (className, declaration) ∈ classes →\n      EvalArgs classes state arguments evaluated objects →\n      objects.length = declaration.fields.length →\n      ObjectId.mk evaluated.nextId ∉ evaluated.objects.map Prod.fst →\n      Eval classes state (.new className arguments)\n        (evaluated.allocate className declaration.fields objects) ⟨evaluated.nextId⟩",
+    "sha256": "9c50e6845e7e1680820634305b68ee5de58948aad5ebc0a79a13ec4c888dcb2f"
+  },
+  "lean:Unique/Step:EvalArgs": {
+    "key": "lean:Unique/Step:EvalArgs",
+    "path": "lean/Unique/Step.lean",
+    "line": 58,
+    "content": "inductive EvalArgs (classes : Classes) : State → List Value → State → List ObjectId → Prop where\n  | nil (state : State) : EvalArgs classes state [] state []\n  | cons {before middle after : State} {argument : Value} {arguments : List Value}\n      {object : ObjectId} {objects : List ObjectId} :\n      Eval classes before argument middle object →\n      EvalArgs classes middle arguments after objects →\n      EvalArgs classes before (argument :: arguments) after (object :: objects)",
+    "sha256": "2ae70519b47c86fab90a53879f0897097f52e3ec7acb9a135d2de3f7aa40482b"
+  },
+  "lean:Unique/Step:State.allocate": {
+    "key": "lean:Unique/Step:State.allocate",
+    "path": "lean/Unique/Step.lean",
+    "line": 36,
+    "content": "def State.allocate (state : State) (className : ClassName) (fields : List FieldName)\n    (arguments : List ObjectId) : State :=\n  ⟨(⟨state.nextId⟩, ⟨className, fields.zip (arguments.map some)⟩) :: state.objects,\n    state.variables, state.nextId + 1⟩",
+    "sha256": "c1ee351daf5561e45c7e0ad7c9b01d4b4a952a365a9f10968496cb896abd0923"
+  },
+  "unit:given.evaluation": {
+    "key": "unit:given.evaluation",
+    "path": "md/given.md",
+    "line": 236,
+    "content": "```{definition} given.evaluation\n:lean: Unique/Step:Eval Unique/Step:EvalArgs Unique/Step:State.allocate\n:uses: given.classes given.syntax given.programs given.state given.storage_places given.resolution\n\n*Expression evaluation*, written\n\n\\\\[\n\\Delta\\vdash\\langle S,e\\rangle\\Downarrow\\langle S',\\alpha\\rangle,\n\\\\]\n\nproduces an owning reference \\\\(\\alpha\\\\) and updated storage \\\\(S'\\\\).\nThe following rules define successful evaluation, including nested expressions.\n\n**Give.** Resolve the place and empty its slot. Return the reference taken:\n\n\\\\[\n\\frac{S\\vdash p\\Downarrow q:\\alpha}{\n  \\Delta\\vdash\\langle S,p\\mathord{\\to}\\rangle\n  \\Downarrow\\langle S[q\\leftarrow\\bot],\\alpha\\rangle\n}\n\\quad\\text{Give}\n\\\\]\n\n**Construct.** Evaluate the arguments from left to right, then allocate the\nobject and put their results into its fields in declaration order.\n\n\\\\[\n\\frac{\n  \\begin{gathered}\n    \\Delta(C)=[f_1,\\ldots,f_n] \\\\\n    \\Delta\\vdash\\langle S_{i-1},e_i\\rangle\n      \\Downarrow\\langle S_i,\\alpha_i\\rangle\n      \\quad\\text{for each }i=1,\\ldots,n \\\\\n    \\beta\\notin\\operatorname{dom}(O_n)\n  \\end{gathered}\n}{\n  \\Delta\\vdash\\langle S_0,\\mathsf{new}\\ C(e_1,\\ldots,e_n)\\rangle\n    \\Downarrow\\langle S',\\beta\\rangle\n}\n\\quad\\text{Construct}\n\\\\]\n\nwhere \\\\(S_0\\\\) is the starting storage and \\\\(S_i\\\\) is the storage after\nthe first \\\\(i\\\\) arguments, with\n\n\\\\[\n\\begin{aligned}\nS_n &= \\langle O_n,V_n,\\nu_n\\rangle, \\\\\n\\beta &= \\mathsf{obj}(\\nu_n), \\\\\nO' &= O_n[\\beta\\mapsto C\\{f_1:\\alpha_1,\\ldots,f_n:\\alpha_n\\}], \\\\\nS' &= \\langle O',V_n,\\nu_n+1\\rangle.\n\\end{aligned}\n\\\\]\n\nHere \\\\(\\operatorname{dom}(O_n)\\\\) is the set of allocated identities, and\n\\\\(O_n[\\beta\\mapsto o]\\\\) adds the fresh object's entry.\n\nWith no arguments, there are no argument premises and allocation uses\n\\\\(S_n=S_0\\\\). Argument results remain owned by the ongoing evaluation until\nplaced in the new object's fields; they are not copied.\n\nAn empty slot, a missing field, or an unknown class has no successful evaluation.\nGiving the same slot twice as constructor arguments fails on the second give.\nAn expression runs within one statement transition, but it can still fail.\n```",
+    "sha256": "02df670720c6d93f937fbd33140a192d2d0b9060e1cb893cd7dbf8232bfcc98a"
+  },
+  "lean:Unique/Step:State.bind": {
+    "key": "lean:Unique/Step:State.bind",
+    "path": "lean/Unique/Step.lean",
+    "line": 33,
+    "content": "def State.bind (state : State) (name : VariableId) (object : ObjectId) : State :=\n  { state with variables := (name, some object) :: state.variables }",
+    "sha256": "c4e4d4aea5053b0d786499abbbe1adb1859869e9b7d2b17edeeda3a0bead2316"
+  },
+  "unit:given.steps": {
+    "key": "unit:given.steps",
+    "path": "md/given.md",
+    "line": 304,
+    "content": "```{definition} given.steps\n:lean: Unique/Step:State.bind Unique/Step:Step\n:uses: given.machine given.evaluation\n\nTo execute `let x = e`, evaluate the expression completely, then put its result\nin the new variable `x`. For the resulting storage\n\\\\(S'=\\langle O',V',\\nu'\\rangle\\\\), write \\\\(V'[x\\mapsto\\alpha]\\\\) for the\nvariable table extended with that binding, and abbreviate the updated state as:\n\n\\\\[\nS'[x\\mapsto\\alpha]=\\langle O',V'[x\\mapsto\\alpha],\\nu'\\rangle.\n\\\\]\n\nThe *domain* \\\\(\\operatorname{dom}(V')\\\\) is the set of variable names already\npresent.\n\nThis is the only statement-transition rule:\n\n\\\\[\n\\frac{\n  \\begin{gathered}\n    \\Delta\\vdash\\langle S,e\\rangle\\Downarrow\\langle S',\\alpha\\rangle \\\\\n    S'=\\langle O',V',\\nu'\\rangle\n    \\qquad x\\notin\\operatorname{dom}(V')\n  \\end{gathered}\n}{\n  \\Delta\\vdash\\langle S,(\\mathsf{let}\\ x=e)::P\\rangle\n  \\longrightarrow\\langle S'[x\\mapsto\\alpha],P\\rangle\n}\n\\quad\\text{Let}\n\\\\]\n\nThe remaining statements keep their order. If evaluation fails or the variable\nalready exists, the statement has no transition. There is no recovery transition\nor separately observable state partway through a failed expression. A finished\nconfiguration has no statement to execute, so it takes no step.\n```",
+    "sha256": "b8a2c73efd3a3f75ae57b15f8418352f7e7227e0f165c4077ce8935ee70cd989"
+  },
+  "unit:given.executions": {
+    "key": "unit:given.executions",
+    "path": "md/given.md",
+    "line": 344,
+    "content": "```{definition} given.executions\n:lean: Unique/Step:Steps Unique/Step:Stuck\n:uses: given.machine given.steps\n\nA *finite execution*, written \\\\(\\Delta\\vdash K\\longrightarrow^{*}K'\\\\),\nconsists of zero or more steps. These rules define it:\n\n\\\\[\n\\frac{}{\\Delta\\vdash K\\longrightarrow^{*}K}\n\\qquad\n\\frac{\n  \\Delta\\vdash K\\longrightarrow K'\n  \\qquad \\Delta\\vdash K'\\longrightarrow^{*}K''\n}{\\Delta\\vdash K\\longrightarrow^{*}K''}.\n\\\\]\n\nA configuration is *stuck* when statements remain but no next step is possible:\n\n\\\\[\n\\mathsf{Stuck}_{\\Delta}(K)\\iff\n\\neg\\mathsf{Finished}(K)\\;\\land\\;\n\\neg\\exists K'.\\;\\Delta\\vdash K\\longrightarrow K'.\n\\\\]\n\nThis is how execution *goes wrong*. For example, trying to give through an absent\nvariable or an empty field yields no expression evaluation and therefore no\nstatement step. Undefined lookup alone is a property of storage; attempting an\noperation that requires that lookup is what leaves the machine stuck.\n```",
+    "sha256": "b888dff23895800dbf4bfbfc53157953094a48efb0a217d7ad356bcd4abd3cee"
+  },
+  "lean:Unique/Examples:create_token": {
+    "key": "lean:Unique/Examples:create_token",
+    "path": "lean/Unique/Examples.lean",
+    "line": 62,
+    "content": "example : Step exampleClasses ⟨State.empty, tokenProgram⟩ ⟨tokenState, []⟩ := by\n  exact createToken []",
+    "sha256": "03c59ac882440b2af0fe1fea93d30c2c7e222a28846336c472e01e2b285d9dea"
+  },
+  "unit:given.example.token": {
+    "key": "unit:given.example.token",
+    "path": "md/given.md",
+    "line": 376,
+    "content": "````{example} given.example.token\n:lean: Unique/Examples:create_token\n:uses: given.classes given.syntax given.programs given.machine given.steps\n\nAn empty class provides a value we can move:\n\n```dada\nclass Token {}\nclass Box { value }\nlet t = new Token();\n```\n\nStarting with empty storage, one step creates a `Token` object and puts its\nreference in `t`. The configuration is finished: no statements remain.\n````",
+    "sha256": "22d1a85e50252d9cf5ae71b1021e8c89a8bd1db2189b23a878475eca7519470b"
+  },
+  "lean:Unique/Examples:give_execution": {
+    "key": "lean:Unique/Examples:give_execution",
+    "path": "lean/Unique/Examples.lean",
+    "line": 107,
+    "content": "example : Steps exampleClasses\n    ⟨State.empty, tokenProgram ++ boxProgram ++ moveProgram⟩ ⟨movedState, []⟩ := by\n  exact .step (createToken _) (.step (createBox _) (.step (giveField []) (.refl _)))",
+    "sha256": "85ca30122505d97f01e34ca09065aaacd4aeb1dc50cacfd968b72288804b8625"
+  },
+  "unit:given.example.field": {
+    "key": "unit:given.example.field",
+    "path": "md/given.md",
+    "line": 392,
+    "content": "````{example} given.example.field\n:lean: Unique/Examples:give_execution\n:uses: given.classes given.syntax given.programs given.machine given.steps\n\nA field can receive a reference and later give it away:\n\n```dada\nclass Token {}\nclass Box { value }\n\nlet t = new Token();\nlet b = new Box(t→);\nlet u = b.value→;\n```\n\nStarting with empty storage, the machine takes three steps:\n\n1. Create the token and put its reference in `t`.\n2. Create a box and move `t` into its `value` field, leaving `t` empty.\n3. Follow `b` to the box and move the field's reference into `u`.\n\nThe resulting configuration is finished. Variable `b` owns the box and `u`\nowns the token; `t` and the box's `value` field are empty. Giving the field moves\nits contents; the containing box remains in place.\n````",
+    "sha256": "33f440e7cfbaa815875c0076b5e25e7526d909dd816bf8869f197d710858c665"
+  },
+  "lean:Unique/Examples:nested_constructor": {
+    "key": "lean:Unique/Examples:nested_constructor",
+    "path": "lean/Unique/Examples.lean",
+    "line": 116,
+    "content": "example : Step exampleClasses\n    ⟨State.empty, [⟨\"b\", .new \"Box\" [.new \"Token\" []]⟩]⟩ ⟨nestedState, []⟩ := by\n  let token : State := State.empty.allocate \"Token\" [] []\n  apply Step.letValue (object := 1)\n    (evaluated := token.allocate \"Box\" [\"value\"] [0])\n  · simp [State.allocate, token, State.empty]\n  · apply Eval.new (declaration := ⟨[\"value\"]⟩) (evaluated := token) (objects := [0])\n    · simp [exampleClasses]\n    · apply EvalArgs.cons (middle := token) (object := 0)\n      · exact Eval.new (by simp [exampleClasses]) (.nil _) rfl (by simp [State.empty])\n      · exact EvalArgs.nil _\n    · rfl\n    · decide",
+    "sha256": "16331308ea196c3addcc71aaeea57f4069c6b4cbe300ac48c689ee8948def8ae"
+  },
+  "unit:given.example.nested": {
+    "key": "unit:given.example.nested",
+    "path": "md/given.md",
+    "line": 418,
+    "content": "````{example} given.example.nested\n:lean: Unique/Examples:nested_constructor\n:uses: given.classes given.syntax given.evaluation given.steps\n\nConstructor arguments can create their own objects:\n\n```dada\nclass Token {}\nclass Box { value }\nlet b = new Box(new Token());\n```\n\nStarting with empty storage, this is one statement step. Evaluate `new Token()`\nfirst, then put its reference in the newly created box's `value` field. Bind the\nbox's reference to `b`. The finished configuration contains both objects, with\nno temporary source variable needed in the program.\n````",
+    "sha256": "7adb2c036aeb5c9e83ca680aaa2e4829ed21dca3365585fba145ecd2abeccbd5"
+  },
+  "lean:Unique/Examples:second_give_fails": {
+    "key": "lean:Unique/Examples:second_give_fails",
+    "path": "lean/Unique/Examples.lean",
+    "line": 97,
+    "content": "example : Stuck exampleClasses badConfiguration ∧\n    ¬ ∃ after, Steps exampleClasses badConfiguration after ∧ after.finished := by\n  refine ⟨second_give_stuck, ?_⟩\n  rintro ⟨after, execution, finished⟩\n  cases execution with\n  | refl => exact second_give_stuck.1 finished\n  | step first _ => exact second_give_stuck.2 ⟨_, first⟩",
+    "sha256": "8906f89b084daa35e866c8aa2c07fcf65173ce3488c4e988b989c7545e9d1728"
+  },
+  "unit:given.example.empty_field": {
+    "key": "unit:given.example.empty_field",
+    "path": "md/given.md",
+    "line": 436,
+    "content": "````{example} given.example.empty_field\n:lean: Unique/Examples:second_give_fails\n:uses: given.example.field given.executions\n\nStarting with the final storage of {anchor-ref}`given.example.field`, try:\n\n```dada\nlet v = b.value→;\n```\n\nLet \\\\(\\Delta\\\\) be that example's class table, and let \\\\(K_{\\mathrm{bad}}\\\\)\npair its final storage with this one remaining statement.\nIt is stuck: `b` still holds the box's reference, but its `value` field is empty.\nThe give cannot evaluate, so the statement cannot execute. Giving once leaves\nno reference behind for a second give.\n\nExecution from this configuration cannot finish:\n\n\\\\[\n\\neg\\exists K'.\\;\n\\bigl(\\Delta\\vdash K_{\\mathrm{bad}}\\longrightarrow^{*}K'\\bigr)\n\\;\\land\\;\\mathsf{Finished}(K').\n\\\\]\n\nZero steps leave the statement pending, and a nonempty execution would need a\nfirst step, which does not exist.\n````",
+    "sha256": "463120f561b470988303ce00229bcddb751c880761a93fbeb750ae3625bcee9b"
+  },
+  "lean:Unique/Soundness:WellFormed": {
+    "key": "lean:Unique/Soundness:WellFormed",
+    "path": "lean/Unique/Soundness.lean",
+    "line": 13,
+    "content": "structure WellFormed (classes : Classes) (state : State) : Prop where\n  objectKeys : (state.objects.map Prod.fst).Nodup\n  variableKeys : (state.variables.map Prod.fst).Nodup\n  shapes : ∀ id data, (id, data) ∈ state.objects →\n    ∃ declaration, (data.className, declaration) ∈ classes ∧\n      data.fields.map Prod.fst = declaration.fields ∧ declaration.fields.Nodup\n  bounds : ∀ id data, (id, data) ∈ state.objects → id.index < state.nextId\n  older : ∀ id data name target, (id, data) ∈ state.objects →\n    (name, some target) ∈ data.fields → target.index < id.index\n  referencesUnique : (References state).Nodup\n  referencesComplete : ∀ id, id ∈ References state ↔ Allocated state id",
+    "sha256": "7483eeefd1d1b0d99f8466c1e044a964cf6b07354a7a18c317e0e552ea37538f"
+  },
+  "lean:Unique/Soundness:WellFormedWith": {
+    "key": "lean:Unique/Soundness:WellFormedWith",
+    "path": "lean/Unique/Soundness.lean",
+    "line": 27,
+    "content": "structure WellFormedWith (classes : Classes) (state : State) (pending : List ObjectId) : Prop where\n  objectKeys : (state.objects.map Prod.fst).Nodup\n  variableKeys : (state.variables.map Prod.fst).Nodup\n  shapes : ∀ id data, (id, data) ∈ state.objects →\n    ∃ declaration, (data.className, declaration) ∈ classes ∧\n      data.fields.map Prod.fst = declaration.fields ∧ declaration.fields.Nodup\n  bounds : ∀ id data, (id, data) ∈ state.objects → id.index < state.nextId\n  older : ∀ id data name target, (id, data) ∈ state.objects →\n    (name, some target) ∈ data.fields → target.index < id.index\n  referencesUnique : (pending ++ References state).Nodup\n  referencesComplete : ∀ id, id ∈ pending ++ References state ↔ Allocated state id",
+    "sha256": "b591c728d80eaed7bbe59ac2329e3d5716c2082a1a4e47723479c3f8da9f0c0c"
+  },
+  "lean:Unique/State:Allocated": {
+    "key": "lean:Unique/State:Allocated",
+    "path": "lean/Unique/State.lean",
+    "line": 51,
+    "content": "def Allocated (state : State) (object : ObjectId) : Prop :=\n  object ∈ state.objects.map Prod.fst",
+    "sha256": "03c0ee18f5ef921b7351186a390744cdd065954ed850ac573257ab6934ed6346"
+  },
+  "lean:Unique/State:Live": {
+    "key": "lean:Unique/State:Live",
+    "path": "lean/Unique/State.lean",
+    "line": 55,
+    "content": "inductive Live (state : State) : ObjectId → Prop where\n  | variable {name object} : (name, some object) ∈ state.variables → Live state object\n  | field {parent object data name} :\n      Live state parent → (parent, data) ∈ state.objects →\n      (name, some object) ∈ data.fields → Live state object",
+    "sha256": "afc5fa30f0555db72adda7594fd5b0ecb6e0e596b89fc7ba9c2d5c7ed0201b36"
+  },
+  "lean:Unique/State:References": {
+    "key": "lean:Unique/State:References",
+    "path": "lean/Unique/State.lean",
+    "line": 47,
+    "content": "def References (state : State) : List ObjectId :=\n  state.variables.filterMap (fun binding => binding.2) ++\n    state.objects.flatMap (fun entry => entry.2.fields.filterMap (fun field => field.2))",
+    "sha256": "65c0ffd30180d7b1953d0ebe8d839949cd99eb898b904ed11ae213301b3aea7e"
+  },
+  "unit:given.well_formed": {
+    "key": "unit:given.well_formed",
+    "path": "md/given.md",
+    "line": 466,
+    "content": "```{definition} given.well_formed\n:lean: Unique/State:Allocated Unique/State:Live Unique/State:References Unique/Soundness:WellFormed Unique/Soundness:WellFormedWith\n:uses: given.programs given.state given.storage_places given.evaluation\n\nThe following conditions describe storage between statements, including before\nthe first statement. References held temporarily during expression evaluation\nare accounted for within that evaluation.\n\nFor \\\\(S=\\langle O,V,\\nu\\rangle\\\\), an object is *allocated* when its identity\noccurs in the object table:\n\n\\\\[\n\\mathsf{Allocated}_S(\\alpha)\\iff\\alpha\\in\\operatorname{dom}(O).\n\\\\]\n\nAn object is *live* when an owning path reaches it from a variable. Write\n\\\\(\\mathsf{Live}_S(\\alpha)\\\\) for the judgment defined by these two rules:\n\n\\\\[\n\\frac{S[x]=\\alpha}{\\mathsf{Live}_S(\\alpha)}\n\\qquad\n\\frac{\\mathsf{Live}_S(\\beta)\\qquad S[\\beta.f]=\\alpha}{\\mathsf{Live}_S(\\alpha)}.\n\\\\]\n\nAn empty slot contributes no edge to such a path. Allocation and liveness are\nproperties of the object graph, independent of how the state was produced.\n\nWrite \\\\(\\mathsf{WF}_{\\Delta}(S)\\\\) when the state meets all these conditions:\n\n- Object-table keys and variable names are each distinct.\n- Every object's class is declared. Its field names occur exactly in declaration\n  order, without duplicates, including fields whose slots are empty.\n- Every allocated identity \\\\(\\alpha\\\\) satisfies\n  \\\\(\\operatorname{index}(\\alpha)<\\nu\\\\). A reference in an object's field\n  targets an older object: its index is strictly smaller than the containing\n  object's index.\n- The references in **all variable slots and all object fields**, counted by\n  occurrence, contain each allocated object identity exactly once and contain\n  no other identity.\n\nThe last condition excludes both duplicate ownership and references to missing\nobjects. Two slots containing the same identity count as two references even\nthough their contents are equal. The age condition records the construction\norder: a newly constructed object receives previously existing objects as its\nfields. It excludes cycles of objects owning one another without a variable root.\n```",
+    "sha256": "652ec00f5042ad6c80086acf8533a4bcfddf644f28f344c28eb1b7ea10ddd5f9"
+  },
+  "lean:Unique/Liveness:WellFormed.live_iff_allocated": {
+    "key": "lean:Unique/Liveness:WellFormed.live_iff_allocated",
+    "path": "lean/Unique/Liveness.lean",
+    "line": 61,
+    "content": "theorem WellFormed.live_iff_allocated (wf : WellFormed classes state) :\n    Live state object ↔ Allocated state object :=\n  ⟨wf.live_allocated, wf.allocated_live⟩",
+    "sha256": "2a80c2cbeb80b439a697bdb6743dca00fe4000331da054b1f11dfb0722e9cf56"
+  },
+  "unit:given.liveness": {
+    "key": "unit:given.liveness",
+    "path": "md/given.md",
+    "line": 513,
+    "content": "```{theorem} given.liveness\n:lean: Unique/Liveness:WellFormed.live_iff_allocated\n:uses: given.well_formed\n\nIn every well-formed state, an object is live exactly when it is allocated:\n\n\\\\[\n\\mathsf{WF}_{\\Delta}(S)\n\\quad\\Longrightarrow\\quad\n\\bigl(\\mathsf{Live}_S(\\alpha)\\iff\\mathsf{Allocated}_S(\\alpha)\\bigr).\n\\\\]\n\nThus every allocated object has an owning path from a variable, and following\nowning paths cannot reach a missing object.\n```",
+    "sha256": "bfdf89707f7ed285743b7b363d89b2d94ad580c085ffe4dec56edb3e8942c9f2"
+  },
+  "lean:Unique/Liveness:WellFormed.owner_count": {
+    "key": "lean:Unique/Liveness:WellFormed.owner_count",
+    "path": "lean/Unique/Liveness.lean",
+    "line": 67,
+    "content": "theorem WellFormed.owner_count (wf : WellFormed classes state)\n    (allocated : Allocated state object) : (References state).count object = 1 := by\n  exact wf.referencesUnique.count_of_mem ((wf.referencesComplete object).mpr allocated)",
+    "sha256": "ec2089aec5c19afa9be6f5a2b9921a3329934f1f4dcd9a9677a536365648b7b6"
+  },
+  "unit:given.single_owner": {
+    "key": "unit:given.single_owner",
+    "path": "md/given.md",
+    "line": 529,
+    "content": "```{theorem} given.single_owner\n:lean: Unique/Liveness:WellFormed.owner_count\n:uses: given.well_formed\n\nIn every well-formed state, each allocated object has exactly one owning\nreference across all variable slots and object fields. This counts the slot\nthat immediately holds its reference: a path through several enclosing objects\ndoes not add extra owners of its final target.\n```",
+    "sha256": "77714acf10dc59275fe42c910aa2fde328f501eec6be55db6b6989e73bbee371"
+  },
+  "lean:Unique/Soundness:Steps.from_initial": {
+    "key": "lean:Unique/Soundness:Steps.from_initial",
+    "path": "lean/Unique/Soundness.lean",
+    "line": 273,
+    "content": "theorem Steps.from_initial (classesWf : ClassesWellFormed program.classes)\n    (steps : Steps program.classes (Configuration.initial program) after) :\n    WellFormed program.classes after.state :=\n  steps.preserves_wellFormed classesWf (WellFormed.empty _)",
+    "sha256": "e67660c968c5c1428342e6440637f334b9fe9fa0a348bf69a5f2a017d26319c1"
+  },
+  "unit:given.soundness": {
+    "key": "unit:given.soundness",
+    "path": "md/given.md",
+    "line": 539,
+    "content": "```{theorem} given.soundness\n:lean: Unique/Soundness:Steps.from_initial\n:uses: given.programs given.executions given.well_formed given.liveness given.single_owner\n\nFor any program with a well-formed class table, every configuration reached by\na finite execution from its empty initial state has a well-formed state.\nThis includes zero steps, intermediate configurations, and completed executions.\n\nConsequently, every allocated object remains live and has exactly one owning\nreference. The theorem covers successful execution; it does not promise that a\nprogram can always take another step.\n```",
+    "sha256": "777bd8b4d18848d429d711b0e6e2b4fc54ccbae4f91750e8fff275e94899ff06"
+  }
+}

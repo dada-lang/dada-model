@@ -1,0 +1,163 @@
+[
+  {
+    "unit": "given.typing.bindings",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/5b399a37bfb9f055b2d8b6ff7664f84c5d8d561fc90d6be5582f2f6950397f9b.json",
+    "supersedes": [
+      "d9d0b3b08416780896929136c0f39b28bc87237ee8a8f4384f12bee1e99a8105"
+    ]
+  },
+  {
+    "unit": "given.typing.configurations",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/9b1cc1d07a8218430add24b53d8be7784d19ebd51111e6188aa5b6b815c275ff.json",
+    "supersedes": [
+      "7649332a0b217810d665c15ae4d679dd5cbfae25707c6c792352714bef5b9722"
+    ]
+  },
+  {
+    "unit": "given.typing.declarations",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/d9bb5c45146a680027832ba8ad2708f35b4e14cd3173ecd7f5f4138b9466248f.json",
+    "supersedes": [
+      "f45516f8c27262ef6c7cbeb35b204e90e1768d86edd776d0e9728ad1880cafed"
+    ]
+  },
+  {
+    "unit": "given.typing.emptying",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/17d784dcc317fa7fe14c23bd1d59f3b5428ff27fe2c0c18cd928f2a419cf1419.json",
+    "supersedes": [
+      "95a839aeb4559867b7b195096992cbfca2d05de6c9be68a9d669ed855477c7a7"
+    ]
+  },
+  {
+    "unit": "given.typing.environments",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/ed04854902ae52ad643a7340506f8e2439a62f97f07fb79bd77ed3723cc549d9.json",
+    "supersedes": [
+      "9de59adafd917d3bb42047d8c28bcb4910bbe254f099ac5f6679f656215ce305"
+    ]
+  },
+  {
+    "unit": "given.typing.example.moves",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/468c985fad003b3a2b3b0fc484b064f2bcb62ee94799f94b892369a0a38b686f.json",
+    "supersedes": [
+      "1a977a0a6c5ec677d138934abf0cd8e132de9f5328bd77c10b63f066f747094b"
+    ]
+  },
+  {
+    "unit": "given.typing.example.normalization",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/07b1c970d3af20c64ed3a91f873bfbe088464d79e3ba192e8bed8ef23a1d5ed8.json",
+    "supersedes": [
+      "457c706159063771e1d186f24e17b70e3bd9e980ce9b6ad49b26513577e59006"
+    ]
+  },
+  {
+    "unit": "given.typing.example.rejections",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/0250578eca208a8958ab01b37b890342f77bf79a2d22156025ff5cf30c7fd905.json",
+    "supersedes": [
+      "775bafc735ce2e0098039f7a07b8df67df4e682d6013754565ddf05d8e60329a"
+    ]
+  },
+  {
+    "unit": "given.typing.example.take",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/22880de43ac6315173d951af993e1aaa7649462856dd5e8502f758e0c4aa4e52.json",
+    "supersedes": [
+      "38e3aa2d9713f39326b8d1eda64802c480001a3c0fff107dad23d6d314c6cc41"
+    ]
+  },
+  {
+    "unit": "given.typing.example.views",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/bca9948503e3f1b7cdc8419a6db735a60e37ba113a542c9c24e5531266adc6ce.json",
+    "supersedes": [
+      "8d667e38af63ebb4df912510aaa4a88b9ef338abede562e3ba0e35fd360b87bb"
+    ]
+  },
+  {
+    "unit": "given.typing.expression_soundness",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/6f8b06930ee59a3b470dd44a084b88a41e6a4fd92cc64747d7bc8c12fc2e3a97.json",
+    "supersedes": [
+      "36b9a201f35901111a4ac497b693da4a315b58553b8335a1780d2e5b6fa9e18f"
+    ]
+  },
+  {
+    "unit": "given.typing.expressions",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/b0a75d9d406b77be5d1f5e1d8715c181cbeb4dfd7d8c8bd5cf151b17d86eeda1.json",
+    "supersedes": [
+      "d9095af51a26fa9df9a0374648329b9980cece408375cba934a7827fe1068100"
+    ]
+  },
+  {
+    "unit": "given.typing.focus",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/297dc9e509badf67a24d4dae4ca51e9fbfe05369993d0cdddd8eae7ebaef64bc.json",
+    "supersedes": [
+      "f75be43288288c6466849b263398448fdaa0badb4a88d57ad2902bc35f840829"
+    ]
+  },
+  {
+    "unit": "given.typing.forgetting",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/850564662d934f2de196b25a8e72c410aca6b10b170a349c04bd9cccc64755f3.json",
+    "supersedes": [
+      "f05a8841c02f7723e96dabbaa51847295f1167932c5d89f7498a626bda69ede9"
+    ]
+  },
+  {
+    "unit": "given.typing.normalization",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/dd956f7c582d842a658b4cace65684bc8302893f46ddc40eb7fbfceebad1b1c5.json",
+    "supersedes": [
+      "1e474176634a81b0a77730b7b354bbe828c4ff46a7a5e986713bfe0af1bcc25b"
+    ]
+  },
+  {
+    "unit": "given.typing.normalization_correct",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/5fca6a7086c69b587e26a20545704b8f8337ba032fa6ffbb7c4d5b672a25e1b9.json",
+    "supersedes": [
+      "693033907ab9d9a228f681fdf582aca47f6b75ec9e8b3ce522b380366875016a"
+    ]
+  },
+  {
+    "unit": "given.typing.observations",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/d31134b002e3501da3b81a3e5737eacb898f48b8972d3e164fb29e5c9c251f12.json",
+    "supersedes": [
+      "c78f0e2e29fb5dce771464f083a66011541c25f264d5587d9d386082dbf4226b"
+    ]
+  },
+  {
+    "unit": "given.typing.preservation",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/1b12ca5291e037e060863b06d267b3b36b19ac11594437be6b09f803747cc1ac.json",
+    "supersedes": [
+      "b07e4cb7e886edc3ef9abc2c57a98219db9a02a2b18639b6c9b405d8ac4a1a83"
+    ]
+  },
+  {
+    "unit": "given.typing.progress",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/567d05368c2bf9dbe3c3526f2b2c129ae87912780a9c5163dd7cbcde8ad555dc.json",
+    "supersedes": [
+      "c04b8a40e089bfc623aec16b5c22041e72bbe44f0c80a76f7a4a23d4c4884bac"
+    ]
+  },
+  {
+    "unit": "given.typing.realization",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/7ded71593ecce2c67c3d6794b6d84257330408368d35a34210ac564f7212cea2.json",
+    "supersedes": [
+      "544bd4df36dc54a56f846cd0e2d6897c22dd17f059babc3061a0de0b5fcf0563"
+    ]
+  },
+  {
+    "unit": "given.typing.safety",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/754f4b7f21e40a17015282d67c857bcb4df69c2869a3ea39c4d6de65ca0eb5ba.json",
+    "supersedes": [
+      "af24208304f7e1de7d66b93a8f38de4dc3d1411cba6454172ee26dea2caafa96"
+    ]
+  },
+  {
+    "unit": "given.typing.statements",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/40c7cd7c5d48895b355987b2bf048bb3cd15b22b5b00e4603738a1d1c605e191.json",
+    "supersedes": [
+      "e2076afca9549fdade71e89d4d54879db660595e1d477057529f7bd1dc5e441f"
+    ]
+  },
+  {
+    "unit": "given.typing.views",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/1e1c3fba936bb32e525e12e41fc14f0e1d4bf233a109e7b501e83165521d6128.json",
+    "supersedes": [
+      "439e91d2126c0d3ca34ac15c33e28b4385bffe851b3246cee9347af3ec27552d"
+    ]
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "unit": "given.patterns",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/8ecb0804c97d7b79fe2f90b7fe216f3fd6c3807f5aee13a972beb9cb17a9cdb6.json"
+  },
+  {
+    "unit": "given.unpacking",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/1c2451d756aa8c8ec9043af2bd1d35e1a5fe7a93c20b029abb6ede97b69b5517.json"
+  },
+  {
+    "unit": "given.unpacking.soundness",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/0128378aa4c280ac6a8f99ccd64f06ca0a1a8f965f8b46f4d2016e81613bd76f.json"
+  },
+  {
+    "unit": "given.example.unpack",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/878d529e618cdae4f70df15b3cfb18ac6d7c874173009c8902661182506c8de4.json"
+  }
+]

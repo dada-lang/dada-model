@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "696b2fd426c5598035ac815628ec987ce4cc3824a8eabe08ba998e394e4df3e4",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt. Renewal after the hidden-Markdown inventory correction: compared the complete old/new bundle input maps, confirming identical authored unit, cited Lean, dependency, policy and other retained inputs. Examined the three changed input regions: Markdown directory traversal, the hidden-file/hidden-directory regression with its fixture helpers, and the specification coverage contract. This is an impact comparison supported by the earlier complete semantic review, not an assertion that the test was run.",
+  "examined": [
+    "context:md/repo/spec-system.md",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The earlier class/syntax/program units introduce names and finite maps. ObjectId is a structure wrapping Nat, Slot is Option ObjectId, Object holds a class name and ordered field slots, and State holds object/variable lists plus Nat nextId; empty is the two empty tables and zero. The unit explicitly says distinct-key finite-map notation relies on later WF conditions, avoiding a false claim about arbitrary raw lists. It correctly distinguishes an identity/reference from object data. For given.state, the final bundle preserves every previously examined semantic input byte-for-byte. The only changes broaden Markdown discovery to dot-prefixed files and directories, test that both require evidence, and state that coverage explicitly. Inventory::load already places every parsed structured unit in the required set. This changes which chapters are checked without changing this unit, its cited declarations, or their interpretation; the correspondence conclusion therefore remains supported.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "a29e5341c202f80a2b447dadd64be5c59015c3d7c5240fe983de400fd3f60c59"
+  ]
+}

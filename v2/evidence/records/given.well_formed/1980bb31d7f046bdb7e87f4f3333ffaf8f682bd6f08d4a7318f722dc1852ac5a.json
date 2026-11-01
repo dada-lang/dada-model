@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "38a6572ab3ac8f8387b7b3cde10c18aa3451e74dbcea963fa3d1c8532f0a6a86",
+  "reviewer": "Codex independent reviewer /root/removal_review_given",
+  "provenance": "Independent subagent correspondence review of frozen removal packets. Read every required authored/dependency unit and exact Lean selection plus the review policy; inspected the listed context for relevant definitions, example setups, import/namespace scope, and theorem assumptions. Proof tactic correctness was left to Lean. Delta bookkeeping compared the before-removal packets with these packets: Given units and exact selections are unchanged; finite-map selections are text-identical after citation relocation. The substantive conclusions below were checked from current packet inputs, not inherited from prior approvals. No source changes or test execution were performed. Earlier record metadata was inspected only to identify active decisions for supersession. Final-packet delta review confirmed every authored unit, Lean selection, dependency, policy, and Lean context has identical content to the initially reviewed removal packet; pilot unit line offsets shifted by one. The only changed input contents are conservative tooling snapshots: inventory collection, its freshness regression, and the newly captured Renderer.lean fixture. Read that fixture to confirm its explicitly synthetic RendererFixture scope; it is not a cited language source. The fixture collection implementation/regression is outside this semantic correspondence review.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:lean/lakefile.toml",
+    "context:lean/lean-toolchain",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Soundness:WellFormed",
+    "lean:Unique/State:Allocated",
+    "lean:Unique/State:Live",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:References",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:ObjectId",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "unit:given.classes",
+    "unit:given.state",
+    "unit:given.well_formed"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.well_formed matches Allocated as object-key membership and Live as the inductively defined variable-root/field-edge closure. Its four bullets cover all WellFormed fields: unique object/variable keys; declared class and exact ordered distinct fields; bounds and strictly decreasing field identities; Nodup of the occurrence-preserving References list plus membership iff allocation. References includes initialized variables and every object field, without collapsing equal contents. Thus the stated no-duplicate-owner and no-missing-target consequences follow from the actual conditions; the decreasing natural identities supply the stated exclusion of ownership cycles. No reachable-state premise or deleted heap invariant is substituted for this definition.",
+  "limitations": [
+    "This is a comparison of authored meaning with formal statements and relevant definitions, not a proof check or a new execution of Lean. Conservative whole-project/tool snapshots were not audited line by line. For Soundness/Liveness context, declaration scope and relevant definitions/statements were inspected; tactic internals were not reviewed."
+  ],
+  "supersedes": [
+    "eed6d3cd4abfd19f0a403c60145db08b29b17479efa1142766c2e56bf59cf0a5"
+  ]
+}

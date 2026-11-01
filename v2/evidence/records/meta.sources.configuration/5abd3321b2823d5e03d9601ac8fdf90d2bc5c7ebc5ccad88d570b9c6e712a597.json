@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "72d49e53cde927f2aecc00d45107a797648d55b2334d5ba1cf384b05a1181a4f",
+  "reviewer": "Codex independent meta reviewer /root/removal_review_meta",
+  "provenance": "Independent source and test inspection for the heap-draft removal. Read the final frozen unit, exact cited selections, review policy, retained adversarial inputs, relevant containing-source helpers, changed authoring context, and captured renderer fixture. Reviewed assertions and control flow; did not execute tests or modify production code.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/spec-system.md",
+    "context:mdbook-dada/src/configuration.rs",
+    "context:mdbook-dada/src/inventory.rs",
+    "context:mdbook-dada/tests/evidence_validation.rs",
+    "extra:reviews/adversarial-2026-10-24/tooling.md",
+    "extra:reviews/repair-2026-10-24/reviewed-original-harness.py",
+    "extra:reviews/repair-2026-10-24/tooling-checks.txt",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::check_context",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::load",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::markdown_root",
+    "rust:mdbook-dada/src/inventory.rs:Inventory::inputs",
+    "rust:mdbook-dada/src/lib.rs:process_configured",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_lean_root_is_shared_by_rendering_and_evidence",
+    "tool:mdbook-dada/src/configuration.rs",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/book.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "unit:meta.sources.configuration"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit requires a common book.toml source-root configuration, rejected conflicting runtime roots, project containment, Rust citations relative to the project root, and stale evidence after configuration edits. SourceConfiguration::load supplies both Inventory and process_configured; check_context compares the parsed book and Lean roots, and markdown_root/lean_root call input_path, whose normal-relative and canonical-containment checks reject escapes. process_configured retains the project root separately when it passes the selected Lean root to rendering. Inventory::inputs includes book.toml and obtains Lean files from the same SourceConfiguration. The selected regression moves the Lean tree to formal/model, changes its declaration, checks stale evidence and the new exact selection/context, renders that new source, rejects a conflicting old root, and renders a Rust citation from the project root. Isolation of book.rs fixtures does not alter these production boundaries or this self-contained regression. The added fixture enumeration only broadens required tooling snapshots.",
+  "limitations": [
+    "This review compares the documented contract with implementation and regression assertions; it is not a proof of implementation correctness or a claim of test execution.",
+    "Conservative source/context snapshots were inspected for the relevant behavior and changes, not as an exhaustive audit of every unrelated declaration or paragraph."
+  ],
+  "supersedes": [
+    "917a839f87661cc14c6811ab4547b0fec48d21921e15df0f94bdfd64baa1ae1d"
+  ]
+}

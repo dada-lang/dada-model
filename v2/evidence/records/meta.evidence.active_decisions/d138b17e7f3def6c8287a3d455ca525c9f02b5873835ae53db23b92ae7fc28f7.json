@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "01de136dac41fe59b6d2b2d895a78ccc04726280b09f06ace84f3a7e0829975d",
+  "reviewer": "Codex /root (meta and finite-map correspondence review)",
+  "provenance": "Prepared and read immutable current packets; compared authored prose with selected declarations and tests during the 2026-10-24 lean-ification. The reviewer integrated the surrounding documentation and earlier evidence tooling changes; the mutual selector implementation was authored by a separate subagent. This is an agent review, not a human sign-off or a Lean proof.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "test:mdbook-dada/tests/evidence_validation.rs:mismatch_and_inconclusive_reviews_never_count_as_correspondence",
+    "test:mdbook-dada/tests/evidence_validation.rs:recording_rechecks_sources_even_with_an_existing_inventory",
+    "test:mdbook-dada/tests/evidence_validation.rs:revised_review_can_supersede_same_unit_after_consulting_more_context",
+    "test:mdbook-dada/tests/evidence_validation.rs:stale_supersession_cannot_fall_back_to_an_independent_positive_review",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "unit:meta.evidence.active_decisions"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "record reloads Inventory before validating current source inputs, validates the review, rejects draft units, verifies superseded records belong to this unit, and writes an immutable new record without deleting old ones. check derives the active set by explicit supersession and separately detects stale active records, then refuses mismatch/inconclusive or absent active decisions. Its draft branch adds an issue before any correspondence verdict. The four selected tests cover cached-inventory staleness, independent negative decisions alongside positives, same-unit supersession with retained bytes and rejection of cross-unit supersession, and a stale replacement that must not fall back to an unrelated positive. The new draft claim is supported by direct inspection of both entry points; these four cited tests do not themselves exercise every draft case. The policy defines current/positive review separately from mechanical proof success, matching these statuses.",
+  "limitations": [
+    "Correspondence was assessed by inspection under the recorded policy; passing syntactic validation does not prove this reasoning correct.",
+    "Mechanical execution results are reported separately. Full context/tool snapshots were consulted at the relevant helpers; unrelated declarations and all proof tactics were not audited."
+  ],
+  "supersedes": [
+    "96e20ac25468905f29f097278693884e2c8814b47a0421e3c0b25e791804de28"
+  ]
+}

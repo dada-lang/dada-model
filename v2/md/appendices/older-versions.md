@@ -18,6 +18,6 @@ mathematical notation, examples, and Lean formalization. The Markdown can be rea
 on its own, while links to Lean declarations and rules let readers inspect how
 the formalization corresponds to the mathematical presentation.
 
-V2 is still a partial heap-model draft. The v1 implementation remains a useful
-working reference as we develop it; the behavior and evidence documented in v1
-apply to that version and do not establish the claims proposed in v2.
+V2 contains two small languages, Given and Shared, with invariant and
+execution-correspondence proofs. The v1 implementation remains a useful
+reference, but its behavior and evidence do not establish claims about v2.

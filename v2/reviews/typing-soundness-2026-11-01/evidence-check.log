@@ -1,0 +1,91 @@
+evidence.map: inputs=current, correspondence=corresponds, mechanical=not recorded
+evidence.map.empty: inputs=current, correspondence=corresponds, mechanical=not recorded
+evidence.map.value_unique: inputs=current, correspondence=corresponds, mechanical=not recorded
+future.generic_views: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.classes: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.evaluation: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.example.empty_field: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.example.field: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.example.nested: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.example.token: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.example.unpack: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.executions: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.liveness: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.machine: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.patterns: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.programs: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.resolution: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.single_owner: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.soundness: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.state: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.steps: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.storage_places: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.syntax: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.bindings: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.configurations: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.declarations: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.emptying: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.environments: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.example.moves: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.example.normalization: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.example.rejections: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.example.take: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.example.views: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.expression_soundness: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.expressions: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.focus: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.forgetting: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.normalization: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.normalization_correct: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.observations: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.preservation: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.progress: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.realization: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.safety: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.statements: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.typing.views: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.unpacking: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.unpacking.soundness: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.well_formed: inputs=current, correspondence=corresponds, mechanical=not recorded
+meta.evidence.active_decisions: inputs=current, correspondence=corresponds, mechanical=not recorded
+meta.evidence.required_inputs: inputs=current, correspondence=corresponds, mechanical=not recorded
+meta.sources.configuration: inputs=current, correspondence=corresponds, mechanical=not recorded
+meta.sources.exact_selection: inputs=current, correspondence=corresponds, mechanical=not recorded
+meta.system.remaining_coverage: inputs=draft, correspondence=not asserted, mechanical=not recorded
+meta.units.closed_body: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.boundaries: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.correspondence: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.embedding: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.example.copy_field: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.example.share_value: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.example.shared_middle: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.give: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.liveness: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.path_exclusivity: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.resolution: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.soundness: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.state: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.steps: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.syntax: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.well_formed: inputs=current, correspondence=corresponds, mechanical=not recorded
+error: draft unit future.generic_views requires formalization
+ --> md/dada/future-extensions.md:5:1
+  |
+5 | / ````{example} future.generic_views
+6 | | :status: draft
+7 | | :uses: given.typing.views given.typing.expressions
+  | |__________________________________________________^ evidence required for this unit
+  |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for future.generic_views, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit meta.system.remaining_coverage requires formalization
+   --> md/repo/spec-system.md:123:1
+    |
+123 | / ```{definition} meta.system.remaining_coverage
+124 | | :status: draft
+    | |______________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for meta.system.remaining_coverage, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs

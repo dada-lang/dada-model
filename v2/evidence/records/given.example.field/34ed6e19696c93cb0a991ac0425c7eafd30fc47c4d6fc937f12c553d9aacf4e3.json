@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "b137df6fb3e43be7865958445bc42565f912f09c2732eb1e300097ec22a8a4ed",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle 9c7e2d97ec58fbd1c692fced06aa4bdc594c0668c9587eb379d6f115c333bff3 with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "lean:Unique/Examples:give_execution",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.example.field",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "lean:Unique/Examples:give_execution states a complete Steps execution from State.empty with tokenProgram ++ boxProgram ++ moveProgram to movedState and empty code, matching every statement in unit:given.example.field. The bundled definitions expand to Token 0, Box 1, then u holding 0, b holding 1, t = none, and Box.value = none. The selected Step and contextual Capture/Take definitions account for the narrated intermediate behavior: creating Box consumes t in field order and giving the field clears only that slot while preserving its container. This is a whole-program proposition, not merely a local field-give test with an assumed starting state. For this final packet, the only delta from the reviewed bundle 9c7e2d97ec58fbd1c692fced06aa4bdc594c0668c9587eb379d6f115c333bff3 is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "The trace proposition establishes the described successful execution and final state. This review does not claim a general determinism theorem or re-audit its proof tactics.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "d6a8d857a048c1ac7522a4c01676a969496adf80e29e79f7d834bdb646b747b8"
+  ]
+}

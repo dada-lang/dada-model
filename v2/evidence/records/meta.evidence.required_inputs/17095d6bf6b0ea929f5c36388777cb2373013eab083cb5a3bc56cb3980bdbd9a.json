@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "c9053f17d177794db1eef8fa583442908b74893978050dba772b187f8842eb10",
+  "reviewer": "Codex delegated reviewer /root/layer_evidence_review",
+  "provenance": "Independent agent review: I did not author the Given/Shared chapters, Lean modules, or evidence validator. I read the frozen unit bodies, exact cited statements, dependencies, review policy, concrete example definitions, and relevant source helpers, compared their semantics, and confirmed the prepared required snapshots match those sources. The distinct-key qualification was added after my review finding and was inspected in the frozen packet. This record is not human approval or a mechanical proof/test result.",
+  "examined": [
+    "context:mdbook-dada/src/evidence.rs",
+    "context:mdbook-dada/src/inventory.rs",
+    "context:mdbook-dada/tests/evidence_validation.rs",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:validate_bundle",
+    "rust:mdbook-dada/src/inventory.rs:Inventory::inputs",
+    "test:mdbook-dada/tests/evidence_validation.rs:rejects_missing_or_substituted_required_inputs",
+    "unit:meta.evidence.required_inputs"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inventory::inputs derives current snapshots through add_unit, which retains raw units, exact source selections, and recursive unit dependencies, then adds policy/context/tool files and conservative Lean sources. validate_bundle independently recomputes that set, checks integrity hashes, compares contents and paths, resolves extra inputs against current files, and reports missing or unexpected keys. The cited attack test removes exact declarations even while retaining the full Lean file and repacks valid hashes, then substitutes a different declaration; validation rejects both. Path and integrity handling additionally rely on inspected helpers, not merely that test.",
+  "limitations": [
+    "This is a correspondence review of authored intent, declaration statements, and relevant definitions; it does not record Lean compilation or test execution and does not recheck proof tactics. Conservative context snapshots were inspected for the relevant definitions and helper behavior, not as a claim to audit every proof or implementation line.",
+    "The cited test directly covers missing/substituted required inputs; path, snapshot-integrity, and extra-input claims also rely on implementation inspection. This is not a proof of universal validator correctness or of actual reviewer attention."
+  ],
+  "supersedes": [
+    "03b30a1e2ce9480ed2e52d253aaaca9cdb9d6a03861bc0f378eb0dc9836d091d"
+  ]
+}

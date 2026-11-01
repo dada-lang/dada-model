@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "8ecdc8a4db8a72466dbbcbc4600ebf4ae53c6bdcdb3255467d926fc85643b2c7",
+  "reviewer": "Independent Codex reviewer /root/review_given_renewal",
+  "provenance": "Independent source audit followed by direct reading and comparison of the immutable packet inputs on 2026-11-01. Shared unit, selection and policy snapshots were read once per identical input across this 25-unit review set. No earlier favorable decision was used as evidence for the conclusion.",
+  "examined": [
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit introduces class declaration d, class name C, field name f, and natural field count n before the grammar; primes and subscripts are explained. The exact ClassName and FieldName selections are String aliases, and Class stores List FieldName with no field-type component, matching ordered named fields and the zero-field case. The surrounding Syntax snapshot places a class name beside a Class in Classes; ClassesWellFormed in the Soundness context requires distinct class names and distinct declared fields. Thus the distinct-field condition is a semantic declaration convention checked by well-formedness, not an assertion that the raw Class constructor itself excludes malformed lists. State and Step context show object references in slots, Take clearing the source, and allocation placing argument references in fields, supporting the introductory ownership description. No result assumes an undefined mathematical judgment.",
+  "limitations": [
+    "This is a correspondence comparison of the frozen prose, exact selected statements/definitions, and identified semantic context. No Lean build, test execution, or proof-tactic audit was performed; compilation and evidence validation are separate checks.",
+    "Listed full-source context snapshots were consulted for the supporting declarations and example states discussed in the rationale and dependency comparisons; the listing does not claim examination of every unrelated proof or declaration in those files."
+  ],
+  "supersedes": [
+    "9da469c6a8a7a7ca06e62d64486831ffa4e7a0649569396dc697ea774896a05c"
+  ]
+}

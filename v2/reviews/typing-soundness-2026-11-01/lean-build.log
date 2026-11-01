@@ -1,0 +1,3 @@
+cd v2/lean && lake build --wfail
+✔ [47/48] Built Unique.Normalization (266ms)
+Build completed successfully (48 jobs).

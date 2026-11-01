@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "bundle": "0bd6450da517675eee681fed8186ec464015d91b0000f317d4475d8c771baf0f",
+  "reviewer": "Codex delegated reviewer /root/layer_evidence_review",
+  "provenance": "Independent agent review: I did not author the Given/Shared chapters, Lean modules, or evidence validator. I read the frozen unit bodies, exact cited statements, dependencies, review policy, concrete example definitions, and relevant source helpers, compared their semantics, and confirmed the prepared required snapshots match those sources. The distinct-key qualification was added after my review finding and was inspected in the frozen packet. This record is not human approval or a mechanical proof/test result.",
+  "examined": [
+    "lean:Heap:FiniteMap",
+    "lean:Heap:FiniteMap.empty",
+    "lean:SpecificationExamples:empty_map",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.empty"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The anchored empty_map example specializes FiniteMap.empty to Nat keys and Nat values and states that its entries equal the empty list. This exactly covers the described absence of any stored pair for that concrete map; it does not claim a larger execution scenario.",
+  "limitations": [
+    "This is a correspondence review of authored intent, declaration statements, and relevant definitions; it does not record Lean compilation or test execution and does not recheck proof tactics. Conservative context snapshots were inspected for the relevant definitions and helper behavior, not as a claim to audit every proof or implementation line."
+  ],
+  "supersedes": [
+    "e66590a910f69867c5a4d9e5f3673cf6f596edd87359cabe8b672ae57de3bfe3"
+  ]
+}

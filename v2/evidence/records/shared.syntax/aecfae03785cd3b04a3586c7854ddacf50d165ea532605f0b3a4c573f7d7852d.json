@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "8ac0fc112e9008d23ab2eb9d049905101ea4ba48c005a731547a8815cd2502ed",
+  "reviewer": "Codex independent repair reviewer /root/review_repaired_shared",
+  "provenance": "Independent delegated correspondence review continued after the user's clarification. I did not author the repaired chapter, Lean declarations, decision note or earlier repository reviews. I had read the complete prior frozen required units/selections/policy and relevant contexts; for these final packets I compared the snapshots, verified 97 unchanged required inputs byte-for-byte, reread every changed required input and inspected the new Liveness declaration context. I reviewed the new path-exclusivity unit and its complete required dependencies. The explicit user-confirmation quotations are retained as the primary agent's recoverable intent input; I did not independently retrieve the originating conversation. No conclusion is inferred merely from packet preparation or the reported Lean build.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:lean/Shared/Syntax.lean",
+    "extra:reviews/repair-2026-10-24/sharing-decision.md",
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Step",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:Classes",
+    "lean:Shared/Syntax:Place",
+    "lean:Shared/Syntax:Program",
+    "lean:Shared/Syntax:Statement",
+    "lean:Shared/Syntax:Value",
+    "policy:md/repo/correspondence-review.md",
+    "unit:shared.give",
+    "unit:shared.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:shared.syntax matches the selected Class/Classes, Place, Value, Statement and Program declarations: class fields and constructor operands are ordered finite lists, a place is a variable followed by fields, and the only value variants are give, giveShare and construction with variable identifiers. The notation x→ for constructor arguments describes Capture's variable-give behavior rather than adding expression operands absent from Value.new. Step.giveShare calls Give first and changes only the returned reference to shared before binding; hence a wholly unique give-share route empties its final source. The fresh-destination premise of Step supplies the fresh runtime-variable convention. No cited syntax constructor introduces scope, shadowing, calls, assignment, destruction or borrowing. The dependency shared.give and the explicit sharing decision supply the adopted shared-copy/promotion meaning without requiring the reader to understand later invariants first.",
+  "limitations": [
+    "This is an independent comparison of prose, definitions, theorem assumptions/conclusions and example setups/results. Proof correctness and mechanical build/test execution are separate; this review did not rerun them.",
+    "Listed conservative source contexts were inspected for relevant definitions, concrete states and theorem signatures; listing them does not attest to a complete tactic or validator audit."
+  ],
+  "supersedes": [
+    "52e25b416c6dd20f9c2a7ced54fa12d4e2f262dca520a494370d4dbf024a39f0"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "bundle": "d0bb52f76b272b69752ab5c0d209bf42fa52a5eac0e3b73f5bd6076e8a4be3d0",
+  "reviewer": "Independent Codex reviewer /root/review_given_renewal",
+  "provenance": "Independent source audit followed by direct reading and comparison of the immutable packet inputs on 2026-11-01. Shared unit, selection and policy snapshots were read once per identical input across this 25-unit review set. No earlier favorable decision was used as evidence for the conclusion.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The complete unit introduces finite maps M with key domain K, value domain T, entry pairs (k,v), and the empty-map notation. The exact Common/FiniteMap:FiniteMap selection stores a finite List (Key × Value) and requires Nodup of its key projection, matching the prose's finite ordered entries with no repeated key. It neither orders the keys nor equates maps differing in entry order. FiniteMap.empty has entries [] and the corresponding empty-list uniqueness witness. No theorem or operational judgment is used before definition; there are no extra equality or order assumptions.",
+  "limitations": [
+    "This is a correspondence comparison of the frozen prose, exact selected statements/definitions, and identified semantic context. No Lean build, test execution, or proof-tactic audit was performed; compilation and evidence validation are separate checks."
+  ],
+  "supersedes": [
+    "6c743fa6fe7f1a8cfd143ba18b39adbd3a0c133e6adb99805cb446c0da6c7e89"
+  ]
+}

@@ -17,10 +17,7 @@ fn main() -> Result<()> {
         context["renderer"] == "html",
         "only the HTML renderer is supported"
     );
-    let lean_root = context["config"]["preprocessor"]["dada"]["lean-source"]
-        .as_str()
-        .map(|p| std::path::Path::new(context["root"].as_str().unwrap_or(".")).join(p));
-    mdbook_dada::process_with_lean(&mut book, lean_root.as_deref())?;
+    mdbook_dada::process_configured(&context, &mut book)?;
     serde_json::to_writer(io::stdout(), &book)?;
     Ok(())
 }

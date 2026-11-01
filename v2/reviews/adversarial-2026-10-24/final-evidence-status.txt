@@ -1,0 +1,50 @@
+evidence.map: inputs=current, correspondence=corresponds, mechanical=not recorded
+evidence.map.empty: inputs=current, correspondence=corresponds, mechanical=not recorded
+evidence.map.value_unique: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.classes: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.example.empty_field: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.example.field: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.example.token: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.liveness: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.resolution: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.single_owner: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.soundness: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.state: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.steps: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.syntax: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.well_formed: inputs=current, correspondence=corresponds, mechanical=not recorded
+meta.evidence.required_inputs: inputs=current, correspondence=mismatch, mechanical=not recorded
+shared.boundaries: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.correspondence: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.embedding: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.example.copy_field: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.example.share_value: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.example.shared_middle: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.give: inputs=current, correspondence=inconclusive, mechanical=not recorded
+shared.liveness: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.resolution: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.soundness: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.state: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.steps: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.syntax: inputs=current, correspondence=corresponds, mechanical=not recorded
+shared.well_formed: inputs=current, correspondence=corresponds, mechanical=not recorded
+error: current evidence for meta.evidence.required_inputs: correspondence mismatch
+  --> md/repo/evidence-pilot.md:38:1
+   |
+38 | / ```{definition} meta.evidence.required_inputs
+39 | | :rust: mdbook-dada/src/evidence.rs:validate_bundle mdbook-dada/src/inventory.rs:Inventory::inputs
+40 | | :tests: mdbook-dada/tests/evidence_validation.rs:rejects_missing_or_substituted_required_inputs
+   | |_______________________________________________________________________________________________^ evidence required for this unit
+   |
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare meta.evidence.required_inputs`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: current evidence for shared.give: correspondence inconclusive
+   --> md/shared.md:106:1
+    |
+106 | / ```{definition} shared.give
+107 | | :lean: Shared/Step:Take Shared/Step:Promote Shared/Step:Give
+108 | | :uses: shared.state shared.syntax shared.resolution
+    | |___________________________________________________^ evidence required for this unit
+    |
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.give`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs

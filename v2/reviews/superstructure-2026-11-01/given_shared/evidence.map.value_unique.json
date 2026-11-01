@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "90c875acd10f20ed7481f2865a3579f2334fd420395c281fdc2c933fecfe538f",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt. Renewal after the hidden-Markdown inventory correction: compared the complete old/new bundle input maps, confirming identical authored unit, cited Lean, dependency, policy and other retained inputs. Examined the three changed input regions: Markdown directory traversal, the hidden-file/hidden-directory regression with its fixture helpers, and the specification coverage contract. This is an impact comparison supported by the earlier complete semantic review, not an assertion that the test was run.",
+  "examined": [
+    "context:lean/Common/FiniteMap.lean",
+    "context:md/repo/spec-system.md",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMap:FiniteMap.value_unique",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "unit:evidence.map",
+    "unit:evidence.map.value_unique"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The dependency evidence.map introduces M and its entry representation. FiniteMap.value_unique universally quantifies the map and arbitrary key/value types, assumes membership of both pairs with the same key, and concludes value equality. There is no Ord or DecidableEq parameter, so the unit correctly states the absence of those assumptions. For evidence.map.value_unique, the final bundle preserves every previously examined semantic input byte-for-byte. The only changes broaden Markdown discovery to dot-prefixed files and directories, test that both require evidence, and state that coverage explicitly. Inventory::load already places every parsed structured unit in the required set. This changes which chapters are checked without changing this unit, its cited declarations, or their interpretation; the correspondence conclusion therefore remains supported.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "139c3674bc6d02f32c3f375e2723e17e8b0ddebb083b09297f95d97c2211b52a"
+  ]
+}

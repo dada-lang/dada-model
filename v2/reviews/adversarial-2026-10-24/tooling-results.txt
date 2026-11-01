@@ -1,0 +1,6 @@
+configured-root: model.value: inputs=current, correspondence=corresponds, mechanical=not recorded render changed= True render includes 2= True book config in bundle= False
+nested-legacy: model.value: inputs=current, correspondence=corresponds, mechanical=not recorded render changed= True render includes Bool= True lean paths in bundle= []
+truncated-rule selected: 'inductive Indexed : String → Type where\n  | zero : Indexed'
+fixtures: /var/folders/_p/2k16wz5j1fxc1dfrv6ch460m0000gn/T/dada-review-qmn2igxq
+wrong-constructor: model.value: inputs=current, correspondence=corresponds, mechanical=not recorded selected= 'inductive First where\n  | second'
+mdbook-include: model.value: inputs=current, correspondence=corresponds, mechanical=not recorded render changed= True render contains changed prose= True included file in bundle= False

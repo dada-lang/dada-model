@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "05f53c2b38c9cf2de03cd1b86723f38db7523c557e53ac09124d09831f4cb363",
+  "reviewer": "Codex independent meta reviewer /root/removal_review_meta",
+  "provenance": "Independent source and test inspection for the heap-draft removal. Read the final frozen unit, exact cited selections, review policy, retained adversarial inputs, relevant containing-source helpers, changed authoring context, and captured renderer fixture. Reviewed assertions and control flow; did not execute tests or modify production code.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/spec-system.md",
+    "context:mdbook-dada/src/evidence.rs",
+    "context:mdbook-dada/tests/evidence_validation.rs",
+    "extra:reviews/adversarial-2026-10-24/tooling.md",
+    "extra:reviews/repair-2026-10-24/reviewed-original-harness.py",
+    "extra:reviews/repair-2026-10-24/tooling-checks.txt",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "test:mdbook-dada/tests/evidence_validation.rs:mismatch_and_inconclusive_reviews_never_count_as_correspondence",
+    "test:mdbook-dada/tests/evidence_validation.rs:recording_rechecks_sources_even_with_an_existing_inventory",
+    "test:mdbook-dada/tests/evidence_validation.rs:revised_review_can_supersede_same_unit_after_consulting_more_context",
+    "test:mdbook-dada/tests/evidence_validation.rs:stale_supersession_cannot_fall_back_to_an_independent_positive_review",
+    "tool:mdbook-dada/src/configuration.rs",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/book.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "unit:meta.evidence.active_decisions"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The authored unit requires revalidation at recording, explicit same-unit supersession, retained history, and rejection of every stale or negative active decision. record reloads Inventory before validating the bundle, checks that each predecessor record has its expected digest and same unit, then writes immutable output. check computes superseded digests independently of current bundles, flags any unsuperseded stale record, and only reports corresponds when the remaining current active decisions are neither mismatch nor inconclusive. The four selected tests cover cached-inventory source mutation, independent negative decisions beside positive ones, retained predecessor bytes and wrong-unit supersession, and a stale replacement coexisting with another positive review. Obligation units remain pending via review_required. Renderer fixture isolation changes neither these paths nor their inline test fixtures; the final inventory also snapshots the isolated Renderer.lean dependency. The retained adversarial report and harness describe earlier counterexamples; their repair log is historical execution evidence, not an execution by this reviewer.",
+  "limitations": [
+    "This review compares the documented contract with implementation and regression assertions; it is not a proof of implementation correctness or a claim of test execution.",
+    "Conservative source/context snapshots were inspected for the relevant behavior and changes, not as an exhaustive audit of every unrelated declaration or paragraph."
+  ],
+  "supersedes": [
+    "10743d64a9fc938616dd92bfc75da04cc805043e8143a27aa6caea0ba53061a2"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "f6049b3b4aa1d324210cec1dedc8a0ccb8e16f859ec1617a6b394505b094e714",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt. Renewal after the hidden-Markdown inventory correction: compared the complete old/new bundle input maps, confirming identical authored unit, cited Lean, dependency, policy and other retained inputs. Examined the three changed input regions: Markdown directory traversal, the hidden-file/hidden-directory regression with its fixture helpers, and the specification coverage contract. This is an impact comparison supported by the earlier complete semantic review, not an assertion that the test was run.",
+  "examined": [
+    "context:md/repo/spec-system.md",
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Step",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:ClassName",
+    "lean:Shared/Syntax:Classes",
+    "lean:Shared/Syntax:FieldName",
+    "lean:Shared/Syntax:Place",
+    "lean:Shared/Syntax:Program",
+    "lean:Shared/Syntax:Statement",
+    "lean:Shared/Syntax:Value",
+    "lean:Shared/Syntax:VariableId",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.give",
+    "unit:shared.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The class/field/variable aliases and Class/Classes declarations provide the stated names and ordered fields; Place is recursive, and Value has exactly give, giveShare on a Place, and recursive new arguments. The absence of a share-on-arbitrary-Value constructor explains why a freshly constructed object must first be bound before giveShare. Statement/Program and the cited Step enforce fresh single-variable bindings with one ordered code list. The grammar introduces each displayed metavariable and contains no borrowing, calls, or destruction. For shared.syntax, the final bundle preserves every previously examined semantic input byte-for-byte. The only changes broaden Markdown discovery to dot-prefixed files and directories, test that both require evidence, and state that coverage explicitly. Inventory::load already places every parsed structured unit in the required set. This changes which chapters are checked without changing this unit, its cited declarations, or their interpretation; the correspondence conclusion therefore remains supported.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "95a8b8b2402c32df7bdd690c971580566f05b4ed166fa1b61c835060f15dbffb"
+  ]
+}

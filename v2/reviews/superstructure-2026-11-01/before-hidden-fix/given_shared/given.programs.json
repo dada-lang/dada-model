@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "ca3fd92335e739c89d069f7d5afe9f1fb8b768c1ce2a4ab9812d94d03c657136",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "given.classes and given.syntax introduce class declarations and statements before Δ, P, and Π appear. Classes is a list of class-name/declaration pairs, Program stores that table and a List Statement, and ClassesWellFormed requires unique class keys and Nodup field lists. The prose finite-map convention and declaration-order grammar accurately describe that well-formed representation rather than asserting raw list types exclude duplicates on their own.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "30652951bac63fd5117d05eb0d65da15a468eda6d5fe86ef63a75285ba3fe379"
+  ]
+}

@@ -1,0 +1,5 @@
+'Dada.Unique.Typing.normalization_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Dada.Unique.Typing.expression_soundness' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Dada.Unique.Typing.ConfigurationTyped.progress' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Dada.Unique.Typing.ConfigurationTyped.preservation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Dada.Unique.Typing.program_safety' depends on axioms: [propext, Classical.choice, Quot.sound]

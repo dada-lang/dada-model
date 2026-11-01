@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "19b9cdca0ad497cb091ec234eadfccc46f3ed2bcc5b6df6b2390c86ce73a2500",
+  "reviewer": "Codex /root (meta and finite-map correspondence review)",
+  "provenance": "Prepared and read immutable current packets; compared authored prose with selected declarations and tests during the 2026-10-24 lean-ification. The reviewer integrated the surrounding documentation and earlier evidence tooling changes; the mutual selector implementation was authored by a separate subagent. This is an agent review, not a human sign-off or a Lean proof.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:validate_mutual_groups",
+    "test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection",
+    "test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "tool:mdbook-dada/tests/fixtures/lean/Mutual.lean",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "select dispatches by citation kind and retains both the selected text and the complete source. extract_declaration masks lexical decoys, checks declaration boundaries and rejects any nested/indented command in the selected body; extract_case chooses a single matching constructor at the least constructor indentation. scan separately tracks literal/inline-comment content_end, preventing final literals from being lost when masked code ends earlier. The sibling-constructor and final-token tests cover those specific regressions. For the new mutual support, validate_mutual_groups accepts only column-zero named inductives with first-line where headers between standalone mutual/end, rejects unsupported members/nesting/empty or unterminated groups, and checks duplicate member names. The three selected mutual tests cover both members, declarations before/after, rule and kind selection, retained full source, lexical decoys, malformed groups and duplicate declarations. I also read tool:mdbook-dada/tests/fixtures/lean/Mutual.lean. The described scope is the documented line-oriented subset, not all Lean syntax or elaboration; the unit says so explicitly.",
+  "limitations": [
+    "Correspondence was assessed by inspection under the recorded policy; passing syntactic validation does not prove this reasoning correct.",
+    "Mechanical execution results are reported separately. Full context/tool snapshots were consulted at the relevant helpers; unrelated declarations and all proof tactics were not audited."
+  ],
+  "supersedes": [
+    "289e26d17925bd86acc15d9dfa5fe002b3246d0fbf7767f1fcf985536f699eb7"
+  ]
+}

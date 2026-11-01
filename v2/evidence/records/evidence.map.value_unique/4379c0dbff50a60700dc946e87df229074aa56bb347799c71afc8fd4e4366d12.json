@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "bundle": "461dd1ce79b03fc958c5392c8de015d070aa4ce48b8ff4d83d885d2fdd6bf6c4",
+  "reviewer": "Codex subagent /root/evidence_docs",
+  "provenance": "Independent comparison of immutable packet snapshots in the 2026-10-24 task. The reviewer did not author the pilot units, their Lean statements, or the Rust validator/test implementation; the reviewer did author the workflow documentation used as policy. This is an agent judgment, not a human approval or a mechanical proof/test result.",
+  "examined": [
+    "context:lean/Heap.lean",
+    "lean:Heap:FiniteMap",
+    "lean:Heap:FiniteMap.empty",
+    "lean:Heap:FiniteMap.value_unique",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.value_unique"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:evidence.map.value_unique quantifies over a finite map M, a key k, and values v and w, with both pairs members of M's entries, and concludes v = w. lean:Heap:FiniteMap.value_unique has map : FiniteMap Key Value, implicit key/value/value' parameters, two corresponding List membership hypotheses, and conclusion value = value'. These are the same assumptions and conclusion after renaming. The :uses: dependency unit:evidence.map and its selected FiniteMap definition account for the distinct-key invariant carried by the map argument; it is not an unmentioned extra hypothesis. Neither the theorem signature nor the relevant source context requires an ordering or DecidableEq instance. The accompanying empty-map definition was also inspected as part of that dependency. This review compares the statement and its scope; it does not re-establish the Lean proof.",
+  "limitations": [
+    "Proof correctness is left to Lean. No proof-check execution is asserted by this review.",
+    "The scope is the selected value-uniqueness statement and its finite-map dependency, not all Heap invariants. Only relevant Heap context was inspected."
+  ],
+  "supersedes": []
+}

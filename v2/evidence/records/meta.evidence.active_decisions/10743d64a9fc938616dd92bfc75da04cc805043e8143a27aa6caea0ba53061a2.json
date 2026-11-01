@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "0a3f1544ab42c12050dfed57881230e0f5d95236d81ce976acd8e6eb68037088",
+  "reviewer": "Codex independent repair reviewer /root/review_repaired_meta",
+  "provenance": "Independent fresh-context adversarial correspondence review. I did not author the repairs. I read all required unit, exact Rust/test selections, review policy, and frozen extra inputs; inspected the relevant source/helper context; and directly executed the units and evidence_validation integration tests, including the explicitly ignored actual-mdBook test in a separate invocation. The historical harness was read for reproduction context, not executed as a repaired-behavior oracle because it asserts the former bugs. This record is my actual comparison judgment, not human approval or a mechanical-test certificate.",
+  "examined": [
+    "context:mdbook-dada/src/evidence.rs",
+    "context:mdbook-dada/tests/evidence_validation.rs",
+    "extra:reviews/adversarial-2026-10-24/tooling.md",
+    "extra:reviews/repair-2026-10-24/reviewed-original-harness.py",
+    "extra:reviews/repair-2026-10-24/tooling-checks.txt",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "test:mdbook-dada/tests/evidence_validation.rs:mismatch_and_inconclusive_reviews_never_count_as_correspondence",
+    "test:mdbook-dada/tests/evidence_validation.rs:recording_rechecks_sources_even_with_an_existing_inventory",
+    "test:mdbook-dada/tests/evidence_validation.rs:revised_review_can_supersede_same_unit_after_consulting_more_context",
+    "test:mdbook-dada/tests/evidence_validation.rs:stale_supersession_cannot_fall_back_to_an_independent_positive_review",
+    "tool:mdbook-dada/src/inventory.rs",
+    "unit:meta.evidence.active_decisions"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The authored record lifecycle matches evidence::record and evidence::check. record reloads Inventory from disk before validating the bundle, validates examined inputs and record fields, checks every explicitly superseded digest belongs to a retained record for the same unit, and writes immutable output. check independently finds current bundles, computes the set explicitly superseded by all valid records, then rejects any unsuperseded stale record before considering current conclusions. A current independent positive therefore cannot conceal an active mismatch, inconclusive decision, or stale replacement. review_required exempts obligation units only after inputs have resolved, yielding pending/not asserted. The four cited tests exercise cached-inventory recording after source change, independent negative records, same-unit replacement with additional context and retained old bytes, and a stale replacement beside an independent positive. I inspected those tests and their Fixture/review helpers and executed the entire evidence_validation test binary; all 20 ordinary cases passed, with the separately invoked mdBook integration also passing. This is a correspondence judgment on the stated syntactic lifecycle, not evidence that a reviewer really performed the recorded comparison.",
+  "limitations": [
+    "Source-file context was inspected for record validation, integrity, immutable writes, input derivation, and cited test helpers; this does not attest an audit of every unrelated line.",
+    "Passing fixture tests support the enumerated paths and do not establish universal correctness or authenticate reviewer identity. Obligation status is explicitly pending."
+  ],
+  "supersedes": []
+}

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "83203394b881cc007ca7e6c1e4e31eb0d4b0796f4e39d7105b0fedf133bd6f34",
+  "reviewer": "Codex independent repair reviewer /root/review_repaired_meta",
+  "provenance": "Independent fresh-context adversarial correspondence review. I did not author the repairs. I read all required unit, exact Rust/test selections, review policy, and frozen extra inputs; inspected the relevant source/helper context; and directly executed the units and evidence_validation integration tests, including the explicitly ignored actual-mdBook test in a separate invocation. The historical harness was read for reproduction context, not executed as a repaired-behavior oracle because it asserts the former bugs. This record is my actual comparison judgment, not human approval or a mechanical-test certificate.",
+  "examined": [
+    "context:mdbook-dada/src/lean.rs",
+    "context:mdbook-dada/tests/units.rs",
+    "extra:reviews/adversarial-2026-10-24/tooling.md",
+    "extra:reviews/repair-2026-10-24/reviewed-original-harness.py",
+    "extra:reviews/repair-2026-10-24/tooling-checks.txt",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "For a Rule unit, select splits Judgment.constructor, extracts the named inductive using the Type selector, and extract_case requires exactly one simple constructor name at the declaration's constructor indentation. extract_declaration now runs its no-other-commands check for Type as well as definition/theorem selections. Its narrow structure-field exception cannot suppress a sibling inductive under an inductive parent, so the original First.second citation cannot borrow Second.second. extract_case computes the selected constructor's final extent with scan(selected).content_end, whose literal branches advance content_end through strings, raw strings, character literals, and quoted identifiers while its comment handling can exclude subsequent standalone comments. Consequently the original final string index is retained instead of erased by trimming masked whitespace. I read the exact selector/scanner and helper paths and both cited tests, then executed the units binary: all 12 tests passed. The sibling regression checks grammar/judgment/definition selection and both structured and legacy rule rendering. The literal regression covers a normal string, raw string containing comment markers, Unicode and escaped characters, and a quoted identifier across plain endings, attached comments, and a following constructor. These comparisons close the two exact-selection counterexamples in the frozen report without claiming Lean elaboration or mathematical equivalence.",
+  "limitations": [
+    "The textual selector supports the documented line-oriented declaration forms and rejects unsupported forms; this review is not a general Lean parser-correctness proof.",
+    "The regression literal fixture's quoted identifier need not elaborate; I verified source preservation and rejection behavior, not Lean typechecking of synthetic selector fixtures.",
+    "The complete Lean source snapshot was inspected for the relevant extraction, masking, command-detection, and literal-boundary helpers, not every unrelated selector test or rendering helper."
+  ],
+  "supersedes": []
+}

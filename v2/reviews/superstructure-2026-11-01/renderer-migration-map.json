@@ -1,0 +1,102 @@
+{
+  "migrated_legacy_ids": 35,
+  "contracts": {
+    "meta.syntax.anchors.identity": [
+      "meta.syntax.anchors.identity",
+      "meta.syntax.anchors.roles",
+      "meta.syntax.anchors.inline",
+      "meta.syntax.anchors.rendering",
+      "meta.syntax.anchors.literal"
+    ],
+    "meta.syntax.inline_and_block": [
+      "meta.syntax.inline_and_block",
+      "meta.syntax.informational"
+    ],
+    "meta.math.source_view": [
+      "meta.math.source_view"
+    ],
+    "meta.math.typesetting": [
+      "meta.math.typesetting",
+      "meta.syntax.grammar.rendering"
+    ],
+    "meta.math.runtime": [
+      "meta.math.runtime"
+    ],
+    "meta.math.overline.braces": [
+      "meta.math.overline.braces"
+    ],
+    "meta.math.definition.selection": [
+      "meta.math.definition.selection",
+      "meta.lean.definitions.extraction",
+      "meta.lean.definitions.selection",
+      "meta.syntax.grammar.declarations",
+      "meta.syntax.grammar.validation"
+    ],
+    "meta.math.judgment.selection": [
+      "meta.math.judgment.selection",
+      "meta.math.rule.selection"
+    ],
+    "meta.math.theorem.selection": [
+      "meta.math.theorem.selection",
+      "meta.math.theorem.validation"
+    ],
+    "meta.examples.selection": [
+      "meta.examples.selection",
+      "meta.syntax.example",
+      "meta.examples.markdown",
+      "meta.examples.validation"
+    ],
+    "meta.lean.definitions.navigation": [
+      "meta.lean.definitions.navigation",
+      "meta.lean.definitions.errors",
+      "meta.math.citations.validation",
+      "meta.math.unsupported"
+    ],
+    "meta.syntax.heap.nodes": [
+      "meta.syntax.heap.nodes",
+      "meta.syntax.heap.state",
+      "meta.syntax.heap.constructors"
+    ],
+    "meta.syntax.heap.validation": [
+      "meta.syntax.heap.validation"
+    ],
+    "meta.syntax.heap.rendering": [
+      "meta.syntax.heap.rendering"
+    ],
+    "meta.syntax.heap.routing": [
+      "meta.syntax.heap.routing"
+    ]
+  },
+  "retained_policy_and_reference_ids": [
+    "meta.anchors.content",
+    "meta.anchors.identity",
+    "meta.correspondence.coverage",
+    "meta.evidence.decisions",
+    "meta.evidence.inputs",
+    "meta.evidence.minimum_inputs",
+    "meta.evidence.self_validation",
+    "meta.evidence.status",
+    "meta.evidence.workspace_test",
+    "meta.examples.coverage",
+    "meta.examples.evidence",
+    "meta.lean.definitions.presentation",
+    "meta.lean.definitions.source",
+    "meta.math.abbreviations",
+    "meta.math.containers",
+    "meta.math.correspondence",
+    "meta.math.correspondence.evidence",
+    "meta.math.fields",
+    "meta.math.heap_representation",
+    "meta.math.identifiers",
+    "meta.math.rule.layout",
+    "meta.math.source",
+    "meta.proofs.assumptions",
+    "meta.rendering.faithfulness",
+    "meta.reviews.correspondence",
+    "meta.reviews.freshness",
+    "meta.reviews.recording",
+    "meta.syntax.lean.alignment",
+    "meta.syntax.lean.mathematical_containers",
+    "meta.system.self_specification"
+  ]
+}

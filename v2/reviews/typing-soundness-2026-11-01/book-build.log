@@ -1,0 +1,4 @@
+cd v2 && mdbook build
+ INFO Book building has started
+ INFO Running the html backend
+ INFO HTML book written to `/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/book`

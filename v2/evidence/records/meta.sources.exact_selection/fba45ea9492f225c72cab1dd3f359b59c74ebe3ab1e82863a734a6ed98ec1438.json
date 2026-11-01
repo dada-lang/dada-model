@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "515c8584a2b30d0ca66a96805efaff1be5d7b448e4e82d633dae31cd5a60d42a",
+  "reviewer": "Codex independent renewal reviewer /root/review_meta_renewal",
+  "provenance": "Fresh correspondence review by the Codex GPT-6 subagent on 2026-11-01. Read the immutable packet's required raw units, exact implementation/test selections, and policy, then inspected the supporting bundled context identified in the rationale. Shared inputs were checked identical across the five packets; no previous review rationale was used as a substitute for comparison. No source edits or test executions were performed by this reviewer.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/authoring.md",
+    "context:md/repo/spec-system.md",
+    "context:md/repo/writing-style.md",
+    "context:mdbook-dada/src/lean.rs",
+    "context:mdbook-dada/tests/units.rs",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:validate_mutual_groups",
+    "test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection",
+    "test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "tool:book.toml",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/fixtures/lean/Mutual.lean",
+    "tool:spec.json",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:meta.sources.exact_selection describes textual selection in the documented source subset. select dispatches a rule target through extraction of the named inductive and then extract_case. extract_declaration checks column-zero declarations, boundaries and command_pattern counts on masked code, rejecting additional indented commands before any constructor can be chosen. extract_case requires an inductive header, selects the uniquely named constructor at the minimum constructor indentation, and stops before the next peer case. It retains the header and uses scan's content_end on original bytes. scan masks comments/literals only for structural recognition while advancing content_end over strings, characters, raw strings and quoted identifiers; attached comments remain, whereas a later standalone comment can be omitted. The inspected raw_string_start, character_end, follows_identifier, read_source and command_pattern helpers explain that behavior and containment.\n\nvalidate_mutual_groups runs before declaration selection and requires standalone column-zero mutual/end, at least one distinct named inductive member, headers ending in where, and indented bodies without other commands. It rejects nested groups, duplicate/malformed names, unsupported member kinds, bad delimiters/attributes, and incomplete groups. The Mutual.lean fixture and selects_mutual_inductive_members_and_surrounding_declarations test establish exact complete selections for both mutually referring members, declarations before/after the group, a constructor, and wrong-kind rejections; select retains the entire original source. Inventory::inputs in the bundled tool snapshot additionally captures all local Lean source files for Lean-backed units, establishing the prose's enclosing-source evidence claim.\n\nThe five selected tests check an indented sibling's constructor is rejected by direct selection and both renderer forms; final ordinary/raw strings, Unicode/escaped characters and quoted identifiers survive selection and rendered escaping with attached/standalone comments; complete mutual member/case selection; nested-comment/raw-string/quoted-name decoys do not act as commands; and the enumerated invalid mutual layouts fail even when another declaration is requested. I inspected the Sources/render helpers in tests/units.rs. These tests support the specified examples; they do not purport to elaborate arbitrary Lean or verify that authored inference rules mean the same thing.\n\nThe terminology is established in the bundled authoring guide and spec-system.md's opening, Evidence and validation, and Selecting formalizations sections: units have IDs/raw bodies, citations select source, and bundles/records preserve inputs/decisions. This implementation contract uses ordinary prose and code identifiers rather than mathematical metavariables; no undefined judgment or forward mathematical reference is needed.",
+  "limitations": [
+    "This is a source correspondence review. I inspected the cited test bodies and their fixtures but did not execute Cargo, mdBook, or Lean in this review; it supplies no mechanical pass claim.",
+    "For conservative snapshots, examined records use of the relevant portions, not a claim to have audited every line. I read spec-system.md lines 1-217 and 282-385; supporting Rust/test portions are identified in the rationale. Unrelated renderer features and Lean proof bodies were not reviewed.",
+    "Selection is deliberately limited to the documented line-oriented declaration subset. The review checks those contracts and cited rejection cases; it does not claim a complete Lean parser, inspect unrelated extraction features, or establish mathematical correspondence for any displayed rule."
+  ],
+  "supersedes": [
+    "e85090ffc6eefd0c9c57b2d00277be2d4a792d444010727350ba52dde8376f82"
+  ]
+}

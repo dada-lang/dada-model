@@ -1,0 +1,134 @@
+[
+  {
+    "unit": "meta.evidence.active_decisions",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.evidence.active_decisions/94d301aab604aff6c9b9aa32566664a17c212d550b3a47188aed0582f0ecaf08.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.evidence.mechanical_execution",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.evidence.mechanical_execution/aceda68308208050209230287825fef948cfa8b3531b4d76c526add71716cb21.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.evidence.required_inputs",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.evidence.required_inputs/2f0fca91a144e7841ed68cc3aa25f90abcc13c21b215acf3d1d61b22eec36c29.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.examples.selection",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.examples.selection/be64a8d1a7814e9918e4f71094b0ff249d6d2b4fa42a569eddfb84a305fa5737.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.lean.definitions.navigation",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.lean.definitions.navigation/a657dd621ef8800ca9ea11723204263823f04527ad8df932a9efb80b985ec5a7.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.math.definition.selection",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.math.definition.selection/70349db11857e8ea46613c26f1830a5e82a8c50eb515c3be875170dc25ec48ee.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.math.judgment.selection",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.math.judgment.selection/5942cfe9e558c41ee7ef2ebadf009c28f0fa454f5d8328e131e0d15567c7ef70.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.math.overline.braces",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.math.overline.braces/937b26b8b69d928e31f6c1ecc1927d462ad603d6f107a1ee900180a97c46bf7b.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.math.runtime",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.math.runtime/e011ead5ab2b03cf3139cf2739093d06bf0492375011fc80ced96966927fc959.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.math.source_view",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.math.source_view/f508b3addbd1e5cf67fb7deef527fdfe9d56edff4f3b93aec30beefe766338ef.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.math.theorem.selection",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.math.theorem.selection/799e9f576c55909d2e587bca9087ca990e50f713cadecfcef3d48275ba64bde1.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.math.typesetting",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.math.typesetting/88b9b8f9114c4e7f8dffddcdf1b2184e90818ec39bf91d518625628208769e94.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.sources.configuration",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.sources.configuration/2b0ccd792cf85a1e77604320a68f8ea9a4c08882d62b73aa3169cefcc6d13564.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.sources.exact_selection",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.sources.exact_selection/46617e24185ef4c51900df4e53dc29d97433851dd9a65eb68389bc34f08e7187.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.syntax.anchors.identity",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.syntax.anchors.identity/c143e98f24cae33ab0127e773bea7bc72313637b9167768212a434e582355448.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.syntax.heap.nodes",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.syntax.heap.nodes/5a9e492791a843a00dc7b6ddc36de9ab88d54902de4fbabe95ec4d3d5eded179.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.syntax.heap.rendering",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.syntax.heap.rendering/216456f582809a7194211f2ad122d7500be865445120d700e7d07a822640db87.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.syntax.heap.routing",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.syntax.heap.routing/9c7943b0456d64c904937a435a1035d68d2b38abe1afd738caa3afba3b99a6ee.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.syntax.heap.validation",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.syntax.heap.validation/fb16daf3a23301642bac5d949f3631bbf3767e5fcc8daa200e800253cea74786.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.syntax.inline_and_block",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.syntax.inline_and_block/4640f25a05bc9420be3f8217864d65531a36da474eb5cd21a3e7e846eb845acc.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.system.remaining_coverage",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.system.remaining_coverage/eb2e8f17236c78bd221fbd87e2ed7d11ef9ad339ab3ddcee2accbb12f594c718.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.units.closed_body",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.units.closed_body/46229b4c1b43bef53ce0c4c39bcea615419a5d7fb5d44acca2643384cf88cce8.json\n",
+    "stderr": ""
+  }
+]

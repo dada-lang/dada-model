@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "bundle": "bb5ab28ec9429cc6339eb4598a80e21b69dc0bd057d57cbe90da43ea3aa2fc0f",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle 8670c9a8be9ef96fae5a1115657d2951604d51743151a46b581dbb556dbe05a2 with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Heap.lean",
+    "context:lean/Shared/Liveness.lean",
+    "lean:Heap:FiniteMap",
+    "lean:Heap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:evidence.map agrees with lean:Heap:FiniteMap: entries is a finite List of Key × Value and uniqueKeys is Nodup of its first projections. Thus key uniqueness is occurrence-sensitive and does not sort the keys. The text acknowledges entry order, so it does not silently identify this representation with an unordered quotient. lean:Heap:FiniteMap.empty chooses the empty entry list. The surrounding Heap namespace and parameter setup introduces no equality or ordering assumption for these declarations. For this final packet, the only delta from the reviewed bundle 8670c9a8be9ef96fae5a1115657d2951604d51743151a46b581dbb556dbe05a2 is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "The Heap context was inspected for the namespace, parameter scope, and finite-map declarations; unrelated heap operations and proof bodies were not audited. No claim about map extensional equality or implementation complexity is made.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "1a1519066818dec5f69617f7916ef5d3fc421bd424221be68a02ca2eec3324d4"
+  ]
+}

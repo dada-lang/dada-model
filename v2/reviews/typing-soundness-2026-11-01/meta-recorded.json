@@ -1,0 +1,32 @@
+[
+  {
+    "unit": "meta.evidence.active_decisions",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.evidence.active_decisions/6d237cc08089d74610f8977e5bf7324a3005f8ca0b51955376f2b345c1b78015.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.evidence.required_inputs",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.evidence.required_inputs/b637e21ff13211ee2ba878f091e16bd733a9281a194fea098f1862a10c192890.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.sources.configuration",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.sources.configuration/e06ba7246e1fb5bf8e0d0279508c65a2bd8e0c2b3559a59d46f55ed5fb549b6e.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.sources.exact_selection",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.sources.exact_selection/fba45ea9492f225c72cab1dd3f359b59c74ebe3ab1e82863a734a6ed98ec1438.json\n",
+    "stderr": ""
+  },
+  {
+    "unit": "meta.units.closed_body",
+    "status": 0,
+    "stdout": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/meta.units.closed_body/9d1481c4e1c08f774b690d051ca06f48a93a64d83d96f5ffd986b1ab1b663f2c.json\n",
+    "stderr": ""
+  }
+]

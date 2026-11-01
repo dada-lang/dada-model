@@ -1,0 +1,1078 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/dada-spec status --explain`
+evidence.map: inputs=stale, correspondence=stale decision, mechanical=not recorded
+evidence.map.empty: inputs=stale, correspondence=stale decision, mechanical=not recorded
+evidence.map.value_unique: inputs=stale, correspondence=stale decision, mechanical=not recorded
+future.generic_views: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.classes: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.evaluation: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.example.empty_field: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.example.field: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.example.nested: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.example.token: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.example.unpack: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.executions: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.liveness: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.machine: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.patterns: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.programs: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.resolution: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.single_owner: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.soundness: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.state: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.steps: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.storage_places: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.syntax: inputs=stale, correspondence=stale decision, mechanical=not recorded
+given.typing.bindings: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.configurations: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.declarations: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.emptying: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.environments: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.example.moves: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.example.normalization: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.example.rejections: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.example.take: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.example.views: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.expression_soundness: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.expressions: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.focus: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.forgetting: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.normalization: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.observations: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.preservation: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.progress: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.realization: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.safety: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.statements: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.typing.views: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.unpacking: inputs=draft, correspondence=not asserted, mechanical=not recorded
+given.well_formed: inputs=stale, correspondence=stale decision, mechanical=not recorded
+meta.evidence.active_decisions: inputs=stale, correspondence=stale decision, mechanical=not recorded
+meta.evidence.required_inputs: inputs=stale, correspondence=stale decision, mechanical=not recorded
+meta.sources.configuration: inputs=stale, correspondence=stale decision, mechanical=not recorded
+meta.sources.exact_selection: inputs=stale, correspondence=stale decision, mechanical=not recorded
+meta.system.remaining_coverage: inputs=draft, correspondence=not asserted, mechanical=not recorded
+meta.units.closed_body: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.boundaries: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.correspondence: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.embedding: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.example.copy_field: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.example.share_value: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.example.shared_middle: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.give: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.liveness: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.path_exclusivity: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.resolution: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.soundness: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.state: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.steps: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.syntax: inputs=stale, correspondence=stale decision, mechanical=not recorded
+shared.well_formed: inputs=stale, correspondence=stale decision, mechanical=not recorded
+error: stale evidence for evidence.map: correspondence stale decision
+  --> md/repo/evidence-pilot.md:94:1
+   |
+94 | / ```{definition} evidence.map
+95 | | :lean: Common/FiniteMap:FiniteMap Common/FiniteMap:FiniteMap.empty
+   | |__________________________________________________________________^ evidence required for this unit
+   |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Common/Rooted.lean
+note: missing required input context:lean/Correspondence/UniqueShared.lean
+note: missing required input context:lean/Shared/Effects.lean
+note: missing required input context:lean/Shared/Examples.lean
+note: missing required input context:lean/Shared/Liveness.lean
+note: missing required input context:lean/Shared/Soundness.lean
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare evidence.map`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for evidence.map.empty: correspondence stale decision
+   --> md/repo/evidence-pilot.md:116:1
+    |
+116 | / ```{example} evidence.map.empty
+117 | | :lean: Common/FiniteMapExamples:empty_map
+118 | | :uses: evidence.map
+    | |___________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Common/Rooted.lean
+note: missing required input context:lean/Correspondence/UniqueShared.lean
+note: missing required input context:lean/Shared/Effects.lean
+note: missing required input context:lean/Shared/Examples.lean
+note: missing required input context:lean/Shared/Liveness.lean
+note: missing required input context:lean/Shared/Soundness.lean
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare evidence.map.empty`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for evidence.map.value_unique: correspondence stale decision
+   --> md/repo/evidence-pilot.md:106:1
+    |
+106 | / ```{lemma} evidence.map.value_unique
+107 | | :lean: Common/FiniteMap:FiniteMap.value_unique
+108 | | :uses: evidence.map
+    | |___________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Common/Rooted.lean
+note: missing required input context:lean/Correspondence/UniqueShared.lean
+note: missing required input context:lean/Shared/Effects.lean
+note: missing required input context:lean/Shared/Examples.lean
+note: missing required input context:lean/Shared/Liveness.lean
+note: missing required input context:lean/Shared/Soundness.lean
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare evidence.map.value_unique`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit future.generic_views requires formalization
+ --> md/dada/future-extensions.md:5:1
+  |
+5 | / ````{example} future.generic_views
+6 | | :status: draft
+7 | | :uses: given.typing.views given.typing.expressions
+  | |__________________________________________________^ evidence required for this unit
+  |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for future.generic_views, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.classes: correspondence stale decision
+ --> md/given.md:3:1
+  |
+3 | / ```{definition} given.classes
+4 | | :lean: Unique/Syntax:ClassName Unique/Syntax:FieldName Unique/Syntax:Class
+  | |__________________________________________________________________________^ evidence required for this unit
+  |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Unique/Syntax:ClassName
+note: missing required input lean:Unique/Syntax:FieldName
+note: missing required input tool:book.toml
+note: missing required input tool:mdbook-dada/src/configuration.rs
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.classes`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.evaluation: correspondence stale decision
+   --> md/given.md:236:1
+    |
+236 | / ```{definition} given.evaluation
+237 | | :lean: Unique/Step:Eval Unique/Step:EvalArgs Unique/Step:State.allocate
+238 | | :uses: given.classes given.syntax given.programs given.state given.storage_places given.resolution
+    | |__________________________________________________________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:md/repo/writing-style.md
+note: stale or substituted input context:AGENTS.md
+note: stale or substituted input context:md/repo/authoring.md
+note: stale or substituted input tool:spec.json
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.evaluation`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.example.empty_field: correspondence stale decision
+   --> md/given.md:436:1
+    |
+436 | / ````{example} given.example.empty_field
+437 | | :lean: Unique/Examples:second_give_fails
+438 | | :uses: given.example.field given.executions
+    | |___________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Unique/State:Configuration
+note: missing required input lean:Unique/State:Configuration.finished
+note: missing required input lean:Unique/State:Configuration.initial
+note: missing required input lean:Unique/State:Object
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.example.empty_field`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.example.field: correspondence stale decision
+   --> md/given.md:392:1
+    |
+392 | / ````{example} given.example.field
+393 | | :lean: Unique/Examples:give_execution
+394 | | :uses: given.classes given.syntax given.programs given.machine given.steps
+    | |__________________________________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Unique/State:Configuration
+note: missing required input lean:Unique/State:Configuration.finished
+note: missing required input lean:Unique/State:Configuration.initial
+note: missing required input lean:Unique/State:Object
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.example.field`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.example.nested: correspondence stale decision
+   --> md/given.md:418:1
+    |
+418 | / ````{example} given.example.nested
+419 | | :lean: Unique/Examples:nested_constructor
+420 | | :uses: given.classes given.syntax given.evaluation given.steps
+    | |______________________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:md/repo/writing-style.md
+note: stale or substituted input context:AGENTS.md
+note: stale or substituted input context:md/repo/authoring.md
+note: stale or substituted input tool:spec.json
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.example.nested`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.example.token: correspondence stale decision
+   --> md/given.md:376:1
+    |
+376 | / ````{example} given.example.token
+377 | | :lean: Unique/Examples:create_token
+378 | | :uses: given.classes given.syntax given.programs given.machine given.steps
+    | |__________________________________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Unique/State:Configuration
+note: missing required input lean:Unique/State:Configuration.finished
+note: missing required input lean:Unique/State:Configuration.initial
+note: missing required input lean:Unique/State:Object
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.example.token`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.example.unpack requires formalization
+   --> md/given.md:637:1
+    |
+637 | / ````{example} given.example.unpack
+638 | | :status: draft
+639 | | :uses: given.patterns given.unpacking given.machine
+    | |___________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.example.unpack, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.executions: correspondence stale decision
+   --> md/given.md:344:1
+    |
+344 | / ```{definition} given.executions
+345 | | :lean: Unique/Step:Steps Unique/Step:Stuck
+346 | | :uses: given.machine given.steps
+    | |________________________________^ evidence required for this unit
+    |
+note: missing required input context:md/repo/writing-style.md
+note: stale or substituted input context:AGENTS.md
+note: stale or substituted input context:md/repo/authoring.md
+note: stale or substituted input tool:spec.json
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.executions`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.liveness: correspondence stale decision
+   --> md/given.md:513:1
+    |
+513 | / ```{theorem} given.liveness
+514 | | :lean: Unique/Liveness:WellFormed.live_iff_allocated
+515 | | :uses: given.well_formed
+    | |________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Unique/Soundness:WellFormedWith
+note: missing required input lean:Unique/State:Updated
+note: missing required input lean:Unique/Step:Eval
+note: missing required input lean:Unique/Step:EvalArgs
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.liveness`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.machine: correspondence stale decision
+   --> md/given.md:174:1
+    |
+174 | / ```{definition} given.machine
+175 | | :lean: Unique/State:Configuration Unique/State:Configuration.initial Unique/State:Configuration.finished Unique/Step:Step Unique/...
+176 | | :uses: given.programs given.state
+    | |_________________________________^ evidence required for this unit
+    |
+note: missing required input context:md/repo/writing-style.md
+note: stale or substituted input context:AGENTS.md
+note: stale or substituted input context:md/repo/authoring.md
+note: stale or substituted input tool:spec.json
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.machine`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.patterns requires formalization
+   --> md/given.md:554:1
+    |
+554 | / ```{definition} given.patterns
+555 | | :status: draft
+556 | | :uses: given.classes given.syntax
+    | |_________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.patterns, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.programs: correspondence stale decision
+  --> md/given.md:61:1
+   |
+61 | / ```{definition} given.programs
+62 | | :lean: Unique/Syntax:Classes Unique/Syntax:Program Unique/Soundness:ClassesWellFormed
+63 | | :uses: given.classes given.syntax
+   | |_________________________________^ evidence required for this unit
+   |
+note: missing required input context:md/repo/writing-style.md
+note: stale or substituted input context:AGENTS.md
+note: stale or substituted input context:md/repo/authoring.md
+note: stale or substituted input tool:spec.json
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.programs`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.resolution: correspondence stale decision
+   --> md/given.md:208:1
+    |
+208 | / ```{definition} given.resolution
+209 | | :lean: Unique/Step:Resolve
+210 | | :uses: given.storage_places
+    | |___________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Unique/State:Updated
+note: missing required input lean:Unique/Syntax:ClassName
+note: missing required input lean:Unique/Syntax:FieldName
+note: missing required input lean:Unique/Syntax:VariableId
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.resolution`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.single_owner: correspondence stale decision
+   --> md/given.md:529:1
+    |
+529 | / ```{theorem} given.single_owner
+530 | | :lean: Unique/Liveness:WellFormed.owner_count
+531 | | :uses: given.well_formed
+    | |________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Unique/Soundness:WellFormedWith
+note: missing required input lean:Unique/State:Updated
+note: missing required input lean:Unique/Step:Eval
+note: missing required input lean:Unique/Step:EvalArgs
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.single_owner`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.soundness: correspondence stale decision
+   --> md/given.md:539:1
+    |
+539 | / ```{theorem} given.soundness
+540 | | :lean: Unique/Soundness:Steps.from_initial
+541 | | :uses: given.programs given.executions given.well_formed given.liveness given.single_owner
+    | |__________________________________________________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Unique/Soundness:WellFormedWith
+note: missing required input lean:Unique/State:Updated
+note: missing required input lean:Unique/Step:Eval
+note: missing required input lean:Unique/Step:EvalArgs
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.soundness`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.state: correspondence stale decision
+  --> md/given.md:90:1
+   |
+90 | / ```{definition} given.state
+91 | | :lean: Unique/Syntax:ObjectId Unique/State:Slot Unique/State:Object Unique/State:State Unique/State:State.empty
+92 | | :uses: given.classes given.syntax given.programs
+   | |________________________________________________^ evidence required for this unit
+   |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Unique/Syntax:ClassName
+note: missing required input lean:Unique/Syntax:FieldName
+note: missing required input lean:Unique/Syntax:Place
+note: missing required input lean:Unique/Syntax:Program
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.state`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.steps: correspondence stale decision
+   --> md/given.md:304:1
+    |
+304 | / ```{definition} given.steps
+305 | | :lean: Unique/Step:State.bind Unique/Step:Step
+306 | | :uses: given.machine given.evaluation
+    | |_____________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Unique/State:Updated
+note: missing required input lean:Unique/Step:Eval
+note: missing required input lean:Unique/Step:EvalArgs
+note: missing required input lean:Unique/Step:State.allocate
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.steps`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.storage_places: correspondence stale decision
+   --> md/given.md:138:1
+    |
+138 | / ```{definition} given.storage_places
+139 | | :lean: Unique/State:StoragePlace Unique/State:Stored Unique/State:Updated
+140 | | :uses: given.syntax given.state
+    | |_______________________________^ evidence required for this unit
+    |
+note: missing required input context:md/repo/writing-style.md
+note: stale or substituted input context:AGENTS.md
+note: stale or substituted input context:md/repo/authoring.md
+note: stale or substituted input tool:spec.json
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.storage_places`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.syntax: correspondence stale decision
+  --> md/given.md:27:1
+   |
+27 | / ```{definition} given.syntax
+28 | | :lean: Unique/Syntax:VariableId Unique/Syntax:Place Unique/Syntax:Value Unique/Syntax:Statement
+29 | | :uses: given.classes
+   | |____________________^ evidence required for this unit
+   |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Unique/Syntax:ClassName
+note: missing required input lean:Unique/Syntax:FieldName
+note: missing required input lean:Unique/Syntax:VariableId
+note: missing required input tool:book.toml
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.syntax`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.bindings requires formalization
+   --> md/given-typing.md:428:1
+    |
+428 | / ```{definition} given.typing.bindings
+429 | | :status: draft
+430 | | :uses: given.patterns given.typing.environments given.typing.focus
+    | |__________________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.bindings, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.configurations requires formalization
+   --> md/given-typing.md:627:1
+    |
+627 | / ```{definition} given.typing.configurations
+628 | | :status: draft
+629 | | :uses: given.typing.realization given.typing.statements given.machine given.unpacking given.executions
+    | |______________________________________________________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.configurations, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.declarations requires formalization
+ --> md/given-typing.md:3:1
+  |
+3 | / ```{definition} given.typing.declarations
+4 | | :status: draft
+5 | | :uses: given.classes given.programs given.patterns given.unpacking
+  | |__________________________________________________________________^ evidence required for this unit
+  |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.declarations, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.emptying requires formalization
+   --> md/given-typing.md:245:1
+    |
+245 | / ```{definition} given.typing.emptying
+246 | | :status: draft
+247 | | :uses: given.typing.focus
+    | |_________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.emptying, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.environments requires formalization
+   --> md/given-typing.md:306:1
+    |
+306 | / ```{definition} given.typing.environments
+307 | | :status: draft
+308 | | :uses: given.typing.views given.typing.emptying given.syntax
+    | |____________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.environments, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.example.moves requires formalization
+   --> md/given-typing.md:520:1
+    |
+520 | / ````{example} given.typing.example.moves
+521 | | :status: draft
+522 | | :uses: given.typing.example.views given.typing.statements given.unpacking
+    | |_________________________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.example.moves, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.example.normalization requires formalization
+   --> md/given-typing.md:154:1
+    |
+154 | / ````{example} given.typing.example.normalization
+155 | | :status: draft
+156 | | :uses: given.typing.observations
+    | |________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.example.normalization, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.example.rejections requires formalization
+   --> md/given-typing.md:548:1
+    |
+548 | / ````{example} given.typing.example.rejections
+549 | | :status: draft
+550 | | :uses: given.typing.example.views given.typing.expressions given.typing.bindings
+    | |________________________________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.example.rejections, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.example.take requires formalization
+   --> md/given-typing.md:349:1
+    |
+349 | / ```{example} given.typing.example.take
+350 | | :status: draft
+351 | | :uses: given.typing.environments given.typing.example.views
+    | |___________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.example.take, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.example.views requires formalization
+  --> md/given-typing.md:90:1
+   |
+90 | / ````{example} given.typing.example.views
+91 | | :status: draft
+92 | | :uses: given.typing.views
+   | |_________________________^ evidence required for this unit
+   |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.example.views, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.expression_soundness requires formalization
+   --> md/given-typing.md:657:1
+    |
+657 | / ```{lemma} given.typing.expression_soundness
+658 | | :status: draft
+659 | | :uses: given.typing.expressions given.typing.realization given.evaluation
+    | |_________________________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.expression_soundness, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.expressions requires formalization
+   --> md/given-typing.md:367:1
+    |
+367 | / ```{definition} given.typing.expressions
+368 | | :status: draft
+369 | | :uses: given.typing.declarations given.typing.environments given.typing.forgetting given.evaluation
+    | |___________________________________________________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.expressions, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.focus requires formalization
+   --> md/given-typing.md:216:1
+    |
+216 | / ```{definition} given.typing.focus
+217 | | :status: draft
+218 | | :uses: given.typing.normalization given.typing.example.views
+    | |____________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.focus, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.forgetting requires formalization
+   --> md/given-typing.md:280:1
+    |
+280 | / ```{definition} given.typing.forgetting
+281 | | :status: draft
+282 | | :uses: given.typing.normalization
+    | |_________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.forgetting, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.normalization requires formalization
+   --> md/given-typing.md:183:1
+    |
+183 | / ```{definition} given.typing.normalization
+184 | | :status: draft
+185 | | :uses: given.typing.observations given.typing.example.normalization
+    | |___________________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.normalization, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.observations requires formalization
+   --> md/given-typing.md:114:1
+    |
+114 | / ```{definition} given.typing.observations
+115 | | :status: draft
+116 | | :uses: given.typing.views
+    | |_________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.observations, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.preservation requires formalization
+   --> md/given-typing.md:710:1
+    |
+710 | / ```{theorem} given.typing.preservation
+711 | | :status: draft
+712 | | :uses: given.typing.configurations given.typing.expression_soundness given.typing.bindings
+    | |__________________________________________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.preservation, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.progress requires formalization
+   --> md/given-typing.md:691:1
+    |
+691 | / ```{theorem} given.typing.progress
+692 | | :status: draft
+693 | | :uses: given.typing.configurations given.typing.expression_soundness given.typing.bindings
+    | |__________________________________________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.progress, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.realization requires formalization
+   --> md/given-typing.md:579:1
+    |
+579 | / ```{definition} given.typing.realization
+580 | | :status: draft
+581 | | :uses: given.typing.observations given.typing.environments given.well_formed given.state given.storage_places
+    | |_____________________________________________________________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.realization, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.safety requires formalization
+   --> md/given-typing.md:730:1
+    |
+730 | / ```{theorem} given.typing.safety
+731 | | :status: draft
+732 | | :uses: given.typing.configurations given.typing.progress given.typing.preservation given.typing.statements
+    | |__________________________________________________________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.safety, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.statements requires formalization
+   --> md/given-typing.md:481:1
+    |
+481 | / ```{definition} given.typing.statements
+482 | | :status: draft
+483 | | :uses: given.typing.expressions given.typing.bindings given.patterns
+    | |____________________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.statements, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.typing.views requires formalization
+  --> md/given-typing.md:38:1
+   |
+38 | / ```{definition} given.typing.views
+39 | | :status: draft
+40 | | :uses: given.typing.declarations
+   | |________________________________^ evidence required for this unit
+   |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.typing.views, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit given.unpacking requires formalization
+   --> md/given.md:584:1
+    |
+584 | / ```{definition} given.unpacking
+585 | | :status: draft
+586 | | :uses: given.patterns given.state given.evaluation given.steps
+    | |______________________________________________________________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for given.unpacking, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for given.well_formed: correspondence stale decision
+   --> md/given.md:466:1
+    |
+466 | / ```{definition} given.well_formed
+467 | | :lean: Unique/State:Allocated Unique/State:Live Unique/State:References Unique/Soundness:WellFormed Unique/Soundness:WellFormedWith
+468 | | :uses: given.programs given.state given.storage_places given.evaluation
+    | |_______________________________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Unique/Soundness:WellFormedWith
+note: missing required input lean:Unique/State:Updated
+note: missing required input lean:Unique/Step:Eval
+note: missing required input lean:Unique/Step:EvalArgs
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare given.well_formed`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for meta.evidence.active_decisions: correspondence stale decision
+  --> md/repo/evidence-pilot.md:56:1
+   |
+56 | / ```{definition} meta.evidence.active_decisions
+57 | | :rust: mdbook-dada/src/evidence.rs:record mdbook-dada/src/evidence.rs:check
+58 | | :tests: mdbook-dada/tests/evidence_validation.rs:recording_rechecks_sources_even_with_an_existing_inventory mdbook-dada/tests/evidence_validation.rs:mismatch_and_inconclusive_reviews_never_count_as_correspondence mdbook-dada/tests/evidence_validation.rs:revised_review_can_supersede_same_unit_after_consulting_more_context mdbook-dada/tests/evidence_validation.rs:stale_supersession_cannot_fall_back_to_an_independent_positive_review
+   | |_________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________^ evidence required for this unit
+   |
+note: missing required input context:md/repo/writing-style.md
+note: missing required input tool:mdbook-dada/tests/fixtures/lean/Mutual.lean
+note: missing required input tool:mdbook-dada/tests/fixtures/lean/Renderer.lean
+note: stale or substituted input context:AGENTS.md
+note: stale or substituted input context:md/repo/authoring.md
+note: stale or substituted input context:md/repo/spec-system.md
+note: stale or substituted input context:mdbook-dada/src/evidence.rs
+note: stale or substituted input context:mdbook-dada/tests/evidence_validation.rs
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare meta.evidence.active_decisions`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for meta.evidence.required_inputs: correspondence stale decision
+  --> md/repo/evidence-pilot.md:73:1
+   |
+73 | / ```{definition} meta.evidence.required_inputs
+74 | | :rust: mdbook-dada/src/evidence.rs:validate_bundle mdbook-dada/src/inventory.rs:Inventory::inputs
+75 | | :tests: mdbook-dada/tests/evidence_validation.rs:rejects_missing_or_substituted_required_inputs mdbook-dada/tests/evidence_validat...
+76 | | :uses: meta.units.closed_body meta.sources.configuration meta.sources.exact_selection
+   | |_____________________________________________________________________________________^ evidence required for this unit
+   |
+note: missing required input context:md/repo/writing-style.md
+note: missing required input context:mdbook-dada/src/configuration.rs
+note: missing required input context:mdbook-dada/src/lean.rs
+note: missing required input context:mdbook-dada/src/lib.rs
+note: missing required input context:mdbook-dada/src/units.rs
+note: missing required input context:mdbook-dada/tests/units.rs
+note: missing required input rust:mdbook-dada/src/configuration.rs:SourceConfiguration::check_context
+note: missing required input rust:mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare meta.evidence.required_inputs`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for meta.sources.configuration: correspondence stale decision
+  --> md/repo/evidence-pilot.md:24:1
+   |
+24 | / ```{definition} meta.sources.configuration
+25 | | :rust: mdbook-dada/src/configuration.rs:SourceConfiguration::load mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root ...
+26 | | :tests: mdbook-dada/tests/evidence_validation.rs:configured_lean_root_is_shared_by_rendering_and_evidence
+   | |_________________________________________________________________________________________________________^ evidence required for this unit
+   |
+note: missing required input context:md/repo/writing-style.md
+note: missing required input tool:mdbook-dada/tests/fixtures/lean/Mutual.lean
+note: missing required input tool:mdbook-dada/tests/fixtures/lean/Renderer.lean
+note: stale or substituted input context:AGENTS.md
+note: stale or substituted input context:md/repo/authoring.md
+note: stale or substituted input context:md/repo/spec-system.md
+note: stale or substituted input context:mdbook-dada/src/inventory.rs
+note: stale or substituted input context:mdbook-dada/src/lib.rs
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare meta.sources.configuration`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for meta.sources.exact_selection: correspondence stale decision
+  --> md/repo/evidence-pilot.md:37:1
+   |
+37 | / ```{definition} meta.sources.exact_selection
+38 | | :rust: mdbook-dada/src/lean.rs:select mdbook-dada/src/lean.rs:extract_declaration mdbook-dada/src/lean.rs:validate_mutual_groups mdbook-dada/src/lean.rs:extract_case mdbook-dada/src/lean.rs:scan
+39 | | :tests: mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection
+   | |______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________^ evidence required for this unit
+   |
+note: missing required input context:md/repo/writing-style.md
+note: missing required input rust:mdbook-dada/src/lean.rs:validate_mutual_groups
+note: missing required input test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys
+note: missing required input test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection
+note: missing required input test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations
+note: missing required input tool:mdbook-dada/tests/fixtures/lean/Mutual.lean
+note: missing required input tool:mdbook-dada/tests/fixtures/lean/Renderer.lean
+note: stale or substituted input context:AGENTS.md
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare meta.sources.exact_selection`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: draft unit meta.system.remaining_coverage requires formalization
+   --> md/repo/spec-system.md:123:1
+    |
+123 | / ```{definition} meta.system.remaining_coverage
+124 | | :status: draft
+    | |______________^ evidence required for this unit
+    |
+note: draft status preserves the unit's semantic kind but cannot count as completed correspondence evidence
+help: complete the formalization and matching citations for meta.system.remaining_coverage, remove `:status: draft`, then prepare and review a new bundle
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for meta.units.closed_body: correspondence stale decision
+ --> md/repo/evidence-pilot.md:5:1
+  |
+5 | / ```{definition} meta.units.closed_body
+6 | | :rust: mdbook-dada/src/units.rs:parse_block mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters
+7 | | :tests: mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content
+  | |___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________^ evidence required for this unit
+  |
+note: missing required input context:md/repo/writing-style.md
+note: missing required input tool:mdbook-dada/tests/fixtures/lean/Mutual.lean
+note: missing required input tool:mdbook-dada/tests/fixtures/lean/Renderer.lean
+note: stale or substituted input context:AGENTS.md
+note: stale or substituted input context:md/repo/authoring.md
+note: stale or substituted input context:md/repo/spec-system.md
+note: stale or substituted input context:mdbook-dada/src/units.rs
+note: stale or substituted input context:mdbook-dada/tests/evidence_validation.rs
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare meta.units.closed_body`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.boundaries: correspondence stale decision
+   --> md/shared.md:386:1
+    |
+386 | / ```{theorem} shared.boundaries
+387 | | :lean: Correspondence/UniqueShared:boundary_correspondence
+388 | | :uses: given.syntax given.steps shared.syntax shared.steps shared.embedding shared.correspondence
+    | |_________________________________________________________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Correspondence/UniqueShared:embedId
+note: missing required input lean:Correspondence/UniqueShared:embedReference
+note: missing required input lean:Shared/Soundness:Compatible
+note: missing required input lean:Shared/Step:Eval
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.boundaries`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.correspondence: correspondence stale decision
+   --> md/shared.md:367:1
+    |
+367 | / ```{theorem} shared.correspondence
+368 | | :lean: Correspondence/UniqueShared:step_correspondence
+369 | | :uses: given.steps shared.steps shared.embedding
+    | |________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Correspondence/UniqueShared:embedId
+note: missing required input lean:Correspondence/UniqueShared:embedReference
+note: missing required input lean:Shared/Soundness:Compatible
+note: missing required input lean:Shared/Step:Eval
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.correspondence`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.embedding: correspondence stale decision
+   --> md/shared.md:347:1
+    |
+347 | / ```{definition} shared.embedding
+348 | | :lean: Correspondence/UniqueShared:embedId Correspondence/UniqueShared:embedReference Correspondence/UniqueShared:embedSlots Corr...
+349 | | :uses: given.classes given.state given.syntax shared.state shared.syntax
+    | |________________________________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Correspondence/UniqueShared:embedId
+note: missing required input lean:Correspondence/UniqueShared:embedReference
+note: missing required input lean:Shared/Soundness:Compatible
+note: missing required input lean:Shared/Step:Give
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.embedding`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.example.copy_field: correspondence stale decision
+  --> md/shared.md:74:1
+   |
+74 | / ````{example} shared.example.copy_field
+75 | | :lean: Shared/Examples:sharing_execution
+76 | | :uses: shared.syntax shared.give
+   | |________________________________^ evidence required for this unit
+   |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Shared/Soundness:Compatible
+note: missing required input lean:Shared/Syntax:ClassName
+note: missing required input lean:Shared/Syntax:FieldName
+note: missing required input lean:Shared/Syntax:VariableId
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.example.copy_field`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.example.share_value: correspondence stale decision
+   --> md/shared.md:214:1
+    |
+214 | / ````{example} shared.example.share_value
+215 | | :lean: Shared/Examples:share_value
+216 | | :uses: shared.state shared.syntax shared.give shared.steps
+    | |__________________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Shared/Soundness:Compatible
+note: missing required input lean:Shared/Step:Eval
+note: missing required input lean:Shared/Step:EvalArgs
+note: missing required input lean:Shared/Step:State.allocate
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.example.share_value`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.example.shared_middle: correspondence stale decision
+   --> md/shared.md:238:1
+    |
+238 | / ````{example} shared.example.shared_middle
+239 | | :lean: Shared/Examples:nested_shared_path
+240 | | :uses: shared.example.share_value shared.resolution shared.give shared.steps
+    | |____________________________________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Shared/Soundness:Compatible
+note: missing required input lean:Shared/Step:Eval
+note: missing required input lean:Shared/Step:EvalArgs
+note: missing required input lean:Shared/Step:State.allocate
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.example.shared_middle`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.give: correspondence stale decision
+ --> md/shared.md:3:1
+  |
+3 | / ```{definition} shared.give
+4 | | :lean: Shared/State:Mode Shared/State:Reference Shared/State:Slot Shared/Syntax:Place Shared/Step:Resolve Shared/Step:Take Shared/Step:Promote Shared/Step:Give Shared/Soundness:Compatible
+  | |___________________________________________________________________________________________________________________________________________________________________________________________^ evidence required for this unit
+  |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Shared/Soundness:Compatible
+note: missing required input tool:book.toml
+note: missing required input tool:mdbook-dada/src/configuration.rs
+note: missing required input tool:mdbook-dada/tests/fixtures/lean/Mutual.lean
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.give`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.liveness: correspondence stale decision
+   --> md/shared.md:313:1
+    |
+313 | / ```{theorem} shared.liveness
+314 | | :lean: Shared/Liveness:WellFormed.live_iff_allocated
+315 | | :uses: shared.well_formed
+    | |_________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Shared/Step:Give
+note: missing required input lean:Shared/Step:Promote
+note: missing required input lean:Shared/Step:Resolve
+note: missing required input lean:Shared/Step:Step
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.liveness`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.path_exclusivity: correspondence stale decision
+   --> md/shared.md:292:1
+    |
+292 | / ```{theorem} shared.path_exclusivity
+293 | | :lean: Shared/Liveness:WellFormed.path_mode_exclusive
+294 | | :uses: shared.well_formed shared.resolution
+    | |___________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Shared/Syntax:ClassName
+note: missing required input lean:Shared/Syntax:FieldName
+note: missing required input lean:Shared/Syntax:ObjectId
+note: missing required input lean:Shared/Syntax:VariableId
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.path_exclusivity`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.resolution: correspondence stale decision
+   --> md/shared.md:149:1
+    |
+149 | / ```{definition} shared.resolution
+150 | | :lean: Shared/State:Mode.join Shared/Step:Resolve
+151 | | :uses: shared.state shared.syntax
+    | |_________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Shared/Soundness:Compatible
+note: missing required input lean:Shared/Step:Give
+note: missing required input lean:Shared/Step:Promote
+note: missing required input lean:Shared/Step:Step
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.resolution`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.soundness: correspondence stale decision
+   --> md/shared.md:329:1
+    |
+329 | / ```{theorem} shared.soundness
+330 | | :lean: Shared/Soundness:Steps.from_initial
+331 | | :uses: shared.state shared.syntax shared.give shared.steps shared.well_formed shared.liveness shared.path_exclusivity
+    | |_____________________________________________________________________________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Shared/Liveness:WellFormed.path_mode_exclusive
+note: missing required input lean:Shared/Step:Eval
+note: missing required input lean:Shared/Step:EvalArgs
+note: missing required input lean:Shared/Step:State.allocate
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.soundness`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.state: correspondence stale decision
+   --> md/shared.md:106:1
+    |
+106 | / ```{definition} shared.state
+107 | | :lean: Shared/Syntax:ObjectId Shared/Syntax:Class Shared/Syntax:Classes Shared/Soundness:ClassesWellFormed Shared/State:Mode Shar...
+108 | | :uses: shared.give shared.syntax given.programs
+    | |_______________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Shared/Soundness:Compatible
+note: missing required input lean:Shared/Step:Give
+note: missing required input lean:Shared/Step:Promote
+note: missing required input lean:Shared/Step:Resolve
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.state`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.steps: correspondence stale decision
+   --> md/shared.md:178:1
+    |
+178 | / ```{definition} shared.steps
+179 | | :lean: Shared/State:Configuration Shared/State:Configuration.initial Shared/State:Configuration.finished Shared/Step:Eval Shared/...
+180 | | :uses: shared.state shared.syntax shared.resolution shared.give
+    | |_______________________________________________________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Shared/Soundness:Compatible
+note: missing required input lean:Shared/Step:Eval
+note: missing required input lean:Shared/Step:EvalArgs
+note: missing required input lean:Shared/Step:State.allocate
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.steps`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.syntax: correspondence stale decision
+  --> md/shared.md:36:1
+   |
+36 | / ```{definition} shared.syntax
+37 | | :lean: Shared/Syntax:ClassName Shared/Syntax:FieldName Shared/Syntax:VariableId Shared/Syntax:Class Shared/Syntax:Classes Shared/S...
+38 | | :uses: shared.give given.programs
+   | |_________________________________^ evidence required for this unit
+   |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Shared/Soundness:Compatible
+note: missing required input lean:Shared/Step:Give
+note: missing required input lean:Shared/Step:Promote
+note: missing required input lean:Shared/Step:Resolve
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.syntax`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs
+error: stale evidence for shared.well_formed: correspondence stale decision
+   --> md/shared.md:264:1
+    |
+264 | / ```{definition} shared.well_formed
+265 | | :lean: Shared/State:Allocated Shared/State:Live Shared/State:References Shared/Soundness:Owners Shared/Soundness:Compatible Share...
+266 | | :uses: shared.state
+    | |___________________^ evidence required for this unit
+    |
+note: missing required input context:lean/Common/FiniteMap.lean
+note: missing required input context:lean/Common/FiniteMapExamples.lean
+note: missing required input context:lean/Unique/EvaluationChecks.lean
+note: missing required input context:md/repo/writing-style.md
+note: missing required input lean:Shared/Step:Give
+note: missing required input lean:Shared/Step:Promote
+note: missing required input lean:Shared/Step:Resolve
+note: missing required input lean:Shared/Step:Step
+help: run `cargo run -p mdbook-dada --bin dada-spec -- prepare shared.well_formed`, review the packet, then use `dada-spec record <bundle> <review>`
+help: follow md/repo/correspondence-review.md; do not refresh hashes without reviewing changed inputs

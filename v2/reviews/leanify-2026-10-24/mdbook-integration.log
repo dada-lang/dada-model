@@ -1,0 +1,8 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running tests/evidence_validation.rs (target/debug/deps/evidence_validation-8f216222e6037633)
+
+running 1 test
+test actual_mdbook_pipeline_rejects_includes_in_reviewed_content ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 25 filtered out; finished in 0.56s
+

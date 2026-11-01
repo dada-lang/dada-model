@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "7ad0dd992c4450ec9cd056397991db5f022e03891052e1ce957b51a512b31a93",
+  "reviewer": "Independent Codex reviewer /root/review_given_renewal",
+  "provenance": "Independent source audit followed by direct reading and comparison of the immutable packet inputs on 2026-11-01. Shared unit, selection and policy snapshots were read once per identical input across this 25-unit review set. No earlier favorable decision was used as evidence for the conclusion.",
+  "examined": [
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.classes and unit:given.syntax introduce the name categories and statements before this unit introduces program Π, class table Δ, sequence P, finite partial maps and finite lists. Classes is a list of (ClassName,Class) pairs and Program contains classes plus List Statement, matching the authored program decomposition. ClassesWellFormed requires both Nodup class-name keys and, for every declaration member, Nodup declared fields. The prose states unique class names when introducing Δ and then requires distinct field lists; taken together these are exactly the two formal conditions. Ordered statement and field lists are retained; no type assignment for fields is added.",
+  "limitations": [
+    "This is a correspondence comparison of the frozen prose, exact selected statements/definitions, and identified semantic context. No Lean build, test execution, or proof-tactic audit was performed; compilation and evidence validation are separate checks.",
+    "Listed full-source context snapshots were consulted for the supporting declarations and example states discussed in the rationale and dependency comparisons; the listing does not claim examination of every unrelated proof or declaration in those files."
+  ],
+  "supersedes": [
+    "e3e1ca14b5a77a058e8655c3cb1cb8996777f148f619abeeca7a4e3161718b9a"
+  ]
+}

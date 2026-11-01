@@ -1,48 +1,19 @@
-name = "dada_heap"
+name = "dada_model"
 version = "0.1.0"
-defaultTargets = ["Heap", "Invariants", "Places", "PlaceEffects", "Destruction", "PlaceOperations", "PlaceExamples", "ReferenceUpdates", "Moves", "Access", "MoveValidity", "AccessConflicts", "PathOperations", "PathExamples", "WellFormed"]
+defaultTargets = ["Common", "Unique", "Shared", "Correspondence"]
 
 [[lean_lib]]
-name = "Heap"
+name = "Common"
+globs = ["Common.+"]
 
 [[lean_lib]]
-name = "Invariants"
+name = "Unique"
+globs = ["Unique.+"]
 
 [[lean_lib]]
-name = "Places"
+name = "Shared"
+globs = ["Shared.+"]
 
 [[lean_lib]]
-name = "PlaceEffects"
-
-[[lean_lib]]
-name = "PlaceOperations"
-
-[[lean_lib]]
-name = "Destruction"
-
-[[lean_lib]]
-name = "PlaceExamples"
-
-[[lean_lib]]
-name = "ReferenceUpdates"
-
-[[lean_lib]]
-name = "Moves"
-
-[[lean_lib]]
-name = "Access"
-
-[[lean_lib]]
-name = "MoveValidity"
-
-[[lean_lib]]
-name = "AccessConflicts"
-
-[[lean_lib]]
-name = "PathOperations"
-
-[[lean_lib]]
-name = "PathExamples"
-
-[[lean_lib]]
-name = "WellFormed"
+name = "Correspondence"
+globs = ["Correspondence.+"]

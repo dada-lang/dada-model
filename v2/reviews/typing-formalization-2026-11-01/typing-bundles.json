@@ -1,0 +1,34 @@
+[
+  {
+    "unit": "given.typing.environments",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/473925e7fce436aefe73549f358ab21993d1502babb4306cf81986666cdd5ac9.json"
+  },
+  {
+    "unit": "given.typing.example.take",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/cc80dbd9cdebd2892e4027d56fc582ca1bb7f03f5f9aa5d2fc199bba0e10c394.json"
+  },
+  {
+    "unit": "given.typing.expressions",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/2593d28d65f4d0cba5ba418d372ab7cabfd02ef7da524e0de04c0cb112f081c4.json"
+  },
+  {
+    "unit": "given.typing.bindings",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/143648ea790977493e00443dfe2b5903a6e5980c262b1b4be2c5ea80a6dce98e.json"
+  },
+  {
+    "unit": "given.typing.statements",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/5a26a9bf6fb01feeae3d788856854241d265a911fea6e4f5c429b9fef2948975.json"
+  },
+  {
+    "unit": "given.typing.example.moves",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/2e87cafa8113ff20ed386b89110a6bbe0e7a8463f95cd301a729e1733048872f.json"
+  },
+  {
+    "unit": "given.typing.realization",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/056e12eb691ca37ef7f29192406aac7accd43a75535a99ee3691e8d9c81429df.json"
+  },
+  {
+    "unit": "given.typing.configurations",
+    "bundle": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/bundles/7d36aec938313681e2b6951ac45431b2b7e40f020605e76964819cd5a8ef5171.json"
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "a724c2113392f643a77cfa1b0dd164d4ed2833d959c4d99c20acfa5ad37ade33",
+  "reviewer": "Codex subagent /root/review_superstructure_evidence",
+  "provenance": "Fresh adversarial correspondence review on 2026-11-01. Read the immutable bundle unit, required exact Rust/test selections, review policy, and listed supporting context. Independently traced error and boundary cases; did not reuse earlier positive conclusions. Rust best-practice skill and v2/AGENTS.md were consulted. Final-bundle delta review: compared all 22 previous/current bundle input manifests and read the changed inventory helper, new hidden-Markdown regression, and revised coverage unit/context. All other required exact selections, unit bodies, policy, and three mechanical extras are byte-identical to the inputs already examined in this review.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/spec-system.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lib.rs:escape",
+    "rust:mdbook-dada/src/lib.rs:protect_math",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order",
+    "test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders",
+    "test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles",
+    "test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/src/lean.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "tool:mdbook-dada/tests/fixtures/lean/Mutual.lean",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "unit:meta.math.typesetting"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Math-only directive bodies are escaped directly into a MathJax display wrapper. Markdown bodies instead pass through protect_math, which respects literal parser ranges and protects explicit delimiters before Markdown smart punctuation runs. The tests pass resulting text back through pulldown-cmark with smart punctuation enabled and verify primes, TeX row breaks, braces, and underscores remain intact. Further tests leave code/link/HTML examples literal and prevent anchor-like text inside math from defining roles. Ordered grammar citations remain grouped in one source selector; author placeholders and mathematical commands are not translated or interpreted as Lean.",
+  "limitations": [
+    "This is a source and test-body correspondence review. It does not claim that the reviewed test suite, Lean compiler, browser, or configured command profiles were executed by this reviewer. Named context inputs were consulted for the relevant helpers, fixture declarations, or presentation rules; unrelated declarations in conservative file snapshots are not asserted to have been fully reviewed."
+  ],
+  "supersedes": []
+}

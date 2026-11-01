@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "e4564eef908d3c1a817f593db6f896e58ddf26eaff8bfb186a5cc657fce08a42",
+  "reviewer": "Codex delegated adversarial reviewer /root/adversarial_tooling",
+  "provenance": "Fresh adversarial review of the immutable expanded bundle e4564eef908d3c1a817f593db6f896e58ddf26eaff8bfb186a5cc657fce08a42. I did not author the specification tooling or the earlier correspondence record. I inspected the unit, its exact Rust/test selections, the policy, the relevant parser/renderer/inventory/validator source, and all four extra inputs. I developed and ran the five isolated counterexamples before the expanded packet was prepared, then read the persisted portable harness and independently rerun result snapshot in this packet. I also compiled the two small Lean constructor fixtures with the pinned Lean environment. Synthetic fixture approvals were confined to temporary test projects and establish no semantic claims. This is an actual negative correspondence judgment, not human approval or a general correctness proof.",
+  "examined": [
+    "context:mdbook-dada/src/evidence.rs",
+    "context:mdbook-dada/src/inventory.rs",
+    "context:mdbook-dada/tests/evidence_validation.rs",
+    "extra:book.toml",
+    "extra:reviews/adversarial-2026-10-24/reproduce_tooling.py",
+    "extra:reviews/adversarial-2026-10-24/tooling-results.txt",
+    "extra:reviews/adversarial-2026-10-24/tooling.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:validate_bundle",
+    "rust:mdbook-dada/src/inventory.rs:Inventory::inputs",
+    "test:mdbook-dada/tests/evidence_validation.rs:rejects_missing_or_substituted_required_inputs",
+    "tool:mdbook-dada/src/lean.rs",
+    "tool:mdbook-dada/src/lib.rs",
+    "tool:mdbook-dada/src/main.rs",
+    "tool:mdbook-dada/src/units.rs",
+    "unit:meta.evidence.required_inputs"
+  ],
+  "conclusion": "mismatch",
+  "rationale": "The unit requires the complete authored unit and every exact cited Lean declaration, with required context, and requires changed or substituted inputs to be reported. Inventory::inputs and validate_bundle enforce identity against the manifest returned by Inventory::add_unit, and the cited rejects_missing_or_substituted_required_inputs test demonstrates rejection when an already-derived exact selection is removed or replaced. The frozen adversarial fixtures show that the derived manifest itself can be incomplete or select the wrong bytes. In nested-legacy, an accepted Rust-backed definition contains a rendered legacy Lean grammar citation; no exact Lean selection or Lean context is captured, and changing Nat to Bool leaves check current/corresponds. In wrong-constructor, the Type selector absorbs an indented sibling declaration and accepts Fixture:First.second, manufacturing a First header with Second.second although First.second does not exist. In truncated-rule, extract_case trims the masked source and drops the final string index from Indexed.zero; the required exact selection is therefore not the actual constructor. Full-file snapshots cannot repair those missing or altered exact inputs under the unit's explicit requirement. The two rendering-boundary fixtures establish additional omissions: changing an mdBook include changes the built unit prose without changing its reviewed inputs, and changing configured lean-source makes the renderer display a different declaration while the inventory still selects root/lean and check remains current. The extra tooling-results.txt records these accepted outcomes, and the extra reproduce_tooling.py makes them reproducible against the source in this bundle. The existing attack test covers manipulation of a correctly derived manifest; it does not cover omitted include/nested/configuration dependencies or incorrect source extraction. These concrete counterexamples contradict input completeness and current-source identity as stated, so the conclusion is mismatch rather than inconclusive.",
+  "limitations": [
+    "The review establishes five specific counterexamples; it does not establish that all other inventory, renderer, selector, path, or record-lifecycle behavior is correct. Source snapshots listed as examined were read for relevant functions and interactions, not as a claim to audit every line in those files.",
+    "The original isolated harness was executed by this reviewer. The persisted portable harness and tooling-results.txt were read from the expanded bundle; the latter records the parent agent's independent rerun. The configured-root case invokes the actual preprocessor with the changed configured root; the include case executes a full mdBook build.",
+    "The exact cited existing Rust test was inspected but was not executed by this reviewer during this rereview. Successful binary builds and the two small Lean fixture compilations are separate mechanical observations and do not establish the broad meta requirement or any repository semantic theorem."
+  ],
+  "supersedes": [
+    "17095d6bf6b0ea929f5c36388777cb2373013eab083cb5a3bc56cb3980bdbd9a"
+  ]
+}

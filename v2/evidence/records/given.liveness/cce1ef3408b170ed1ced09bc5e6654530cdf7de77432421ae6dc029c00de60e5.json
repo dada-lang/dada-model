@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "0e60938d5098dee86309a53c28a82ae64529ffcad9828ae6c151ff0671183715",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle 094cfb4049733a0c9491296ce0b1980a51fa80bfce2259948dd20e946e745064 with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Common/Rooted.lean",
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Unique/Liveness.lean",
+    "context:lean/Unique/State.lean",
+    "lean:Unique/Liveness:WellFormed.live_iff_allocated",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Soundness:WellFormed",
+    "lean:Unique/State:Allocated",
+    "lean:Unique/State:Live",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:References",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:ObjectId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.liveness",
+    "unit:given.state",
+    "unit:given.well_formed"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "lean:Unique/Liveness:WellFormed.live_iff_allocated has only wf : WellFormed classes state as its substantive premise and concludes Live state object ↔ Allocated state object for arbitrary classes, state, and object. This is exactly the displayed equivalence in unit:given.liveness and includes well-formed graphs not known to be execution-reachable. The dependent Live and Allocated definitions interpret the two directions as a variable-rooted owning path for each allocated object and no such path ending at a missing object. No hidden initial-state, completion, or program-progress assumption narrows the theorem. For this final packet, the only delta from the reviewed bundle 094cfb4049733a0c9491296ce0b1980a51fa80bfce2259948dd20e946e745064 is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "The liveness result is rooted graph reachability under structural well-formedness, not temporal progress or eventual termination. Proof tactics and the bounded-rank proof were left to Lean.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "15c086284c3343f834244ebb8e71b3030bf89dd8e13ed26a706f73f93bab936c"
+  ]
+}

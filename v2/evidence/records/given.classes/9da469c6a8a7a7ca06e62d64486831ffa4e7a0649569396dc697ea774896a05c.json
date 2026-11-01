@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "33c28da16d0f1689ec4f62e0d0cf6e17690016d17a1fd2be87a54e20ee119b7c",
+  "reviewer": "Codex /root/shared_formalization — independent Given/Unique cross-review",
+  "provenance": "Agentic source review on 2026-10-24 by /root/shared_formalization. This agent implemented the related Shared layer, not the Unique implementation or Given chapter. It independently compared all required immutable bundle inputs, the complete authored units and their dependencies, exact selected Lean declarations/examples, and explicitly listed relevant Unique source contexts. Earlier review feedback about finite-map representation was rechecked after revision. No favorable verdict was inferred from preparation or build success.",
+  "examined": [
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.classes introduces d, C, f, and the natural field count before using them in the class grammar. lean:Unique/Syntax:ClassName and FieldName are name categories, and Class is precisely an ordered field-name list without field types, including []. The name belongs to the Classes entry rather than the Class record; that representation is visible in context:lean/Unique/Syntax.lean. context:lean/Unique/Soundness.lean supplies ClassesWellFormed, which enforces the distinct-field convention; it is not an intrinsic restriction of the raw List type. The introductory ownership intent agrees with the Slot representation and Take/Eval/allocate definitions in the examined State and Step contexts: giving clears one slot and construction installs its argument references. This is an introductory definition, not a claim that every raw Class value is well formed.",
+  "limitations": [
+    "This is a source/statement correspondence review, not a kernel proof check or an execution log. Relevant definitions and theorem assumptions in listed context snapshots were inspected; this does not attest to auditing every tactic or unrelated declaration in those files.",
+    "Finite-map and uniqueness prose is read with the documented distinct-key/well-formedness conventions. The raw Lean list representations also admit malformed states; this review does not claim functional lookup or the stated invariants for such raw states."
+  ],
+  "supersedes": [
+    "5140f5ce3c77433a38e708eaa39b122c05f6ba0781de0dec99e3ab450a4b50eb"
+  ]
+}

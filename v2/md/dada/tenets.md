@@ -51,11 +51,6 @@ useful execution account for programs before static permission checking. We must
 still define faults and access rules; independence does not mean every unchecked
 program is valid.
 
-For example, the proposed heap model permits an owner to be transferred without
-intrinsically invalidating existing shared leases of the surviving object. A
-checker or concrete implementation may impose further restrictions because of
-relocation or because it cannot establish continued validity.
-
 ## Tracing-friendly execution
 
 We want efficient backends for the JVM, WASM-GC, WASM, and native x86. The semantics

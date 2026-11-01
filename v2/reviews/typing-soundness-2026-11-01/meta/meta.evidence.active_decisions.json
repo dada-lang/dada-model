@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "112e76c05a95389466b110fc552359c06ce6fe44d553ce5db6cd4b9aa75ba9d2",
+  "reviewer": "Codex independent renewal reviewer /root/review_meta_renewal",
+  "provenance": "Fresh correspondence review by the Codex GPT-6 subagent on 2026-11-01. Read the immutable packet's required raw units, exact implementation/test selections, and policy, then inspected the supporting bundled context identified in the rationale. Shared inputs were checked identical across the five packets; no previous review rationale was used as a substitute for comparison. No source edits or test executions were performed by this reviewer.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/authoring.md",
+    "context:md/repo/spec-system.md",
+    "context:md/repo/writing-style.md",
+    "context:mdbook-dada/src/evidence.rs",
+    "context:mdbook-dada/tests/evidence_validation.rs",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "test:mdbook-dada/tests/evidence_validation.rs:mismatch_and_inconclusive_reviews_never_count_as_correspondence",
+    "test:mdbook-dada/tests/evidence_validation.rs:recording_rechecks_sources_even_with_an_existing_inventory",
+    "test:mdbook-dada/tests/evidence_validation.rs:revised_review_can_supersede_same_unit_after_consulting_more_context",
+    "test:mdbook-dada/tests/evidence_validation.rs:stale_supersession_cannot_fall_back_to_an_independent_positive_review",
+    "tool:book.toml",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:spec.json",
+    "unit:meta.evidence.active_decisions"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "In unit:meta.evidence.active_decisions, the decision is active when no retained decision for that unit supersedes its digest. rust:mdbook-dada/src/evidence.rs:record reloads Inventory from disk before validate_bundle/validate_review, rejects a draft, resolves each superseded digest under the same unit, checks the old record's digest and bundle unit, and writes a new immutable record. The full evidence.rs snapshot confirms write_immutable preserves existing bytes and save_bundle independently refreshes the inventory. rust:mdbook-dada/src/evidence.rs:check validates bundle and record integrity, collects supersession across all valid records, then separately detects any unsuperseded record whose bundle is not current. That stale_active branch takes precedence over all positive current records. Among current active decisions, a mismatch or inconclusive verdict prevents correspondence; empty active evidence also fails. Draft handling emits an issue before decision acceptance. This implements all stated claims without reviving an old decision when its replacement becomes stale.\n\nThe four selected tests cover respectively a prose edit after inventory caching; an additional mismatch or inconclusive decision alongside completed positive reviews; supersession with newly consulted context while retaining the old bytes and rejecting another unit's digest; and a replacement whose extra resolution file changes while an independent positive review remains current. Fixture::new, review, complete_reviews, and repack in the evidence_validation.rs snapshot establish that these cases exercise the actual evidence lifecycle with synthetic review data, rather than semantic approvals. Draft refusal and the general immutable-write path are supported here by implementation inspection, not by those four cited tests.\n\nThe terminology is established in the bundled authoring guide and spec-system.md's opening, Evidence and validation, and Selecting formalizations sections: units have IDs/raw bodies, citations select source, and bundles/records preserve inputs/decisions. This implementation contract uses ordinary prose and code identifiers rather than mathematical metavariables; no undefined judgment or forward mathematical reference is needed.",
+  "limitations": [
+    "This is a source correspondence review. I inspected the cited test bodies and their fixtures but did not execute Cargo, mdBook, or Lean in this review; it supplies no mechanical pass claim.",
+    "For conservative snapshots, examined records use of the relevant portions, not a claim to have audited every line. I read spec-system.md lines 1-217 and 282-385; supporting Rust/test portions are identified in the rationale. Unrelated renderer features and Lean proof bodies were not reviewed.",
+    "The review concerns record lifecycle and freshness behavior. It does not establish that a reviewer actually read inputs or that a positive rationale is mathematically correct. Draft refusal is inspected in the implementation rather than exercised by this unit's four cited tests."
+  ],
+  "supersedes": [
+    "d138b17e7f3def6c8287a3d455ca525c9f02b5873835ae53db23b92ae7fc28f7"
+  ]
+}

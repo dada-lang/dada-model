@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "0f613bdfcb71661638a00324a50449e43ed2da60970ab707641b5d006067611e",
+  "reviewer": "Codex subagent /root/review_superstructure_evidence",
+  "provenance": "Fresh adversarial correspondence review on 2026-11-01. Read the immutable bundle unit, required exact Rust/test selections, review policy, and listed supporting context. Independently traced error and boundary cases; did not reuse earlier positive conclusions. Rust best-practice skill and v2/AGENTS.md were consulted.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lib.rs:markdown_heading",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/lib.rs:selector_header",
+    "test:mdbook-dada/tests/book.rs:leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup",
+    "test:mdbook-dada/tests/book.rs:nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body",
+    "test:mdbook-dada/tests/book.rs:unanchored_rendered_blocks_share_named_headers_and_grouped_choices",
+    "test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent",
+    "test:mdbook-dada/tests/units.rs:meta_units_show_named_rust_implementation_and_test",
+    "test:mdbook-dada/tests/units.rs:structured_units_render_identified_headers_and_exact_lean_views",
+    "tool:mdbook-dada/src/lean.rs",
+    "tool:mdbook-dada/tests/fixtures/lean/Mutual.lean",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "tool:theme/dada.css",
+    "unit:meta.math.source_view"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The common selector_header renders identity and view controls as siblings, with Rendered checked initially; CSS pushes controls to the right and hides only the direct body/source children of the selected enclosing group. A nested Facts radio therefore cannot switch its surrounding Lean block. Structured render_unit keeps its shield and Draft status in the header, and suppresses a source selector when a draft has no citation. Legacy markdown_heading moves only leading identifying anchors; tests verify later anchors remain in the body, IDs appear once, and prose markup survives. Rust and test selections are both present in the alternate Rust view. This supports the structural presentation contract, subject to browser support for the stylesheet selectors.",
+  "limitations": [
+    "This is a source and test-body correspondence review. It does not claim that the reviewed test suite, Lean compiler, browser, or configured command profiles were executed by this reviewer. Named context inputs were consulted for the relevant helpers, fixture declarations, or presentation rules; unrelated declarations in conservative file snapshots are not asserted to have been fully reviewed.",
+    "Static HTML/CSS/configuration checks do not establish browser support, CDN availability, or every rendered formula/layout."
+  ],
+  "supersedes": []
+}

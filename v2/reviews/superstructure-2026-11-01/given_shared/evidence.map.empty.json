@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "8a400bb29b4b258405ed07d931b719499c2d46ed7f2f116af01029cf43f4dd39",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt. Renewal after the hidden-Markdown inventory correction: compared the complete old/new bundle input maps, confirming identical authored unit, cited Lean, dependency, policy and other retained inputs. Examined the three changed input regions: Markdown directory traversal, the hidden-file/hidden-directory regression with its fixture helpers, and the specification coverage contract. This is an impact comparison supported by the earlier complete semantic review, not an assertion that the test was run.",
+  "examined": [
+    "context:lean/Common/FiniteMap.lean",
+    "context:md/repo/spec-system.md",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMapExamples:empty_map",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "unit:evidence.map",
+    "unit:evidence.map.empty"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The dependency evidence.map defines the finite-map representation and empty map. The selected anonymous example specializes FiniteMap.empty to Nat keys and values and asserts entries = []; that directly covers the stated concrete example and absence of pairs. It does not substitute a different map property for the displayed scenario. For evidence.map.empty, the final bundle preserves every previously examined semantic input byte-for-byte. The only changes broaden Markdown discovery to dot-prefixed files and directories, test that both require evidence, and state that coverage explicitly. Inventory::load already places every parsed structured unit in the required set. This changes which chapters are checked without changing this unit, its cited declarations, or their interpretation; the correspondence conclusion therefore remains supported.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "24402c2ac6986ad1227b8b5f6d9acbd3111d7bf3edad288ba63b900e1569df44"
+  ]
+}

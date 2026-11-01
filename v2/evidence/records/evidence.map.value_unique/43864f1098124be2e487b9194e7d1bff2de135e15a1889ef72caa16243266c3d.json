@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "bundle": "b74eca16ffa0296333e4ca3f40f1dcc6d3335e4e1b88d7e47c6b62c533deed90",
+  "reviewer": "Independent Codex reviewer /root/review_given_renewal",
+  "provenance": "Independent source audit followed by direct reading and comparison of the immutable packet inputs on 2026-11-01. Shared unit, selection and policy snapshots were read once per identical input across this 25-unit review set. No earlier favorable decision was used as evidence for the conclusion.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMap:FiniteMap.value_unique",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.value_unique"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The dependency unit:evidence.map introduces the map, entry pairs, and their key/value domains before the lemma. The exact Common/FiniteMap:FiniteMap.value_unique statement quantifies over a FiniteMap, an implicit key and two implicit values, assumes membership of both (key,value) and (key,value'), and concludes value = value'. Its FiniteMap parameter includes the uniqueKeys condition from the definition. There is no ordering or DecidableEq parameter on Key or Value. This matches both the prose's conditional equality and its stated absence of ordering/decidable-key-equality assumptions.",
+  "limitations": [
+    "This is a correspondence comparison of the frozen prose, exact selected statements/definitions, and identified semantic context. No Lean build, test execution, or proof-tactic audit was performed; compilation and evidence validation are separate checks."
+  ],
+  "supersedes": [
+    "d69d800080817671a34b7d3ec9af4c40f41250bc671a9cdc27dd8ab782de2445"
+  ]
+}

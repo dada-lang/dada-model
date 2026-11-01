@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "f9b413872dc6b14c058c619b2a96d0f16fb833775ca2243b9582733788edc355",
+  "reviewer": "Codex independent repair reviewer /root/review_repaired_meta",
+  "provenance": "Independent fresh-context adversarial correspondence review. I did not author the repairs. I read all required unit, exact Rust/test selections, review policy, and frozen extra inputs; inspected the relevant source/helper context; and directly executed the units and evidence_validation integration tests, including the explicitly ignored actual-mdBook test in a separate invocation. The historical harness was read for reproduction context, not executed as a repaired-behavior oracle because it asserts the former bugs. This record is my actual comparison judgment, not human approval or a mechanical-test certificate.",
+  "examined": [
+    "context:mdbook-dada/src/configuration.rs",
+    "context:mdbook-dada/src/inventory.rs",
+    "context:mdbook-dada/src/lib.rs",
+    "context:mdbook-dada/tests/evidence_validation.rs",
+    "extra:reviews/adversarial-2026-10-24/tooling.md",
+    "extra:reviews/repair-2026-10-24/reviewed-original-harness.py",
+    "extra:reviews/repair-2026-10-24/tooling-checks.txt",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::check_context",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::load",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::markdown_root",
+    "rust:mdbook-dada/src/inventory.rs:Inventory::inputs",
+    "rust:mdbook-dada/src/lib.rs:process_configured",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_lean_root_is_shared_by_rendering_and_evidence",
+    "tool:book.toml",
+    "tool:mdbook-dada/src/main.rs",
+    "unit:meta.sources.configuration"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "SourceConfiguration::load reads book.src and preprocessor.dada.lean-source from the same book.toml used by Inventory::load and process_configured. check_context compares those fields with the runtime mdBook context before processing. Both root accessors route through input_path, whose normal-relative-path and canonical-containment checks reject outside-project paths, including symlink escapes. The production process_configured path passes the canonical project root separately from the Lean root to Rust selection; render_unit and Inventory::add_unit both select Rust citations relative to that project root. Inventory::inputs includes tool:book.toml, selects Lean targets using the configured Lean root, and enumerates conservative Lean source and Lake/toolchain context under that root. The cited configured_lean_root_is_shared_by_rendering_and_evidence test starts with current fixture reviews, changes to formal/model, observes stale evidence, verifies the replacement packet and rendered selection use the new value and path, rejects a conflicting runtime override, and renders Rust from the project root. I read the entire test and ran it in the passing evidence_validation binary. The original configured-root exploit in the frozen adversarial report is closed by shared selection plus configuration fingerprinting, rather than fingerprinting alone.",
+  "limitations": [
+    "This contract concerns the production mdBook entry point process_configured; the lower-level process_with_lean helper intentionally accepts caller-supplied roots for fixtures and is not the configured boundary.",
+    "Canonical path containment is supported here by helper inspection. The cited configuration regression covers the nested Lean root and conflicting runtime root, not an exhaustive matrix of filesystem/configuration cases.",
+    "No claim is made that all renderer output or all legacy requirements have correspondence evidence."
+  ],
+  "supersedes": []
+}

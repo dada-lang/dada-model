@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "a691533c916f7c3aa7ec54f6e1759bd24fbb1319184554b0fbe682a8f2f50e60",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle 563de9f78afafcc813e3a07e60f6f73cff10017531ffd3a0007da354de5bdbc2 with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Unique/Liveness.lean",
+    "context:lean/Unique/State.lean",
+    "lean:Unique/Liveness:WellFormed.owner_count",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Soundness:WellFormed",
+    "lean:Unique/State:Allocated",
+    "lean:Unique/State:Live",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:References",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:ObjectId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.single_owner",
+    "unit:given.state",
+    "unit:given.well_formed"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.single_owner matches lean:Unique/Liveness:WellFormed.owner_count: for arbitrary state/classes and object, WellFormed plus Allocated implies (References state).count object = 1. References collects all initialized variables and all object fields as a list, preserving equal occurrences, so count measures immediate owning slots. The prose explicitly distinguishes that count from the number of longer access paths through enclosing containers, avoiding a stronger and different ownership claim. The allocation premise is present in both accounts. For this final packet, the only delta from the reviewed bundle 563de9f78afafcc813e3a07e60f6f73cff10017531ffd3a0007da354de5bdbc2 is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "This is immediate owning-occurrence uniqueness for allocated objects. It does not assert uniqueness of syntactic access paths or add any permission/borrowing semantics.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "d335ef20672dd2e1a754e4e23488e8a4f78596bfaf34c0067b2bb45f36535db3"
+  ]
+}

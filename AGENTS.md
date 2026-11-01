@@ -4,10 +4,74 @@ The original Rust model and mdBook are preserved in `v1/` as a working reference
 Read `v1/AGENTS.md` before changing that model. Its paths and commands are relative
 to `v1/`. The v2 design draft is an mdBook in `v2/md/`, configured by `v2/book.toml`.
 The book separates repository methods and specification-system requirements
-(`v2/md/repo/`), Dada language goals (`v2/md/dada/`), and the heap model.
-`v2/mdbook-dada` is a Rust mdBook preprocessor in the v2 Cargo workspace.
-It indexes MyST-style `{anchor}`, `{definition}`, `{obligation}`, and
-`{anchor-ref}` roles and renders `{heap}` fenced directives as SVG from declarative facts, with a Rendered/Facts selector.
+(`v2/md/repo/`), Dada language goals (`v2/md/dada/`), and the Given/Shared language layers.
+`v2/mdbook-dada` is a shared Rust library in the v2 Cargo workspace, with the
+`mdbook-dada` renderer and `dada-spec` evidence CLI. Read `v2/AGENTS.md` before
+changing structured units, evidence, or the tooling. `v2/spec.json` explicitly
+selects strict chapters and review policies. Every new-style unit under `md/`
+requires evidence; legacy paragraphs outside strict chapters are not implicitly
+covered by evidence checks. Structured directives put a stable
+unit ID on the opening line, then `:lean:` source citations and `:uses:` context
+IDs in options before the body. Meta definitions cite `:rust:` implementation
+symbols and `:tests:` test symbols. Do not mix Lean and Rust targets in one unit.
+Definitions introduce concepts and judgments; they do not require proofs.
+`:status: draft` preserves a unit's intended kind while separately marking unfinished formalization. Drafts
+may omit source citations; supplied citations remain checked by kind. Drafts
+fail evidence validation and cannot receive affirmative correspondence records.
+All semantic prose in
+strict chapters belongs in unit bodies, including explanatory examples.
+The complete raw unit and exact cited declarations are required evidence inputs.
+Structured units reject mdBook expansion directives (including literal samples)
+and nested legacy citation blocks; separate units and `:uses:` make related
+sources explicit. Renderer and evidence share the source-root configuration in
+`book.toml`, which is itself a freshness input. The original chapter sources are
+validated before processing mdBook's expanded input.
+Content-hashed bundles and decisions live under `v2/evidence/`; preparing a packet
+never approves it. `cargo test --workspace` from `v2/` includes deterministic
+syntactic evidence validation, using `annotate-snippets` diagnostics and no agent,
+network, or Lean invocation. Review compares theorem statements with intent;
+Lean checks proofs. Current conservative context hashing can invalidate reviews
+after proof-only edits. See `v2/md/repo/authoring.md`,
+`v2/md/repo/correspondence-review.md`, and `v2/md/repo/layer-extension.md` for the
+workflow and incremental models. Follow `v2/md/repo/writing-style.md` for
+intent-first explanations, concrete examples, and notation introduced before
+use. Build independently understandable layers from
+the Given/Shared foundation; the earlier monolithic heap draft and its Lean modules
+have been removed and must not serve as an implicit specification for later layers.
+Render give syntax as `p→` and
+`p→share`. The table of contents groups Operational semantics and Type system
+under Given and Shared, followed by CFlow. Navigation pages are
+`v2/md/given-overview.md` and `v2/md/shared-overview.md`; `v2/md/shared-typing.md`
+and `v2/md/cflow.md` are editorial placeholders, with no semantic units yet.
+The existing chapter paths remain unchanged. `v2/md/given-typing.md` contains
+strictly covered units for signed views, typing rules, and storage realization,
+with formal definitions and examples in `Unique/Views`, `Unique/Typing`,
+`Unique/TypingRealization`, and their checks. `Unique/TypingSafety` proves
+expression soundness for arbitrary pending values, machine progress and
+preservation, and completion after exactly one step per statement. `Unique/Unpacking` adds `Class → { fields }` patterns with structural
+preservation and embedding/reflection of the base machine. Shared correspondence
+still covers the base fragment. See `v2/AGENTS.md` for the formalization boundary.
+View omissions mean unknown and inaccessible, not empty. Positive entries expose
+whole declared subtrees; negative entries describe existing empty slots.
+View entries are prefix-incomparable. Expanded views are valid and normalize
+by collapsing complete positive subtrees. Bare `C` is shorthand for `C.{ε}`,
+not a separate type constructor; emptying is written `T[-ρ]`.
+Constructor arguments still require their whole declared class types.
+`v2/md/dada/future-extensions.md` records generic views as a proposal to revisit,
+not part of the current rules.
+The strict operational chapters live in `v2/md/given.md` and
+`v2/md/shared.md`, with standalone Lean modules under `v2/lean/Unique/` and
+`v2/lean/Shared/`. `Common/Rooted` supplies shared graph reasoning;
+`Correspondence/UniqueShared` proves forward and backward execution
+correspondence, including arbitrary successors, completion, and stuckness.
+Both layers prove structural well-formedness preservation and rooted liveness.
+See `v2/AGENTS.md` for their deliberately limited language scope. Ownership modes
+belong to references, not objects. Copying through shared access can change the
+final stored reference to shared. `Shared/Liveness` proves that no well-formed
+state admits both an entirely unique path and a shared path to the same object.
+
+The renderer also supports the following legacy authoring forms during migration.
+It indexes MyST-style `{anchor}`, `{definition}`, and `{anchor-ref}` roles and renders `{heap}` fenced directives as SVG from declarative facts, with a Rendered/Facts selector.
 Fenced `{grammar} File:Type ...`, `{judgment} File:Name`, and
 `{rule} File:Judgment.constructor` directives pair authored LaTeX bodies with
 cited Lean declarations or cases through a Rendered/Lean selector. Fenced
@@ -18,14 +82,20 @@ more citations to named `def`, `abbrev`, `structure`, or `inductive` declaration
 and shows their complete bodies. It rejects theorem, axiom, example, and
 constructor-only citations. Definition extraction supports the documented
 line-oriented equation, `:=`, and `where` bodies, including qualified names.
+Top-level `mutual` groups of named inductives are supported when their headers
+and the `mutual`/`end` delimiters start at column zero and each header ends in
+`where` on its first line. A citation selects one complete member; evidence
+retains the enclosing source. Nested groups and other mutual declaration kinds
+are rejected.
 Semantic Definition labels should have this citation-backed selector; modeling
 conventions and commentary remain ordinary prose or neutral anchors. Theorem and lemma blocks
 select exactly one named Lean `theorem`, including its complete proof, and reject
 definitions, axioms, and anonymous examples. Definitions introduce concepts;
-theorems and lemmas state proved results; proof obligations state unfinished
-claims. The inline `{definition}` role remains a compatibility spelling for a
+theorems and lemmas state results.
+Structured draft status distinguishes proposed results from established ones
+without changing their semantic kind. The inline `{definition}` role remains a compatibility spelling for a
 label, not a Lean citation; use a fenced definition for semantic definitions.
-Inline `{obligation}` markers register stable IDs. Generic `{anchor}` markers
+Generic `{anchor}` markers
 are neutral outside definition/proof blocks and inherit the surrounding
 Definition, Theorem, or Lemma label within them. No label establishes prose/proof correspondence.
 Leading identifying anchors in Markdown blocks move into the header as shields,
@@ -69,114 +139,37 @@ rejected with migration diagnostics. The old grammar DSL/parser and automatic
 Lean-to-LaTeX translator have been removed; Lean notation comments have no
 rendering effect. The build checks citations and supported declaration or example
 forms, not Lean proofs or correspondence between prose, mathematics, and Lean.
-Run `just test-lean` to compile all modules, including every cited example and theorem;
-review still establishes that the test covers the prose. Every semantic example
+Run `just test-lean` to compile all modules, including every cited example and theorem.
+Its `lake build --wfail` command rejects warnings, including those emitted by Lean `sorry`.
+Do not introduce admissions, suppress `warn.sorry`, or disable this check; any future allowance must require
+an explicit opt-in. Review still establishes that the test covers the prose. Every semantic example
 must cite its intended Lean test. Unfinished semantic scenarios are explicitly
 proposed or pending. Authoring-syntax illustrations remain ordinary prose and
-literal code. Review records and scripts
-providing correspondence evidence remain future work. The syntax, notation
-conventions, and review obligation are documented in `v2/md/repo/spec-system.md`;
+literal code. Structured units additionally participate in the configured review
+inventory; legacy inline anchors do not establish review boundaries. The syntax,
+notation conventions, and review requirements are documented in `v2/md/repo/spec-system.md`;
 theme CSS lives in `v2/theme/dada.css`.
 `{informational}` at the start of a paragraph labels nonnormative commentary.
 The former `{example}` paragraph prefix is rejected; use the fenced directive.
 `src/routing.rs` routes diagram edges orthogonally around boxes.
-Unique leases store a runtime `Place`; access paths resolve to places.
 Anchor IDs must be globally unique, and unresolved references fail the build.
-Heap facts group the live variable store with `vars = variables()` and slots such
-as `vars.p`; this is a diagram grouping, not a frame identity. Heap facts use
-`lease(node.field)` (or an array slot) for unique edge targets;
-owned, showned, and shlease references target objects.
-Graph structure checks do not establish heap invariants. Initial Lean state
-declarations live in `v2/lean/Heap.lean`. `v2/lean/` is a Lake project pinned by
-`lean-toolchain`; its default targets compile all formalization modules. The heap chapters use a shared vocabulary
-of short mathematical variables; overbars denote finite ordered sequences and
-partial-map arrows denote finite maps. Primitive values are an implicit common
-parameter. The book explains representation abstractions and hidden proof terms
-while preserving their conditions; exact representations remain available in Lean.
-The declarations compile with Lean 4.35.0. Heap state contains an object map and
-one ordered store of all live variable slots, including temporaries and suspended
-callers' variables. Its finite-map entries record newest-first allocation order.
-`VariableId` identifies a runtime binding lifetime separately from its
-source name; `Place.variable` selects its slot. There are no heap frames.
-The current `Operation`/`Step` slice pushes absent variables as uninitialized,
-deallocates only the newest slot (which must be uninitialized), and creates
-primitive, aggregate, and array objects. Creation preserves variable order,
-chooses a fresh object identity, and initializes an already
-allocated, empty destination with its owned reference. Aggregate field names must
-be distinct; aggregate fields and array elements begin uninitialized. Empty
-aggregates and zero-length arrays are allowed. Checked lemmas characterize these
-local effects; they do not prove ownership exclusivity in arbitrary malformed
-states. `Operation` now uses the common `Primitive` parameter for primitive
-creation. The future execution semantics will α-rename bindings to fresh identities
-and manage scope and cleanup. Heap allocation checks absence only from the live
-map, so freshness across completed variable lifetimes remains an execution-layer
-obligation. Object creation similarly checks current object-map absence;
-identity reuse and reference invalidation remain to be specified.
-`Invariants.lean` defines occurrence-sensitive ownership over every variable,
-field, and array slot, including liveness of owning targets. Initial-state,
-allocation/creation-step, and reachable-state preservation are proved.
-`Places.lean` implements slot lookup/update and proves locality and key/order
-preservation. `PlaceEffects.lean` proves ownership preservation for concrete
-reference updates. `Destruction.lean` handles final-owner release of objects
-without initialized contents. `PlaceOperations.lean` defines `PlaceEffect` for
-unique give, unique lease/sublease, owned/showned share, borrowed/nonfinal-showned
-release, and finite recursive final-owner destruction, with preservation for every
-case. Recursive destruction requires the parent occurrence to be the last owner;
-child order is unspecified. `PlaceExamples.lean` checks exact successor states.
-`ReferenceUpdates.lean` maps references throughout variables, fields, and arrays;
-`Moves.lean` defines consuming transfer followed by simultaneous dependent-lease
-retargeting. `MoveValidity.lean` proves preservation of successful finite reference
-resolution to the same object and effective permission; it does not prove activity.
-`Access.lean` resolves paths and computes their effective permissions.
-`PathOperations.lean` defines `PathStep` and combines it with `Heap.Step` in
-`MachineStep`; ownership is proved for every step and `MachineReachable` state.
-`Invariants:AllocatedObject` means membership in the object map.
-`WellFormed.lean` separately defines `OwningReachable` by finite paths from all
-variable roots through owned or showned references, and `ReferenceReachable`
-by structural paths through any successfully resolved reference. This structural
-relation does not accumulate operational access restrictions. `WellFormed` has
-three direct clauses: every allocated object has an owning path from a variable;
-every existing slot is uninitialized or contains a reference resolving to an
-owning-reachable (live) object; and a unique owner is the sole owning occurrence
-of its target. `WellFormed.equivalent_conditions` proves exact equivalence with
-`OwnershipInvariant ∧ RootedOwnership ∧ NoDangling`. Those predicates remain
-proof helpers, derived from the direct definition; they are not extra conditions
-in the state chapter. Ownership accounting is defined in `properties.md` for the
-weaker preservation results. The formalization proves agreement of
-allocated/live/reference-reachable objects, initial well-formedness, preservation
-by consuming moves into variables, and ownership consequences without an
-execution-reachability premise. Arbitrary field/element destinations do not have
-that move preservation theorem; storing an owner inside its target can lose
-rooted liveness. `state.md` introduces state
-components and lookup, then well-formedness by definition and its consequences.
-Its slot-lookup definition pairs the partial mathematical `S(p)` with both
-`Places:readSlot` and `Invariants:Stored`; missing lookup is distinct from a
-present uninitialized slot. Allocated and live objects, initial state, owning occurrences,
-and other semantic definitions expose their associated Lean bodies.
-A separate cited reachability definition relates states to execution histories.
-Stack lemmas, α-renaming, and non-revival obligations belong in operations.
-Full well-formedness preservation is not established: a checked reachable sequence
-allocates two variables, creates an owner, shares it, then drops that owner,
-leaving a dangling shared lease. Ownership still holds. Do not claim that
-no-dangling in one state supplies lifetime freshness or prevents identity revival.
-`PathExamples.lean` checks exact successor states. Give consumes unique ownership,
-reborrows through leased access, and copies shared references. Showned duplication
-requires an actual stored showned edge, rather than inherited shared access to an
-owned edge. Destructive showned drop also requires a unique prefix route; copied
-shared views need a separate representation account. Borrowed path-drop leaves
-the state unchanged; `PlaceEffect` slot release is a separate cleanup
-effect. Whether explicit drop should release borrowed handles remains open.
-`AccessConflicts.lean` defines a static live-lien table over syntactic
-paths, with caller-supplied live liens. It is separate from runtime `PathStep` and
-does not supply liveness, alias/type analysis, or dynamic invalidation. Do not
-claim that ownership preservation establishes borrow validity. The book states
-the current semantics directly; implementation investigations and comparisons
-with earlier versions are not part of the semantic exposition. Historical
-context belongs only in the older-versions appendix. The separate chapter is
-`v2/md/place-operations.md`; `properties.md` distinguishes proved ownership from
-pending safety/termination obligations. Claim-content extraction and
-review/evidence verification remain unimplemented. Read `v2/md/questions.md` before formalizing unresolved semantics.
-Keep candidate claims distinct from established proofs and executable examples.
+The `{heap}` directive remains a diagram-rendering facility; its fact syntax
+and validation are tooling features, not a specification of future language layers.
+Graph structure checks do not establish language invariants.
+
+The active semantic foundation is `v2/lean/Unique/`, `v2/lean/Shared/`, and their
+correspondence, with supporting graph reasoning in `v2/lean/Common/`.
+`Common/FiniteMap` and `Common/FiniteMapExamples` retain the utility and example
+used by the evidence pilot. Renderer source-selection tests use the isolated
+`v2/mdbook-dada/tests/fixtures/lean/` tree; those fixtures are not a language model.
+The book
+introduces Given and Shared before contributor methods. Extend these languages
+one step at a time, stating and reviewing new behavior before formalizing it.
+Definitions expose Lean bodies; proved results expose proofs. Semantic chapters
+describe the current model; historical investigations belong in review records.
+Source selection and syntactic evidence validation do not establish correspondence
+or prove that a review was actually performed. Keep candidate claims distinct
+from established proofs and executable examples.
 
 ## Build and test
 
@@ -185,7 +178,13 @@ Keep candidate claims distinct from established proofs and executable examples.
 - `just test-lean` runs `cd v2/lean && lake build --wfail` with pinned Lean 4.35.0.
 - From `v1/`, run `cargo test --all --workspace` and `mdbook build`.
 - From `v2/`, run `cargo fmt --all`, `cargo clippy --workspace --all-targets -- -D warnings`,
-  and `cargo test --workspace` for changes to the Rust tooling.
+  and `cargo test --workspace` for changes to the Rust tooling; the workspace test
+  includes required evidence validation.
+- From `v2/`, `cargo run -p mdbook-dada --bin dada-spec -- status --explain`
+  explains evidence status; `check` enforces the configured requirements.
+  `prepare UNIT_ID` writes an immutable comparison bundle, and
+  `record BUNDLE_PATH REVIEW_JSON_PATH` records a completed review only when its
+  inputs are still current. See `v2/AGENTS.md` for the review loop.
 - `just book-v2` builds the v2 draft; `cd v2 && mdbook serve` previews it.
 - `just book-tools` installs pinned mdBook 0.5.4 and mdbook-mermaid 0.17.1;
   the custom preprocessors are built from the two Cargo workspaces.
@@ -209,3 +208,11 @@ See `pages/README.md` for preview commands, dependencies, and the required
 GitHub Actions source setting in repository Pages settings.
 
 Keep this file and `v1/AGENTS.md` current when changing the repository layout.
+
+Mechanical command results are retained separately under `v2/evidence/executions/`.
+Profiles in `v2/spec-checks.json` are run explicitly with `dada-spec run-check NAME`;
+`mechanical-status` reports freshness and pass/failure. Ordinary evidence tests
+only validate saved receipt integrity and never run commands. See `v2/AGENTS.md`
+for source snapshot scope and proof-assumption reporting. Renderer contracts now
+have named Rust/test-backed units in `v2/md/repo/renderer-contracts.md`, and theme
+JavaScript/CSS participate in correspondence freshness.

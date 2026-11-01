@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "bd6fd31df39ec54bbc037b383ad5b4027182e970e34894ef2dc92782c3096d56",
+  "reviewer": "Codex cross-layer reviewer /root/unique_formalization",
+  "provenance": "I authored the Unique formalization and its additional evaluation checks, but did not author Shared or the correspondence implementation. For this cross-layer review I read all required authored units, exact Lean selections and the review-policy snapshot; I also inspected the named definitions and statement assumptions in any additionally listed source context. I compared the Shared design independently, found and requested correction of a stored-mode/path-mode wording mismatch, then reread the changed shared.steps snapshot and verified other required inputs unchanged before deciding. Listing a containing source context records the inspected definitions, not an audit of every proof tactic in that file.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Place",
+    "policy:md/repo/correspondence-review.md",
+    "unit:shared.give"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:shared.give introduces ownership modes and place expression p before the behavior table. Mode and Reference put the unique/shared tag on each reference, while the inspected Object definition in context:lean/Shared/State.lean has only class and fields. lean:Shared/Step:Resolve combines modes along the entire route. The three Give constructors correspond exactly to the table: unique resolution plus Take clears the final occupied slot and returns its unique target; shared resolution plus Stored(shared target) leaves the state equal; shared resolution plus Promote changes exactly that final unique reference to shared and returns a shared copy of the same target. List decompositions preserve other slots, identities and the counter. Shared path access with a unique final slot is therefore admitted, whereas unique effective access with a shared final reference is impossible. Eval.giveShare in the inspected Step context changes the result's mode without changing child fields, supporting the final container explanation. No assumption that objects themselves have a mode is present.",
+  "limitations": [
+    "This comparison checks prose/notation and formal statement correspondence; it does not independently certify Lean proof checking or audit proof tactics.",
+    "Lean uses raw lists for tables; finite-map reading and single-slot identity rely on the explicitly separate key-distinctness/well-formedness conditions."
+  ],
+  "supersedes": [
+    "a752f9843e7969e396219401e6ae14c8cae893d78ba7ff88306ef747bd263752"
+  ]
+}

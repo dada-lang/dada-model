@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "9003c4a091d7ce936049fc976826ca50024286c5e9246c738c1ee2a525cfa6ef",
+  "reviewer": "Codex subagent /root/review_superstructure_evidence",
+  "provenance": "Fresh adversarial correspondence review on 2026-11-01. Read the immutable bundle unit, required exact Rust/test selections, review policy, and listed supporting context. Independently traced error and boundary cases; did not reuse earlier positive conclusions. Rust best-practice skill and v2/AGENTS.md were consulted.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "tool:theme/dada.css",
+    "unit:meta.syntax.anchors.identity"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "process_with_roots indexes all chapter roles and structured IDs before rendering references, giving forward references and nested chapters a shared namespace. roles excludes code, links, HTML, escaped text, and double-backtick literals; IDs are limited to the declared ASCII spelling. The tests combine typed and neutral anchors to ensure duplicate IDs fail across kinds, reject unresolved/invalid IDs, and check relative parent and nested-chapter links. Header movement retains each identity once and local CSS renders shields without an external badge request. A definition-looking inline label still carries no formal proof claim, matching the prose.",
+  "limitations": [
+    "This is a source and test-body correspondence review. It does not claim that the reviewed test suite, Lean compiler, browser, or configured command profiles were executed by this reviewer. Named context inputs were consulted for the relevant helpers, fixture declarations, or presentation rules; unrelated declarations in conservative file snapshots are not asserted to have been fully reviewed."
+  ],
+  "supersedes": []
+}

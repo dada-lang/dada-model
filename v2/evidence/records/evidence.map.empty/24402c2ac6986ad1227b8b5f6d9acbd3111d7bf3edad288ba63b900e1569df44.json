@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "bundle": "6655d890f4d49d38584752ccf6149af3ef35f490582c4c84e0b4cca1107ee303",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "context:lean/Common/FiniteMap.lean",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMapExamples:empty_map",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.empty"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The dependency evidence.map defines the finite-map representation and empty map. The selected anonymous example specializes FiniteMap.empty to Nat keys and values and asserts entries = []; that directly covers the stated concrete example and absence of pairs. It does not substitute a different map property for the displayed scenario.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "04f75c6daa806ba64c317b20fcf60e9348706045ec7998d147890d37bacf54cb"
+  ]
+}

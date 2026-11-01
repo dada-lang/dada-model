@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "49c3be580f4e6dd9a29e0c002ebf59604c072a43173ea5bff06dd4f74270524f",
+  "reviewer": "Codex /root (meta and finite-map correspondence review)",
+  "provenance": "Prepared and read immutable current packets; compared authored prose with selected declarations and tests during the 2026-10-24 lean-ification. The reviewer integrated the surrounding documentation and earlier evidence tooling changes; the mutual selector implementation was authored by a separate subagent. This is an agent review, not a human sign-off or a Lean proof.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "parse_block tests the complete raw structured unit with an include/playground/rustdoc_include pattern, including code samples, and rejects recognized citation-first nested blocks. SourceConfiguration::validate_chapters rereads the original source for every received chapter and compares the ordered (id, raw) sequence with the processed content. The unit correctly limits its claim to received chapters and this processing boundary. The selected units/inventory tests attack both forbidden body forms; preexpanded_includes_cannot_bypass_original_source_validation also attacks inserted or rewritten units. The real-mdBook test runs expansion before Dada and expects rejection for two included contents. I read its Fixture helper in tool:mdbook-dada/tests/evidence_validation.rs; these are syntactic rejection fixtures, not semantic approvals.",
+  "limitations": [
+    "Correspondence was assessed by inspection under the recorded policy; passing syntactic validation does not prove this reasoning correct.",
+    "Mechanical execution results are reported separately. Full context/tool snapshots were consulted at the relevant helpers; unrelated declarations and all proof tactics were not audited."
+  ],
+  "supersedes": [
+    "a794c59c44b5c032b286867ffd8a613d664e92410b47f8b4fc4a89b423c4f878"
+  ]
+}

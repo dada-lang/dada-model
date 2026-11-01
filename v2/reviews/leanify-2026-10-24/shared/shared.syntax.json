@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "a5b3a36d267160a287378d7743453f68baa4978013a1ba97a199f741b4e026b1",
+  "reviewer": "Codex cross-layer reviewer /root/unique_formalization",
+  "provenance": "I authored the Unique formalization and its additional evaluation checks, but did not author Shared or the correspondence implementation. For this cross-layer review I read all required authored units, exact Lean selections and the review-policy snapshot; I also inspected the named definitions and statement assumptions in any additionally listed source context. I compared the Shared design independently, found and requested correction of a stored-mode/path-mode wording mismatch, then reread the changed shared.steps snapshot and verified other required inputs unchanged before deciding. Listing a containing source context records the inspected definitions, not an audit of every proof tactic in that file.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Shared/Step.lean",
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Step",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:ClassName",
+    "lean:Shared/Syntax:Classes",
+    "lean:Shared/Syntax:FieldName",
+    "lean:Shared/Syntax:Place",
+    "lean:Shared/Syntax:Program",
+    "lean:Shared/Syntax:Statement",
+    "lean:Shared/Syntax:Value",
+    "lean:Shared/Syntax:VariableId",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.give",
+    "unit:shared.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:shared.syntax now introduces C, f, n, x, p, e and t before their grammar; unit:given.programs supplies the named class-table and sequence conventions, with given.classes/given.syntax giving their prerequisite domains. The selected Shared syntax has exactly variable/field places, give/giveShare places and recursive new with List Value, one destination/value statement, and class-table/body programs. It has no surface place-to-value coercion, share-of-arbitrary-expression form, assignment or borrowed reference form. Inspected Eval in context:lean/Shared/Step.lean gives the evaluation claims their intended meaning: giveShare first performs Give then changes its returned mode; EvalArgs threads left-to-right storage; Step.letValue requires a fresh destination. Names are represented as strings and class tables as lists; class/field uniqueness is a separate well-formedness condition, consistent with the chapter's later state definition rather than a claim that the raw syntax type enforces it.",
+  "limitations": [
+    "This comparison checks prose/notation and formal statement correspondence; it does not independently certify Lean proof checking or audit proof tactics.",
+    "Lean uses raw lists for tables; finite-map reading and single-slot identity rely on the explicitly separate key-distinctness/well-formedness conditions."
+  ],
+  "supersedes": [
+    "31927c74abf47918f8675c6f7d47744759a65ae47b2b3fe965806cd7a8e99702"
+  ]
+}
