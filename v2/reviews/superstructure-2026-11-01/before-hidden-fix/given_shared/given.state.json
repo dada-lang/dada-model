@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "a83cc6e49cc951310e982dedf26c08759f9ea6ce4f3dc6eac2c32ae2618eef4e",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The earlier class/syntax/program units introduce names and finite maps. ObjectId is a structure wrapping Nat, Slot is Option ObjectId, Object holds a class name and ordered field slots, and State holds object/variable lists plus Nat nextId; empty is the two empty tables and zero. The unit explicitly says distinct-key finite-map notation relies on later WF conditions, avoiding a false claim about arbitrary raw lists. It correctly distinguishes an identity/reference from object data.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "8f11a8291f1c89cbc4cd31a93ebb7a4ed1c81c1760b3fca6c96df8a25973797c"
+  ]
+}

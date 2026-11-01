@@ -112,7 +112,10 @@ fn files(root: &Path, directory: &Path, extension: &str) -> Result<Vec<PathBuf>>
     {
         let entry = entry?;
         let path = entry.path();
-        if entry.file_name().to_string_lossy().starts_with('.') {
+        // Markdown is the specification inventory, including explicitly linked
+        // hidden chapters. Lean/tool scans still omit generated hidden trees
+        // such as `.lake`; a filename convention must not hide a review unit.
+        if extension != "md" && entry.file_name().to_string_lossy().starts_with('.') {
             continue;
         }
         ensure!(
@@ -344,6 +347,17 @@ impl Inventory {
                 let name = relative_path(&self.root, &path)?;
                 let input = self.file_input(format!("tool:{name}"), &name)?;
                 inputs.insert(input.key.clone(), input);
+            }
+        }
+        // Presentation assets are implementation inputs too. Minimal external
+        // fixtures may omit a theme; adding one changes the derived manifest.
+        if self.root.join("theme").exists() {
+            for extension in ["js", "css"] {
+                for path in files(&self.root, &self.root.join("theme"), extension)? {
+                    let name = relative_path(&self.root, &path)?;
+                    let input = self.file_input(format!("tool:{name}"), &name)?;
+                    inputs.insert(input.key.clone(), input);
+                }
             }
         }
         for (prefix, paths) in [

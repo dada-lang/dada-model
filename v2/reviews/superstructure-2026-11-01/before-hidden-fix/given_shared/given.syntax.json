@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "4b6e41a991abd6aebc7507d5fe090f27fa47686c1b674106661e919718e81d3f",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "given.classes introduces class/field categories before this grammar. Place recursively selects variables or fields, Value has give and recursive new arguments, and Statement contains a destination and Value. The fresh-let convention is enforced by the subsequent Step freshness premise, while the AST correctly lacks calls, assignment, control flow, and destruction. Constructor arguments are full Value expressions, not merely variable gives.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "d050da58121633dc59d42c9db6102820faa17f662a4ca0cb290f9743d8273d7b"
+  ]
+}

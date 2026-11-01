@@ -5,6 +5,7 @@ pub mod graph;
 pub mod inventory;
 pub mod lean;
 pub mod lint;
+pub mod mechanical;
 mod routing;
 pub mod rust_source;
 pub mod units;

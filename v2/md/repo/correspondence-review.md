@@ -198,3 +198,48 @@ citation and give the preparation command. Read the reported cause before
 preparing again: an invalid source target needs a source or citation fix, while
 a stale packet needs renewed comparison. The test is a guard against missing
 or stale work, not a semantic oracle.
+
+## Record mechanical checks
+
+`spec-checks.json` names executable checks separately from review units. From
+`v2/`, build the CLI and run a selected check:
+
+```sh
+cargo build -p mdbook-dada --bin dada-spec
+./target/debug/dada-spec run-check lean
+./target/debug/dada-spec run-check lean-assumptions
+./target/debug/dada-spec run-check rust
+./target/debug/dada-spec run-check book
+./target/debug/dada-spec mechanical-status
+```
+
+Each profile supplies an argument vector, working directory, tool-version
+command, and source inputs. The runner stores an immutable receipt under
+`evidence/executions/`, including both command outputs, exit statuses, and
+snapshots before and after execution. It retains failures too. A recorded pass
+requires exit zero, successful matching version probes, and unchanged source
+snapshots. The assumptions check rebuilds Lean imports before printing the axiom
+dependencies of the theorems named in `lean/CheckAxioms.lean`; its output covers
+those declarations, not every theorem in the project.
+
+Source directories include their file membership and contents. The fixed
+exclusions are `.git`, `.lake`, `target`, `book`, and `evidence` directories;
+selecting one as an input is rejected. Profiles and runner sources are always
+included. These are declared source snapshots, not a hermetic capture: generated
+artifacts, review records, installed dependencies, environment variables, and
+network responses are not recorded as execution inputs. Endpoint comparison
+also cannot detect an edit that is restored before the second snapshot.
+
+`mechanical-status` compares the latest receipt for each named check with its
+current profile and source inputs. A later failure or stale receipt cannot be
+replaced silently by an older success. A timestamp tie is treated conservatively:
+any stale or failing receipt at that time prevents a reported pass. Timestamps
+are local provenance, not an authenticated ordering service.
+
+`dada-spec check` and the ordinary Cargo evidence test validate retained receipt
+integrity without executing commands. They do not require a fresh mechanical
+pass: requiring the Cargo test to have a successful receipt for its own run would
+be circular. Use `mechanical-status` to require current recorded passes. Records
+are grouped by named check, not attributed automatically to every specification
+unit. Neither hashes nor a saved exit code authenticate who ran the command or
+establish correspondence with the prose.

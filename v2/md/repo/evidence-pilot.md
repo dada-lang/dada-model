@@ -72,14 +72,14 @@ cannot receive affirmative correspondence decisions.
 
 ```{definition} meta.evidence.required_inputs
 :rust: mdbook-dada/src/evidence.rs:validate_bundle mdbook-dada/src/inventory.rs:Inventory::inputs
-:tests: mdbook-dada/tests/evidence_validation.rs:rejects_missing_or_substituted_required_inputs mdbook-dada/tests/evidence_validation.rs:renderer_lean_fixtures_are_required_freshness_inputs
+:tests: mdbook-dada/tests/evidence_validation.rs:rejects_missing_or_substituted_required_inputs mdbook-dada/tests/evidence_validation.rs:renderer_lean_fixtures_are_required_freshness_inputs mdbook-dada/tests/evidence_validation.rs:theme_assets_are_required_freshness_inputs
 :uses: meta.units.closed_body meta.sources.configuration meta.sources.exact_selection
 
 For a review bundle, validation derives its required inputs from the current
 specification inventory. The bundle must contain the complete authored unit and
 every exact cited Lean declaration, together with required context, policy,
 and tooling snapshots. Tooling snapshots include the renderer's Lean test
-fixtures, so fixture edits invalidate existing reviews. A complete Lean source file does not substitute for a
+fixtures and the theme’s JavaScript and CSS, so edits to those files invalidate existing reviews. A complete Lean source file does not substitute for a
 missing exact declaration selection.
 
 Validation reports missing required inputs, changed or substituted input
@@ -122,3 +122,40 @@ Choose natural numbers as both keys and values. The empty
 There is no key-value pair stored in this example.
 ```
 
+
+## Mechanical execution records
+
+```{definition} meta.evidence.mechanical_execution
+:rust: mdbook-dada/src/mechanical.rs:run mdbook-dada/src/mechanical.rs:snapshot mdbook-dada/src/mechanical.rs:Execution::validate mdbook-dada/src/mechanical.rs:status mdbook-dada/src/mechanical.rs:records mdbook-dada/src/evidence.rs:check
+:tests: mdbook-dada/tests/mechanical.rs:execution_preserves_success_failure_and_non_utf8_output mdbook-dada/tests/mechanical.rs:execution_retains_source_mutations_additions_and_deletions mdbook-dada/tests/mechanical.rs:failed_after_snapshot_and_launch_failures_are_retained mdbook-dada/tests/mechanical.rs:status_and_record_validation_never_execute_profile_commands mdbook-dada/tests/mechanical.rs:source_or_profile_changes_stale_receipts_without_corrupting_history mdbook-dada/tests/mechanical.rs:later_failures_and_tied_failures_cannot_be_hidden_by_success mdbook-dada/tests/mechanical.rs:receipt_validation_rejects_tampering_and_profile_substitution mdbook-dada/tests/mechanical.rs:receipt_validation_requires_selected_sources_and_runner_snapshots mdbook-dada/tests/mechanical.rs:snapshots_record_empty_directories_and_ignore_generated_outputs mdbook-dada/tests/mechanical.rs:snapshots_and_records_reject_symbolic_links mdbook-dada/tests/evidence_validation.rs:workspace_validation_rejects_malformed_execution_receipts
+
+A *mechanical execution receipt* records a named check from `spec-checks.json`.
+Only an explicit `run-check` command executes it. The receipt retains the exact
+profile, working directory, command and tool-version outputs as bytes, exit
+statuses, local timing, and declared source snapshots before and after execution.
+The profile and runner sources are mandatory inputs; directory snapshots record
+membership, including empty directories. Source symlinks and generated input
+roots are rejected. The fixed generated-directory exclusions are `.git`,
+`.lake`, `target`, `book`, and `evidence`.
+
+A recorded pass requires a successful command, successful identical version
+probes, and identical before/after snapshots. Failed commands, failed launches,
+and failed recapture remain recorded failures. Saved input hashes, membership,
+profile identity, receipt contents, and filenames are checked independently of
+correspondence decisions. Missing declared roots, runner/configuration roots, or members listed in directory
+snapshots are invalid, even when the remaining hashes have been recomputed.
+
+Status uses the latest local finish time for each check. Any failure or stale
+receipt tied at that time prevents a reported pass; an older success cannot
+conceal it. Source or profile changes make receipts stale. Syntactic evidence
+validation reads these records without running checks or requiring recorded
+success. This keeps a Cargo test from depending on a receipt of its own run.
+
+The receipt covers its declared sources and observed outputs. It is not a
+hermetic execution trace or authentication of the runner. Generated artifacts,
+review records, ambient environment, and installed dependencies are outside the
+source snapshot; edits restored between snapshots can escape detection. A
+separate Lean assumptions command reports dependencies for its explicitly named
+theorems after rebuilding imports. These observations do not establish the
+meaning of a theorem or constitute a correspondence judgment.
+```

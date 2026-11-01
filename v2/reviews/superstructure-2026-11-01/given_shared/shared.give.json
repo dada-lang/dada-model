@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "1fbae65273923efc8309b997c6003e53eb3beff39a55ce27b0c24e73cfc610b2",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt. Renewal after the hidden-Markdown inventory correction: compared the complete old/new bundle input maps, confirming identical authored unit, cited Lean, dependency, policy and other retained inputs. Examined the three changed input regions: Markdown directory traversal, the hidden-file/hidden-directory regression with its fixture helpers, and the specification coverage contract. This is an impact comparison supported by the earlier complete semantic review, not an assertion that the test was run.",
+  "examined": [
+    "context:md/repo/spec-system.md",
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Place",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "unit:shared.give"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected Mode, Reference, Slot, and Place declarations introduce exactly the categories used in the table. Resolve joins reference modes across the entire route. Give.move plus Take empties only a unique final slot under unique access; Give.copy preserves storage for an already-shared final slot; Give.promote plus Promote changes only a unique final reference to shared under shared access. All results retain the same object ID, and no object mode field exists. Compatible expresses the subsequent shared-owner invariant rather than making resolution depend on object-level mode. For shared.give, the final bundle preserves every previously examined semantic input byte-for-byte. The only changes broaden Markdown discovery to dot-prefixed files and directories, test that both require evidence, and state that coverage explicitly. Inventory::load already places every parsed structured unit in the required set. This changes which chapters are checked without changing this unit, its cited declarations, or their interpretation; the correspondence conclusion therefore remains supported.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "d3f44e92b1b92a065a9268fc9abadd211d62f11d4b70c6a2f7969ec2c455ae1e"
+  ]
+}

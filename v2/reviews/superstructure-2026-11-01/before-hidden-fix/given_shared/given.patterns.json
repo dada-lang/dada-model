@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "ed45063bafb02561a08680db05caef5bbf0e5e9845900f555fa728f4c46f3256",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "context:lean/Unique/Unpacking.lean",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "lean:Unique/Unpacking:Configuration",
+    "lean:Unique/Unpacking:Pattern",
+    "lean:Unique/Unpacking:Statement",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.patterns",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The earlier class/syntax units supply class names, fields, variables, and expressions. Pattern has only variable and flat unpack constructors; the latter stores field/variable pairs, while the extended Statement pairs a Pattern with the unchanged Value language. The later Bind/Transfer definitions in the retained Unpacking context impose unique field and destination names, exhaustive field transfer in any order, and deletion of the container. Empty patterns transfer empty field lists, so the empty-class example is supported. The unit explicitly separates these statements from the preceding base-machine results.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "f02294c006cee05b8cd58e91b0ca53d1d26134846be420c7b2eb4662fdf86eef"
+  ]
+}

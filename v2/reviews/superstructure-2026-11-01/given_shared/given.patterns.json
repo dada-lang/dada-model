@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "89e333132f92be234297c9835defccc993f906c1ea2aec5616e243f755a73474",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt. Renewal after the hidden-Markdown inventory correction: compared the complete old/new bundle input maps, confirming identical authored unit, cited Lean, dependency, policy and other retained inputs. Examined the three changed input regions: Markdown directory traversal, the hidden-file/hidden-directory regression with its fixture helpers, and the specification coverage contract. This is an impact comparison supported by the earlier complete semantic review, not an assertion that the test was run.",
+  "examined": [
+    "context:lean/Unique/Unpacking.lean",
+    "context:md/repo/spec-system.md",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "lean:Unique/Unpacking:Configuration",
+    "lean:Unique/Unpacking:Pattern",
+    "lean:Unique/Unpacking:Statement",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "unit:given.classes",
+    "unit:given.patterns",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The earlier class/syntax units supply class names, fields, variables, and expressions. Pattern has only variable and flat unpack constructors; the latter stores field/variable pairs, while the extended Statement pairs a Pattern with the unchanged Value language. The later Bind/Transfer definitions in the retained Unpacking context impose unique field and destination names, exhaustive field transfer in any order, and deletion of the container. Empty patterns transfer empty field lists, so the empty-class example is supported. The unit explicitly separates these statements from the preceding base-machine results. For given.patterns, the final bundle preserves every previously examined semantic input byte-for-byte. The only changes broaden Markdown discovery to dot-prefixed files and directories, test that both require evidence, and state that coverage explicitly. Inventory::load already places every parsed structured unit in the required set. This changes which chapters are checked without changing this unit, its cited declarations, or their interpretation; the correspondence conclusion therefore remains supported.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "8eda26921a5506abcb1d078d477a55eaa6fa4b10ce0c71827991212d2ba0f80c"
+  ]
+}

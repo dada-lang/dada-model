@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "bundle": "6763e793ff72211aa6077a335952d2b953e862a99449716d5c08cfa09179ed54",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "context:lean/Common/FiniteMap.lean",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMap:FiniteMap.value_unique",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.value_unique"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The dependency evidence.map introduces M and its entry representation. FiniteMap.value_unique universally quantifies the map and arbitrary key/value types, assumes membership of both pairs with the same key, and concludes value equality. There is no Ord or DecidableEq parameter, so the unit correctly states the absence of those assumptions.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "43864f1098124be2e487b9194e7d1bff2de135e15a1889ef72caa16243266c3d"
+  ]
+}

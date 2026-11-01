@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "eeca28e7914993e0aacc0a685bc5a5a42b45d2aca8b376b30dca6deb1dffa623",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Configuration",
+    "lean:Unique/State:Configuration.finished",
+    "lean:Unique/State:Configuration.initial",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Step:Steps",
+    "lean:Unique/Step:Stuck",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.machine",
+    "unit:given.programs",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "given.programs and given.state introduce the class table, statement sequence, and storage. Configuration is state plus List Statement, initial uses State.empty and program.body, and finished is exactly code = []. The cited Step evaluates and binds one head statement while retaining the suffix; it carries the fixed class table as a relation parameter. The unit explicitly defers operational rules rather than presenting the step notation as an already proved result.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "1cd840d71634a7dd1f93b2fa5336068d9446e26052a9240f42ad0badfcfba1bc"
+  ]
+}

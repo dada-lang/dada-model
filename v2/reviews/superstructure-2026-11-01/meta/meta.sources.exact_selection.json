@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "c02924d4aa5b347c2a0a85cd11fd5703298f1343787ccc450d120ce3463a98b1",
+  "reviewer": "Codex subagent /root/review_superstructure_evidence",
+  "provenance": "Fresh adversarial correspondence review on 2026-11-01. Read the immutable bundle unit, required exact Rust/test selections, review policy, and listed supporting context. Independently traced error and boundary cases; did not reuse earlier positive conclusions. Rust best-practice skill and v2/AGENTS.md were consulted. Final-bundle delta review: compared all 22 previous/current bundle input manifests and read the changed inventory helper, new hidden-Markdown regression, and revised coverage unit/context. All other required exact selections, unit bodies, policy, and three mechanical extras are byte-identical to the inputs already examined in this review.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/spec-system.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:validate_mutual_groups",
+    "test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection",
+    "test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/src/lean.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "tool:mdbook-dada/tests/fixtures/lean/Mutual.lean",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "I traced extract_declaration, scanner token boundaries, extract_case, and mutual-group validation against the cited regressions. Indented sibling declarations cannot donate a constructor to the selected judgment; case selection keeps terminal string/raw-string/character/quoted-identifier tokens that the masked scanner alone would otherwise lose. Attached inline comments may remain while standalone following comments are excluded. Supported column-zero mutual inductives select one complete member while retaining the enclosing source as context. Nested, malformed, empty, unsupported-kind, or unterminated mutual groups are rejected even when another declaration was requested. This is a conservative textual boundary check, not Lean elaboration.",
+  "limitations": [
+    "This is a source and test-body correspondence review. It does not claim that the reviewed test suite, Lean compiler, browser, or configured command profiles were executed by this reviewer. Named context inputs were consulted for the relevant helpers, fixture declarations, or presentation rules; unrelated declarations in conservative file snapshots are not asserted to have been fully reviewed."
+  ],
+  "supersedes": [
+    "fba45ea9492f225c72cab1dd3f359b59c74ebe3ab1e82863a734a6ed98ec1438"
+  ]
+}

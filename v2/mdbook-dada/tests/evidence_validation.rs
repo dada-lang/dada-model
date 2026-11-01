@@ -138,7 +138,9 @@ fn complete_current_reviews_pass_and_remain_distinct_from_mechanical_checks() {
     for status in &report.statuses {
         assert_eq!(status.evidence, "current");
         assert_eq!(status.correspondence, "corresponds");
-        assert_eq!(status.mechanical, "not recorded");
+        assert!(mdbook_dada::mechanical::status(&inventory.root)
+            .unwrap()
+            .is_empty());
     }
 }
 
@@ -288,6 +290,31 @@ fn renderer_lean_fixtures_are_required_freshness_inputs() {
     let report = evidence::check(&inventory).unwrap();
     assert!(!report.is_ok());
     assert!(report.render(&inventory).contains(&key));
+}
+
+#[test]
+fn theme_assets_are_required_freshness_inputs() {
+    let fixture = Fixture::new();
+    fixture.write("theme/mathjax.js", "const version = 'first';\n");
+    fixture.write("theme/dada.css", "figure { display: block; }\n");
+    let bundle = fixture.bundle();
+    for path in ["theme/mathjax.js", "theme/dada.css"] {
+        let key = format!("tool:{path}");
+        assert!(bundle.inputs.iter().any(|input| input.key == key));
+        let mut reduced = bundle.clone();
+        reduced.inputs.retain(|input| input.key != key);
+        repack(&mut reduced);
+        let errors = evidence::validate_bundle(&fixture.inventory(), &reduced).unwrap();
+        assert!(errors.contains(&format!("missing required input {key}")));
+    }
+    fixture.write("theme/mathjax.js", "const version = 'second';\n");
+    let errors = evidence::validate_bundle(&fixture.inventory(), &bundle).unwrap();
+    assert!(errors
+        .iter()
+        .any(|error| error.contains("stale or substituted input tool:theme/mathjax.js")));
+    fixture.write("theme/extra.css", "figure { color: red; }\n");
+    let errors = evidence::validate_bundle(&fixture.inventory(), &bundle).unwrap();
+    assert!(errors.contains(&"missing required input tool:theme/extra.css".to_owned()));
 }
 
 #[test]
@@ -665,7 +692,9 @@ fn draft_definitions_can_be_prepared_but_require_formalization_before_review() {
     assert_eq!(report.statuses.len(), 1);
     assert_eq!(report.statuses[0].evidence, "draft");
     assert_eq!(report.statuses[0].correspondence, "not asserted");
-    assert_eq!(report.statuses[0].mechanical, "not recorded");
+    assert!(mdbook_dada::mechanical::status(&inventory.root)
+        .unwrap()
+        .is_empty());
     let diagnostic = report.render(&inventory);
     assert!(diagnostic.contains("md/model.md:"), "{diagnostic}");
     assert!(
@@ -930,4 +959,41 @@ fn actual_mdbook_pipeline_rejects_includes_in_reviewed_content() {
             "{error}"
         );
     }
+}
+
+#[test]
+fn workspace_validation_rejects_malformed_execution_receipts() {
+    let fixture = Fixture::new();
+    fixture.complete_reviews();
+    fixture.write("evidence/executions/invalid.json", "{}");
+    let report = evidence::check(&fixture.inventory()).unwrap();
+    assert!(!report.is_ok());
+    assert!(report
+        .issues
+        .iter()
+        .any(|issue| issue.message == "malformed mechanical execution evidence"));
+}
+
+#[test]
+fn hidden_markdown_chapters_cannot_escape_required_evidence() {
+    let fixture = Fixture::new();
+    for (path, id) in [
+        ("md/.hidden.md", "hidden.direct"),
+        ("md/.drafts/chapter.md", "hidden.nested"),
+    ] {
+        fixture.write(path, &format!("# Hidden chapter\n\n```{{definition}} {id}\n:lean: Fixture:Variable\n\nA natural-number variable.\n```\n"));
+    }
+    fixture.write("md/SUMMARY.md", "# Summary\n\n- [Visible](model.md)\n- [Direct](.hidden.md)\n- [Nested](.drafts/chapter.md)\n");
+    let inventory = fixture.inventory();
+    for id in ["hidden.direct", "hidden.nested"] {
+        assert!(inventory.required.contains(id));
+        let report = evidence::check(&inventory).unwrap();
+        assert!(report
+            .statuses
+            .iter()
+            .any(|status| status.unit == id && status.evidence == "missing"));
+    }
+    fixture.complete_reviews();
+    let report = evidence::check(&fixture.inventory()).unwrap();
+    assert!(report.is_ok(), "{}", report.render(&fixture.inventory()));
 }

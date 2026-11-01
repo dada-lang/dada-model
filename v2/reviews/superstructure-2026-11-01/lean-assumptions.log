@@ -1,0 +1,13 @@
+/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/executions/8ef88f8861352937575cc0021daf15590d8db6e6d1f657a4293ab297c952ef64.json
+Build completed successfully (48 jobs).
+'Dada.Unique.Typing.normalization_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Dada.Unique.Typing.expression_soundness' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Dada.Unique.Typing.ConfigurationTyped.progress' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Dada.Unique.Typing.ConfigurationTyped.preservation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Dada.Unique.Typing.program_safety' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Dada.Unique.Unpacking.Step.preserves_wellFormed' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Dada.Shared.WellFormed.path_mode_exclusive' depends on axioms: [propext, Quot.sound]
+'Dada.Correspondence.step_correspondence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Dada.Correspondence.steps_correspondence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Dada.Correspondence.boundary_correspondence' depends on axioms: [propext, Classical.choice, Quot.sound]
+Recorded pass. This is not a correspondence decision.

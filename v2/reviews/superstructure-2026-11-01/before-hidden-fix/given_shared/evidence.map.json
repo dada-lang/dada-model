@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "bundle": "8e3a22b733fe475a49df46d16e105cbe7bedb06bcf9f2ff727f77ccecee7923a",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "context:lean/Common/FiniteMap.lean",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit introduces K, T, entries, and empty-map notation before using them. FiniteMap stores an ordered List (Key × Value), and uniqueKeys is exactly Nodup of its key projection; this imposes no ordering or decidable-equality assumption on keys. FiniteMap.empty supplies the empty entry list, matching the final sentence.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "917eaa76a238ec5f07f9259d63c9bd0546a155ecf7ccadbcc89a75e9436f7e0c"
+  ]
+}

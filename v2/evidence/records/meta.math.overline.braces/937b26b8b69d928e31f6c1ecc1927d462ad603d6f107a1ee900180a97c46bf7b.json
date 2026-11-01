@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "8f6dc5c04c96920e7ea0cd2ea88b05293753af2f6f2a6124629e4ff71079d6c6",
+  "reviewer": "Codex subagent /root/review_superstructure_evidence",
+  "provenance": "Fresh adversarial correspondence review on 2026-11-01. Read the immutable bundle unit, required exact Rust/test selections, review policy, and listed supporting context. Independently traced error and boundary cases; did not reuse earlier positive conclusions. Rust best-practice skill and v2/AGENTS.md were consulted. Final-bundle delta review: compared all 22 previous/current bundle input manifests and read the changed inventory helper, new hidden-Markdown regression, and revised coverage unit/context. All other required exact selections, unit bodies, policy, and three mechanical extras are byte-identical to the inputs already examined in this review.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/spec-system.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lint.rs:check_latex",
+    "test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions",
+    "test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex",
+    "test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf",
+    "test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed",
+    "test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "unit:meta.math.overline.braces"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "check_latex matches the exact TeX control word and checks the immediately preceding opening brace and immediately following ASCII space in raw source. The tests distinguish longer control words, reject tabs/newlines/nonbreaking spaces and intervening text, and count diagnostic lines across Unicode and CRLF. The integration test recursively scans all Markdown, independent of the table of contents, and process_with_roots applies the same lint before rendering even literal TeX samples. This implements the stated adjacency convention; it neither parses balanced TeX groups nor checks the meaning of the overbar.",
+  "limitations": [
+    "This is a source and test-body correspondence review. It does not claim that the reviewed test suite, Lean compiler, browser, or configured command profiles were executed by this reviewer. Named context inputs were consulted for the relevant helpers, fixture declarations, or presentation rules; unrelated declarations in conservative file snapshots are not asserted to have been fully reviewed."
+  ],
+  "supersedes": []
+}

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "7206c23dd4248559c95c7722296e833dce547132e56cef0d811093e363726e67",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Soundness:WellFormed",
+    "lean:Unique/Soundness:WellFormedWith",
+    "lean:Unique/State:Allocated",
+    "lean:Unique/State:Live",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:References",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/State:Updated",
+    "lean:Unique/Step:Eval",
+    "lean:Unique/Step:EvalArgs",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Step:State.allocate",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.evaluation",
+    "unit:given.programs",
+    "unit:given.resolution",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax",
+    "unit:given.well_formed"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The state/program/evaluation dependencies introduce storage, class-table validity, slots, and temporary results. Allocated is object-key membership; Live is the displayed variable-root/field-extension relation. WellFormed exactly supplies unique keys, declared exact ordered field shapes, index bounds, older field targets, Nodup References, and complete allocation/reference membership. Together the last two conditions express exactly one occurrence per allocated identity and none for unallocated identities. WellFormedWith counts pending ++ References for intermediate evaluation, matching the stated temporary-root qualification without altering between-statement WF.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "58fadaecb9a29600cc8b1923d3837f1f6359e38feca00adf0bbb57c91f743190"
+  ]
+}

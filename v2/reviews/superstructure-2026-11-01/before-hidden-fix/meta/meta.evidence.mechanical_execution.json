@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "17a397ba8e6fa0e648da0572526013c25a3f54190fa09eab9dfe3274bdd5b366",
+  "reviewer": "Codex subagent /root/review_superstructure_evidence",
+  "provenance": "Fresh adversarial correspondence review on 2026-11-01. Read the immutable bundle unit, required exact Rust/test selections, review policy, and listed supporting context. Independently traced error and boundary cases; did not reuse earlier positive conclusions. Rust best-practice skill and v2/AGENTS.md were consulted.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:mdbook-dada/src/evidence.rs",
+    "context:mdbook-dada/src/mechanical.rs",
+    "context:mdbook-dada/tests/mechanical.rs",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/mechanical.rs:Execution::validate",
+    "rust:mdbook-dada/src/mechanical.rs:records",
+    "rust:mdbook-dada/src/mechanical.rs:run",
+    "rust:mdbook-dada/src/mechanical.rs:snapshot",
+    "rust:mdbook-dada/src/mechanical.rs:status",
+    "test:mdbook-dada/tests/evidence_validation.rs:workspace_validation_rejects_malformed_execution_receipts",
+    "test:mdbook-dada/tests/mechanical.rs:execution_preserves_success_failure_and_non_utf8_output",
+    "test:mdbook-dada/tests/mechanical.rs:execution_retains_source_mutations_additions_and_deletions",
+    "test:mdbook-dada/tests/mechanical.rs:failed_after_snapshot_and_launch_failures_are_retained",
+    "test:mdbook-dada/tests/mechanical.rs:later_failures_and_tied_failures_cannot_be_hidden_by_success",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_rejects_tampering_and_profile_substitution",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_requires_selected_sources_and_runner_snapshots",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_and_records_reject_symbolic_links",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_record_empty_directories_and_ignore_generated_outputs",
+    "test:mdbook-dada/tests/mechanical.rs:source_or_profile_changes_stale_receipts_without_corrupting_history",
+    "test:mdbook-dada/tests/mechanical.rs:status_and_record_validation_never_execute_profile_commands",
+    "tool:mdbook-dada/src/bin/dada-spec.rs",
+    "unit:meta.evidence.mechanical_execution"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The command dispatch and run function execute only the selected explicit profile; records/status/check read saved data. I checked Execution::succeeded, validate_snapshot, collect, working_directory, load, and the test fixture helpers in addition to the cited functions. A pass needs command exit zero, successful identical version outcomes, equal complete endpoint snapshots, and no recapture error. validate_snapshot reconstructs declared-root and directory-member closure, including the mandatory configuration and runner sources, so recomputing hashes after removing a required listed input still fails. The tests attack mutation, added/deleted files, launch/recapture failures, symlinks, profile substitution, missing members, tied failures, and forbidden execution during status. The additional spec-checks.json, shell script, and CheckAxioms.lean inputs establish that the assumptions profile runs lake build --wfail before querying exactly the named theorems. Generated files, ambient dependencies, restored-between-snapshot edits, and fabricated rehashed observations remain outside the guarantee, as the unit says.",
+  "limitations": [
+    "This is a source and test-body correspondence review. It does not claim that the reviewed test suite, Lean compiler, browser, or configured command profiles were executed by this reviewer. Named context inputs were consulted for the relevant helpers, fixture declarations, or presentation rules; unrelated declarations in conservative file snapshots are not asserted to have been fully reviewed.",
+    "Receipt contents and local timestamps are not authenticated. Endpoint snapshots are not hermetic execution provenance and exclude generated artifacts, review records, installed dependencies, and ambient environment."
+  ],
+  "supersedes": []
+}

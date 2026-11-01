@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "dc6bc69e7dcb809ef31df624d7cd742862ab75edddd6605746ef6c37a50e4b29",
+  "reviewer": "Codex subagent /root/review_superstructure_evidence",
+  "provenance": "Fresh adversarial correspondence review on 2026-11-01. Read the immutable bundle unit, required exact Rust/test selections, review policy, and listed supporting context. Independently traced error and boundary cases; did not reuse earlier positive conclusions. Rust best-practice skill and v2/AGENTS.md were consulted. Final-bundle delta review: compared all 22 previous/current bundle input manifests and read the changed inventory helper, new hidden-Markdown regression, and revised coverage unit/context. All other required exact selections, unit bodies, policy, and three mechanical extras are byte-identical to the inputs already examined in this review.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/spec-system.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::check_context",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::load",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::markdown_root",
+    "rust:mdbook-dada/src/inventory.rs:Inventory::inputs",
+    "rust:mdbook-dada/src/lib.rs:process_configured",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_lean_root_is_shared_by_rendering_and_evidence",
+    "tool:book.toml",
+    "tool:mdbook-dada/src/configuration.rs",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "unit:meta.sources.configuration"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The renderer and Inventory both load SourceConfiguration from book.toml, and process_configured compares the effective mdBook source roots against that saved configuration before selecting content. Canonical containment is enforced by input_path. The configured-root regression changes the nested Lean root, checks that rendering and evidence choose the same declaration, and verifies that Rust citations still resolve from the project root. book.toml itself is a required tool input, so even a root-setting change with similar content invalidates the prior snapshot. The claim concerns source-root agreement, not equality of every unrelated mdBook configuration override.",
+  "limitations": [
+    "This is a source and test-body correspondence review. It does not claim that the reviewed test suite, Lean compiler, browser, or configured command profiles were executed by this reviewer. Named context inputs were consulted for the relevant helpers, fixture declarations, or presentation rules; unrelated declarations in conservative file snapshots are not asserted to have been fully reviewed."
+  ],
+  "supersedes": [
+    "e06ba7246e1fb5bf8e0d0279508c65a2bd8e0c2b3559a59d46f55ed5fb549b6e"
+  ]
+}

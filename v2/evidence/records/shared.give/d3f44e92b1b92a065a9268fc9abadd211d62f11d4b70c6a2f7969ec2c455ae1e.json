@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "b0ef149ef7a7397b1d8c690b23bca02640d5d4d97d72fb0c64440ef2e214fbca",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Place",
+    "policy:md/repo/correspondence-review.md",
+    "unit:shared.give"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected Mode, Reference, Slot, and Place declarations introduce exactly the categories used in the table. Resolve joins reference modes across the entire route. Give.move plus Take empties only a unique final slot under unique access; Give.copy preserves storage for an already-shared final slot; Give.promote plus Promote changes only a unique final reference to shared under shared access. All results retain the same object ID, and no object mode field exists. Compatible expresses the subsequent shared-owner invariant rather than making resolution depend on object-level mode.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "1f5d9a8b267730f266ee3ccd79dfd2847a9896970939ba67cccae971f845a13d"
+  ]
+}

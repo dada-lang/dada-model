@@ -208,3 +208,11 @@ See `pages/README.md` for preview commands, dependencies, and the required
 GitHub Actions source setting in repository Pages settings.
 
 Keep this file and `v1/AGENTS.md` current when changing the repository layout.
+
+Mechanical command results are retained separately under `v2/evidence/executions/`.
+Profiles in `v2/spec-checks.json` are run explicitly with `dada-spec run-check NAME`;
+`mechanical-status` reports freshness and pass/failure. Ordinary evidence tests
+only validate saved receipt integrity and never run commands. See `v2/AGENTS.md`
+for source snapshot scope and proof-assumption reporting. Renderer contracts now
+have named Rust/test-backed units in `v2/md/repo/renderer-contracts.md`, and theme
+JavaScript/CSS participate in correspondence freshness.

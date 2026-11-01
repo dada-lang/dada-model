@@ -111,9 +111,16 @@ impl ReviewRecord {
 /// Compare against the independently derived inventory, not a self-declared
 /// checklist. Extra inputs are allowed only as current project file snapshots.
 pub fn validate_bundle(inventory: &Inventory, bundle: &ReviewBundle) -> Result<Vec<String>> {
+    validate_bundle_against(inventory, bundle, inventory.inputs(&bundle.unit)?)
+}
+
+fn validate_bundle_against(
+    inventory: &Inventory,
+    bundle: &ReviewBundle,
+    required: Vec<Input>,
+) -> Result<Vec<String>> {
     let mut errors = bundle.integrity_errors();
-    let mut expected: BTreeMap<_, _> = inventory
-        .inputs(&bundle.unit)?
+    let mut expected: BTreeMap<_, _> = required
         .into_iter()
         .map(|input| (input.key.clone(), input))
         .collect();
@@ -208,7 +215,11 @@ fn read_json<T: for<'de> Deserialize<'de>>(path: &Path) -> Result<T> {
         .with_context(|| format!("parsing {}", path.display()))
 }
 
-fn write_immutable<T: Serialize>(root: &Path, relative: &Path, value: &T) -> Result<PathBuf> {
+pub(crate) fn write_immutable<T: Serialize>(
+    root: &Path,
+    relative: &Path,
+    value: &T,
+) -> Result<PathBuf> {
     let path = root.join(relative);
     let parent = path.parent().context("artifact has no parent")?;
     fs::create_dir_all(parent)?;
@@ -339,7 +350,6 @@ pub struct UnitStatus {
     pub unit: String,
     pub evidence: &'static str,
     pub correspondence: &'static str,
-    pub mechanical: &'static str,
 }
 
 #[derive(Debug, Default)]
@@ -434,6 +444,13 @@ fn json_files(root: &Path, directory: &Path) -> Result<Vec<PathBuf>> {
 /// Neither the review's conclusion nor a passing result establishes a Lean proof.
 pub fn check(inventory: &Inventory) -> Result<Report> {
     let mut report = Report::default();
+    if let Err(error) = crate::mechanical::records(&inventory.root) {
+        report.issues.push(Issue {
+            unit: None,
+            message: "malformed mechanical execution evidence".into(),
+            details: vec![format!("{error:#}")],
+        });
+    }
     let mut bundles = BTreeMap::new();
     for path in json_files(&inventory.root, &inventory.root.join("evidence/bundles"))? {
         match read_json::<ReviewBundle>(&path) {
@@ -466,26 +483,27 @@ pub fn check(inventory: &Inventory) -> Result<Report> {
     for id in &inventory.required {
         // Derive inputs even for drafts: malformed
         // citations never disappear because a formalization is unfinished.
-        if let Err(error) = inventory.inputs(id) {
-            report.issues.push(Issue {
-                unit: Some(id.clone()),
-                message: "cannot resolve required evidence inputs".into(),
-                details: vec![format!("{error:#}")],
-            });
-            report.statuses.push(UnitStatus {
-                unit: id.clone(),
-                evidence: "invalid sources",
-                correspondence: "not checked",
-                mechanical: "not recorded",
-            });
-            continue;
-        }
+        let required = match inventory.inputs(id) {
+            Ok(inputs) => inputs,
+            Err(error) => {
+                report.issues.push(Issue {
+                    unit: Some(id.clone()),
+                    message: "cannot resolve required evidence inputs".into(),
+                    details: vec![format!("{error:#}")],
+                });
+                report.statuses.push(UnitStatus {
+                    unit: id.clone(),
+                    evidence: "invalid sources",
+                    correspondence: "not checked",
+                });
+                continue;
+            }
+        };
         if inventory.unit(id)?.draft {
             report.statuses.push(UnitStatus {
                 unit: id.clone(),
                 evidence: "draft",
                 correspondence: "not asserted",
-                mechanical: "not recorded",
             });
             report.issues.push(Issue {
                 unit: Some(id.clone()),
@@ -499,7 +517,10 @@ pub fn check(inventory: &Inventory) -> Result<Report> {
         let mut current = BTreeSet::new();
         let mut stale = Vec::new();
         for bundle in bundles.values().filter(|bundle| &bundle.unit == id) {
-            let errors = validate_bundle(inventory, bundle)?;
+            // Historical bundles compare with one independently derived current
+            // manifest. Re-reading all sources for each past review made the
+            // ordinary evidence test grow with the entire review history.
+            let errors = validate_bundle_against(inventory, bundle, required.clone())?;
             if errors.is_empty() {
                 current.insert(bundle.digest.clone());
             } else {
@@ -590,7 +611,6 @@ pub fn check(inventory: &Inventory) -> Result<Report> {
             unit: id.clone(),
             evidence,
             correspondence,
-            mechanical: "not recorded",
         });
         if correspondence != "corresponds" {
             let mut details = if evidence == "stale" {

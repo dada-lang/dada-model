@@ -2,6 +2,7 @@ use anyhow::{bail, ensure, Result};
 use mdbook_dada::{
     evidence::{self, ReviewBundle},
     inventory::{find_root, Inventory},
+    mechanical,
 };
 use std::path::Path;
 
@@ -9,6 +10,53 @@ fn run() -> Result<bool> {
     let mut args = std::env::args().skip(1);
     let command = args.next().unwrap_or_else(|| "status".into());
     let root = find_root(&std::env::current_dir()?)?;
+    // Mechanical recording is independent of the Markdown inventory, so failed
+    // builds and malformed specifications can still have their output retained.
+    if command == "run-check" {
+        let rest: Vec<_> = args.collect();
+        ensure!(rest.len() == 1, "usage: dada-spec run-check <check-name>");
+        let path = mechanical::run(&root, &rest[0])?;
+        let receipt = mechanical::load(&path)?;
+        println!("{}", path.display());
+        for outcome in [&receipt.version_before, &receipt.version_after]
+            .into_iter()
+            .chain(receipt.command.iter())
+        {
+            if let Some(error) = &outcome.launch_error {
+                eprintln!("{error}");
+            }
+        }
+        if let Some(outcome) = &receipt.command {
+            use std::io::Write;
+            std::io::stdout().write_all(&outcome.stdout)?;
+            std::io::stderr().write_all(&outcome.stderr)?;
+        }
+        if let Some(error) = &receipt.after_error {
+            eprintln!("input recapture: {error}");
+        }
+        println!(
+            "Recorded {}. This is not a correspondence decision.",
+            if receipt.succeeded() {
+                "pass"
+            } else {
+                "failure or changed inputs"
+            }
+        );
+        return Ok(receipt.succeeded());
+    }
+    if command == "mechanical-status" {
+        ensure!(args.next().is_none(), "usage: dada-spec mechanical-status");
+        let statuses = mechanical::status(&root)?;
+        for status in &statuses {
+            println!(
+                "{}: {} ({})",
+                status.name,
+                status.state,
+                status.receipt.as_deref().unwrap_or("no receipt")
+            );
+        }
+        return Ok(statuses.iter().all(|s| s.state == "recorded pass"));
+    }
     let inventory = Inventory::load(&root)?;
     match command.as_str() {
         "check" | "status" => {
@@ -16,7 +64,10 @@ fn run() -> Result<bool> {
             ensure!(rest.is_empty() || rest == ["--explain"], "usage: dada-spec {command} [--explain]");
             let report = evidence::check(&inventory)?;
             for status in &report.statuses {
-                println!("{}: inputs={}, correspondence={}, mechanical={}", status.unit, status.evidence, status.correspondence, status.mechanical);
+                println!("{}: inputs={}, correspondence={}", status.unit, status.evidence, status.correspondence);
+            }
+            for status in mechanical::status(&root)? {
+                println!("check {}: {}", status.name, status.state);
             }
             if !report.is_ok() { eprint!("{}", report.render(&inventory)); }
             Ok(report.is_ok())
@@ -42,7 +93,7 @@ fn run() -> Result<bool> {
             println!("{}", evidence::record(&inventory, &bundle, &review)?.display());
             Ok(true)
         }
-        _ => bail!("usage: dada-spec check | status [--explain] | prepare <unit-id> [--input <file>]... | record <bundle.json> <review.json>"),
+        _ => bail!("usage: dada-spec check | status [--explain] | prepare <unit-id> [--input <file>]... | record <bundle.json> <review.json> | run-check <check-name> | mechanical-status"),
     }
 }
 

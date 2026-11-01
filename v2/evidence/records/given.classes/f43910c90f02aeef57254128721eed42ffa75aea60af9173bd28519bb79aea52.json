@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "bundle": "83c09d72bc5a8c39995b7c30f61b8ddb923fdb27d9702d658af9c4b420dd944c",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit introduces class and field names, the natural field count, and declaration notation before later syntax uses them. ClassName and FieldName are String aliases, and Class stores an ordered List FieldName, including the empty list; the class name is supplied by the subsequent class table rather than duplicated in each Class record. The distinct-field convention is enforced by ClassesWellFormed in given.programs, not claimed to be an intrinsic restriction of every raw Class value.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "574a14294527739471d53d2dee64ef62ad5248779830276412b3e7a7605aeebf"
+  ]
+}

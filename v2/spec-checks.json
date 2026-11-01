@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "checks": {
+    "lean": {
+      "description": "Compile all Given, Shared, and correspondence modules, rejecting warnings.",
+      "cwd": "lean",
+      "command": ["lake", "build", "--wfail"],
+      "version": ["lake", "env", "lean", "--version"],
+      "inputs": ["lean"]
+    },
+    "lean-assumptions": {
+      "description": "Rebuild imports and print the axiom dependencies of the named foundation and type-safety theorems in CheckAxioms.lean.",
+      "cwd": "lean",
+      "command": ["sh", "../scripts/check-assumptions.sh"],
+      "version": ["lake", "env", "lean", "--version"],
+      "inputs": ["lean", "scripts/check-assumptions.sh"]
+    },
+    "rust": {
+      "description": "Run workspace tests, including syntactic correspondence and execution-evidence validation.",
+      "cwd": ".",
+      "command": ["cargo", "test", "--workspace"],
+      "version": ["cargo", "--version", "--verbose"],
+      "inputs": ["Cargo.toml", "Cargo.lock", "mdbook-dada/Cargo.toml", "mdbook-dada/src", "mdbook-dada/tests", "spec.json", "book.toml", "AGENTS.md", "md", "lean", "theme"]
+    },
+    "book": {
+      "description": "Build the mdBook using the current Rust preprocessor sources.",
+      "cwd": ".",
+      "command": ["mdbook", "build"],
+      "version": ["mdbook", "--version"],
+      "inputs": ["Cargo.toml", "Cargo.lock", "mdbook-dada/Cargo.toml", "mdbook-dada/src", "book.toml", "md", "lean", "theme"]
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "a0c4e0d64a7196610cebf4b0202a9ddbd899867d177a6d0ea124c13e2ffc6af7",
+  "reviewer": "Codex agent /root/renew_languages_evidence",
+  "provenance": "Fresh comparison of the immutable authored units, exact Lean declaration/example statements, and needed retained source context on 2026-11-01. Repeated identical required inputs were read once and reused across dependent comparisons. The reviewer did not author the Given/Shared formalization or the current tooling changes. Proof tactics are left to Lean; this is not an execution receipt.",
+  "examined": [
+    "context:lean/Unique/Step.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/State:Updated",
+    "lean:Unique/Step:Eval",
+    "lean:Unique/Step:EvalArgs",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Step:State.allocate",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.evaluation",
+    "unit:given.programs",
+    "unit:given.resolution",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The prerequisites given.syntax, given.state, given.storage_places, and given.resolution introduce expressions, storage, lookup/update, and resolution. Eval.give requires Resolve and Take; inspecting Take confirms precisely the initialized-slot-to-none update abbreviated by S[q←⊥]. EvalArgs is a left-to-right state-threading list relation, and Eval.new checks declaration membership, exact arity, and freshness at the post-argument nextId, then State.allocate zips results with declared fields and increments the counter. The nil argument case preserves storage. Failed lookup, unknown class, or a repeated unique give has no matching derivation; the unit does not promise every expression evaluates.",
+  "limitations": [
+    "This review checks definitions, theorem statements and concrete example setups/results for correspondence; it does not independently re-prove tactics or certify that a mechanical check was executed."
+  ],
+  "supersedes": [
+    "fb482e98f1bb6681593a8743f6e1d14f97eeb0ee0c717060c4d61963faeda942"
+  ]
+}

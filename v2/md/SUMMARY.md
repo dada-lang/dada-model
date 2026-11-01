@@ -19,6 +19,7 @@
   - [Extending the model in layers](repo/layer-extension.md)
   - [Specification system reference](repo/spec-system.md)
   - [Implementation contracts](repo/evidence-pilot.md)
+  - [Renderer contracts](repo/renderer-contracts.md)
 
 ---
 

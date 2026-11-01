@@ -154,9 +154,27 @@ including the unresolved representation of an initialized field with no exposed
 interior. Do not implement that proposal as part of the current type system.
 
 The strict chapters are `md/given.md`, `md/given-typing.md`, and `md/shared.md`,
-plus the future-extensions chapter and the evidence pilot. The new draft units intentionally fail evidence
+plus the future-extensions chapter and the evidence pilot. The future generic-views draft intentionally fails evidence
 validation. Changes to the evidence configuration and these instructions also
 invalidate earlier reviews; do not claim those records remain current or
 refresh their hashes without performing new reviews.
 Keep their semantic content in cited units and renew affected review records
 after changes. `lake build --wfail` includes both layers and correspondence.
+
+## Mechanical execution receipts
+
+`spec-checks.json` configures `dada-spec run-check NAME`; `mechanical-status`
+reports current receipts independently of correspondence decisions. The runner
+captures command/version output, status, declared source contents and directory
+membership before and after execution, including its configuration and source.
+It retains failed runs. `.git`, `.lake`, `target`, `book`, and `evidence` trees
+are excluded. These snapshots are not a hermetic environment or authenticated
+execution. Syntactic checking validates saved receipt integrity without running
+commands or requiring a pass (the Cargo evidence test cannot require a receipt
+for its own execution). The Lean assumptions profile rebuilds before printing
+the explicit theorem list in `lean/CheckAxioms.lean`. Add theorem queries there
+when expanding the set of proof assumptions to report.
+
+Renderer contracts live in `md/repo/renderer-contracts.md`; source/test citations
+and checked-in theme JS/CSS are conservative correspondence inputs. A source
+change requires renewed review, not a manufactured positive receipt or verdict.
