@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "f4993a39f667685f09663bbc2cc61617bb89d4e9657614e8f69c4d59d00380f7",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lib.rs:markdown_heading",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/lib.rs:selector_header",
+    "test:mdbook-dada/tests/book.rs:leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup",
+    "test:mdbook-dada/tests/book.rs:nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body",
+    "test:mdbook-dada/tests/book.rs:unanchored_rendered_blocks_share_named_headers_and_grouped_choices",
+    "test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent",
+    "test:mdbook-dada/tests/units.rs:meta_units_show_named_rust_implementation_and_test",
+    "test:mdbook-dada/tests/units.rs:structured_units_render_identified_headers_and_exact_lean_views",
+    "tool:theme/dada.css",
+    "unit:meta.math.source_view"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "selector_header emits identity/kind and grouped view controls with Rendered initially checked; render_unit gives one structured ID and keeps the draft label in the shared header. markdown_heading promotes only leading defining roles and render leaves later roles in the body; Rust selections include implementation and tests with citation captions. The cited tests check single IDs, leading/later anchor positions, all legacy labels, Rust/Lean views and independent nested groups. Retained dada.css implements right-aligned options and child-scoped pane switching so the header survives either view. The asset test checks those selectors rather than browser behavior, matching the limitation in the prose. Header, source view and citation meanings are stated directly in this unit.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence.",
+    "No browser rendering or CDN availability check was performed; output/CSS inspection does not establish appearance for all inputs."
+  ],
+  "supersedes": [
+    "f508b3addbd1e5cf67fb7deef527fdfe9d56edff4f3b93aec30beefe766338ef"
+  ]
+}

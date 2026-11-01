@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "bundle": "85c0da824f42548208d71b2f9c519dd8c2d0bef7da8bd8facba0ad631b7629ff",
+  "reviewer": "Codex delegated reviewer /root/review_typing",
+  "provenance": "Fresh independent semantic correspondence review on 2026-11-01 by the GPT-6-based Codex review_typing agent. Read complete authored units and their dependency selections, current review policy, and specified supporting context. Final packets were prepared after the future-note parser freeze; compared all required unit/Lean/policy inputs with the inspected preliminary packets and found them unchanged. No chapter or Lean edits were authored by this reviewer.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMapExamples:empty_map",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.empty"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The exact anchored empty_map example specializes FiniteMap.empty to Nat keys and Nat values and states entries = []. evidence.map defines empty and ordered entries. The prose claims only this concrete empty list and absence of stored pairs, which follow directly from the selected equation; it does not claim a tested lookup implementation.",
+  "limitations": [
+    "Statement and definition correspondence review only; no Lean execution, tactic audit, or axiom-dependency audit was performed.",
+    "Conservative full-source/tool snapshots establish freshness, not a claim that every retained source line was reviewed. Listed context files were consulted for the definitions, namespace scope, and example setup identified in the rationale."
+  ],
+  "supersedes": [
+    "2239d91a142d833b44903b87aefcb0541065d14ef3af5b39f59a674da5fb260d"
+  ]
+}

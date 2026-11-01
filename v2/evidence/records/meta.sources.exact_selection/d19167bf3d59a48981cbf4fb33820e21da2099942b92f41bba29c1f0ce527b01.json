@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "18ba81bf3c2a484f455d18be1b2b3d8e8d7c4842ea442b590b51a71666a02bb1",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:validate_mutual_groups",
+    "test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection",
+    "test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "select dispatches rule citations to the named inductive then extract_case; extract_declaration rejects additional indented commands, preventing a sibling inductive constructor from being absorbed. validate_mutual_groups checks standalone column-zero mutual/end, named inductive members, first-line where, duplicate/nested/incomplete groups and unsupported members. scan masks comments and literals for recognition while maintaining content_end through final literal tokens. Tests compare complete selected mutual members plus enclosing context, reject malformed groups even before selecting another declaration, reject sibling constructor theft, and retain string/raw-string/character/quoted-identifier endings. No Lean elaboration is performed, matching the expressly textual contract. Terms are defined through code spellings in this unit.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence."
+  ],
+  "supersedes": [
+    "46617e24185ef4c51900df4e53dc29d97433851dd9a65eb68389bc34f08e7187"
+  ]
+}

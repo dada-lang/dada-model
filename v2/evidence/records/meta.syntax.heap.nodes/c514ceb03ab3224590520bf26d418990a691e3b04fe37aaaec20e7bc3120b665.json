@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "dbebd968e31e2936a01270d95533bf72e7ccd1045e41c1c1c0878e0c0122672a",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/graph.rs:args",
+    "rust:mdbook-dada/src/graph.rs:identifier",
+    "rust:mdbook-dada/src/graph.rs:label",
+    "rust:mdbook-dada/src/graph.rs:parse",
+    "test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices",
+    "test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds",
+    "test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved",
+    "test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges",
+    "unit:meta.syntax.heap.nodes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "graph::parse first collects node declarations and deferred assignments, so references can precede targets; blank/comment lines are skipped. identifier accepts alphabetic/underscore starts and alphanumeric/underscore tails, args splits outside escaped quoted strings, and label decodes quoted JSON strings. Node constructor arities, single variable-store group, initial empty array slots and reference aliases match the prose. Tests exercise Unicode fields, aliases as distinct edge kinds, quoted commas/HTML escaping, array initialization and rejection of variable-store targets. This unit introduces diagram constructors and slot syntax independently of language semantics, with no unintroduced mathematical metavariable.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence."
+  ],
+  "supersedes": [
+    "5a9e492791a843a00dc7b6ddc36de9ab88d54902de4fbabe95ec4d3d5eded179"
+  ]
+}

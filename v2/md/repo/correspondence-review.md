@@ -10,8 +10,9 @@ Evidence retains both the inputs and the reasoning behind that judgment.
 `spec.json` makes the validation scope explicit. Its JSON uses `schema: 1`, a
 `chapters` array of paths relative to `v2/`, a `policies` array of review-policy
 files, and a `context` array for additional required input files. The book and Lean roots come from `book.toml`; this repository uses `md/`
-and `lean/`. Every new-style unit under `md/` participates in the evidence
-inventory. Adding
+and `lean/`. Every new-style unit under `md/` participates in the inventory.
+Specification units require evidence; future notes are explicitly nonnormative
+and have no correspondence claim. Adding
 a strict chapter additionally rejects prose outside unit boundaries in that
 chapter; removing it is a coverage change, not a remedy for missing evidence.
 
@@ -47,6 +48,14 @@ Evidence validation rejects drafts, and recording an affirmative correspondence
 decision for one is forbidden. Complete the formalization and remove draft
 status before attempting that review. A definition needs a matching Lean
 definition, not a proof; only a claimed result needs a proof.
+
+A `{future-note} ID` records exploratory design outside the current specification.
+It must not have formalization citations (`:lean:`, `:rust:`, or `:tests:`) or
+`:status: draft`. Its structure, ID, and contextual references remain checked,
+but it needs no correspondence evidence and cannot be prepared or recorded for
+correspondence review. Status reports `future note` / `not applicable`, never
+approval. Context links do not formalize the note. Change its kind before adding
+a formalization; draft specification units retain their existing blocking behavior.
 
 The input set is constructed from the current specification. At minimum it
 includes the exact unit being reviewed and every cited Lean declaration. All

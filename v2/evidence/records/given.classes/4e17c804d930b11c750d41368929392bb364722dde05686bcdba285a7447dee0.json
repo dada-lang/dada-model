@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "1953f5535e824bf9f587df18622c572297fc45e8d24c775cb7f449da67b4b214",
+  "reviewer": "Codex /root/review_given — fresh Given/Shared correspondence reviewer",
+  "provenance": "Independent textual comparison on 2026-11-01 by delegated Codex agent /root/review_given, with no authorship of these chapters or Lean implementation. Read all 37 authored units and their dependency units, exact selected Lean sources, review policy, and listed source context. Reprepared after final future-note list/quote rejection fix and confirmed required unit/selection/policy contents identical to those examined; this is a fresh semantic review, not hash replacement. No verdict inferred from previous decisions or mechanical checks.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:lean/Shared/Syntax.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:lean/Unique/UnpackingChecks.lean",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.classes: ClassName and FieldName are name categories and Class stores an ordered field list, matching C, f, d and the zero-field case introduced here. Distinctness is a language well-formedness restriction, supplied by given.programs, rather than an extra Class constructor proof field. The comparison found no undefined semantic metavariable or unresolved judgment that changes this claim within its introducing units and dependencies.",
+  "limitations": [
+    "Textual prose/statement correspondence only: no Lean proof execution, kernel verification, or proof-tactic audit was performed by this reviewer. Reading retained selected proof text does not certify tactic correctness.",
+    "Association-list representations admit malformed raw states; finite-map prose is interpreted with the authored distinct-key and well-formedness conventions. Conservative whole-source/tool snapshots were not all examined; examined lists only required review inputs and actually read context."
+  ],
+  "supersedes": [
+    "55015d5af4561fa2987f1805cdde2a7b9c6f55e99353e6a2cb57c58d754c2d9b"
+  ]
+}

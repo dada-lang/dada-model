@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "0c45f84b236b0d21a124def0d8dac322421b475cf24194d480b474642dadcf73",
+  "reviewer": "Codex /root/review_given — fresh Given/Shared correspondence reviewer",
+  "provenance": "Independent textual comparison on 2026-11-01 by delegated Codex agent /root/review_given, with no authorship of these chapters or Lean implementation. Read all 37 authored units and their dependency units, exact selected Lean sources, review policy, and listed source context. Reprepared after final future-note list/quote rejection fix and confirmed required unit/selection/policy contents identical to those examined; this is a fresh semantic review, not hash replacement. No verdict inferred from previous decisions or mechanical checks.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:lean/Shared/Syntax.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:lean/Unique/UnpackingChecks.lean",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.syntax: given.classes introduces C and fields; this unit introduces x, p, e and t before its grammar. Place has variable/field recursion, Value exactly give/new with recursive arguments, and Statement one destination/value pair. Freshness is the operational restriction established by given.steps, not an unrepresented syntax constructor. The comparison found no undefined semantic metavariable or unresolved judgment that changes this claim within its introducing units and dependencies.",
+  "limitations": [
+    "Textual prose/statement correspondence only: no Lean proof execution, kernel verification, or proof-tactic audit was performed by this reviewer. Reading retained selected proof text does not certify tactic correctness.",
+    "Association-list representations admit malformed raw states; finite-map prose is interpreted with the authored distinct-key and well-formedness conventions. Conservative whole-source/tool snapshots were not all examined; examined lists only required review inputs and actually read context."
+  ],
+  "supersedes": [
+    "37d763b9cbc0eafb236f5c0235c5b8b4d2025c1e1387441e5a6fc205a07fd037"
+  ]
+}

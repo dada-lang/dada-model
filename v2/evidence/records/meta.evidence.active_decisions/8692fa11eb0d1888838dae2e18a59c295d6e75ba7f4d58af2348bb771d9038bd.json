@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "9ab3a8fa36515e9abdedb20c952a3bd82ac39a1aa53ba45ab67f35249695d83d",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "test:mdbook-dada/tests/evidence_validation.rs:mismatch_and_inconclusive_reviews_never_count_as_correspondence",
+    "test:mdbook-dada/tests/evidence_validation.rs:recording_rechecks_sources_even_with_an_existing_inventory",
+    "test:mdbook-dada/tests/evidence_validation.rs:revised_review_can_supersede_same_unit_after_consulting_more_context",
+    "test:mdbook-dada/tests/evidence_validation.rs:stale_supersession_cannot_fall_back_to_an_independent_positive_review",
+    "tool:mdbook-dada/src/evidence.rs",
+    "unit:meta.evidence.active_decisions"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "record reloads Inventory from disk, validates the bundle and review, rejects future notes and drafts, and validates supersedes against retained records for this same unit before an immutable write. check derives current inputs, identifies superseded digests, and gives any stale active record priority over otherwise-current positive reviews; active mismatch and inconclusive conclusions also block correspondence. Tests mutate source after loading Inventory, combine positive with negative conclusions, preserve superseded bytes across an extra-context resolution, and stale that resolution while an independent positive remains. Future-note rejection is supported by inspection of record and the separate meta.future_notes comparison; draft rejection is explicit. Policy introduces bundle, decision, freshness and supersession terminology; there is no mathematical judgment or undefined metavariable here.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence."
+  ],
+  "supersedes": [
+    "94d301aab604aff6c9b9aa32566664a17c212d550b3a47188aed0582f0ecaf08"
+  ]
+}

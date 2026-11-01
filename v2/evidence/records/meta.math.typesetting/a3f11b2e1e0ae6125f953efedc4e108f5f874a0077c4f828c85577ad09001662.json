@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "f7892e8ff69661f9cba40f680a37100c4e8e284fefb65665bf05c8d279fc507c",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lib.rs:escape",
+    "rust:mdbook-dada/src/lib.rs:protect_math",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order",
+    "test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders",
+    "test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles",
+    "test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies",
+    "unit:meta.math.typesetting"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "render_authored and render_unit escape raw authored grammar/judgment/rule TeX, retain line breaks as entities and supply display delimiters without deriving notation from Lean. protect_math excludes literal code/link/HTML contexts, emits escaped display HTML and entity-protected inline punctuation; escape also protects source selections. Tests preserve ordered multi-citations, author-chosen placeholders, HTML characters, row breaks, primes and underscores through Markdown smart punctuation, and prevent literal/math-contained roles from becoming identities. The explicit delimiter spellings introduce the notation; this contract concerns preservation, not LaTeX validity or equivalence to Lean.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence."
+  ],
+  "supersedes": [
+    "88b9b8f9114c4e7f8dffddcdf1b2184e90818ec39bf91d518625628208769e94"
+  ]
+}

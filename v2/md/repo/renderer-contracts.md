@@ -332,3 +332,30 @@ penalizes distance and bends. It avoids box interiors; a missing route is an
 error. It does not guarantee that distinct edges or their labels never overlap.
 Lease junctions identify the explicitly named supporting edge.
 ```
+
+## Future notes
+
+```{definition} meta.future_notes
+:rust: mdbook-dada/src/units.rs:parse_block mdbook-dada/src/units.rs:parse mdbook-dada/src/lib.rs:render_unit mdbook-dada/src/evidence.rs:ReviewBundle::prepare mdbook-dada/src/evidence.rs:record mdbook-dada/src/evidence.rs:check
+:tests: mdbook-dada/tests/units.rs:future_notes_render_without_formalization_or_draft_status mdbook-dada/tests/units.rs:future_notes_reject_formalizations_and_nested_specifications mdbook-dada/tests/evidence_validation.rs:future_notes_are_publishable_but_cannot_receive_correspondence_reviews
+
+A *future note* is exploratory Markdown outside the current specification,
+introduced at chapter top level by `{future-note}` and a stable unit ID.
+Placement inside a list or blockquote is rejected. It must not declare an
+associated formalization: `:lean:`, `:rust:`, and `:tests:` are errors, as is a
+citation in place of the opening ID. Draft status is also rejected; a future
+note is not a specification unit waiting for approval. Nested specification
+units and legacy citation blocks remain forbidden.
+
+Notes may refer to existing concepts through `:uses:` or links. Their IDs,
+references, authored bodies, and strict-chapter coverage are checked normally.
+The rendered header identifies a Future note, without a formalization selector
+or Draft badge. Literal authoring samples stay literal.
+
+Evidence validation reports `future note` with correspondence `not applicable`.
+The absence of a formalization does not fail validation, but preparing or
+recording a correspondence review for a future note is an error. Draft
+specification units still require formalization and block evidence validation.
+The check rejects declared formalization associations; it does not infer that
+uncited code implements an idea.
+```

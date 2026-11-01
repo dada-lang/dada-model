@@ -1,6 +1,6 @@
 # Authoring units
 
-A unit is one explanation that can be compared with a named formalization. Keep
+A specification unit is one explanation that can be compared with a named formalization. Keep
 its definition, qualifications, notation, and explanatory text inside the same
 fence. The reader should understand the mathematical account without opening
 Lean; the Lean view makes the associated formalization inspectable.
@@ -61,6 +61,7 @@ structured unit is unnecessary.
 | `theorem` | Markdown stating a result and its assumptions | One named Lean theorem |
 | `lemma` | Markdown stating a supporting result and its assumptions | One named Lean theorem |
 | `example` | Markdown explaining a concrete case | One anchored anonymous Lean example |
+| `future-note` | Markdown exploring a possible future design, outside the current specification | Forbidden |
 
 Theorem and lemma reviews compare the intended proposition with Lean's
 statement, including hidden parameters and assumptions. Leave the proof to
@@ -85,6 +86,29 @@ established one; a draft example describes a scenario awaiting its formal case.
 Evidence validation fails while a unit is draft, and no affirmative
 correspondence decision can be recorded for it. Add the matching formalization
 and remove `:status: draft` before preparing a correspondence review.
+
+Use a **Future note** for exploratory ideas that are not part of the current
+specification. Unlike a draft specification, a future note is publishable without
+formalization:
+
+````text
+```{future-note} future.generic_views
+:uses: given.typing.views
+
+A future design could preserve partial views through constructors.
+```
+````
+
+Future notes reject `:lean:`, `:rust:`, `:tests:`, and `:status: draft`.
+Place future notes at chapter top level, outside lists and blockquotes.
+They have stable IDs, Markdown bodies, and optional `:uses:` context; links and
+dependencies must resolve as usual. Nested specification units and legacy
+citation blocks are forbidden. The header says **Future note**, with no source
+selector. Evidence status is `future note` / `not applicable`; preparation and
+recording of correspondence reviews are rejected. Once an idea has an associated
+formalization, change it to the appropriate specification kind and review it.
+These checks reject declared source associations; they do not discover uncited
+implementations elsewhere in the repository.
 
 Check Lean with `just test-lean`; its `lake build --wfail` rejects warnings,
 including those emitted by `sorry`. Do not use `sorry` to complete a formalization

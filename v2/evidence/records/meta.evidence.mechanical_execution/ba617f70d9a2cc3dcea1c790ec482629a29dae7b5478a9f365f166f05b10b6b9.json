@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "e971d885bc7dbde5804711eec464759ccd6640d772fc1eaa92dd1b18b809b68f",
+  "reviewer": "Codex fresh meta-contract reviewer (/root/review_meta)",
+  "provenance": "Fresh-context delegated correspondence review on 2026-11-01 in /private/tmp/dada-model-publish-fix. Read current review policy, exact authored units and their required Rust/test/dependent selections; compared supported and rejection paths after the final future-note source freeze. Prepared new CLI bundles and explicitly superseded active prior decisions; no source edits or hash-only refresh.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/mechanical.rs:Execution::validate",
+    "rust:mdbook-dada/src/mechanical.rs:records",
+    "rust:mdbook-dada/src/mechanical.rs:run",
+    "rust:mdbook-dada/src/mechanical.rs:snapshot",
+    "rust:mdbook-dada/src/mechanical.rs:status",
+    "test:mdbook-dada/tests/evidence_validation.rs:workspace_validation_rejects_malformed_execution_receipts",
+    "test:mdbook-dada/tests/mechanical.rs:execution_preserves_success_failure_and_non_utf8_output",
+    "test:mdbook-dada/tests/mechanical.rs:execution_retains_source_mutations_additions_and_deletions",
+    "test:mdbook-dada/tests/mechanical.rs:failed_after_snapshot_and_launch_failures_are_retained",
+    "test:mdbook-dada/tests/mechanical.rs:later_failures_and_tied_failures_cannot_be_hidden_by_success",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_rejects_tampering_and_profile_substitution",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_requires_selected_sources_and_runner_snapshots",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_and_records_reject_symbolic_links",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_record_empty_directories_and_ignore_generated_outputs",
+    "test:mdbook-dada/tests/mechanical.rs:source_or_profile_changes_stale_receipts_without_corrupting_history",
+    "test:mdbook-dada/tests/mechanical.rs:status_and_record_validation_never_execute_profile_commands",
+    "tool:mdbook-dada/src/bin/dada-spec.rs",
+    "tool:mdbook-dada/src/mechanical.rs",
+    "unit:meta.evidence.mechanical_execution"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "run captures profile, cwd, raw command/version outcomes and snapshots on both sides, retains launch/recapture failures, and writes an immutable receipt. In retained mechanical.rs context, succeeded requires successful initial version and command, equal before/after version outcomes and identical source snapshots; collect/generated and validate_snapshot enforce membership, mandatory runner/configuration roots, ordering and hashes with fixed generated exclusions and symlink rejection. status considers every receipt tied at the maximum local finish time, preferring stale/failure over success. records and evidence::check validate integrity without execute; the CLI dispatches execution only for run-check. Tests cover non-UTF-8 output, exit failures, additions/deletions/mutations, failed launch/recapture, tampering and rehashed omissions, profile staleness, timestamp ties, empty directories, symlinks, generated exclusions and no execution during status/check. Mechanical receipt is introduced in the unit; the explicit non-hermetic/authentication limitations match what is captured, and the stated assumptions command is a scoped observation rather than a correspondence verdict.",
+  "limitations": [
+    "This fresh Codex subagent inspected selected implementation and test source; it did not execute Cargo, Lean, mdBook, or browser tests. Parent-agent command results are reported separately and are not a premise of this correspondence judgment. Tests establish the listed cases, not universal correctness.",
+    "Additional tool snapshot keys identify the contextual helpers/assets actually consulted; they do not attest a line-by-line audit of every declaration in those conservative whole-file snapshots. No prior rationale or favorable verdict was adopted as evidence.",
+    "Receipt snapshots and local timestamps are unauthenticated endpoint observations; installed tools, ambient environment and restored-between-snapshot edits are not audited."
+  ],
+  "supersedes": [
+    "aceda68308208050209230287825fef948cfa8b3531b4d76c526add71716cb21"
+  ]
+}

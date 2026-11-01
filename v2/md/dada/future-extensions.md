@@ -2,8 +2,7 @@
 
 ## Generic views
 
-````{example} future.generic_views
-:status: draft
+````{future-note} future.generic_views
 :uses: given.typing.views given.typing.expressions
 
 A constructor could store a value without requiring all of its fields to be
