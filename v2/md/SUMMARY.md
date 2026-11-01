@@ -7,7 +7,7 @@
   - [Type system](given-typing.md)
 - [Shared](shared-overview.md)
   - [Operational semantics](shared.md)
-  - [Type system (coming)](shared-typing.md)
+  - [Type system](shared-typing.md)
 - [CFlow](cflow.md)
 - [Future extensions](dada/future-extensions.md)
 - [Contributing to the specification](introduction.md)

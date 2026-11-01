@@ -44,8 +44,12 @@ have been removed and must not serve as an implicit specification for later laye
 Render give syntax as `p→` and
 `p→share`. The table of contents groups Operational semantics and Type system
 under Given and Shared, followed by CFlow. Navigation pages are
-`v2/md/given-overview.md` and `v2/md/shared-overview.md`; `v2/md/shared-typing.md`
-and `v2/md/cflow.md` are editorial placeholders, with no semantic units yet.
+`v2/md/given-overview.md` and `v2/md/shared-overview.md`.
+`v2/md/shared-typing.md` is a Markdown-first draft for user review: only `given`
+and `shared` permissions, signed views, and a proposed unique-only unpacking
+extension. Its definitions, examples, and soundness statements are Draft units;
+there is no Shared typing formalization yet. `v2/md/cflow.md` remains an
+editorial placeholder.
 The existing chapter paths remain unchanged. `v2/md/given-typing.md` contains
 strictly covered units for signed views, typing rules, and storage realization,
 with formal definitions and examples in `Unique/Views`, `Unique/Typing`,
@@ -60,8 +64,10 @@ View entries are prefix-incomparable. Expanded views are valid and normalize
 by collapsing complete positive subtrees. Bare `C` is shorthand for `C.{ε}`,
 not a separate type constructor; emptying is written `T[-ρ]`.
 Constructor arguments still require their whole declared class types.
-`v2/md/dada/future-extensions.md` records generic views as a proposal to revisit,
-not part of the current rules.
+`v2/md/dada/future-extensions.md` records generic views, path-dependent
+`given[places]` permissions, and permission/type unions as proposals to revisit,
+not part of the current rules. Path-dependent permissions and mixed ownership
+possibilities do not belong in the initial Shared type system.
 The strict operational chapters live in `v2/md/given.md` and
 `v2/md/shared.md`, with standalone Lean modules under `v2/lean/Unique/` and
 `v2/lean/Shared/`. `Common/Rooted` supplies shared graph reasoning;

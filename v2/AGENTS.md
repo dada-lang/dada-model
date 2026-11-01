@@ -157,10 +157,17 @@ slots to empty bindings; interiors of transferred objects may remain partial.
 including the unresolved representation of an initialized field with no exposed
 interior. Do not implement that proposal as part of the current type system.
 
-The strict chapters are `md/given.md`, `md/given-typing.md`, and `md/shared.md`,
-plus the future-extensions chapter and the evidence pilot. The generic-views
-future note is publishable without formalization; adding a formalization citation
-to a future note is an error. Draft specification units still fail evidence validation. Changes to the evidence configuration and these instructions also
+`md/shared-typing.md` is a Markdown-first draft awaiting user review. It adds
+only `given` and `shared` permissions, permission-aware field access and views,
+and a proposed unique-only unpacking extension; no Shared typing Lean modules
+have been added. Path-dependent permissions and permission/type unions are
+recorded in `md/dada/future-extensions.md` for later layers.
+
+The strict chapters are `md/given.md`, `md/given-typing.md`, `md/shared.md`,
+and `md/shared-typing.md`, plus future extensions and the evidence pilot.
+The future notes are publishable without formalization; adding a formalization
+citation to a future note is an error. The Shared typing Draft specification
+units still fail evidence validation. Changes to the evidence configuration and these instructions also
 invalidate earlier reviews; do not claim those records remain current or
 refresh their hashes without performing new reviews.
 Keep their semantic content in cited units and renew affected review records
