@@ -40,5 +40,5 @@ jobs:
         run: cargo fmt --all --check
       - name: Lint
         run: cargo clippy --locked --workspace --all-targets -- -D warnings
-      - name: Test preprocessor
+      - name: Test tooling and specification evidence
         run: cargo test --locked --workspace

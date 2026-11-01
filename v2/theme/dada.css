@@ -33,9 +33,9 @@
 .lean-selector .view-options { display:flex; align-items:center; gap:1em; flex-shrink:0; margin-left:auto; }
 .lean-selector label { cursor:pointer; white-space:nowrap; }
 .lean-group > .lean-source { display:none; }
-.lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-source { display:block; }
-.lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-grammar,
-.lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-markdown-body { display:none; }
+.lean-group:has(> .lean-selector input:is([value="lean"], [value="rust"]):checked) > .lean-source { display:block; }
+.lean-group:has(> .lean-selector input:is([value="lean"], [value="rust"]):checked) > .lean-grammar,
+.lean-group:has(> .lean-selector input:is([value="lean"], [value="rust"]):checked) > .lean-markdown-body { display:none; }
 .lean-markdown { border:1px solid var(--table-border-color); border-radius:6px; padding:1em; }
 .lean-markdown > .lean-source { margin-top:1em; }
 .lean-markdown-body > :last-child { margin-bottom:0; }

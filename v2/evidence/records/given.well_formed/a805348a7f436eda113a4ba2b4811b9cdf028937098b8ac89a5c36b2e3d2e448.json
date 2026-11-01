@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "4c0bd8186e2bbc115b3294c16eb87e207ea44cf07e07b29694fc37e010781938",
+  "reviewer": "Codex delegated reviewer /root/layer_evidence_review",
+  "provenance": "Independent agent review: I did not author the Given/Shared chapters, Lean modules, or evidence validator. I read the frozen unit bodies, exact cited statements, dependencies, review policy, concrete example definitions, and relevant source helpers, compared their semantics, and confirmed the prepared required snapshots match those sources. The distinct-key qualification was added after my review finding and was inspected in the frozen packet. This record is not human approval or a mechanical proof/test result.",
+  "examined": [
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/Liveness.lean",
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Soundness:WellFormed",
+    "lean:Unique/State:Allocated",
+    "lean:Unique/State:Live",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:References",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:ObjectId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.state",
+    "unit:given.well_formed"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Allocated tests the object-table domain; Live inductively follows initialized variable roots and field edges. WellFormed states distinct object/variable keys, declared ordered distinct field shapes, allocation bounds, strictly older field targets, reference-list Nodup, and equivalence of reference membership with allocation. References includes all variable and field occurrences. The prose bullets therefore express the actual structural predicate, without assuming execution reachability.",
+  "limitations": [
+    "This is a correspondence review of authored intent, declaration statements, and relevant definitions; it does not record Lean compilation or test execution and does not recheck proof tactics. Conservative context snapshots were inspected for the relevant definitions and helper behavior, not as a claim to audit every proof or implementation line."
+  ],
+  "supersedes": []
+}

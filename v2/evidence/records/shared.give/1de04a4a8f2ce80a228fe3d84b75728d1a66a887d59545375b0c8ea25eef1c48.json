@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "3b04c0cdbc03dac1151ffa3f3fd3d590cf9fbb68a5c6b79ede5e5f95fb606bc4",
+  "reviewer": "Codex independent repair reviewer /root/review_repaired_shared",
+  "provenance": "Independent delegated correspondence review continued after the user's clarification. I did not author the repaired chapter, Lean declarations, decision note or earlier repository reviews. I had read the complete prior frozen required units/selections/policy and relevant contexts; for these final packets I compared the snapshots, verified 97 unchanged required inputs byte-for-byte, reread every changed required input and inspected the new Liveness declaration context. I reviewed the new path-exclusivity unit and its complete required dependencies. The explicit user-confirmation quotations are retained as the primary agent's recoverable intent input; I did not independently retrieve the originating conversation. No conclusion is inferred merely from packet preparation or the reported Lean build.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Shared/Soundness.lean",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:lean/Shared/Syntax.lean",
+    "extra:reviews/repair-2026-10-24/sharing-decision.md",
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Place",
+    "policy:md/repo/correspondence-review.md",
+    "unit:shared.give"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:shared.give starts with the observable behavior and now explicitly locates ownership modes on references, never on objects. Reference carries mode and target while Object carries class and fields. Its table matches lean:Shared/Step:Give: move requires unique resolution and Take, returns the identical target with unique mode and clears the final slot; copy requires shared resolution and an already-shared final occurrence and leaves the state equal; promote requires shared resolution and Promote, returns a shared owner of the same target and changes only the final stored unique reference to shared. Resolve and Mode.join propagate a shared reference through every subsequent projection. The Take and Promote constructors retain all surrounding list segments, object identities, class/field names and counter. Sharing a container leaves its fields' reference modes untouched; later shared access to a unique final reference changes only that reference. extra:reviews/repair-2026-10-24/sharing-decision.md now records the user's explicit confirmation of that field-reference update and clarification of path-based access, resolving the earlier provisional design ambiguity. The local Compatible invariant excludes a unique stored reference plus another incoming owner; the note correctly distinguishes that sufficient local representation condition from the path-level requirement. The separately inspected WellFormed.path_mode_exclusive statement establishes the requested absence of both unique and shared root paths to the same target. The Given embedding is not used to justify the newly added sharing behavior. This new comparison intentionally supersedes the earlier inconclusive decision while preserving its historical diagnosis.",
+  "limitations": [
+    "The saved intent input records user replies supplied by the primary agent; I did not independently retrieve or authenticate the originating conversation.",
+    "The local stored-occurrence invariant is sufficient for the stated path exclusivity theorem. This review does not claim equivalence with the path-level condition alone or with alternative eager-promotion representations, and does not settle future mutation, destruction or borrowing semantics.",
+    "This is a statement-and-behavior correspondence review, not an independent proof build, proof-tactic audit, or validator-correctness assessment."
+  ],
+  "supersedes": [
+    "226d2870bf5106489f5d1f3072495c2d01b5d3fbf597e1de7a935ec759e81b5c"
+  ]
+}

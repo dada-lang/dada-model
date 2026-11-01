@@ -1,0 +1,174 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running unittests src/lib.rs (target/debug/deps/mdbook_dada-320b86c2977f6769)
+
+running 34 tests
+test graph::tests::labels_are_escaped_and_quoted_commas_are_preserved ... ok
+test graph::tests::arrays_materialize_uninitialized_slots_and_validate_indices ... ok
+test graph::tests::bad_facts_fail_instead_of_silently_changing_the_graph ... ok
+test graph::tests::variable_store_groups_slots_without_becoming_a_reference_target ... ok
+test lean::tests::rejects_malformed_theorem_name_components_even_when_source_matches ... ok
+test graph::tests::facts_render_unicode_fields_and_reference_kinds ... ok
+test lean::tests::rejects_missing_and_malformed_example_anchors ... ok
+test graph::lease_tests::leases_join_edges_and_shleases_target_objects ... ok
+test lean::tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments ... ok
+test lean::tests::selects_a_case_without_interpreting_its_binders ... ok
+test lean::tests::rejects_end_markers_that_cut_off_a_proof_continuation ... ok
+test lean::tests::masks_raw_strings_and_character_literals_without_masking_identifier_primes ... ok
+test lean::tests::definition_selection_ignores_comment_and_literal_decoys ... ok
+test graph::cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically ... ok
+test routing::tests::routes_around_boxes_and_through_column_gaps ... ok
+test rust_source::tests::rejects_missing_ambiguous_and_generated_items ... ok
+test lean::tests::structure_definitions_allow_command_names_as_typed_fields ... ok
+test lean::tests::qualified_theorem_names_match_only_the_literal_declaration_name ... ok
+test rust_source::tests::rejects_unsafe_paths_and_non_rust_files ... ok
+test rust_source::tests::selects_complete_test_with_attributes_and_unicode ... ok
+test rust_source::tests::rejects_symlinks_outside_root ... ok
+test rust_source::tests::selects_named_data_and_trait_items_without_reformatting ... ok
+test lean::tests::selects_complete_named_theorems_without_comment_or_string_decoys ... ok
+test rust_source::tests::selects_module_qualified_functions_methods_and_types ... ok
+test lean::tests::extracts_complete_declarations_and_ignores_comment_decoys ... ok
+test lean::tests::selects_one_anonymous_example_with_comments_and_multiline_proof ... ok
+test lean::tests::declaration_extent_keeps_final_literal_expressions_and_comment_text_inside_literals ... ok
+test lean::tests::requires_one_complete_anonymous_example ... ok
+test lean::tests::declaration_boundaries_accept_modifiers_only_before_supported_declarations ... ok
+test lean::tests::structure_definitions_still_reject_indented_sibling_commands ... ok
+test lean::tests::declaration_extent_excludes_trailing_comments_but_keeps_body_and_inline_comments ... ok
+test lean::tests::rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections ... ok
+test lean::tests::definitions_select_complete_equations_structure_literals_and_multiline_bodies ... ok
+test lean::tests::definitions_reject_unsupported_incomplete_and_ambiguous_sources ... ok
+
+test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src/bin/dada-spec.rs (target/debug/deps/dada_spec-7e1e95604296a6d3)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/mdbook_dada-ee7e320332568239)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/book.rs (target/debug/deps/book-21d5a92656f9ccf9)
+
+running 39 tests
+test authored_directive_examples_remain_literal_inside_other_code ... ok
+test current_mdbook_schema_is_processed_and_unknown_schema_fails ... ok
+test block_directives_are_distinct_from_literal_code_and_inline_roles ... ok
+test explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles ... ok
+test cross_references_traverse_to_parent_and_bad_references_fail ... ok
+test authored_math_requires_one_opening_argument_and_a_body ... ok
+test generated_grammar_directives_require_migration ... ok
+test authored_grammar_accepts_single_citations_and_escapes_html ... ok
+test authored_math_escapes_html_without_interpreting_placeholders ... ok
+test heap_fences_render_and_preserve_source ... ok
+test authored_theorems_show_the_exact_named_statement_and_proof ... ok
+test authored_theorems_select_literal_qualified_names ... ok
+test informational_paragraphs_preserve_markdown_and_literal_examples ... ok
+test inferred_judgment_and_rule_directives_require_migration ... ok
+test inline_roles_preserve_paragraph_and_double_backticks_are_literal ... ok
+test indexes_forward_references_and_nested_chapters ... ok
+test heading_anchors_do_not_replace_the_required_markdown_statement ... ok
+test literal_examples_are_not_anchors ... ok
+test authored_grammar_keeps_math_and_groups_citations_in_order ... ok
+test header_selection_ignores_roles_inside_explicit_math ... ok
+test linked_examples_fail_on_invalid_citations_bodies_or_nesting ... ok
+test proof_markdown_is_linted_with_original_chapter_lines ... ok
+test authored_grammar_rejects_invalid_citations_and_missing_bodies ... ok
+test linked_examples_preserve_native_markdown_and_select_one_lean_test ... ok
+test authored_math_rejects_missing_or_wrong_kind_source_selections ... ok
+test unlinked_example_labels_require_migration_but_literal_mentions_do_not ... ok
+test authored_theorems_reject_wrong_kinds_and_malformed_directives ... ok
+test definition_blocks_reject_missing_wrong_kind_and_malformed_citations ... ok
+test explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies ... ok
+test typed_anchor_roles_share_ids_and_references_without_implying_proofs ... ok
+test theorem_and_lemma_bodies_preserve_markdown_math_and_proof_outlines ... ok
+test linked_example_bodies_index_anchors_and_scope_nested_selectors ... ok
+test leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup ... ok
+test nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body ... ok
+test authored_judgments_and_rules_keep_tex_and_show_cited_source ... ok
+test markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds ... ok
+test unanchored_rendered_blocks_share_named_headers_and_grouped_choices ... ok
+test proof_blocks_index_cross_chapter_anchors_and_scope_supported_nested_blocks ... ok
+test definition_blocks_select_multiple_complete_declarations_and_preserve_markdown ... ok
+
+test result: ok. 39 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running tests/evidence.rs (target/debug/deps/evidence-417539d30d190e55)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/evidence_validation.rs (target/debug/deps/evidence_validation-8f216222e6037633)
+
+running 21 tests
+test actual_mdbook_pipeline_rejects_includes_in_reviewed_content ... ignored, requires the mdbook executable; run with --ignored after installing book tools
+test preexpanded_includes_cannot_bypass_original_source_validation ... ok
+test authored_includes_and_nested_citations_cannot_acquire_evidence ... ok
+test obligations_remain_pending_but_cannot_hide_invalid_citations ... ok
+test generated_inputs_cannot_be_reintroduced_through_symlink_aliases ... ok
+test recording_rechecks_sources_even_with_an_existing_inventory ... ok
+test explicit_dependencies_and_unit_links_must_resolve ... ok
+test review_must_examine_exact_citations_and_provide_a_rationale ... ok
+test prepared_bundles_are_not_completed_reviews ... ok
+test additional_consulted_inputs_are_examined_and_invalidated_on_change ... ok
+test snapshot_and_manifest_tampering_are_rejected ... ok
+test rust_test_citations_require_the_named_test_function_itself ... ok
+test rejects_missing_or_substituted_required_inputs ... ok
+test complete_current_reviews_pass_and_remain_distinct_from_mechanical_checks ... ok
+test moving_a_unit_without_changing_its_contents_preserves_review ... ok
+test configured_lean_root_is_shared_by_rendering_and_evidence ... ok
+test malformed_and_rewritten_records_are_reported ... ok
+test revised_review_can_supersede_same_unit_after_consulting_more_context ... ok
+test stale_supersession_cannot_fall_back_to_an_independent_positive_review ... ok
+test mismatch_and_inconclusive_reviews_never_count_as_correspondence ... ok
+test authored_and_formal_source_changes_stale_existing_reviews ... ok
+
+test result: ok. 20 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.24s
+
+     Running tests/latex.rs (target/debug/deps/latex-435ab7f2370e80d5)
+
+running 5 tests
+test diagnostics_count_source_lines_including_unicode_and_crlf ... ok
+test grouped_overbars_and_other_control_words_are_allowed ... ok
+test book_build_checks_math_directives_examples_and_literal_tex ... ok
+test overbars_require_a_preceding_brace_and_following_literal_space ... ok
+test all_book_markdown_follows_latex_conventions ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/units.rs (target/debug/deps/units-e66a639a001cafea)
+
+running 12 tests
+test legacy_blocks_and_literal_authoring_examples_are_not_units ... ok
+test coverage_rejects_unattached_prose_and_legacy_blocks ... ok
+test links_form_dependencies_but_literals_do_not ... ok
+test exact_authored_units_preserve_unicode_latex_and_crlf ... ok
+test duplicate_and_nested_units_fail ... ok
+test meta_units_show_named_rust_implementation_and_test ... ok
+test malformed_units_fail_with_source_location ... ok
+test new_units_retain_kind_checks_and_pending_obligation_label ... ok
+test rule_citations_cannot_select_an_indented_siblings_constructor ... ok
+test structured_units_reject_includes_and_nested_legacy_citations ... ok
+test structured_units_render_identified_headers_and_exact_lean_views ... ok
+test rule_selections_preserve_final_literal_tokens ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+   Doc-tests mdbook_dada
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running tests/evidence_validation.rs (target/debug/deps/evidence_validation-8f216222e6037633)
+
+running 1 test
+test actual_mdbook_pipeline_rejects_includes_in_reviewed_content ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 20 filtered out; finished in 0.46s
+

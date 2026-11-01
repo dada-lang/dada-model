@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "6d806627a1923f72e672cdd332146b28134eb2ffcd7005728c7ad781f4407605",
+  "reviewer": "Codex subagent /root/evidence_docs",
+  "provenance": "Independent comparison of immutable packet snapshots in the 2026-10-24 task. The reviewer did not author the pilot units, their Lean statements, or the Rust validator/test implementation; the reviewer did author the workflow documentation used as policy. This is an agent judgment, not a human approval or a mechanical proof/test result.",
+  "examined": [
+    "context:mdbook-dada/src/evidence.rs",
+    "context:mdbook-dada/src/inventory.rs",
+    "context:mdbook-dada/tests/evidence_validation.rs",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:validate_bundle",
+    "rust:mdbook-dada/src/inventory.rs:Inventory::inputs",
+    "test:mdbook-dada/tests/evidence_validation.rs:rejects_missing_or_substituted_required_inputs",
+    "tool:mdbook-dada/src/units.rs",
+    "unit:meta.evidence.required_inputs"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit claims syntactic input completeness and identity, not semantic equivalence. The selected validate_bundle constructs expected inputs by calling Inventory::inputs for bundle.unit; it does not take the saved manifest as its minimum checklist. Inventory::inputs and its inspected add_unit helper include the raw complete authored unit, each selected Lean declaration under a separate lean: key, transitive unit context, policy, and tooling snapshots. The inspected units parser stores raw source[range] including the whole fence/options/body, supporting the complete-unit part of the claim. Full Lean files use context: keys, so their presence cannot satisfy a missing lean: selection. validate_bundle checks every expected key for presence and compares content, hash, and source path; integrity_errors independently recomputes snapshot hashes and rejects manifest inconsistency. Explicit extra: inputs are resolved from their current project file contents before comparison. The cited test removes unit, exact Lean declaration, dependency, policy, configured context, tool lock, and toolchain inputs while recomputing an internally consistent manifest. It verifies missing-key errors even though full Lean source context remains, then substitutes another declaration with a recomputed content/manifest hash and expects rejection. Inspection of the fixture and repack helper confirms these are attacks against the independent required-input boundary rather than mere invalid-digest checks. Path-comparison and extra-input behavior are supported by inspection of the cited implementation; the single cited test does not exercise every branch. The implementation does not interpret prose or prove correspondence, matching the explicit limit in the unit.",
+  "limitations": [
+    "This is an implementation correspondence review, not a universal proof of the validator or an assertion that Cargo tests were executed during the review.",
+    "The cited test covers missing required inputs and declaration substitution. Hash checking, path comparison, and current extra-file comparison were inspected in code; this review does not claim exhaustive adversarial coverage.",
+    "The evidence.rs context was used for bundle integrity helpers and the cited validator; the test context was used for its fixture/repack helpers and selected test. Unrelated record/supersession code and tests were not reviewed here.",
+    "Source-selection correctness beyond the inspected raw-unit boundary and the concrete selected inputs remains dependent on the textual source selectors and their separate tests."
+  ],
+  "supersedes": []
+}

@@ -1,8 +1,13 @@
 //! Presentation-only mdBook processing. Associations are not verification evidence.
+pub mod configuration;
+pub mod evidence;
 pub mod graph;
+pub mod inventory;
 pub mod lean;
 pub mod lint;
 mod routing;
+pub mod rust_source;
+pub mod units;
 
 use anyhow::{bail, ensure, Context, Result};
 use pulldown_cmark::{CodeBlockKind, Event, Parser, Tag, TagEnd};
@@ -115,10 +120,17 @@ fn roles(source: &str) -> Result<Vec<Role>> {
             Event::Text(_) if excluded == 0 => text_end = Some(range),
             Event::Code(id) if excluded == 0 => {
                 if let Some(previous) = text_end.take() {
+                    let removed = "{obligation}";
+                    if previous.end == range.start
+                        && source[previous.clone()].ends_with(removed)
+                        && !source[..range.start - removed.len()].ends_with('\\')
+                        && source[range.clone()] == format!("`{id}`")
+                    {
+                        bail!("{{obligation}} has been removed; use a named definition, theorem, lemma, or example with :status: draft when formalization is pending");
+                    }
                     for (prefix, definition, label, lean) in [
                         ("{anchor}", true, None, false),
                         ("{definition}", true, Some("definition"), false),
-                        ("{obligation}", true, Some("proof obligation"), false),
                         ("{anchor-ref}", false, None, false),
                         ("{lean.type}", false, None, true),
                     ] {
@@ -221,6 +233,8 @@ fn directive_blocks(source: &str) -> Vec<DirectiveBlock> {
                     "{theorem}",
                     "{lemma}",
                     "{example}",
+                    // Recognized only so the shared validator can reject it.
+                    "{obligation}",
                     "{lean.type}",
                     "{lean.judgment}",
                     "{lean.rule}",
@@ -254,13 +268,21 @@ fn directive_blocks(source: &str) -> Vec<DirectiveBlock> {
 fn chapter_roles(source: &str) -> Result<Vec<Role>> {
     let protected = protect_math(source);
     let mut found = roles(&protected)?;
+    for unit in units::parse(source, "chapter")? {
+        found.push(Role {
+            range: unit.range,
+            id: unit.id,
+            definition: true,
+            label: None,
+            lean: false,
+        });
+    }
     for block in directive_blocks(&protected) {
         if block
             .info
             .split_whitespace()
             .next()
-            .and_then(MarkdownDirective::parse)
-            .is_some()
+            .is_some_and(|name| MarkdownDirective::parse(name).is_some())
         {
             // These bodies are Markdown; grammar, judgment, and rule bodies are TeX.
             ensure!(
@@ -275,6 +297,81 @@ fn chapter_roles(source: &str) -> Result<Vec<Role>> {
         }
     }
     Ok(found)
+}
+
+fn render_unit(
+    unit: &units::SpecUnit,
+    path: &str,
+    anchors: &BTreeMap<String, String>,
+    lean_root: Option<&Path>,
+    project_root: Option<&Path>,
+) -> Result<String> {
+    let label = unit.kind.label();
+    let lower_label = label.to_ascii_lowercase();
+    let role = Role {
+        range: unit.range.clone(),
+        id: unit.id.clone(),
+        definition: true,
+        label: None,
+        lean: false,
+    };
+    let mut heading = render_role(&role, path, anchors, &lower_label)?;
+    if unit.draft {
+        heading.push_str(" <span class=\"block-label unit-status\" title=\"Formalization and correspondence review pending\">Draft</span>");
+    }
+    let (alternate, cited_source) = if !unit.lean.is_empty() {
+        let root = lean_root.context("Lean directives require preprocessor.dada.lean-source")?;
+        ("Lean", lean::selected_source(root, &unit.lean, unit.kind)?)
+    } else if !unit.rust.is_empty() {
+        let root = project_root.context("Rust citations require a configured project root")?;
+        let mut cited = String::new();
+        for target in unit.rust.iter().chain(&unit.tests) {
+            let selected = crate::rust_source::select(root, target)?;
+            cited.push_str(&format!(
+                "<figcaption>{}</figcaption><pre><code class=\"language-rust\">{}</code></pre>",
+                escape(target),
+                escape(&selected.selected).replace('\n', "&#10;")
+            ));
+        }
+        ("Rust", cited)
+    } else {
+        ("", String::new())
+    };
+    let header = if alternate.is_empty() {
+        format!("<div class=\"lean-selector\"><div class=\"block-heading\">{heading}</div></div>")
+    } else {
+        selector_header(
+            label,
+            Some(&heading),
+            &format!("unit-{}", unit.id),
+            "rendered",
+            alternate,
+        )
+    };
+    let body = if unit.kind.is_math() {
+        let tex = escape(unit.body.trim()).replace('\n', "&#10;");
+        format!("<div class=\"lean-grammar\"><div class=\"math-display\">\\[{tex}\\]</div></div>")
+    } else {
+        let body = render(
+            &unit.body,
+            path,
+            anchors,
+            lean_root,
+            project_root,
+            &unit.id,
+            &lower_label,
+        )?;
+        format!(
+            "<div class=\"lean-markdown-body\">\n\n{}\n\n</div>",
+            body.trim_matches('\n')
+        )
+    };
+    let markdown_class = if unit.kind.is_math() {
+        ""
+    } else {
+        " lean-markdown"
+    };
+    Ok(format!("\n<figure class=\"lean-declaration lean-group{markdown_class}\">{header}{body}<div class=\"lean-source\">{cited_source}</div></figure>\n\n"))
 }
 
 fn walk(chapters: &Value, f: &mut impl FnMut(&Value) -> Result<()>) -> Result<()> {
@@ -367,10 +464,7 @@ fn markdown_heading<'a>(
     let mut heading = Vec::new();
     let mut end = 0;
     for role in roles(&protected)? {
-        if !protected[end..role.range.start].trim().is_empty()
-            || !role.definition
-            || role.label == Some("proof obligation")
-        {
+        if !protected[end..role.range.start].trim().is_empty() || !role.definition {
             break;
         }
         heading.push(render_role(&role, path, anchors, definition_label)?);
@@ -405,11 +499,13 @@ fn render(
     path: &str,
     anchors: &BTreeMap<String, String>,
     lean_root: Option<&Path>,
+    project_root: Option<&Path>,
     scope: &str,
     definition_label: &str,
 ) -> Result<String> {
     let protected = protect_math(source);
     let source = protected.as_str();
+    let structured_units = units::parse(source, path)?;
     let mut edits = vec![];
     for role in roles(source)? {
         let rendered = render_role(&role, path, anchors, definition_label)?;
@@ -431,6 +527,22 @@ fn render(
     }
 
     for block in directive_blocks(source) {
+        if let Some(unit) = structured_units
+            .iter()
+            .find(|unit| unit.range.start == block.range.start)
+        {
+            for dependency in &unit.uses {
+                ensure!(
+                    anchors.contains_key(dependency),
+                    "unknown unit dependency `{dependency}`"
+                );
+            }
+            edits.push((
+                block.range,
+                render_unit(unit, path, anchors, lean_root, project_root)?,
+            ));
+            continue;
+        }
         let start = block.range.start;
         let kind = block.info;
         let facts = block.body;
@@ -493,6 +605,7 @@ fn render(
                 path,
                 anchors,
                 lean_root,
+                project_root,
                 &id,
                 markdown.definition_label(),
             )?;
@@ -556,6 +669,31 @@ pub fn process(book: &mut Value) -> Result<()> {
 }
 
 pub fn process_with_lean(book: &mut Value, lean_root: Option<&Path>) -> Result<()> {
+    process_with_roots(book, lean_root, lean_root.and_then(Path::parent))
+}
+
+/// Production mdBook boundary. Raw source checks precede rendering so already
+/// expanded includes cannot bypass structured-unit restrictions.
+pub fn process_configured(context: &Value, book: &mut Value) -> Result<()> {
+    let root = Path::new(
+        context["root"]
+            .as_str()
+            .context("mdBook context has no root")?,
+    )
+    .canonicalize()
+    .context("resolving mdBook root")?;
+    let configuration = configuration::SourceConfiguration::load(&root)?;
+    configuration.check_context(context)?;
+    configuration.validate_chapters(&root, book)?;
+    let lean_root = configuration.lean_root(&root)?;
+    process_with_roots(book, Some(&lean_root), Some(&root))
+}
+
+fn process_with_roots(
+    book: &mut Value,
+    lean_root: Option<&Path>,
+    project_root: Option<&Path>,
+) -> Result<()> {
     let key = if book.get("items").is_some_and(Value::is_array) {
         "items"
     } else if book.get("sections").is_some_and(Value::is_array) {
@@ -583,6 +721,7 @@ pub fn process_with_lean(book: &mut Value, lean_root: Option<&Path>) -> Result<(
         items: &mut Value,
         anchors: &BTreeMap<String, String>,
         lean_root: Option<&Path>,
+        project_root: Option<&Path>,
     ) -> Result<()> {
         if let Some(items) = items.as_array_mut() {
             for item in items {
@@ -591,14 +730,22 @@ pub fn process_with_lean(book: &mut Value, lean_root: Option<&Path>) -> Result<(
                     let source = chapter["content"]
                         .as_str()
                         .context("chapter has no content")?;
-                    let content = render(source, path, anchors, lean_root, path, "anchor")
-                        .with_context(|| format!("chapter {path}"))?;
+                    let content = render(
+                        source,
+                        path,
+                        anchors,
+                        lean_root,
+                        project_root,
+                        path,
+                        "anchor",
+                    )
+                    .with_context(|| format!("chapter {path}"))?;
                     chapter["content"] = Value::String(content);
-                    update(&mut chapter["sub_items"], anchors, lean_root)?;
+                    update(&mut chapter["sub_items"], anchors, lean_root, project_root)?;
                 }
             }
         }
         Ok(())
     }
-    update(&mut book[key], &anchors, lean_root)
+    update(&mut book[key], &anchors, lean_root, project_root)
 }

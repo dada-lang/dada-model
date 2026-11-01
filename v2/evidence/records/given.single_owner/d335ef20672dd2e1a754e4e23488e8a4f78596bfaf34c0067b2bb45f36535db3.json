@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "54f08b043bae8f98af9a2e048a4b7afffd9180162519efce795efc414863de9c",
+  "reviewer": "Codex delegated reviewer /root/layer_evidence_review",
+  "provenance": "Independent agent review: I did not author the Given/Shared chapters, Lean modules, or evidence validator. I read the frozen unit bodies, exact cited statements, dependencies, review policy, concrete example definitions, and relevant source helpers, compared their semantics, and confirmed the prepared required snapshots match those sources. The distinct-key qualification was added after my review finding and was inspected in the frozen packet. This record is not human approval or a mechanical proof/test result.",
+  "examined": [
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/Liveness.lean",
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Liveness:WellFormed.owner_count",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Soundness:WellFormed",
+    "lean:Unique/State:Allocated",
+    "lean:Unique/State:Live",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:References",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:ObjectId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.single_owner",
+    "unit:given.state",
+    "unit:given.well_formed"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "WellFormed.owner_count assumes structural well-formedness and allocation of the particular object, then states count object in References state equals one. References counts immediate variable and field occurrences, including equal contents separately. The prose carefully describes immediate owning occurrences rather than counting every enclosing access path, so its notion of a single owner matches the theorem.",
+  "limitations": [
+    "This is a correspondence review of authored intent, declaration statements, and relevant definitions; it does not record Lean compilation or test execution and does not recheck proof tactics. Conservative context snapshots were inspected for the relevant definitions and helper behavior, not as a claim to audit every proof or implementation line."
+  ],
+  "supersedes": []
+}

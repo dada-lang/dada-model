@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "220127be6e9ff6db639158626bdf14e1398b980be83611efea05d6316cdc91a4",
+  "reviewer": "Codex /root/shared_formalization — independent Given/Unique cross-review",
+  "provenance": "Agentic source review on 2026-10-24 by /root/shared_formalization. This agent implemented the related Shared layer, not the Unique implementation or Given chapter. It independently compared all required immutable bundle inputs, the complete authored units and their dependencies, exact selected Lean declarations/examples, and explicitly listed relevant Unique source contexts. Earlier review feedback about finite-map representation was rechecked after revision. No favorable verdict was inferred from preparation or build success.",
+  "examined": [
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.classes introduces the class and field names used here; unit:given.syntax introduces p, x, e, and t alongside their domains and grammar. The exact Place declaration has variable and recursive field cases. Value has give Place and new ClassName (List Value), so constructors accept general nested expressions, not just variable names. Statement contains exactly a destination and Value. The complete syntax context has no other expression, statement, scope, primitive, or control-flow form. Fresh binding is enforced by Step.letValue in context:lean/Unique/Step.lean, rather than by the raw Statement constructor; this supports the prose as a rule of execution. Eval/EvalArgs execute the whole expression before the statement successor, matching the place/value/statement distinction.",
+  "limitations": [
+    "This is a source/statement correspondence review, not a kernel proof check or an execution log. Relevant definitions and theorem assumptions in listed context snapshots were inspected; this does not attest to auditing every tactic or unrelated declaration in those files."
+  ],
+  "supersedes": [
+    "2830df5c88cf1929713ecfcdca9ef73de5f466fb76c4fff93ef1c55321a48d11"
+  ]
+}

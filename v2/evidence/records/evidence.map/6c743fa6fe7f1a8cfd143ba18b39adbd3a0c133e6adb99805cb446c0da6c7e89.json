@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "bundle": "6bd0f4874cbbd12edbaeb73a1176d3f450627dd7da91fa01b856be472b131671",
+  "reviewer": "Codex /root (meta and finite-map correspondence review)",
+  "provenance": "Prepared and read immutable current packets; compared authored prose with selected declarations and tests during the 2026-10-24 lean-ification. The reviewer integrated the surrounding documentation and earlier evidence tooling changes; the mutual selector implementation was authored by a separate subagent. This is an agent review, not a human sign-off or a Lean proof.",
+  "examined": [
+    "context:lean/Common/FiniteMap.lean",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit introduces M, K, T, entry pairs, finite-map notation and the empty map locally. Common/FiniteMap:FiniteMap has exactly an entries list plus Nodup of its mapped keys, so it preserves entry order while excluding repeated keys independently of any ordering on Key. FiniteMap.empty supplies [] and the empty Nodup proof. This matches all representation and empty-map claims. I also read context:lean/Common/FiniteMap.lean to check the namespace and implicit type parameters. The comparison follows policy:md/repo/correspondence-review.md; no operational semantics is asserted here.",
+  "limitations": [
+    "The proposition and representation were compared; proof correctness is delegated to Lean and mechanical compilation is recorded separately."
+  ],
+  "supersedes": [
+    "3dc5041ed7b9208fd1408e94944a5e140a6a6928481f6cedba6daf0126df1c06"
+  ]
+}

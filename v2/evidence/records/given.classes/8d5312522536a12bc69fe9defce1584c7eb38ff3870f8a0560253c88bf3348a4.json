@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "bd0ee97cfc59ba0016c26af60f29ff06d41793f7aab5a54d0746b1a88a2e172a",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle 3abb915b11d761da608dff0a9c2eecf8a5a4615967b624eb05d5110eaac458d2 with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.classes matches lean:Unique/Syntax:Class and Classes: fields is an ordered list of names and the class table is a finite list of named declarations, with no field type component and no nonempty-field constraint. lean:Unique/Soundness:ClassesWellFormed requires distinct class names and distinct field names in every declaration. For the introductory transfer claim, the selected Step constructors together with Take, Capture, bind, and create in context show the same reference leaving its source slot and entering either the new variable or the corresponding constructor field. Slot is Option ObjectId and Value has no primitive case, supporting the stated object-only fragment. For this final packet, the only delta from the reviewed bundle 3abb915b11d761da608dff0a9c2eecf8a5a4615967b624eb05d5110eaac458d2 is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "The opening paragraph summarizes successful gives and constructions; it does not assert that every attempted operation succeeds. The comparison covers this restricted language layer, not the separate heap model.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "cb196fae9b3e7d2df2e92ef5b56e669f110c3bcb86c51827d1b104cece50c417"
+  ]
+}

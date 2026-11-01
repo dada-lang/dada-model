@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "bundle": "8bb06e30ed0865d07da110801290d1c8391c3c0329f7bcc4a47973f24b219c8d",
+  "reviewer": "Codex subagent /root/evidence_docs",
+  "provenance": "Independent comparison of immutable packet snapshots in the 2026-10-24 task. The reviewer did not author the pilot units, their Lean statements, or the Rust validator/test implementation; the reviewer did author the workflow documentation used as policy. This is an agent judgment, not a human approval or a mechanical proof/test result.",
+  "examined": [
+    "context:lean/Heap.lean",
+    "lean:Heap:FiniteMap",
+    "lean:Heap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The complete unit:evidence.map states a finite, ordered list of key/value entries with no duplicate keys, without imposing an ordering relation on the keys. lean:Heap:FiniteMap has exactly entries : List (Key × Value) and uniqueKeys : (entries.map Prod.fst).Nodup. Thus the list representation, pair categories, and no-repeated-key condition are all represented; the prose does not claim equality of maps modulo permutation. The separate empty-map sentence matches lean:Heap:FiniteMap.empty, whose entries field is [] and whose other field proves that list has distinct keys. The Heap context prologue was checked to establish the Dada.Heap namespace and parameter context. The unrelated Primitive variable is unused in these declarations and introduces no additional semantic restriction. No condition in these selected definitions is omitted by the authored explanation.",
+  "limitations": [
+    "Statement/definition correspondence only; this review does not mechanically compile Lean or independently verify the distinctness proof.",
+    "The Heap context was consulted for its prologue and selected finite-map declarations only; unrelated heap operations and proofs were not reviewed."
+  ],
+  "supersedes": []
+}

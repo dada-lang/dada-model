@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "4e6fadc9504a96bbf60d420b0db19a3912a1b3b529e21ccb15257d2a2d189755",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle 1f15816d44bb91a33ff7adb9366a4266301721b678ed1adcd486abea926dc1a3 with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/SpecificationExamples.lean",
+    "lean:Heap:FiniteMap",
+    "lean:Heap:FiniteMap.empty",
+    "lean:SpecificationExamples:empty_map",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.empty"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:evidence.map.empty specializes the concept in unit:evidence.map to natural-number keys and values. lean:SpecificationExamples:empty_map states exactly (FiniteMap.empty : FiniteMap Nat Nat).entries = []; the surrounding example module opens Dada.Heap, confirming the cited FiniteMap. An empty entry list entails the stated absence of a stored pair. This is the concrete empty-map proposition described, with no execution or allocation claim. For this final packet, the only delta from the reviewed bundle 1f15816d44bb91a33ff7adb9366a4266301721b678ed1adcd486abea926dc1a3 is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "This comparison covers the stated Nat/Nat example and its empty-map definition, not a universal theorem about other map operations. Lean proof checking was not rerun by this reviewer.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "e282012b1e1f2e37d20718c657168ad9e34e5c41996d0ffccca8972f43333e65"
+  ]
+}

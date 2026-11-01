@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "14d272a444f27fc22b0fab9392f2ab80ea765177336e225cf51555bc925ef4b1",
+  "reviewer": "Codex independent repair reviewer /root/review_repaired_shared",
+  "provenance": "Independent delegated correspondence review continued after the user's clarification. I did not author the repaired chapter, Lean declarations, decision note or earlier repository reviews. I had read the complete prior frozen required units/selections/policy and relevant contexts; for these final packets I compared the snapshots, verified 97 unchanged required inputs byte-for-byte, reread every changed required input and inspected the new Liveness declaration context. I reviewed the new path-exclusivity unit and its complete required dependencies. The explicit user-confirmation quotations are retained as the primary agent's recoverable intent input; I did not independently retrieve the originating conversation. No conclusion is inferred merely from packet preparation or the reported Lean build.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:lean/Shared/Syntax.lean",
+    "extra:reviews/repair-2026-10-24/sharing-decision.md",
+    "lean:Shared/Soundness:ClassesWellFormed",
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Mode.join",
+    "lean:Shared/State:Object",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Reference.owned",
+    "lean:Shared/State:Reference.shared",
+    "lean:Shared/State:Slot",
+    "lean:Shared/State:State",
+    "lean:Shared/State:State.empty",
+    "lean:Shared/State:StoragePlace",
+    "lean:Shared/State:Stored",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Step",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:Classes",
+    "lean:Shared/Syntax:Place",
+    "lean:Shared/Syntax:Program",
+    "lean:Shared/Syntax:Statement",
+    "lean:Shared/Syntax:Value",
+    "policy:md/repo/correspondence-review.md",
+    "unit:shared.give",
+    "unit:shared.resolution",
+    "unit:shared.state",
+    "unit:shared.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:shared.resolution matches lean:Shared/Step:Resolve and lean:Shared/State:Mode.join. Resolve.variable reads an initialized variable reference and reports its own mode. Resolve.field first resolves the base, requires the containing object to be present, then requires an initialized named field and joins the accumulated mode with the stored field mode. Mode.join returns unique only for two unique arguments. Thus a shared reference in the middle cannot be forgotten when a later field is unique, and missing variables, fields, intermediate objects or initialized contents prevent the corresponding derivation. Resolve has one fixed state parameter and no output state, matching the claim that reading the route changes nothing. The prose carefully requires intermediate objects, not an extra final-object allocation check absent from this relation.",
+  "limitations": [
+    "This is an independent comparison of prose, definitions, theorem assumptions/conclusions and example setups/results. Proof correctness and mechanical build/test execution are separate; this review did not rerun them.",
+    "Listed conservative source contexts were inspected for relevant definitions, concrete states and theorem signatures; listing them does not attest to a complete tactic or validator audit."
+  ],
+  "supersedes": [
+    "eef6cac694250831f3f5d91c9beeea96a629fd85735567eca4f8054ede8552b4"
+  ]
+}

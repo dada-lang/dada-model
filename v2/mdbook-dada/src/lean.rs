@@ -169,6 +169,93 @@ enum Selection {
     Definition,
 }
 
+// Mutual inductive judgments have independently selectable declaration bodies.
+// Validate the whole group before selecting one member: a sibling command or
+// malformed closing boundary must not make a partial selection look complete.
+// The source kept in LeanSelection still contains the enclosing mutual group.
+fn validate_mutual_groups(masked: &str) -> Result<()> {
+    let commands = command_pattern()?;
+    let mut open = None;
+    let mut members = HashSet::new();
+    let mut previous = "";
+    for (index, line) in masked.lines().enumerate() {
+        let number = index + 1;
+        let text = line.trim();
+        if text.is_empty() {
+            continue;
+        }
+        let words: Vec<_> = text.split_whitespace().collect();
+        let command = words.iter().copied().find(|word| {
+            !matches!(
+                *word,
+                "private" | "protected" | "noncomputable" | "unsafe" | "partial" | "nonrec"
+            )
+        });
+        if command == Some("mutual") {
+            ensure!(
+                open.is_none(),
+                "nested mutual groups are unsupported at line {number}"
+            );
+            ensure!(
+                text == "mutual" && !line.starts_with(char::is_whitespace),
+                "mutual must stand alone at column zero at line {number}"
+            );
+            ensure!(
+                !previous.starts_with("@["),
+                "attributes on mutual groups are unsupported at line {number}"
+            );
+            open = Some(number);
+            members.clear();
+        } else if open.is_some() {
+            if words.first() == Some(&"end") {
+                ensure!(
+                    text == "end" && !line.starts_with(char::is_whitespace),
+                    "mutual groups must close with a standalone column-zero `end` at line {number}"
+                );
+                ensure!(
+                    !members.is_empty(),
+                    "empty mutual group ending at line {number}"
+                );
+                open = None;
+            } else if line.starts_with(char::is_whitespace) {
+                ensure!(
+                    !members.is_empty() && !commands.is_match(line),
+                    "mutual inductive bodies cannot contain indented commands at line {number}"
+                );
+            } else {
+                ensure!(
+                    words.first() == Some(&"inductive"),
+                    "mutual groups support only column-zero named inductive declarations; unsupported member at line {number}"
+                );
+                let name = words
+                    .get(1)
+                    .context("mutual inductive declaration needs a name")?;
+                ensure!(
+                    *name != "where"
+                        && name.split('.').all(|part| !part.is_empty()
+                            && part.chars().all(|c| c.is_alphanumeric() || c == '_')),
+                    "unsupported mutual inductive name at line {number}"
+                );
+                ensure!(
+                    words.last() == Some(&"where"),
+                    "mutual inductive headers must end with `where` on their first line at line {number}"
+                );
+                ensure!(
+                    members.insert(*name),
+                    "duplicate mutual inductive `{name}` at line {number}"
+                );
+            }
+        }
+        previous = text;
+    }
+    ensure!(
+        open.is_none(),
+        "unterminated mutual group beginning at line {}",
+        open.unwrap_or(0)
+    );
+    Ok(())
+}
+
 fn extract_declaration(source: &str, name: &str, selection: Selection) -> Result<String> {
     let simple_name = |component: &str| {
         !component.is_empty() && component.chars().all(|c| c.is_alphanumeric() || c == '_')
@@ -185,10 +272,7 @@ fn extract_declaration(source: &str, name: &str, selection: Selection) -> Result
         );
     }
     let masked = mask(source)?;
-    ensure!(
-        !masked.lines().any(|l| l.trim() == "mutual"),
-        "mutual declarations are unsupported"
-    );
+    validate_mutual_groups(&masked)?;
     let mut found = Vec::new();
     let mut offset = 0;
     let lines: Vec<_> = masked
@@ -199,6 +283,7 @@ fn extract_declaration(source: &str, name: &str, selection: Selection) -> Result
             (start, line)
         })
         .collect();
+    let structure_field = regex::Regex::new(r"^[ \t]+[A-Za-z_][A-Za-z0-9_']*[ \t]*:(?:[^:=]|$)")?;
     for (i, &(start, line)) in lines.iter().enumerate() {
         let words: Vec<_> = line.split_whitespace().collect();
         if selection == Selection::Definition {
@@ -300,6 +385,7 @@ fn extract_declaration(source: &str, name: &str, selection: Selection) -> Result
                             | "end"
                             | "namespace"
                             | "section"
+                            | "mutual"
                             | "variable"
                             | "open"
                             | "#check"
@@ -315,9 +401,21 @@ fn extract_declaration(source: &str, name: &str, selection: Selection) -> Result
             .unwrap_or(source.len());
         let body = &source[start..end];
         let text = &body[..scan(body)?.content_end];
-        if selection != Selection::Type {
+        {
+            let code = &masked[start..end];
+            // A structure field such as `variables : Store` is not a command.
+            // Only exempt a bare, indented field name followed by a type colon;
+            // `variable (x : Nat)` and `def sibling := ...` remain commands.
+            let commands = command_pattern()?
+                .find_iter(code)
+                .filter(|command| {
+                    words[0] != "structure"
+                        || !structure_field
+                            .is_match(code[command.start()..].lines().next().unwrap_or(""))
+                })
+                .count();
             ensure!(
-                command_pattern()?.find_iter(&masked[start..end]).count() == 1,
+                commands == 1,
                 "selected declaration must contain no other commands, even when indented"
             );
         }
@@ -386,6 +484,73 @@ fn read_source(root: &Path, target: &str) -> Result<(String, String)> {
     );
     let source = std::fs::read_to_string(path)?;
     Ok((source, name.to_owned()))
+}
+
+/// Raw source associated with one authored unit citation. `source` retains the
+/// surrounding module (imports, namespaces, and section variables); `selected`
+/// is the exact declaration or case shown by the book. Neither is elaborated.
+#[derive(Clone, Debug)]
+pub struct LeanSelection {
+    pub path: std::path::PathBuf,
+    pub source: String,
+    pub selected: String,
+}
+
+/// Resolve a citation with the same declaration-kind checks as the renderer.
+pub fn select(root: &Path, target: &str, kind: crate::units::UnitKind) -> Result<LeanSelection> {
+    use crate::units::UnitKind;
+    let (source, name) = read_source(root, target)?;
+    let selected = match kind {
+        UnitKind::Definition => extract_definition(&source, &name),
+        UnitKind::Theorem | UnitKind::Lemma => extract_theorem(&source, &name),
+        UnitKind::Example => extract_example(&source, &name),
+        UnitKind::Grammar => extract(&source, &name),
+        UnitKind::Judgment => extract(&source, &name).and_then(|declaration| {
+            ensure!(
+                declaration.starts_with("inductive "),
+                "judgment citation must select an inductive declaration"
+            );
+            Ok(declaration)
+        }),
+        UnitKind::Rule => {
+            let (name, case) = name
+                .rsplit_once('.')
+                .context("rule expects path:Judgment.constructor")?;
+            extract(&source, name).and_then(|declaration| extract_case(&declaration, case))
+        }
+    }
+    .with_context(|| target.to_owned())?;
+    let (file, _) = target
+        .rsplit_once(':')
+        .context("expected path:Declaration")?;
+    let mut relative = std::path::PathBuf::from(file);
+    if relative.extension().is_none() {
+        relative.set_extension("lean");
+    }
+    // read_source already checks canonical containment, including symlinks.
+    let path = root.join(relative).canonicalize()?;
+    Ok(LeanSelection {
+        path,
+        source,
+        selected,
+    })
+}
+
+pub(crate) fn selected_source(
+    root: &Path,
+    targets: &[String],
+    kind: crate::units::UnitKind,
+) -> Result<String> {
+    let mut output = String::new();
+    for target in targets {
+        let selection = select(root, target, kind)?;
+        output.push_str(&format!(
+            "<figcaption>{}</figcaption><pre><code class=\"language-lean\">{}</code></pre>",
+            crate::escape(target),
+            highlighted(&selection.selected)?
+        ));
+    }
+    Ok(output)
 }
 
 fn highlighted(declaration: &str) -> Result<String> {
@@ -685,8 +850,9 @@ fn extract_case(declaration: &str, case: &str) -> Result<String> {
         .map(|(start, _, _)| *start)
         .unwrap_or(declaration.len());
     // A comment introducing the next declaration is not part of this case.
-    let end = masked[..end].trim_end().len();
-    Ok(format!("{header}\n{}", declaration[*start..end].trim_end()))
+    let selected = &declaration[*start..end];
+    let selected = &selected[..scan(selected)?.content_end];
+    Ok(format!("{header}\n{selected}"))
 }
 
 /// Which source selections accompany an authored mathematical block.
@@ -787,6 +953,30 @@ mod tests {
             "abbrev Foo := Nat",
         ] {
             assert_eq!(extract_definition(source, "Foo").unwrap(), source);
+        }
+    }
+
+    #[test]
+    fn structure_definitions_allow_command_names_as_typed_fields() {
+        let declaration = "structure State where\n  state ::\n  objects : FiniteMap ObjectId (Object Primitive)\n  variables : FiniteMap VariableId Slot\n  leases : LeaseStore := .empty";
+        let source = format!("{declaration}\n\ndef next := 0\n");
+        assert_eq!(extract_definition(&source, "State").unwrap(), declaration);
+    }
+
+    #[test]
+    fn structure_definitions_still_reject_indented_sibling_commands() {
+        for command in [
+            "variable (x : Nat)",
+            "variables (x : Nat)",
+            "def sibling := 1",
+            "theorem sibling : True := by trivial",
+            "namespace Nested",
+        ] {
+            let source = format!("structure State where\n  variables : Nat\n  {command}\n");
+            let error = extract_definition(&source, "State")
+                .unwrap_err()
+                .to_string();
+            assert!(error.contains("no other commands"), "{source}: {error}");
         }
     }
 
@@ -1194,5 +1384,166 @@ example : state' = 0 := by
         assert!(extract("def X := 1", "X").is_err());
         assert!(extract("inductive X where\n| x", "X").is_err());
         assert!(extract("@[expose]\ninductive X where\n  | x", "X").is_err());
+    }
+
+    #[test]
+    fn selects_mutual_inductive_members_and_surrounding_declarations() {
+        let source = include_str!("../tests/fixtures/lean/Mutual.lean");
+        let eval = "inductive Eval : Nat → Prop where\n  | arguments {n : Nat} : Args n → Eval n";
+        let args = "inductive Args : Nat → Prop where\n  | nil : Args 0\n  | cons {n : Nat} : Eval n → Args n";
+        for (name, expected) in [("Eval", eval), ("Args", args)] {
+            assert_eq!(extract(source, name).unwrap(), expected);
+            assert_eq!(extract_definition(source, name).unwrap(), expected);
+            assert!(extract_theorem(source, name).is_err());
+        }
+        assert_eq!(
+            extract(source, "Token").unwrap(),
+            "inductive Token where\n  | token"
+        );
+        assert_eq!(
+            extract(source, "Step").unwrap(),
+            "inductive Step : Prop where\n  | evaluated : Eval 0 → Step"
+        );
+        assert_eq!(
+            extract_theorem(source, "finished").unwrap(),
+            "theorem finished : True := by\n  trivial"
+        );
+
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/lean");
+        for kind in [
+            crate::units::UnitKind::Definition,
+            crate::units::UnitKind::Grammar,
+            crate::units::UnitKind::Judgment,
+        ] {
+            let selection = select(&root, "Mutual:Eval", kind).unwrap();
+            assert_eq!(selection.selected, eval);
+            assert_eq!(selection.source, source);
+        }
+        let rule = select(&root, "Mutual:Args.cons", crate::units::UnitKind::Rule).unwrap();
+        assert_eq!(
+            rule.selected,
+            "inductive Args : Nat → Prop where\n  | cons {n : Nat} : Eval n → Args n"
+        );
+        assert_eq!(rule.source, source);
+        assert!(select(&root, "Mutual:Eval", crate::units::UnitKind::Theorem).is_err());
+        assert!(select(&root, "Mutual:finished", crate::units::UnitKind::Definition).is_err());
+    }
+
+    #[test]
+    fn mutual_validation_ignores_comment_and_literal_decoys() {
+        let source = format!(
+            r###"/- mutual
+/- mutual -/
+def fake := 0
+end
+-/
+def text := r##"
+mutual
+def fake := "end"
+"##
+def «mutual» := 0
+-- mutual
+{}
+"###,
+            include_str!("../tests/fixtures/lean/Mutual.lean")
+        );
+        assert!(extract(&source, "Eval")
+            .unwrap()
+            .contains("Args n → Eval n"));
+        let comments = "mutual -- start\n/- group comment -/\ninductive First where -- header\n  | first -- end\n-- mutual\ninductive Second where\n  | second\nend -- close\n";
+        assert_eq!(
+            extract(comments, "Second").unwrap(),
+            "inductive Second where\n  | second"
+        );
+        assert!(extract(comments, "First")
+            .unwrap()
+            .ends_with("  | first -- end"));
+    }
+
+    #[test]
+    fn rejects_unsupported_or_incomplete_mutual_groups_before_any_selection() {
+        for (group, message) in [
+            (
+                "mutual\ndef member := 0\nend",
+                "only column-zero named inductive",
+            ),
+            (
+                "mutual\ntheorem member : True := by trivial\nend",
+                "only column-zero named inductive",
+            ),
+            (
+                "mutual\nstructure Member where\n  field : Nat\nend",
+                "only column-zero named inductive",
+            ),
+            (
+                "mutual\ninductive Member where\n  | member\nmutual\nend\nend",
+                "nested mutual",
+            ),
+            (
+                "mutual\n  inductive Member where\n    | member\nend",
+                "indented commands",
+            ),
+            (
+                "mutual\ninductive Member where\n  | member\n  def hidden := 0\nend",
+                "indented commands",
+            ),
+            (
+                "mutual\ninductive Member where\n  | member\n  #check Nat\nend",
+                "indented commands",
+            ),
+            (
+                "mutual\ninductive Member where\n  | member\nend Member",
+                "standalone column-zero `end`",
+            ),
+            (
+                "mutual\ninductive Member where\n  | member\n  end",
+                "standalone column-zero `end`",
+            ),
+            (
+                "mutual\ninductive Member where\n  | member",
+                "unterminated mutual",
+            ),
+            ("mutual\nend", "empty mutual"),
+            (
+                "mutual extra\ninductive Member where\n  | member\nend",
+                "mutual must stand alone",
+            ),
+            (
+                "private mutual\ninductive Member where\n  | member\nend",
+                "mutual must stand alone",
+            ),
+            (
+                "  mutual\ninductive Member where\n  | member\nend",
+                "mutual must stand alone",
+            ),
+            (
+                "@[expose]\nmutual\ninductive Member where\n  | member\nend",
+                "attributes on mutual",
+            ),
+            (
+                "mutual\ninductive Member\n  where\n  | member\nend",
+                "headers must end with `where`",
+            ),
+            (
+                "mutual\ninductive «Member» where\n  | member\nend",
+                "unsupported mutual inductive name",
+            ),
+            (
+                "mutual\ninductive Member where\n  | one\ninductive Member where\n  | two\nend",
+                "duplicate mutual inductive",
+            ),
+        ] {
+            let source = format!("inductive Selected where\n  | selected\n{group}\n");
+            let error = extract(&source, "Selected").expect_err(group).to_string();
+            assert!(error.contains(message), "{group}: {error}");
+        }
+        let duplicate = format!(
+            "{}\ninductive Eval where\n  | another\n",
+            include_str!("../tests/fixtures/lean/Mutual.lean")
+        );
+        assert!(extract(&duplicate, "Eval")
+            .unwrap_err()
+            .to_string()
+            .contains("found 2"));
     }
 }

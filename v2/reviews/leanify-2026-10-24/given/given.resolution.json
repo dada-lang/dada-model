@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "75ff7fbb84134ff49a5e605ac47bcde3d8d418c0911d36b1ed860ca17531fd20",
+  "reviewer": "Codex /root/shared_formalization — independent Given/Unique cross-review",
+  "provenance": "Agentic source review on 2026-10-24 by /root/shared_formalization. This agent implemented the related Shared layer, not the Unique implementation or Given chapter. It independently compared all required immutable bundle inputs, the complete authored units and their dependencies, exact selected Lean declarations/examples, and explicitly listed relevant Unique source contexts. Earlier review feedback about finite-map representation was rechecked after revision. No favorable verdict was inferred from preparation or build success.",
+  "examined": [
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/State:Updated",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.resolution",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The dependency chain given.syntax -> given.state -> given.storage_places introduces p, alpha/beta, q, and S[q]. The two displayed rules match lean:Unique/Step:Resolve exactly: variable lookup requires a stored some object; field resolution first resolves the base and then finds the parent object and initialized named field. No constructor accepts an absent or empty slot. The relation has one fixed State parameter and produces only a storage place and target identity, so it performs no update. It does not assert that the terminal target is allocated in arbitrary malformed raw storage; the prose likewise describes holding a reference, leaving allocation/liveness to later well-formedness. The field-premise lookup expands to the same object and field memberships as Stored.",
+  "limitations": [
+    "This is a source/statement correspondence review, not a kernel proof check or an execution log. Relevant definitions and theorem assumptions in listed context snapshots were inspected; this does not attest to auditing every tactic or unrelated declaration in those files.",
+    "Finite-map and uniqueness prose is read with the documented distinct-key/well-formedness conventions. The raw Lean list representations also admit malformed states; this review does not claim functional lookup or the stated invariants for such raw states."
+  ],
+  "supersedes": [
+    "a3f89bc60b7866462b3920aa9d5207efc4eddfdba33d4212391b4e24f8c9816f"
+  ]
+}

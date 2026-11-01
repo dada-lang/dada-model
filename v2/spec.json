@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "chapters": [
+    "md/repo/evidence-pilot.md",
+    "md/given.md",
+    "md/given-typing.md",
+    "md/shared.md",
+    "md/dada/future-extensions.md"
+  ],
+  "policies": [
+    "md/repo/correspondence-review.md"
+  ],
+  "context": [
+    "md/repo/spec-system.md",
+    "md/repo/authoring.md",
+    "md/repo/writing-style.md",
+    "AGENTS.md"
+  ]
+}

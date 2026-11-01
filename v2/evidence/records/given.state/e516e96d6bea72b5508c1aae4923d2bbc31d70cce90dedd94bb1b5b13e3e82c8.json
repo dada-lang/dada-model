@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "67f2f63ed95bd1000e94d675276c548b4556ab002d46fcd706af9ff4eaba4525",
+  "reviewer": "Codex independent reviewer /root/removal_review_given",
+  "provenance": "Independent subagent correspondence review of frozen removal packets. Read every required authored/dependency unit and exact Lean selection plus the review policy; inspected the listed context for relevant definitions, example setups, import/namespace scope, and theorem assumptions. Proof tactic correctness was left to Lean. Delta bookkeeping compared the before-removal packets with these packets: Given units and exact selections are unchanged; finite-map selections are text-identical after citation relocation. The substantive conclusions below were checked from current packet inputs, not inherited from prior approvals. No source changes or test execution were performed. Earlier record metadata was inspected only to identify active decisions for supersession. Final-packet delta review confirmed every authored unit, Lean selection, dependency, policy, and Lean context has identical content to the initially reviewed removal packet; pilot unit line offsets shifted by one. The only changed input contents are conservative tooling snapshots: inventory collection, its freshness regression, and the newly captured Renderer.lean fixture. Read that fixture to confirm its explicitly synthetic RendererFixture scope; it is not a cited language source. The fixture collection implementation/regression is outside this semantic correspondence review.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:lean/lakefile.toml",
+    "context:lean/lean-toolchain",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:ObjectId",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "unit:given.classes",
+    "unit:given.state"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.state maps empty/initialized slots to none/some ObjectId, with ObjectId = Nat. Object contains the class name and ordered named slots; State contains the object and variable lists plus nextId; State.empty has empty lists and counter zero. StoragePlace distinguishes a named variable from a named field of a particular object. Stored is membership in the appropriate list, so none denotes an existing empty slot and an absent entry has no lookup witness. State.create in the inspected Step context uses nextId and increments it. Distinctness describes the chapter's well-formed states, not a property built into the raw list-based State type; WellFormed in the inspected Soundness context supplies exactly those restrictions.",
+  "limitations": [
+    "This is a comparison of authored meaning with formal statements and relevant definitions, not a proof check or a new execution of Lean. Conservative whole-project/tool snapshots were not audited line by line. For Soundness/Liveness context, declaration scope and relevant definitions/statements were inspected; tactic internals were not reviewed."
+  ],
+  "supersedes": [
+    "9bba73311a8ad337187a2792eb4c91815a4e675a54518ca8a1df3c028c157909"
+  ]
+}

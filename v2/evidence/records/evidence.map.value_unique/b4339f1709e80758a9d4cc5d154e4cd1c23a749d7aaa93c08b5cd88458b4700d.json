@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "a8a25d1bb8c15442780fb369b61db77335bc5d1168f57b436e828206c162541f",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle d3a8db771ab345af7b3e84cd619575fd16242865cd819b71c257e32ff423207d with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Heap.lean",
+    "context:lean/Shared/Liveness.lean",
+    "lean:Heap:FiniteMap",
+    "lean:Heap:FiniteMap.empty",
+    "lean:Heap:FiniteMap.value_unique",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.value_unique"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:evidence.map.value_unique and lean:Heap:FiniteMap.value_unique quantify one map, one key, and two values; their two premises are membership of (key, value) and (key, value') in the same entry list, and their conclusion is value = value'. The dependency unit supplies the uniqueKeys condition already embedded in FiniteMap. Inspection of the enclosing declaration scope confirms that neither an order nor DecidableEq Key is an implicit assumption. The arbitrary key/value-type claim therefore matches the formal statement within its declared Type parameters. For this final packet, the only delta from the reviewed bundle d3a8db771ab345af7b3e84cd619575fd16242865cd819b71c257e32ff423207d is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "The Heap context was inspected for the finite-map declarations and enclosing parameter scope. This review compares assumptions and result; it does not re-prove the List argument or inspect unrelated heap theorems.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "55c3657ea3c55759b998211d84fbf6122926575cffa4ac6d2fb267cd5309c038"
+  ]
+}

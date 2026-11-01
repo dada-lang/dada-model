@@ -1,0 +1,22 @@
+Command: target/debug/dada-spec status --explain
+Given excerpt from the final global status run; global exit status was 1 because other units still needed evidence.
+Mechanical proof execution is separate and is not asserted by these review records.
+
+given.classes: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.evaluation: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.example.empty_field: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.example.field: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.example.nested: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.example.token: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.executions: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.liveness: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.machine: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.programs: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.resolution: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.single_owner: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.soundness: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.state: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.steps: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.storage_places: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.syntax: inputs=current, correspondence=corresponds, mechanical=not recorded
+given.well_formed: inputs=current, correspondence=corresponds, mechanical=not recorded

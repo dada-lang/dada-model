@@ -2,9 +2,16 @@
 name = "mdbook-dada"
 version = "0.1.0"
 edition = "2021"
+default-run = "mdbook-dada"
 
 [dependencies]
+annotate-snippets = "0.12.17"
 anyhow = "1.0.104"
+proc-macro2 = { version = "1.0.107", features = ["span-locations"] }
 pulldown-cmark = { version = "0.13.4", default-features = false }
 regex = "1.13.1"
+serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
+sha2 = "0.11.1"
+syn = { version = "3.0.9", features = ["full", "visit"] }
+toml = "1.1.8"

@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "96fdf008394b1d6241162a152a1d8b25aca695ca94139c7ffd8da455bd6a4616",
+  "reviewer": "Codex independent reviewer /root/removal_review_given",
+  "provenance": "Independent subagent correspondence review of frozen removal packets. Read every required authored/dependency unit and exact Lean selection plus the review policy; inspected the listed context for relevant definitions, example setups, import/namespace scope, and theorem assumptions. Proof tactic correctness was left to Lean. Delta bookkeeping compared the before-removal packets with these packets: Given units and exact selections are unchanged; finite-map selections are text-identical after citation relocation. The substantive conclusions below were checked from current packet inputs, not inherited from prior approvals. No source changes or test execution were performed. Earlier record metadata was inspected only to identify active decisions for supersession. Final-packet delta review confirmed every authored unit, Lean selection, dependency, policy, and Lean context has identical content to the initially reviewed removal packet; pilot unit line offsets shifted by one. The only changed input contents are conservative tooling snapshots: inventory collection, its freshness regression, and the newly captured Renderer.lean fixture. Read that fixture to confirm its explicitly synthetic RendererFixture scope; it is not a cited language source. The fixture collection implementation/regression is outside this semantic correspondence review.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Unique/Liveness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:lean/lakefile.toml",
+    "context:lean/lean-toolchain",
+    "lean:Unique/Liveness:WellFormed.owner_count",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Soundness:WellFormed",
+    "lean:Unique/State:Allocated",
+    "lean:Unique/State:Live",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:References",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:ObjectId",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "unit:given.classes",
+    "unit:given.single_owner",
+    "unit:given.state",
+    "unit:given.well_formed"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.single_owner counts immediate owning-reference occurrences rather than distinct paths. lean:Unique/Liveness:WellFormed.owner_count assumes WellFormed and Allocated and concludes References.count object = 1. References concatenates initialized variable entries and all initialized object fields, counting repetitions. That is precisely the stated quantification over allocated objects and storage occurrences; following enclosing objects does not introduce additional entries into this count.",
+  "limitations": [
+    "This is a comparison of authored meaning with formal statements and relevant definitions, not a proof check or a new execution of Lean. Conservative whole-project/tool snapshots were not audited line by line. For Soundness/Liveness context, declaration scope and relevant definitions/statements were inspected; tactic internals were not reviewed."
+  ],
+  "supersedes": [
+    "5a62aba83fc6fed290a53e8d556005d42a602b836156eb149ca2439fbb831c2a"
+  ]
+}

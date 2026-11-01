@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "7e75b95b494fa96142f838a89a6e3423711a210a64b880cd249dbd6a45331ef3",
+  "reviewer": "Codex independent reviewer /root/removal_review_given",
+  "provenance": "Independent subagent correspondence review of frozen removal packets. Read every required authored/dependency unit and exact Lean selection plus the review policy; inspected the listed context for relevant definitions, example setups, import/namespace scope, and theorem assumptions. Proof tactic correctness was left to Lean. Delta bookkeeping compared the before-removal packets with these packets: Given units and exact selections are unchanged; finite-map selections are text-identical after citation relocation. The substantive conclusions below were checked from current packet inputs, not inherited from prior approvals. No source changes or test execution were performed. Earlier record metadata was inspected only to identify active decisions for supersession. Final-packet delta review confirmed every authored unit, Lean selection, dependency, policy, and Lean context has identical content to the initially reviewed removal packet; pilot unit line offsets shifted by one. The only changed input contents are conservative tooling snapshots: inventory collection, its freshness regression, and the newly captured Renderer.lean fixture. Read that fixture to confirm its explicitly synthetic RendererFixture scope; it is not a cited language source. The fixture collection implementation/regression is outside this semantic correspondence review.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Common/FiniteMap.lean",
+    "context:lean/lakefile.toml",
+    "context:lean/lean-toolchain",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:evidence.map describes a finite ordered entry list with no repeated key, exactly the entries and uniqueKeys fields of lean:Common/FiniteMap:FiniteMap. Nodup constrains the projected keys, not their ordering and not value equality. FiniteMap.empty supplies the empty entry list. The containing Common/FiniteMap context imports Std and places these declarations in Dada.Common; the extraction adds no extra assumptions and no dependency on the removed heap semantics.",
+  "limitations": [
+    "This is a comparison of authored meaning with formal statements and relevant definitions, not a proof check or a new execution of Lean. Conservative whole-project/tool snapshots were not audited line by line. For Soundness/Liveness context, declaration scope and relevant definitions/statements were inspected; tactic internals were not reviewed."
+  ],
+  "supersedes": [
+    "a4b257a92da3bd694c616d91a8c5649353f03f522d35b59b5083b6517b62138a"
+  ]
+}

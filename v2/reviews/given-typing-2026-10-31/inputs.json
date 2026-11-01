@@ -1,0 +1,88 @@
+{
+  "record_kind": "design-audit-inputs",
+  "date": "2026-10-31",
+  "reviewer": "/root/typing_soundness_design",
+  "conclusion": "No semantic counterexample found in the reviewed draft; soundness remains unproved.",
+  "lean_formalization_reviewed": false,
+  "affirmative_correspondence_decision": false,
+  "provenance": [
+    {
+      "agent": "/root",
+      "role": "Authored and integrated the chapter; ran mechanical checks reported separately."
+    },
+    {
+      "agent": "/root/typing_views_design",
+      "role": "Contributed signed-view design and review; provenance supplied by parent orchestration."
+    },
+    {
+      "agent": "/root/typing_soundness_design",
+      "role": "Contributed realization/soundness architecture, audited the resulting prose, and authored this record."
+    },
+    {
+      "agent": "/root/unpack_opsem_draft",
+      "role": "Contributed the unpacking draft and review; provenance supplied by parent orchestration."
+    }
+  ],
+  "authorship_limitations": "Reviewers contributed to the design. This is not a blind or fully independent review and is not a dada-spec correspondence record.",
+  "inputs": [
+    {
+      "path": "v2/md/given-typing.md",
+      "sha256": "2daa8ee083fdc8e96f3fb7d073ab76f508c24b8e4324f51f5ebb591994ab77e6",
+      "examined_scope": "Entire final chapter; all draft definitions, examples, and theorem statements. Rechecked the final three-column nested-move example after its layout edit."
+    },
+    {
+      "path": "v2/md/given.md",
+      "sha256": "4075ea007c8f81151dde08d3d469ea0d677a7948c61b8912a1cd19faf4adab49",
+      "examined_scope": "Existing state, evaluation, well-formedness, and execution definitions as context; final appended patterns, unpacking rule, and example. Whole-file hash is conservative."
+    },
+    {
+      "path": "v2/lean/Unique/Syntax.lean",
+      "sha256": "76fe0fc39e387d7aa1fff8d85aaae85cc076c5499d170972a3e6acbf41c5da19",
+      "examined_scope": "Entire file; existing syntax and absence of unpacking patterns or static types."
+    },
+    {
+      "path": "v2/lean/Unique/State.lean",
+      "sha256": "465dd56acfd229d9ef04a079181a8fec99c883c92baae2ecd95f59c65615be03",
+      "examined_scope": "Entire file; slots, heap, variables, configurations, and finished states."
+    },
+    {
+      "path": "v2/lean/Unique/Step.lean",
+      "sha256": "265b8094b0bf075090bf4868f2bba5e0ee6acd2a546b5ce623873881eedcae1d",
+      "examined_scope": "Entire file; Resolve, Take, Eval/EvalArgs, Step, Steps, and Stuck."
+    },
+    {
+      "path": "v2/lean/Unique/Soundness.lean",
+      "sha256": "f0a2feb6080e993b4ba42bd608df69f31835cb52d41f3728d3b228522c8157be",
+      "examined_scope": "Entire file; existing structural WellFormedWith invariant and pending-root preservation context, not a re-verification of proof correctness."
+    },
+    {
+      "path": "v2/spec.json",
+      "sha256": "0d4269faeb79c925461def74d008ee15914104e6de87ba13e0a3c48bd72818c6",
+      "examined_scope": "Entire final file; strict chapter inventory and freshness context."
+    },
+    {
+      "path": "v2/AGENTS.md",
+      "sha256": "66eda812a321397eaa27a4f8a3cfbbdc187c69cee401b23f7457632644f7ba39",
+      "examined_scope": "Entire final file; authoring/review requirements and explicit draft status."
+    }
+  ],
+  "additional_context": [
+    "Inherited conversation: user decisions on nominal types, signed views, omitted paths, unique ownership, unpacking, and Markdown-first review."
+  ],
+  "mechanical_results": {
+    "source": "Reported by /root; not executed by this reviewer.",
+    "book_build": "just book-v2 passed",
+    "book_tests": "39 book tests passed",
+    "lean": "No Lean files changed or new typing proofs checked.",
+    "evidence": {
+      "command": "cargo run --quiet -p mdbook-dada --bin dada-spec -- status --explain",
+      "exit_code": 1,
+      "statuses": {
+        "stale": 41,
+        "draft": 23
+      },
+      "log": "status.txt",
+      "meaning": "Drafts lack formalization; the updated strict-chapter configuration and instructions invalidate previous reviews. No approvals were refreshed."
+    }
+  }
+}

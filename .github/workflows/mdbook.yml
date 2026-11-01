@@ -47,6 +47,12 @@ jobs:
           build-args: "--wfail"
       - name: Build both books and root redirect
         run: bash pages/build.sh
+      - name: Validate specification tooling and evidence
+        working-directory: v2
+        run: cargo test --locked --workspace
+      - name: Test reviewed units through the mdBook pipeline
+        working-directory: v2
+        run: cargo test --locked --test evidence_validation actual_mdbook_pipeline_rejects_includes_in_reviewed_content -- --ignored
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

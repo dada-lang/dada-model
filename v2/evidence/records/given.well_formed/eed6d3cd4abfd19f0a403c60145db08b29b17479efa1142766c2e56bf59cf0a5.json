@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "c63e00bc2ab0be89b319c4f3f8ccdf6c2c1286ee1dc76a257675d6d366fac323",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle eaf28bb8e8d3414b1cf3070ee20976f7ff9394d1d791195002d955b86d3793f2 with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Soundness:WellFormed",
+    "lean:Unique/State:Allocated",
+    "lean:Unique/State:Live",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:References",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:ObjectId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.state",
+    "unit:given.well_formed"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The definitions selected by unit:given.well_formed give the described graph predicates: Allocated is object-key membership and Live follows initialized variable roots and then fields of allocated intermediate objects. Every WellFormed field has a prose counterpart: object/variable Nodup keys, declared ordered duplicate-free shapes, id < nextId, target < parent for field references, References.Nodup, and reference membership iff allocation. References concatenates variable and all object-field occurrences without deduplication. Hence the last two fields mean exactly one occurrence per allocated identity and no other targets, as the revised bolded prose requires. The strictly decreasing field identities exclude owning cycles; the definition does not assume that a state was reached by execution. For this final packet, the only delta from the reviewed bundle eaf28bb8e8d3414b1cf3070ee20976f7ff9394d1d791195002d955b86d3793f2 is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "WellFormed does not itself require global ClassesWellFormed; it requires each stored object to match a declared duplicate-free layout. The prose likewise states a state predicate, while the separate preservation theorem assumes a well-formed class table.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "a805348a7f436eda113a4ba2b4811b9cdf028937098b8ac89a5c36b2e3d2e448"
+  ]
+}

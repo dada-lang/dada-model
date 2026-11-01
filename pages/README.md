@@ -11,7 +11,7 @@ the earlier approach and links back to the v1 book. The root redirect uses a
 relative target and includes a plain link for clients that do not follow redirects.
 
 Chapter paths stay beneath their book's prefix, for example
-`/dada-model/v2/operations.html`. Each book's `site-url` in `book.toml` also
+`/dada-model/v2/given.html`. Each book's `site-url` in `book.toml` also
 sets its 404 page's asset base. Ordinary links and assets remain relative, so
 the assembled site can be previewed locally.
 

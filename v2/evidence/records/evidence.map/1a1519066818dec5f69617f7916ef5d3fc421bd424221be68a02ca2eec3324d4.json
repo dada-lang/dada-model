@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "bundle": "9db115277f24eff06c13c81c63aea84e80d1f68fe511fe1cb5219853e1f90297",
+  "reviewer": "Codex delegated reviewer /root/layer_evidence_review",
+  "provenance": "Independent agent review: I did not author the Given/Shared chapters, Lean modules, or evidence validator. I read the frozen unit bodies, exact cited statements, dependencies, review policy, concrete example definitions, and relevant source helpers, compared their semantics, and confirmed the prepared required snapshots match those sources. The distinct-key qualification was added after my review finding and was inspected in the frozen packet. This record is not human approval or a mechanical proof/test result.",
+  "examined": [
+    "lean:Heap:FiniteMap",
+    "lean:Heap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "FiniteMap stores a finite List of key/value pairs plus Nodup of its projected keys. FiniteMap.empty supplies the empty list. This matches at-most-one association per key while retaining entry order without imposing a key ordering. The new independent language files do not alter these selected declarations; the refreshed comparison uses the newly frozen conservative context.",
+  "limitations": [
+    "This is a correspondence review of authored intent, declaration statements, and relevant definitions; it does not record Lean compilation or test execution and does not recheck proof tactics. Conservative context snapshots were inspected for the relevant definitions and helper behavior, not as a claim to audit every proof or implementation line."
+  ],
+  "supersedes": [
+    "5c57c866de9d493b1511a6b3869b937c5d8a8c406ce362c18ab97d4fad18351e"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "f8a204a935a6f3df1ee8e470d20cd309e6854d3b2c4a89c5b84e7e8d52ff9d74",
+  "reviewer": "Codex independent reviewer /root/removal_review_given",
+  "provenance": "Independent subagent correspondence review of frozen removal packets. Read every required authored/dependency unit and exact Lean selection plus the review policy; inspected the listed context for relevant definitions, example setups, import/namespace scope, and theorem assumptions. Proof tactic correctness was left to Lean. Delta bookkeeping compared the before-removal packets with these packets: Given units and exact selections are unchanged; finite-map selections are text-identical after citation relocation. The substantive conclusions below were checked from current packet inputs, not inherited from prior approvals. No source changes or test execution were performed. Earlier record metadata was inspected only to identify active decisions for supersession. Final-packet delta review confirmed every authored unit, Lean selection, dependency, policy, and Lean context has identical content to the initially reviewed removal packet; pilot unit line offsets shifted by one. The only changed input contents are conservative tooling snapshots: inventory collection, its freshness regression, and the newly captured Renderer.lean fixture. Read that fixture to confirm its explicitly synthetic RendererFixture scope; it is not a cited language source. The fixture collection implementation/regression is outside this semantic correspondence review.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Common/FiniteMap.lean",
+    "context:lean/Common/FiniteMapExamples.lean",
+    "context:lean/lakefile.toml",
+    "context:lean/lean-toolchain",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMapExamples:empty_map",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "unit:evidence.map",
+    "unit:evidence.map.empty"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:evidence.map.empty chooses Nat for both type parameters and claims precisely an empty entries list. lean:Common/FiniteMapExamples:empty_map states that equality for FiniteMap Nat Nat. The example context imports Common.FiniteMap and opens Dada.Common, so its unqualified FiniteMap is the extracted utility cited by unit:evidence.map. There is no hidden example setup or unrelated map whose emptiness is being checked.",
+  "limitations": [
+    "This is a comparison of authored meaning with formal statements and relevant definitions, not a proof check or a new execution of Lean. Conservative whole-project/tool snapshots were not audited line by line. For Soundness/Liveness context, declaration scope and relevant definitions/statements were inspected; tactic internals were not reviewed."
+  ],
+  "supersedes": [
+    "b1448b2a580eeec971456cb3483c85bc3ca4f0ffcee77c51c4d3ac8e79ce88a1"
+  ]
+}

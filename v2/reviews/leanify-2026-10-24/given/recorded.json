@@ -1,0 +1,20 @@
+{
+  "given.classes": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.classes/9da469c6a8a7a7ca06e62d64486831ffa4e7a0649569396dc697ea774896a05c.json",
+  "given.syntax": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.syntax/2240cf6341d9aa92c877edd5ca62032403ad046f11896d00004d29363203e178.json",
+  "given.programs": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.programs/e3e1ca14b5a77a058e8655c3cb1cb8996777f148f619abeeca7a4e3161718b9a.json",
+  "given.state": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.state/fc4e2e323865149e728e103135e1dac96f1bd29e00d31a4a86eb2535ca59f5cc.json",
+  "given.storage_places": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.storage_places/b712adcafd916478a147ee8b43a6e57b7e36ce864ca2cf2d728c5e924f3f95bd.json",
+  "given.machine": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.machine/f30ea85216037b21d6d32544ff86dde0075f487665298a8749abf1a401cbd845.json",
+  "given.resolution": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.resolution/2d6645d8ab4f376dfd040aab22b5f95a0027192572477a700c77c09dc5bc844a.json",
+  "given.evaluation": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.evaluation/72ef0d027c4974353cc4713731bd6568cc8d02db0d73efd4c423a663d6878f40.json",
+  "given.steps": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.steps/029bd187371b216c9a7df9c2d121fdfc44ae91ab5d1893e90a33071845fc64dc.json",
+  "given.executions": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.executions/9cc896326fdb63b15ec2d1b49a761eeeedf3ed3ce4775f9080d0ebda654a9f51.json",
+  "given.example.token": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.example.token/d94ce70e152b99f394d1386d516c15e3e91ff3bf0bdcd293db9c04e4e633370e.json",
+  "given.example.field": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.example.field/6040f45a34cbe3266e27f6e1e738a1a827275c04ff91f803d4fca31d90de1c84.json",
+  "given.example.nested": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.example.nested/73ddee5ea2e74e59905dcfacdcc01ba9ced8aafe5b56c046c6efea5f1d5a8615.json",
+  "given.example.empty_field": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.example.empty_field/274e7bd433309f89230e0400c0e86953da998b0865d561f937524a86b47e8e0c.json",
+  "given.well_formed": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.well_formed/547a3ee35f301b58ccaa1e379ca4110537ca29fecc2a06d8f487bd02ac94b322.json",
+  "given.liveness": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.liveness/875082cbb32669c3db033b9faf353983bfe28b618d4d83c36eb447edb7eba2b5.json",
+  "given.single_owner": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.single_owner/67125d3d66a11c58e91daab599b7a4c3897f4402578ce4659cb1084e740fe22b.json",
+  "given.soundness": "/Users/nikomatsakis/.codex/worktrees/edf1/dada-model/v2/evidence/records/given.soundness/3fd77f6c2abd026e7b4f92ed6d84c6caa9c4b5ff7e5d13310e99926cfadec7fc.json"
+}

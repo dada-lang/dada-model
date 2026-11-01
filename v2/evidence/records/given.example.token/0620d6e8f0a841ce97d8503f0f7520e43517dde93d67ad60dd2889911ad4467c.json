@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "29da229328891f9eaa763abf64dfd2b0365079241fb39916052b73bd14ba62ad",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle 63d5b36cd74cf6570d9b326335aac54ae99e082c5cbfb0c113992ce407889a3b with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "lean:Unique/Examples:create_token",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.example.token",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The proposition in lean:Unique/Examples:create_token is a whole Step from State.empty with tokenProgram to tokenState and empty remaining code. In the bundled Examples context, exampleClasses contains precisely the displayed Token and Box declarations, tokenProgram is let t = new Token(), and tokenState has only Token object 0, t containing 0, and counter 1. Thus the displayed setup, creation of exactly one object, destination reference, and absence of remaining statements all match unit:given.example.token. No result from a different initial state is substituted. For this final packet, the only delta from the reviewed bundle 63d5b36cd74cf6570d9b326335aac54ae99e082c5cbfb0c113992ce407889a3b is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "This is a statement/setup comparison for the concrete example, not an assertion that this reviewer executed Lean. The example establishes the stated successful transition.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "e1406cbcc7fdc7b69fa630fd2af4ea1218063a824e9fd113422277633a0a6351"
+  ]
+}

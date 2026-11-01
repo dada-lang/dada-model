@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "95060ba389c50e3b0f27e9926913133fe1c6ab268bb7d79fa2b078228fca5c3d",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle 740c52467086a411c48b4adb3ef7934da185bc6fc98af31c8ebfe17516073e43 with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.syntax gives exactly the constructors in lean:Unique/Syntax:Place and Value: variable/field routes, give of a place, and new of a class with a List VariableId. Statement is a destination plus Value and Program is a class table plus a finite statement list. Therefore bare places are not values, compound arguments must be named in preceding statements, and the absent syntax cases support the listed scope exclusions. The claim that let uses a new runtime variable is a condition of successful execution: the selected Step dependency requires destination absence, while Take and Capture retain emptied bindings, so an old binding cannot be reused or shadowed. For this final packet, the only delta from the reviewed bundle 740c52467086a411c48b4adb3ef7934da185bc6fc98af31c8ebfe17516073e43 is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "Raw syntax can represent a repeated destination; the prose freshness requirement is enforced dynamically by Step and such a repetition can be stuck. The compound-argument sentence is a source-form instruction, not a separately proved program-transformation equivalence.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "418a14b35d82b0d3abe16238254d6c7931719f257895e2694bb135b07c6b6827"
+  ]
+}

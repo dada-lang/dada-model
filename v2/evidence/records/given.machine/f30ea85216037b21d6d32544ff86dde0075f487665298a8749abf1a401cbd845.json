@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "51867a198ba4e73c2a5278f09592ec9a76be5c67215cf131fb944c46b32c7d6b",
+  "reviewer": "Codex /root/shared_formalization — independent Given/Unique cross-review",
+  "provenance": "Agentic source review on 2026-10-24 by /root/shared_formalization. This agent implemented the related Shared layer, not the Unique implementation or Given chapter. It independently compared all required immutable bundle inputs, the complete authored units and their dependencies, exact selected Lean declarations/examples, and explicitly listed relevant Unique source contexts. Earlier review feedback about finite-map representation was rechecked after revision. No favorable verdict was inferred from preparation or build success.",
+  "examined": [
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Configuration",
+    "lean:Unique/State:Configuration.finished",
+    "lean:Unique/State:Configuration.initial",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Step:Steps",
+    "lean:Unique/Step:Stuck",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.machine",
+    "unit:given.programs",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.programs introduces Pi/Delta/P, and unit:given.state introduces S and the empty state. Configuration pairs State with List Statement; initial uses State.empty and the complete program body. finished is exactly code = [], independently of residual heap contents. The selected Step declaration has one letValue constructor that evaluates an expression, binds its result, and removes only the head statement. It carries classes as a fixed parameter, supporting the machine overview. The prose explicitly defers the operational rule to the following semantics, rather than using an undefined judgment in a theorem. Steps/Stuck are selected here for the associated Lean view but their prose definitions occur later, before results use them. No transition exposes expression-internal states as machine configurations.",
+  "limitations": [
+    "This is a source/statement correspondence review, not a kernel proof check or an execution log. Relevant definitions and theorem assumptions in listed context snapshots were inspected; this does not attest to auditing every tactic or unrelated declaration in those files."
+  ],
+  "supersedes": []
+}

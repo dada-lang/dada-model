@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "bundle": "b34bd4a1c706d62f4d203b9ae59d2f681dad9812a8a6a36600c5379bdf47093d",
+  "reviewer": "Codex subagent /root/evidence_docs",
+  "provenance": "Independent comparison of immutable packet snapshots in the 2026-10-24 task. The reviewer did not author the pilot units, their Lean statements, or the Rust validator/test implementation; the reviewer did author the workflow documentation used as policy. This is an agent judgment, not a human approval or a mechanical proof/test result.",
+  "examined": [
+    "context:lean/Heap.lean",
+    "context:lean/SpecificationExamples.lean",
+    "lean:Heap:FiniteMap",
+    "lean:Heap:FiniteMap.empty",
+    "lean:SpecificationExamples:empty_map",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.empty"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The example unit fixes both key and value categories to natural numbers and claims that the empty map's entry list is []. lean:SpecificationExamples:empty_map asserts exactly (FiniteMap.empty : FiniteMap Nat Nat).entries = []. The referenced unit:evidence.map and lean:Heap:FiniteMap.empty supply the intended meaning of empty, rather than an unrelated similarly named constructor. The full small SpecificationExamples context imports Heap and opens Dada.Heap, resolving FiniteMap to the cited definition. An empty entry list contains no pair, so the final sentence adds no untested state transition or broader execution behavior. There are no unstated initial-state, allocation, or mutation assumptions in this example.",
+  "limitations": [
+    "This is the one Nat/Nat empty-map example described, not a review of empty maps in every model or of operational behavior.",
+    "No mechanical Lean execution is asserted; the theorem intent and name-resolution context were inspected. Unrelated Heap context was not reviewed."
+  ],
+  "supersedes": []
+}

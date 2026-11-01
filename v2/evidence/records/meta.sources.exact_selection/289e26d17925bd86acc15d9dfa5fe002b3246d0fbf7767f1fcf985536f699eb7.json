@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "65d0a7a9d29cd078d322ec5243922a8b04dda3ed8329c10baa82370b695baab3",
+  "reviewer": "Codex independent meta reviewer /root/removal_review_meta",
+  "provenance": "Independent source and test inspection for the heap-draft removal. Read the final frozen unit, exact cited selections, review policy, retained adversarial inputs, relevant containing-source helpers, changed authoring context, and captured renderer fixture. Reviewed assertions and control flow; did not execute tests or modify production code.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/spec-system.md",
+    "context:mdbook-dada/tests/units.rs",
+    "extra:reviews/adversarial-2026-10-24/tooling.md",
+    "extra:reviews/repair-2026-10-24/reviewed-original-harness.py",
+    "extra:reviews/repair-2026-10-24/tooling-checks.txt",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "tool:mdbook-dada/src/configuration.rs",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/book.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The stated rule-selection contract matches select, extract_declaration, extract_case, and scan. Rule selection first extracts the named declaration with the supported-form checks, including the command count that rejects an indented sibling declaration, then selects exactly one constructor at the declaration constructor indentation. The sibling regression verifies rejection for grammar/judgment/definition and for both structured and legacy rule rendering. extract_case takes source through scan(selected).content_end, rather than trimming a mask whose spaces could erase literals. scan advances content_end across string/raw-string/character/quoted-identifier tokens and preserves attached comments while excluding following standalone comments. The literal regression covers those final token forms, attached comments and following constructors, including HTML output. The changed book.rs now uses the captured Renderer.lean fixture: its five Step constructors retain the first/middle/last isolation checks, and separate qualified theorem and anchored example cases retain the source-selection shapes. These fixtures exercise rendering rather than establish a language formalization, consistent with the unit explicit textual-selection limit.",
+  "limitations": [
+    "This review compares the documented contract with implementation and regression assertions; it is not a proof of implementation correctness or a claim of test execution.",
+    "Conservative source/context snapshots were inspected for the relevant behavior and changes, not as an exhaustive audit of every unrelated declaration or paragraph."
+  ],
+  "supersedes": [
+    "60546ea0271e4016b20708aa193485b8e11246c4fd72d906f0bac2f28c1b8e4b"
+  ]
+}

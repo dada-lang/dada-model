@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "16974b96b6787348f4eeae1320451ccab6fee8da133c99659ab66190365c53da",
+  "reviewer": "Codex independent meta reviewer /root/removal_review_meta",
+  "provenance": "Independent source and test inspection for the heap-draft removal. Read the final frozen unit, exact cited selections, review policy, retained adversarial inputs, relevant containing-source helpers, changed authoring context, and captured renderer fixture. Reviewed assertions and control flow; did not execute tests or modify production code.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:md/repo/spec-system.md",
+    "context:mdbook-dada/src/configuration.rs",
+    "context:mdbook-dada/tests/evidence_validation.rs",
+    "context:mdbook-dada/tests/units.rs",
+    "extra:reviews/adversarial-2026-10-24/tooling.md",
+    "extra:reviews/repair-2026-10-24/reviewed-original-harness.py",
+    "extra:reviews/repair-2026-10-24/tooling-checks.txt",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "tool:mdbook-dada/src/configuration.rs",
+    "tool:mdbook-dada/src/inventory.rs",
+    "tool:mdbook-dada/tests/book.rs",
+    "tool:mdbook-dada/tests/evidence_validation.rs",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "parse_block scans the complete raw structured unit for mdBook include/playground/rustdoc_include forms, so literal samples do not bypass rejection, and scans fenced body directives to reject nested legacy citations. validate_chapters reads each received chapter original source and compares ordered unit IDs and exact raw unit bodies with the processed chapter before process_configured renders it. This matches the authored scope: alterations within received chapters are checked, while omitted whole chapters and later output processing are explicitly outside the claim. Selected tests cover both Lean- and Rust-backed bodies, literal playground text, legacy nesting, preservation of legacy authoring outside structured units, refusal to prepare invalid evidence, already-expanded includes, injected units, and changed prose. The separately marked actual-mdBook test runs the executable pipeline after links expansion and asserts rejection for two external include contents. I inspected that test and the retained historical execution log but did not execute it. Moving book.rs selections to the captured Renderer.lean fixture does not change these self-contained regression inputs or the production boundary.",
+  "limitations": [
+    "This review compares the documented contract with implementation and regression assertions; it is not a proof of implementation correctness or a claim of test execution.",
+    "Conservative source/context snapshots were inspected for the relevant behavior and changes, not as an exhaustive audit of every unrelated declaration or paragraph."
+  ],
+  "supersedes": [
+    "d17b38781ada32975c500086c0dc789e17c762524ac36bc303a03d5d97bd8bba"
+  ]
+}

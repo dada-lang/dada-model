@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "3e38285e47b20dbefc9c3f0d6b205ff1c1b568bf58d2ac90bfdc2637a228f327",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle 914faee4f2cdcd32941beeb489cd820481248986f01798f1a7167c36c1e9114e with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:ObjectId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.state"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.state matches the selected representation: ObjectId is Nat; Slot is Option ObjectId; Object contains a class name and named field slots; State contains object entries, variable entries, and nextId; State.empty is ⟨[], [], 0⟩. StoragePlace distinguishes a variable from a field of a particular identity, and Stored uses membership, including none, so empty differs from absent. The prose explicitly restricts the states under discussion to distinct keys; it does not claim that raw list-valued State enforces that constraint. State.create in bundled Step context uses nextId as the new identity and increments it. Reference slots store identities rather than nested object data. For this final packet, the only delta from the reviewed bundle 914faee4f2cdcd32941beeb489cd820481248986f01798f1a7167c36c1e9114e is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "The distinct-key and existing-target reading describes the chapter's intended states; the raw Lean State representation can also encode malformed lists and dangling references. Their exclusion is supplied by the later well-formedness predicate and successful executions from the initial state.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "853a75698f4d9bae1247d0e2a5340f0f7937ddd31c077491f94e44b3154a19ba"
+  ]
+}

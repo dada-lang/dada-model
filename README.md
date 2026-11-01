@@ -4,14 +4,15 @@ Formal models for Dada, organized by version.
 
 - [v1](v1/): the original Rust type system, interpreter, tests, and mdBook,
   preserved as an executable reference.
-- [v2](v2/md/introduction.md): a draft literate specification of the heap machine.
-  Rust book tooling renders mathematical notation, anchor shields, and heap
-  diagrams alongside the Lean formalization.
+- [v2](v2/md/dada/introduction.md): a literate specification built in layers,
+  starting with unique ownership (Given) and extending it with shared ownership
+  (Shared). The book pairs definitions, theorems, and examples with named Lean
+  declarations and records reviews of their correspondence.
 
 The [published site](https://dada-lang.github.io/dada-model/) opens the v2 draft.
 Its [older versions appendix](v2/md/appendices/older-versions.md) explains the
 earlier approach and links to the [v1 book](https://dada-lang.github.io/dada-model/v1/).
-Chapter paths stay under their version prefix (for example, `v2/operations.html`).
+Chapter paths stay under their version prefix (for example, `v2/given.html`).
 
 Run `just book-tools` to install the pinned mdBook tools, then `just site` to
 build the complete site into `_site/`. See [publishing and local preview](pages/README.md)
@@ -32,11 +33,14 @@ See [v1 instructions](v1/AGENTS.md) and [work in progress](v1/WIP.md).
 ## Reading the v2 draft
 
 Run `just book-v2` to build it, or `cd v2 && mdbook serve` for a local preview.
-The draft covers the machine state, allocation and creation, place operations,
-examples, invariants, and unresolved design questions. Ownership preservation for
-allocation, creation, and the supported path operations has checked Lean proofs.
-Consuming moves retarget dependent leases and preserve their resolved targets.
-Broader reference-validity and cleanup claims remain explicitly pending.
+The book groups operational semantics and type-system chapters under Given and
+Shared, followed by CFlow. Given's type-system chapter is a draft; Shared's type
+system and CFlow are coming. The Given draft adds signed
+views, typing rules, and proposed progress and preservation statements, using a
+draft unpacking extension to Given. These additions await Lean formalization.
+The existing operational models
+have syntax, transitions, examples, and checked heap invariants; a Lean proof
+establishes that Shared preserves the behavior of the Given fragment.
 
 Install Lean through `elan`, then run `just test-lean` (or `cd v2/lean && lake build --wfail`)
 to check all formalization modules. `v2/lean/lean-toolchain` pins Lean 4.35.0;
@@ -44,4 +48,5 @@ to check all formalization modules. `v2/lean/lean-toolchain` pins Lean 4.35.0;
 building the published books.
 
 The v2 preprocessor is in `v2/mdbook-dada`. Run `cargo test --workspace` from
-`v2/` to test it. See the book’s specification-system chapter for authoring syntax.
+`v2/` to test it and validate the review evidence. See the book’s contributor
+guides for authoring syntax and the review workflow.

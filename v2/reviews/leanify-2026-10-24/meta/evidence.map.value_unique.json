@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "bundle": "166a10e4f7d0e33d0793a617493f2812ad9023d18115cefef789350fc268370e",
+  "reviewer": "Codex /root (meta and finite-map correspondence review)",
+  "provenance": "Prepared and read immutable current packets; compared authored prose with selected declarations and tests during the 2026-10-24 lean-ification. The reviewer integrated the surrounding documentation and earlier evidence tooling changes; the mutual selector implementation was authored by a separate subagent. This is an agent review, not a human sign-off or a Lean proof.",
+  "examined": [
+    "context:lean/Common/FiniteMap.lean",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMap:FiniteMap.value_unique",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.value_unique"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:evidence.map defines the list representation and distinct-key condition. FiniteMap.value_unique quantifies a map and a single implicit key with two implicit values, takes membership of both pairs in that map, and concludes equality of the values. The enclosing source has no ordering or DecidableEq parameter on Key; the hypothesis uniqueKeys is carried by the map. Thus the quantifiers, assumptions and conclusion match the lemma prose, including its claimed absence of key-comparison requirements. Proof internals were not used as evidence for correspondence.",
+  "limitations": [
+    "The proposition and representation were compared; proof correctness is delegated to Lean and mechanical compilation is recorded separately."
+  ],
+  "supersedes": [
+    "d75bd2c219782d5f0de3063de01dfb41215faa076906b4806c9bead88676b47e"
+  ]
+}

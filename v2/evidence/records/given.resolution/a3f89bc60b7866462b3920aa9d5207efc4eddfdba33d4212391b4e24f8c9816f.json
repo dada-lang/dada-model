@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "e8cf0536d5866460833c5cc82a88bbb1b9dddf348ce8927c2164665db29165c2",
+  "reviewer": "Codex independent reviewer /root/removal_review_given",
+  "provenance": "Independent subagent correspondence review of frozen removal packets. Read every required authored/dependency unit and exact Lean selection plus the review policy; inspected the listed context for relevant definitions, example setups, import/namespace scope, and theorem assumptions. Proof tactic correctness was left to Lean. Delta bookkeeping compared the before-removal packets with these packets: Given units and exact selections are unchanged; finite-map selections are text-identical after citation relocation. The substantive conclusions below were checked from current packet inputs, not inherited from prior approvals. No source changes or test execution were performed. Earlier record metadata was inspected only to identify active decisions for supersession. Final-packet delta review confirmed every authored unit, Lean selection, dependency, policy, and Lean context has identical content to the initially reviewed removal packet; pilot unit line offsets shifted by one. The only changed input contents are conservative tooling snapshots: inventory collection, its freshness regression, and the newly captured Renderer.lean fixture. Read that fixture to confirm its explicitly synthetic RendererFixture scope; it is not a cited language source. The fixture collection implementation/regression is outside this semantic correspondence review.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:lean/lakefile.toml",
+    "context:lean/lean-toolchain",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Step:Take",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/tests/fixtures/lean/Renderer.lean",
+    "unit:given.classes",
+    "unit:given.resolution",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.resolution matches Resolve.variable reading an initialized variable and Resolve.field recursively resolving the base, finding the parent object, and reading an initialized named field. The indexed state is unchanged. The Take constructors replace one selected some object occurrence with none and leave the list prefixes/suffixes, all other tables, parent class name, and nextId unchanged. These exact effects correspond to the separate resolution and taking description. Uniqueness of names in the chapter's states gives a single denoted slot; arbitrary malformed lists are not asserted to have functional lookup.",
+  "limitations": [
+    "This is a comparison of authored meaning with formal statements and relevant definitions, not a proof check or a new execution of Lean. Conservative whole-project/tool snapshots were not audited line by line. For Soundness/Liveness context, declaration scope and relevant definitions/statements were inspected; tactic internals were not reviewed."
+  ],
+  "supersedes": [
+    "5c69542e15016383562ef29b58f91aabe00ef7eeaf661cb98fadf692decdc115"
+  ]
+}

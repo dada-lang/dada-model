@@ -1,53 +1,74 @@
 # How it works
 
-The book provides a reading order through the design. A chapter first explains a
-question and the intended result, then connects that explanation to examples,
-definitions, algorithms, and evidence. Readers should be able to recover the
-mental model before studying implementation details.
+The book develops the model through named definitions, rules, theorems, and
+examples. Each unit carries its explanation in Markdown and mathematics and
+links to the corresponding named part of Lean. The mathematical account stands
+on its own; a Rendered/Lean selector lets the reader inspect its formalization.
+The reading order introduces concepts before the rules that use them.
 
-## Developing a claim
+## Developing a unit
 
-We begin with a behavior or distinction worth explaining. We describe it in prose
-and work through concrete examples. An anchor names a claim so that we can connect
-it to definitions, operations, and evidence without copying its text everywhere.
+Begin with a behavior or distinction worth explaining. State it in a unit and
+work through examples that make its meaning concrete. Put the unit ID on the
+opening line and source citations in `:lean:`. Record contextual definitions in
+`:uses:` and link new terminology to where it is introduced. Explanatory content
+belongs inside the reviewed boundary rather than in untracked semantic prose.
+The [authoring guide](authoring.md) gives the supported forms.
 
-For some claims we will develop Lean propositions and proofs. One claim may need
-several propositions to cover its qualifications. For others, executable tests or
-examples may supply useful evidence while formalization remains incomplete.
+A theorem may need several assumptions to capture the intended guarantee.
+Review compares those assumptions and the conclusion with the prose and
+mathematics. Lean checks the proof. An example has its own comparison: the cited
+Lean case must describe the setup and result actually claimed in the book.
+Unfinished formalizations retain their intended unit kind and use `:status: draft`.
+They cannot receive affirmative correspondence decisions or pass evidence validation.
 
-Human or agent review examines how these views fit together. Does a proposition
-exclude an important case? Does an example reveal an ambiguity? Could code satisfy
-the formal obligations while violating the behavior described in the book? A
-failed proof attempt may motivate changes to any of the views, or to the design.
+Neither representation automatically wins when they differ. A discrepancy may
+reveal ambiguous prose, an inadequate proposition, or a design choice that needs
+discussion. Record the discrepancy and resolve it before claiming correspondence.
 
-This is an iterative process, not a pipeline in which English is fixed first and
-all later artifacts must accommodate it.
+## Keeping the comparison inspectable
 
-## Reading evidence
+`dada-spec prepare` snapshots a unit and its required inputs. A human or agent
+reviewer compares them and records a conclusion, rationale, examined inputs, and
+limitations. `dada-spec record` checks that the inputs still match current source
+before retaining the decision. Exact snapshots remain available so another
+reviewer can vet the comparison. Changing an input makes affected evidence stale.
 
-Correspondence review, test execution, and proof checking answer different
-questions. We intend to show their statuses separately, including assumptions,
-partial coverage, and unresolved disagreements. Review records should explain
-why a correspondence is adequate, rather than only report approval.
+The evidence checker validates structure, required input coverage, and freshness.
+It does not itself judge mathematical correspondence or prove a theorem. Its
+ordinary Cargo integration test makes missing or stale evidence visible during
+`cargo test --workspace`. The [review procedure](correspondence-review.md)
+explains how to interpret and repair failures.
 
-Definitions and their documentation will be included from their sources so that
-the book does not maintain a second copy. Lean declarations will be the source of included type definitions;
-see [Lean definitions in the book](spec-system.md#lean-definitions-in-the-book).
-Definition inclusion is implemented for the supported Lean source style;
-compilation and proof verification remain separate work.
-Graph renderings already derive from explicit state facts in `heap` blocks. Anchor roles and cross-references are also processed;
-see [authoring syntax](spec-system.md#authoring-syntax).
+Proof checking, test execution, and correspondence review remain separate.
+Passing Lean establishes the proposition checked under its assumptions; a
+current review records a judgment that this proposition captures the intended
+claim. A passing test establishes its tested cases. None of these results should
+be silently substituted for another.
 
-## Working in this repository today
+## Working in this repository
 
-From the repository root, `just book-v2` builds this draft. Run `mdbook serve`
-inside `v2/` to preview it. Edit the narrative under `v2/md/` and register chapters
-in `v2/md/SUMMARY.md`.
+Edit chapters under `v2/md/` and register them in `v2/md/SUMMARY.md`. From the
+repository root, `just book-v2` builds the draft and `just test-lean` checks the
+Lean project. Run `mdbook serve` inside `v2/` to preview the book.
 
-Run `cargo test --workspace` and `cargo clippy --workspace` from `v2/` to check
-the Rust preprocessor. These tests exercise presentation tooling.
+From `v2/`, run:
 
-No command yet verifies the v2 semantic claims or records correspondence reviews.
-The next chapter states our working principles; the
-[system design](spec-system.md) describes the checks the tooling should eventually
-provide.
+```sh
+cargo run -p mdbook-dada --bin dada-spec -- status --explain
+cargo run -p mdbook-dada --bin dada-spec -- check
+cargo fmt --all
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+```
+
+Every new-style unit participates in evidence validation. `v2/spec.json` names
+strict chapters that additionally require all semantic prose to lie within
+units. The [Given](../given.md) and [Shared](../shared.md) chapters use the complete
+review loop, alongside the [implementation contracts](evidence-pilot.md).
+Legacy requirements in the system reference still await migration to review units.
+
+The [system design](spec-system.md) defines the evidence contract. The
+[layer extension protocol](layer-extension.md) describes the model
+organization: unique ownership with `p→`, then shared ownership with `p→share`,
+with a formal correspondence between the two layers.

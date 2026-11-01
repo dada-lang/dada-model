@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "5c19d724128a908084e96cdea9ffa3831200f3177a2fb544b2478f97d1e0e33c",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle a384ac618646acadca09a78715138f402d95ad718f81d86d5512442d2603876e with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Step:Take",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.resolution",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "lean:Unique/Step:Resolve has a fixed input state and no output state, matching read-only resolution in unit:given.resolution. Its variable case requires an initialized variable; its field case recursively resolves the base, requires the intermediate object entry, and reads an initialized field. Those premises match the stated absent/empty-route failures without adding a check for allocation of the final target. Take replaces one some identity by none in an otherwise identical list decomposition, retaining object/class identities, other slots, variable/field membership, and nextId. Under the distinct-key convention in the state dependency this is exactly the named-slot effect described. For this final packet, the only delta from the reviewed bundle a384ac618646acadca09a78715138f402d95ad718f81d86d5512442d2603876e is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "Raw malformed states may contain duplicate keys or an unallocated final target. The prose inherits distinct keys from given.state and only claims a missing intermediate object prevents resolution; this review does not extend the claim to arbitrary malformed-state lookup.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "b51f25ed76bd64a0760673dc736f316cd8c4978f579008a76166f25e8534954e"
+  ]
+}

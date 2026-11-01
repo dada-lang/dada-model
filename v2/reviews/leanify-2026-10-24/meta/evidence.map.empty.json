@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "bundle": "9ddb8010bb70b0fc27a3298a6fcbe54dab4a5491145fdc62f40548b3815a175e",
+  "reviewer": "Codex /root (meta and finite-map correspondence review)",
+  "provenance": "Prepared and read immutable current packets; compared authored prose with selected declarations and tests during the 2026-10-24 lean-ification. The reviewer integrated the surrounding documentation and earlier evidence tooling changes; the mutual selector implementation was authored by a separate subagent. This is an agent review, not a human sign-off or a Lean proof.",
+  "examined": [
+    "context:lean/Common/FiniteMap.lean",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMapExamples:empty_map",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.empty"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:evidence.map supplies the notation and finite-map representation used by this example. The selected anchored example fixes FiniteMap Nat Nat and states that empty.entries = []; it therefore covers both the chosen key/value types and the complete empty-entry result, not merely existence of an arbitrary map. The description of there being no pair follows directly from that stated equality. This compares the example proposition and setup according to the review policy, leaving proof checking to Lean.",
+  "limitations": [
+    "The proposition and representation were compared; proof correctness is delegated to Lean and mechanical compilation is recorded separately."
+  ],
+  "supersedes": [
+    "135c3c5640b5b8462a62e9bd3d13cd4b9334c366bf9035a96283aa1fee6fa4f5"
+  ]
+}

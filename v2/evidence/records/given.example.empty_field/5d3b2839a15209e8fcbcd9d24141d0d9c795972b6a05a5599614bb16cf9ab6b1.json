@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "231f19c18b2db0263806bbfaa7d565b2f3dae3dec922de5161c8d74293e8d055",
+  "reviewer": "Codex independent reviewer /root/review_repaired_given",
+  "provenance": "Fresh independent Codex subagent review of the repaired frozen bundles. Read each complete required unit, transitive dependency unit, exact Lean selection, and review policy; inspected the listed Lean context for statement parameters and relevant definitions. Formed the comparisons before reading earlier decisions for explicit supersession. No implementation or prose edits were made, no mechanical checks were rerun, and proof tactic correctness was left to Lean. Delta renewal compared the previous reviewed bundle 35b48463a55d35dd42c37d2da1b9d2024ac0f213bc3249b4173407eed71201ad with this final packet input by input. All required unit, selection, dependency, and policy contents are identical; the sole changed snapshot is Shared/Liveness.lean. Read that updated context and the added declarations, confirming their scope remains Dada.Shared and the Given/Heap inputs and import scopes are unchanged. Earlier draft decisions were not recorded.",
+  "examined": [
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "lean:Unique/Examples:give_execution",
+    "lean:Unique/Examples:second_give_fails",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.example.empty_field",
+    "unit:given.example.field",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "unit:given.example.empty_field starts from the movedState established by its field-example dependency and adds exactly let v = b.value→. lean:Unique/Examples:second_give_fails asserts Stuck for that exact configuration. In the bundled state definition b still contains 1 and Box 1 still exists, but its value slot is none; Resolve.field requires some object. Stuck expands to unfinished code and the absence of any whole Step successor, so the prose claim that no step is possible is the actual proposition rather than only a failed helper resolution. For this final packet, the only delta from the reviewed bundle 35b48463a55d35dd42c37d2da1b9d2024ac0f213bc3249b4173407eed71201ad is the addition of Shared.WellFormed.path_mode_exclusive and its private helpers. Its WellFormed and two opposite-mode Resolve premises concern Shared paths; it does not modify this unit, any of its cited definitions or theorem assumptions, or the Given/finite-map semantics compared above. The original correspondence conclusion therefore remains valid after this inspected change.",
+  "limitations": [
+    "The example covers the particular second give from the preceding trace. It does not introduce a runtime error value, recovery operation, or broader fault semantics.",
+    "The added Shared path-exclusivity statement was inspected to assess its scope and effect on this review; this is not a separate correspondence review of the Shared chapter or a proof audit of the new theorem."
+  ],
+  "supersedes": [
+    "9a19ab6cb5a4b6fedf0f8f570aa1ead17d9b6954f2964693b9e80bd38e8e75f6"
+  ]
+}
