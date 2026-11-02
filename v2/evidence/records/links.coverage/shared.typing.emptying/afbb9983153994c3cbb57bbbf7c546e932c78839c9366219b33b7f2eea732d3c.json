@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "bundle": "99ac51e7fb201f472131cd4a5d77abb1c44314b0cda0d46571946a0c9eec0b0a",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7ca3252c424052cffbaaf2fb3da6b66220637dbf063c6038d7142db073228302",
+    "audit:target:aa210780e33166914e582e1f2aa597e7876855cb4a8137adc65a043a6c43be2f",
+    "audit:target:b525b2193e0c35e677269ca5a180c068848ebca97990c0e69502745a2fc78704",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:given.typing.emptying",
+    "audit:unit:shared.typing.emptying",
+    "audit:unit:shared.typing.nominal_table",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.observations",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. emptyPath maps Given.emptyPath while retaining ty.permission. The empty-path exclusion and positive-path side condition describe the domain, and normalization of the resulting nominal view is inherited from Given. No sharing conversion occurs in this operation.",
+    "links": [
+      {
+        "occurrence": "shared.typing.emptying:1",
+        "role": "conceptual",
+        "rationale": "The use 'normalized' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.normalization is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.emptying:2",
+        "role": "conceptual",
+        "rationale": "The use 'N[-\\\\rho]' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.emptying is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.emptying:3",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{pos}_{\\\\Sigma}(T)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.emptying:4",
+        "role": "conceptual",
+        "rationale": "The use \"Given's emptying operation\" supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.emptying is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.emptying:5",
+        "role": "conceptual",
+        "rationale": "The use 'nominal class table' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.nominal_table is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.emptying:6",
+        "role": "conceptual",
+        "rationale": "The use 'Normalize' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.normalization is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

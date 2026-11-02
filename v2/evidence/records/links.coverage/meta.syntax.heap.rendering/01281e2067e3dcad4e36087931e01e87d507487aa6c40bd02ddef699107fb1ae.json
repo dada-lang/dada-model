@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "01c19f1d7200dbeceaa4f94b48d34e9795e1ecd6febc1c317efb02e9af6c02d7",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b20705f3e353f94b364e5cbddd1eb281eec7a3997129b64ea696b10fd0a0febf",
+    "audit:unit:meta.math.source_view",
+    "audit:unit:meta.syntax.heap.rendering",
+    "audit:unit:meta.syntax.heap.validation",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Stored-reference syntax links its direct slot definition. This unit then defines SVG-edge behavior, lease junctions, retained facts and deterministic layout limitations. There are no model equations; the graph arrows being described are diagram edges rather than semantic judgments.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Stored-reference syntax links its direct slot definition. This unit then defines SVG-edge behavior, lease junctions, retained facts and deterministic layout limitations.",
+    "mathematics": "There are no model equations; the graph arrows being described are diagram edges rather than semantic judgments.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.heap.rendering:1",
+        "role": "conceptual",
+        "rationale": "The edge renderer consumes the initialized-reference slot forms defined at this anchor."
+      }
+    ]
+  }
+}

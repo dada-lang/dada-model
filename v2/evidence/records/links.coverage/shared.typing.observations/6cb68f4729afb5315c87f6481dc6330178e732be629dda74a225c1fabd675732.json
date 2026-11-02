@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "bundle": "013341c725ada78f7a0d5ce80516ad480d97dd6b3f0b299ac71b7257050dd573",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:aa210780e33166914e582e1f2aa597e7876855cb4a8137adc65a043a6c43be2f",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:given.typing.observations",
+    "audit:unit:shared.typing.nominal_table",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.observations",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Pos delegates to Unique.Typing.Pos on the nominal table/view; Neg delegates to the nominal view's negative-entry predicate. Both ignore the outer permission, as the two displayed equalities claim; initialized subtrees still include permission-bearing fields.",
+    "links": [
+      {
+        "occurrence": "shared.typing.observations:1",
+        "role": "conceptual",
+        "rationale": "The use 'normalized' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.normalization is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.observations:2",
+        "role": "conceptual",
+        "rationale": "The use \"Given's observations\" supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.observations:3",
+        "role": "conceptual",
+        "rationale": "The use 'nominal class table' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.nominal_table is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.observations:4",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{pos}' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.observations:5",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma_{\\\\mathrm{nom}}' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.nominal_table is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.observations:6",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{neg}' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.observations:7",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma_{\\\\mathrm{nom}}' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.nominal_table is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

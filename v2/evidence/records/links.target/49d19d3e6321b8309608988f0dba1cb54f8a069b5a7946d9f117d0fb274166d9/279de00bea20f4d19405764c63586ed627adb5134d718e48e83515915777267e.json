@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "5b16c0dcf4815e35f5c46891b6b6c693f33899aaa5762158166e498705f7db13",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:49d19d3e6321b8309608988f0dba1cb54f8a069b5a7946d9f117d0fb274166d9",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The storage-place link is direct and both variable and field lookup equations are here. Undefined lookup versus a defined empty slot is explained without invoking stuckness ahead of its definition. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given partial slot lookup passage without searching a neighboring block for the actual definition or claim. Both displayed equations define S[q]. The partialness side conditions and S=⟨O,V,ν⟩ decomposition are stated locally, with q linked to its grammar.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given partial slot lookup",
+    "definition": {
+      "path": "md/given.md",
+      "start": 6092,
+      "end": 6655
+    },
+    "clarity": "The storage-place link is direct and both variable and field lookup equations are here. Undefined lookup versus a defined empty slot is explained without invoking stuckness ahead of its definition. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given partial slot lookup passage without searching a neighboring block for the actual definition or claim. Both displayed equations define S[q]. The partialness side conditions and S=⟨O,V,ν⟩ decomposition are stated locally, with q linked to its grammar."
+  }
+}

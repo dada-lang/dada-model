@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "1f76cce6a878b6788786237a2793910e5bb298b337e85efa1edaa1688c2eb97b",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d6c2319422bc09f8bd5db42388b5e094818d235328c57f2f2ed44355c8fd76d1",
+    "audit:unit:given.patterns",
+    "audit:unit:shared.typing.patterns",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links Given flat patterns; defines the Shared pattern grammar and fresh/distinct/all-fields constraints locally.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Given flat patterns; defines the Shared pattern grammar and fresh/distinct/all-fields constraints locally.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Pattern provides variable and flat named unpack forms; Unpacking.Statement pairs a pattern with a value expression. Distinct fresh destinations and exhaustive fields are enforced by binding, as the accompanying scope paragraph states. No wildcard or remainder form is admitted.",
+    "links": [
+      {
+        "occurrence": "shared.typing.patterns:1",
+        "role": "conceptual",
+        "rationale": "The use \"Given's flat binding patterns\" supplies a concept, equation, or example setup needed here; md/given.md#claim-given.patterns is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

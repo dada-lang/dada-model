@@ -36,13 +36,16 @@ These are the supported custom roles, not a general MyST parser.
 :tests: mdbook-dada/tests/book.rs:block_directives_are_distinct_from_literal_code_and_inline_roles mdbook-dada/tests/book.rs:informational_paragraphs_preserve_markdown_and_literal_examples mdbook-dada/tests/book.rs:generated_grammar_directives_require_migration mdbook-dada/tests/book.rs:inferred_judgment_and_rule_directives_require_migration mdbook-dada/tests/units.rs:drafts_keep_their_semantic_kind_without_claiming_a_formalization mdbook-dada/tests/units.rs:draft_status_is_explicit_and_does_not_relax_citation_checks mdbook-dada/tests/units.rs:removed_obligation_syntax_is_rejected_at_every_authoring_entry_point
 :uses: meta.units.closed_body
 
-Inline roles label or refer to locations. Fenced directives create blocks:
+[Inline roles](#claim-meta.syntax.anchors.roles) label or refer to locations. Fenced directives create blocks:
 `{definition}`, `{grammar}`, `{judgment}`, `{rule}`, `{theorem}`, `{lemma}`,
 `{example}`, and `{heap}`. Ordinary language fences such as `lean`, `heap`,
 `grammar`, and `text` remain literal code.
 
-A structured block starts with its kind and stable ID, followed by options and
-an authored body. `:status: draft` marks unfinished formalization without
+A structured block starts with its kind and [stable ID](#claim-meta.syntax.anchors.identity), followed by options and
+an authored body.
+
+{anchor}`meta.syntax.draft`
+`:status: draft` marks unfinished formalization without
 changing the kind. It permits omitted citations; supplied citations keep their
 kind checks. A draft without citations has no source selector.
 
@@ -60,12 +63,12 @@ The marker creates no identity and remains literal in code samples.
 :rust: mdbook-dada/src/lib.rs:selector_header mdbook-dada/src/lib.rs:markdown_heading mdbook-dada/src/lib.rs:render_unit mdbook-dada/src/lib.rs:render
 :tests: mdbook-dada/tests/book.rs:leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup mdbook-dada/tests/book.rs:nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body mdbook-dada/tests/book.rs:unanchored_rendered_blocks_share_named_headers_and_grouped_choices mdbook-dada/tests/units.rs:structured_units_render_identified_headers_and_exact_lean_views mdbook-dada/tests/units.rs:meta_units_show_named_rust_implementation_and_test mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent
 
-A block's header keeps its identity on the left and its view controls on the
+A block's header keeps its [identity](#claim-meta.syntax.anchors.identity) on the left and its view controls on the
 right. Rendered is selected initially. Lean-backed blocks offer Rendered/Lean;
 Rust-backed blocks offer Rendered/Rust; diagrams offer Rendered/Facts. Each
 selector controls its own block, including when blocks are nested.
 
-A structured unit's ID appears once, as a shield in its header. Draft status
+A structured unit's ID appears once, as a shield in its header. [Draft status](#claim-meta.syntax.draft)
 remains visible in both views. In legacy Markdown blocks, leading defining
 anchors move to the header; later anchors stay in the body. An unanchored
 legacy block shows its kind as a plain label. The source view identifies every
@@ -103,14 +106,14 @@ rule blocks use the same presentation, with their own authored notation.
 :tests: mdbook-dada/tests/renderer_contracts.rs:pinned_mathjax_configuration_uses_one_loader mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent
 :uses: meta.math.typesetting meta.math.source_view
 
-The renderer emits MathJax delimiters for the runtime configured by
+The renderer emits [MathJax delimiters](#claim-meta.math.typesetting) for the runtime configured by
 `book.toml` and `theme/mathjax.js`. The bundled loader selects MathJax 4.1.3's
 CommonHTML build; mdBook's built-in MathJax loader is disabled. Local previews
 and published pages load that same script. Authored display breaks are retained,
 and wide mathematical blocks can scroll horizontally.
 
 The loader uses a CDN, so browser typesetting requires network access. The
-source text and selectors remain available independently. The tests inspect
+source text and [selectors](#claim-meta.math.source_view) remain available independently. The tests inspect
 configuration and emitted HTML/CSS; they do not guarantee CDN availability or
 verify the appearance of every possible formula.
 ```
@@ -198,6 +201,8 @@ author's presentation choice.
 The renderer checks source selection, not the proof. Lean compilation and
 correspondence review are separate: Lean checks the proof; review compares the
 statement's assumptions, quantifiers, and conclusion with the authored claim.
+
+{anchor}`meta.syntax.nesting`
 Definition, theorem, lemma, and example bodies cannot nest any of those four
 block kinds.
 ```
@@ -221,7 +226,7 @@ body. Its header says Example and initially displays the rendered body.
 {anchor}`meta.examples.markdown`
 The body supports paragraphs, lists, links, code, explicit math, roles, and heap
 diagrams. Longer enclosing fences permit literal fenced examples inside it.
-The nesting restrictions in {anchor-ref}`meta.math.theorem.selection` still apply.
+The [nesting restrictions](#claim-meta.syntax.nesting) still apply.
 
 {anchor}`meta.examples.validation`
 Missing, duplicate, or malformed regions, unsupported proof forms, malformed
@@ -234,7 +239,7 @@ or run it.
 :tests: mdbook-dada/tests/book.rs:authored_grammar_rejects_invalid_citations_and_missing_bodies mdbook-dada/tests/book.rs:linked_examples_fail_on_invalid_citations_bodies_or_nesting mdbook-dada/tests/book.rs:authored_theorems_select_literal_qualified_names mdbook-dada/src/lean.rs:tests::qualified_theorem_names_match_only_the_literal_declaration_name mdbook-dada/src/lean.rs:tests::definitions_reject_unsupported_incomplete_and_ambiguous_sources mdbook-dada/tests/renderer_contracts.rs:lean_citations_accept_subdirectories_but_reject_source_root_escapes
 :uses: meta.sources.configuration meta.sources.exact_selection
 
-Citations name files relative to the configured Lean source root and may omit
+Citations name files relative to the [configured Lean source root](evidence-pilot.md#claim-meta.sources.configuration) and may omit
 `.lean`. Subdirectories are allowed; escaping the root, including through a
 symlink, is rejected. Source views identify each citation and retain its selected
 text. Imports, namespaces, and section variables remain in the retained source
@@ -278,6 +283,7 @@ The supported node constructors are `variables()` or `variables("name")`,
 `primitive(value,"name")`, and `array(length)` or `array(length,"name")`.
 There is at most one variable-store group. It is a presentation aid, not an object.
 
+{anchor}`meta.syntax.heap.slots`
 Assignments use `node.field` or `array[index]`. A slot contains `owned(target)`,
 `showned(target)`, `shlease(target)`, `lease(edge)`, or `uninitialized()`.
 `leased` aliases `lease`; `shared` aliases `shlease`, never `showned`.
@@ -292,7 +298,7 @@ availability does not introduce them into Given or Shared.
 :tests: mdbook-dada/src/graph.rs:tests::bad_facts_fail_instead_of_silently_changing_the_graph mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices mdbook-dada/src/graph.rs:lease_tests::leases_join_edges_and_shleases_target_objects mdbook-dada/src/graph.rs:cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically mdbook-dada/tests/renderer_contracts.rs:diagram_array_size_boundary_preserves_all_slots
 :uses: meta.syntax.heap.nodes
 
-Each node and explicitly assigned slot is declared once. Unknown targets,
+Each [node](#claim-meta.syntax.heap.constructors) and [explicitly assigned slot](#claim-meta.syntax.heap.slots) is declared once. Unknown targets,
 duplicate nodes or assignments, invalid projections, multiple variable stores,
 and out-of-bounds indices are rejected. Diagram arrays have at most 64 slots;
 that is a presentation limit, not a language bound.
@@ -311,7 +317,7 @@ not establish language invariants or infer support edges.
 :tests: mdbook-dada/tests/book.rs:heap_fences_render_and_preserve_source mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds mdbook-dada/src/graph.rs:lease_tests::leases_join_edges_and_shleases_target_objects mdbook-dada/src/graph.rs:cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically
 :uses: meta.math.source_view meta.syntax.heap.validation
 
-A diagram renders each stored reference as a labeled SVG edge. Explicit leases
+A diagram renders each [stored reference](#claim-meta.syntax.heap.slots) as a labeled SVG edge. Explicit leases
 join their named supporting edge at a junction; object-targeting edges end at the
 target's left boundary. Node and edge labels are HTML-escaped. The SVG description
 and Facts view retain the input facts.
@@ -326,7 +332,7 @@ or infer lease provenance.
 :tests: mdbook-dada/src/routing.rs:tests::routes_around_boxes_and_through_column_gaps mdbook-dada/src/graph.rs:cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically mdbook-dada/src/graph.rs:lease_tests::leases_join_edges_and_shleases_target_objects
 :uses: meta.syntax.heap.rendering
 
-Diagram edges use horizontal and vertical segments ending in dots. Routing
+[Diagram edges](#claim-meta.syntax.heap.rendering) use horizontal and vertical segments ending in dots. Routing
 searches corridors around node rectangles, including gaps within a column, and
 penalizes distance and bends. It avoids box interiors; a missing route is an
 error. It does not guarantee that distinct edges or their labels never overlap.

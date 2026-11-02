@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "15a7bf4bcc7b18ec41887fe76d9f41f383d2fa74a74663a07bc832d84a54ba4c",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:shared.classes",
+    "audit:unit:shared.references",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines class and field names, field order and untyped constructor fields. It does not assume Shared typing field permissions. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines class and field names, field order and untyped constructor fields. It does not assume Shared typing field permissions.",
+    "mathematics": "The declaration grammar introduces C, f, d and arity n. Field type permissions are absent at this operational layer.",
+    "links": []
+  }
+}

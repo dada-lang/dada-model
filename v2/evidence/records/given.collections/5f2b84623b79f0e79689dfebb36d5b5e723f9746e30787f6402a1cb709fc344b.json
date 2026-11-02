@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "bundle": "b3090bcb7aa1289d10d09e0ff38d7f8bffa36818f965dc8c042905e2f519a147",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.collections"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Common/FiniteMap.FiniteMap consists of a finite List of key/value entries with a Nodup key proof. This supplies finite partial-map notation; List is the same finite ordered-sequence constructor used in that definition. This unit specifies notation, not a new operational representation invariant.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run."
+  ],
+  "supersedes": []
+}

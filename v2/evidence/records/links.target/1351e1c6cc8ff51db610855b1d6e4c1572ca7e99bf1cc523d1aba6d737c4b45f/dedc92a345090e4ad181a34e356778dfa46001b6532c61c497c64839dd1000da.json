@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "746e823ceb544aec1ee2c80195695dcfb75c9dd51b363d4cccdcb19cc551ddd9",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1351e1c6cc8ff51db610855b1d6e4c1572ca7e99bf1cc523d1aba6d737c4b45f",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.execution unit has a visible identity and directly presents extended execution closure and exact step counts. The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The star and k superscripts are the defining occurrences. The underlying extended step relation is linked in the sentence introducing them.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "extended execution closure and exact step counts",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 31251,
+      "end": 31562
+    },
+    "clarity": "The named given.typing.execution unit has a visible identity and directly presents extended execution closure and exact step counts. The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The star and k superscripts are the defining occurrences. The underlying extended step relation is linked in the sentence introducing them."
+  }
+}

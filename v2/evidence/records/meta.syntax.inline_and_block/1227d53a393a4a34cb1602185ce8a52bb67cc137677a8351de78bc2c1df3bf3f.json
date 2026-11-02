@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "9a913ad158ed0cce824c42bb8d12b141b3ed03db6240fe8d766f97d7902dea39",
+  "reviewer": "Codex repo-contract reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:directive_blocks",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/book.rs:block_directives_are_distinct_from_literal_code_and_inline_roles",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:generated_grammar_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:inferred_judgment_and_rule_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:informational_paragraphs_preserve_markdown_and_literal_examples",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:draft_status_is_explicit_and_does_not_relax_citation_checks",
+    "test:mdbook-dada/tests/units.rs:drafts_keep_their_semantic_kind_without_claiming_a_formalization",
+    "test:mdbook-dada/tests/units.rs:removed_obligation_syntax_is_rejected_at_every_authoring_entry_point",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "unit:meta.syntax.anchors.identity",
+    "unit:meta.syntax.inline_and_block",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "directive_blocks and render distinguish braced directives from ordinary code fences, while parse_block preserves semantic kind with a separate draft bit and validates any supplied citations. Removed directive and paragraph spellings produce diagnostics rather than permissive fallbacks. Tests cover literal examples, informational paragraphs, omitted/supplied draft citations and all retired entry points. The inline-role and stable-ID links refer to the already-defined mechanisms.",
+  "limitations": [
+    "This is a source-level comparison of the retained authored unit, exact cited declarations/tests and policy. It is not proof of exhaustive implementation behavior, a browser rendering test or a claim that every conservative context file was read. The reviewer authored the new audit integration/tests, then performed this separate comparison pass; no independence from that implementation is claimed."
+  ],
+  "supersedes": [
+    "d2a1b1c53491de0aa36253cbcbc81e2d1775fa39d344dd35ecc6e61a0416d241"
+  ]
+}

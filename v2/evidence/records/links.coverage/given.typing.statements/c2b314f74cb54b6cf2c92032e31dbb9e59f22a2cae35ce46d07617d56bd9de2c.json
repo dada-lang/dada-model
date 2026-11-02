@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "23b43a535fece36265818c881e2098579a039c5e22ff8c87c0aedcdbe8ab58ae",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a65eb6e25dc5992af74682e3ee7637608f951cbca91ff863784472c2c21591a9",
+    "audit:target:ee677a280b28caae8944bc8ea17f855a3a4cc330d7651935f345a4588c0263f5",
+    "audit:unit:given.patterns",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.expressions",
+    "audit:unit:given.typing.statements",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Expression typing and binding typing both link directly in the introductory explanation. Both premises link their defining judgments, while the Let conclusion defines statement typing here.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Expression typing and binding typing both link directly in the introductory explanation.",
+    "mathematics": "Both premises link their defining judgments, while the Let conclusion defines statement typing here.",
+    "links": [
+      {
+        "occurrence": "given.typing.statements:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'types the expression' supplies expression typing: Give, Construct, and Weaken while explaining typing a let statement by expression and binding composition. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.statements:2",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'its binding pattern' supplies the variable and unpacking binding-typing rules while explaining typing a let statement by expression and binding composition. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.statements:3",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\triangleright' supplies expression typing: Give, Construct, and Weaken while explaining typing a let statement by expression and binding composition. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.statements:4",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\Sigma;\\\\Gamma_1\\\\vdash b:T\\\\Rightarrow\\\\Gamma_2' supplies the variable and unpacking binding-typing rules while explaining typing a let statement by expression and binding composition. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

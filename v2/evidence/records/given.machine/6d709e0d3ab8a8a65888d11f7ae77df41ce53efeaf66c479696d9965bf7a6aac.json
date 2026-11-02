@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "8c508b0e59d4fb4a4bf2d6a289c5c29ac96d7ded2ed2973d3a7805299c77d0b9",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/State:Configuration",
+    "lean:Unique/State:Configuration.initial",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.empty_state",
+    "unit:given.identities",
+    "unit:given.machine",
+    "unit:given.programs",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Configuration consists of State and List Statement. Configuration.initial uses State.empty and program.body; the fixed class table is an external Step parameter. The tuple and initial configuration agree component by component. Notation and premises are supplied by the examined units given.classes, given.collections, given.empty_state, given.identities, given.programs, given.slots, given.state, given.syntax.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run."
+  ],
+  "supersedes": [
+    "eb470d0b1ff978eb0d7710a83dab7d186f2de6e4ddd8a88ff90ff066082bad80"
+  ]
+}

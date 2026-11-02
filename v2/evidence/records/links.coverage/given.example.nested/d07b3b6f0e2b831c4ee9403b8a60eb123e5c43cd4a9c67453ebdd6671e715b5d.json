@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "bundle": "1a8d7ae0929f0208cd814453f91f35eabb65957cb59db2f61f97407248fdf2d8",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:target:88a0c68272e833cbda1fa2978a4dd8727681d82a2bef9b7df637febb6f999b8f",
+    "audit:unit:given.classes",
+    "audit:unit:given.empty_state",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.example.nested",
+    "audit:unit:given.finished",
+    "audit:unit:given.state",
+    "audit:unit:given.steps",
+    "audit:unit:given.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links constructor evaluation, starting storage, the one statement step, and completion. Nested construction is explained using the already-defined evaluation rule. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links constructor evaluation, starting storage, the one statement step, and completion. Nested construction is explained using the already-defined evaluation rule.",
+    "mathematics": "The source code binds Token/Box locally. The one-step claim uses linked constructor evaluation, initial storage and completion rather than a new mathematical operator.",
+    "links": [
+      {
+        "occurrence": "given.example.nested:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “Constructor arguments” uses Given expression evaluation; the target given.evaluation supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.example.nested:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “empty storage” uses empty Given storage; the target given.empty_state supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.example.nested:3",
+        "role": "conceptual",
+        "rationale": "The prose reference “statement step” uses Given statement stepping; the target given.steps supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.example.nested:4",
+        "role": "conceptual",
+        "rationale": "The prose reference “finished configuration” uses Given finished configurations; the target given.finished supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

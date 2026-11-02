@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "33a2ad5c2d63d576be40659f44a9ba196c807799e5aabdfc1ea84fd55e79ba4d",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c606944c55fcc1af8071d20ef9cfffd91dabf71226ad1a2eab085091751daee3",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inspected the exact target and surrounding chapter rather than inferring clarity from an anchor ID. Links storage and the extended statements; configuration is a separate direct target from the step relation.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.machine",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 21282,
+      "end": 21436
+    },
+    "clarity": "Links storage and the extended statements; configuration is a separate direct target from the step relation.",
+    "independence": "The selected passage is the destination's own subject, introduced at its start; supporting notation is linked to earlier definitions. Its landing does not require searching unrelated definitions."
+  }
+}

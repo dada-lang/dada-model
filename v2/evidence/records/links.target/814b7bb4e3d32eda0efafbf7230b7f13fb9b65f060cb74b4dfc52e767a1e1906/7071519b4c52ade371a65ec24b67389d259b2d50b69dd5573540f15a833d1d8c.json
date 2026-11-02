@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "a97096c632ddc45138f45cc1f20e17ddcfdcc5a54cad4ea853524ab0c732f802",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:814b7bb4e3d32eda0efafbf7230b7f13fb9b65f060cb74b4dfc52e767a1e1906",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines only mode combination, with a backwards link to reference modes and the exact unique/otherwise table. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared access-mode combination passage without searching a neighboring block for the actual definition or claim. The sqcup case definition is introduced here. κ_0 and κ_1 range over the linked modes, with no latent type-level permission operator.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared access-mode combination",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 8241,
+      "end": 8620
+    },
+    "clarity": "Defines only mode combination, with a backwards link to reference modes and the exact unique/otherwise table. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared access-mode combination passage without searching a neighboring block for the actual definition or claim. The sqcup case definition is introduced here. κ_0 and κ_1 range over the linked modes, with no latent type-level permission operator."
+  }
+}

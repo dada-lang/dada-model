@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "fa157ca7b47bec2da8fdc0734d91248382c2013432b8fc4cc7099d77d8f334dc",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:fb4a0a7c76309b32e5a213a669d711379cd8a6679fb9638296922e99112ebcb4",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inspected the exact target and surrounding chapter rather than inferring clarity from an anchor ID. The direct equation extracts the outer permission and links normalized form. No grammar or unrelated operation precedes it in this unit.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.perm",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 3788,
+      "end": 4030
+    },
+    "clarity": "The direct equation extracts the outer permission and links normalized form. No grammar or unrelated operation precedes it in this unit.",
+    "independence": "The selected passage is the destination's own subject, introduced at its start; supporting notation is linked to earlier definitions. Its landing does not require searching unrelated definitions."
+  }
+}

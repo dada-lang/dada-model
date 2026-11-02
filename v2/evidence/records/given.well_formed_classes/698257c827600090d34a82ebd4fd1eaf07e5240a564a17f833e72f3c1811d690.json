@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "5672a092a3236c19f89d5f987ccad7116589e623fba7ed4d1ee49aff063d4291",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:given.well_formed_classes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "ClassesWellFormed is a conjunction of Nodup class keys and Nodup declaration.fields for every member. Those are exactly the two conditions stated here. Notation and premises are supplied by the examined units given.classes, given.collections, given.programs, given.syntax.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run."
+  ],
+  "supersedes": []
+}

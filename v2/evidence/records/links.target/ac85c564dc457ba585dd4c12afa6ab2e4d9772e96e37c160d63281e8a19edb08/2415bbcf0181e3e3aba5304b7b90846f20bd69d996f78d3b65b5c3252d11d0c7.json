@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "a7ae4065b2ffcd0ce48c55e119eddc3b3bade7b30785662bbc1f32488afc3cbe",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ac85c564dc457ba585dd4c12afa6ab2e4d9772e96e37c160d63281e8a19edb08",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.satisfaction unit has a visible identity and directly presents object satisfaction of a nominal view type. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. base, pos, neg, read, and class-at each link at their uses. The models judgment is the defining occurrence here.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "object satisfaction of a nominal view type",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 28298,
+      "end": 29210
+    },
+    "clarity": "The named given.typing.satisfaction unit has a visible identity and directly presents object satisfaction of a nominal view type. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. base, pos, neg, read, and class-at each link at their uses. The models judgment is the defining occurrence here."
+  }
+}

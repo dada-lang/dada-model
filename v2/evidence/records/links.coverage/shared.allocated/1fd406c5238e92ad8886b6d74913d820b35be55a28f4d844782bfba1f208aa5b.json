@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "173b85a0862c5555d172ae7c64894b377075db5b7dc2fed1b92fe441dafa3366",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:unit:shared.allocated",
+    "audit:unit:shared.state",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Direct object-table-membership definition; storage target supplies O. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Direct object-table-membership definition; storage target supplies O.",
+    "mathematics": "The defining equation uses O from the linked object table; Allocated itself is the subject introduced here.",
+    "links": [
+      {
+        "occurrence": "shared.allocated:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “object table” uses Shared storage and its component tables/counter; the target shared.state supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

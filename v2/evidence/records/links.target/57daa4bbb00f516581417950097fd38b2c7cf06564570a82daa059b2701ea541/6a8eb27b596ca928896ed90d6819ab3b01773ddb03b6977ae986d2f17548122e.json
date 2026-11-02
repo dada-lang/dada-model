@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "0d2f93764335e5b173c4157f9a1c10bc381a3c228c345dd28a498d1864bb5eb2",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:57daa4bbb00f516581417950097fd38b2c7cf06564570a82daa059b2701ea541",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.stuck unit has a visible identity and directly presents stuckness in the extended unpacking language. Finishedness links to its operational definition. Stuckness is defined directly by not-finished and absence of a successor. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The extended step arrow links to its definition; there is no hidden reachability predicate.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "stuckness in the extended unpacking language",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 31672,
+      "end": 31916
+    },
+    "clarity": "The named given.typing.stuck unit has a visible identity and directly presents stuckness in the extended unpacking language. Finishedness links to its operational definition. Stuckness is defined directly by not-finished and absence of a successor.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The extended step arrow links to its definition; there is no hidden reachability predicate."
+  }
+}

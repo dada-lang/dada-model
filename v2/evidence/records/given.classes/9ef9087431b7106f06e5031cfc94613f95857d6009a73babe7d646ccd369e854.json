@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "bundle": "29777ff1e7738e1a18052b44939854b0531fad9c1faa1d96acfccb2ab159ce47",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "context:lean/Unique/Step.lean"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Unique/Syntax ClassName and FieldName are String categories and Class has an ordered List FieldName; the prose declaration packages the class name with those fields. Distinct declared names/fields are the well-formedness convention, not extra fields in Class. Empty lists support empty classes. The opening ownership-transfer intent is supported by the retained Unique/Step context: Eval.give uses Take to replace the occupied source with none, and Eval.new evaluates arguments sequentially and allocate puts their results into occupied fields.",
+  "limitations": [
+    "This compares the opening model intent and declaration grammar with formal definitions; it does not audit proof tactics or attest to a compiler run."
+  ],
+  "supersedes": [
+    "7356b53ff5f10bc3499f565df58bc2c6ee8333ada33139015f9fa6a8cef9baf1"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "8d1de509822eaf7f41af3ad66e7d91dedc249eaf0b79a097b06645cec1a01656",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given expression evaluation passage without searching a neighboring block for the actual definition or claim. The Give premise and result link Resolve and slot update. Construct links Δ(C) and obj, while S_i, β, dom and map extension are scoped in its where explanation; recursive Eval is locally defined.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given expression evaluation",
+    "definition": {
+      "path": "md/given.md",
+      "start": 9066,
+      "end": 11210
+    },
+    "clarity": "The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given expression evaluation passage without searching a neighboring block for the actual definition or claim. The Give premise and result link Resolve and slot update. Construct links Δ(C) and obj, while S_i, β, dom and map extension are scoped in its where explanation; recursive Eval is locally defined."
+  }
+}

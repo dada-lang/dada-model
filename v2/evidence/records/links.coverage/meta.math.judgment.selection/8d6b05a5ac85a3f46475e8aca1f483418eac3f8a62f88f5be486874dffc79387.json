@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "69eff588cc7dedd8ba54e35974bd5c645c8a9c9eea1e09c950b04f82e5bd5899",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.judgment.selection",
+    "audit:unit:meta.sources.exact_selection",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Judgment and rule citation semantics are the defining subjects, each given a direct introductory sentence and separate rule anchor. Their limits, including lack of Prop-result checking, are stated locally. The only form Judgment.constructor is literal citation notation defined here; no unstated mathematical judgment is used.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Judgment and rule citation semantics are the defining subjects, each given a direct introductory sentence and separate rule anchor. Their limits, including lack of Prop-result checking, are stated locally.",
+    "mathematics": "The only form Judgment.constructor is literal citation notation defined here; no unstated mathematical judgment is used.",
+    "links": []
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "b3ac2559897b1a71d869a6d4533ef1f362faf52d0a510fcd40d871333c06c280",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:unit:shared.finished",
+    "audit:unit:shared.machine",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Finished iff no statements is a standalone target and links machine configuration. It preserves final storage. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Finished iff no statements is a standalone target and links machine configuration. It preserves final storage.",
+    "mathematics": "Finished is defined directly by P=[] after a configuration link. The formula does not rely on Step.",
+    "links": [
+      {
+        "occurrence": "shared.finished:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “configuration” uses Shared configurations and initialization; the target shared.machine supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

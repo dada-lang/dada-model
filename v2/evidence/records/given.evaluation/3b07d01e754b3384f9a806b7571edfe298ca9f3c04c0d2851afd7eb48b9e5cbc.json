@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "c9e5ef05aeb4120f372d6206b4cd8eabf7766709889680ca7372c89e96fbb8a6",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/State:Updated",
+    "lean:Unique/Step:Eval",
+    "lean:Unique/Step:EvalArgs",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Step:State.allocate",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.evaluation",
+    "unit:given.identities",
+    "unit:given.lookup",
+    "unit:given.programs",
+    "unit:given.resolution",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax",
+    "unit:given.update",
+    "context:lean/Unique/Step.lean"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Eval.give combines Resolve and Take; retained Step context shows Take is the occupied-slot replacement by none described by S[q←bottom]. Eval.new requires declaration membership, left-to-right EvalArgs, equal argument/field counts and fresh nextId; State.allocate zips results with fields, prepends the new object and increments the counter. The displayed constructor premises/where equations match those effects, including nil arguments and no transition for failed evaluation. Notation and premises are supplied by the examined units given.classes, given.collections, given.identities, given.lookup, given.programs, given.resolution, given.slots, given.state, given.storage_places, given.syntax, given.update.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run.",
+    "Additional containing-module snapshots were consulted for referenced definitions and example setup; proof bodies beyond what establishes the statement context were not independently audited."
+  ],
+  "supersedes": [
+    "91e31fa4a971e30c501c0cee6892a40fa43fadd5f12417521f59b5a05f40a8e2"
+  ]
+}

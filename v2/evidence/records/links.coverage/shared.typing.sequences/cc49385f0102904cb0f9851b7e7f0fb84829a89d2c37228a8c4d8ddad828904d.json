@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "5e33122cfa4ad70a39eb715b74775e9d5e26debf124df28923c8511d6a03dd3c",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:58f17a684fc230b323ae8c0c0a29e40b2208af121a7764998e534a69fd23250c",
+    "audit:unit:shared.typing.sequences",
+    "audit:unit:shared.typing.statements",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links head-statement typing in prose/math; empty/cons rules define sequence typing recursively.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links head-statement typing in prose/math; empty/cons rules define sequence typing recursively.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SequenceTyped.nil retains a well-formed environment and cons threads StatementTyped into the tail. The two rules use the same intermediate and final environments, preserving the earlier environment convention.",
+    "links": [
+      {
+        "occurrence": "shared.typing.sequences:1",
+        "role": "conceptual",
+        "rationale": "The use \"statement's\" supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.statements is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.sequences:2",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma;\\\\Gamma\\\\vdash t\\\\Rightarrow\\\\Gamma_1' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.statements is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

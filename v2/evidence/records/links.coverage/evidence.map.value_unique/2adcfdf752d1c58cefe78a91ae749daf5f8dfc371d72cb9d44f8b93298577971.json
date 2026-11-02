@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "7c93696a61be2857c84afc183b71c707bf8618354ac4e57981d0476d69722eee",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d7a4e8940ecceee98134469b8995cce9e8285a49108151e7d7cfbb7f6afb5aa0",
+    "audit:unit:evidence.map",
+    "audit:unit:evidence.map.value_unique",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The lemma links the finite-map definition, then states all membership premises and its equality conclusion explicitly. M, k, v and w are introduced with their domains in the sentence; equality and pair membership are ordinary mathematical notation, and map structure comes through the definition link.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The lemma links the finite-map definition, then states all membership premises and its equality conclusion explicitly.",
+    "mathematics": "M, k, v and w are introduced with their domains in the sentence; equality and pair membership are ordinary mathematical notation, and map structure comes through the definition link.",
+    "links": [
+      {
+        "occurrence": "evidence.map.value_unique:1",
+        "role": "conceptual",
+        "rationale": "The membership claim depends on the finite-map representation and unique-key condition."
+      }
+    ]
+  }
+}

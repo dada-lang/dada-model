@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "a16f49e9c24368aab8201c05f0d5531f79f7e4ff2b6a10c501bad23ec2184d9c",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:unit:given.typing.views",
+    "audit:unit:shared.typing.types",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Defines π, N and raw T together, with a direct link to signed views. Bare C uses the previously established whole-view convention.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines π, N and raw T together, with a direct link to signed views. Bare C uses the previously established whole-view convention.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm has exactly given/shared; RawType distinguishes a nominal view from recursive permission application. Nominal aliases Given's ViewType and ValueType.whole uses its epsilon-positive whole shorthand. The prose does not ascribe a mode to objects.",
+    "links": [
+      {
+        "occurrence": "shared.typing.types:1",
+        "role": "conceptual",
+        "rationale": "The use 'signed view' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.views is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

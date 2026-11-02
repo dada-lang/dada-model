@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "60a1d3a0b7807e4f3f0a2003db5d36fda792bc25287393243db75dade691cb6e",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.normalization unit has a visible identity and directly presents normalization of finite signed views. The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The rewrite is a defining rule for normalization, with A, rho, and the complete nonempty field list specified in adjacent prose. N is introduced here and requires no self-link.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "normalization of finite signed views",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 9024,
+      "end": 10183
+    },
+    "clarity": "The named given.typing.normalization unit has a visible identity and directly presents normalization of finite signed views. The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The rewrite is a defining rule for normalization, with A, rho, and the complete nonempty field list specified in adjacent prose. N is introduced here and requires no self-link."
+  }
+}

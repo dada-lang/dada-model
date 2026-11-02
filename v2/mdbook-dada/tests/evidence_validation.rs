@@ -2,6 +2,9 @@
 use mdbook_dada::{
     evidence::{self, Conclusion, ReviewBundle, ReviewRecord},
     inventory::{hash, Inventory, SCHEMA},
+    link_audit::{
+        self, Assessment, DefinitionSpan, LinkAssessment, LinkRole, Manifest, OrderAssessment,
+    },
 };
 use std::{
     fs,
@@ -43,6 +46,7 @@ impl Fixture {
             "[book]\nsrc = \"md\"\n[preprocessor.dada]\nlean-source = \"lean\"\n",
         );
         fixture.write("md/model.md", MODEL);
+        fixture.write("md/SUMMARY.md", "# Summary\n\n- [Model](model.md)\n");
         fixture.write(
             "policy.md",
             "Compare the whole statement with each exact declaration.\n",
@@ -82,7 +86,13 @@ impl Fixture {
 
     fn complete_reviews(&self) {
         let inventory = self.inventory();
-        for id in &inventory.required {
+        let ids: std::collections::BTreeSet<_> = inventory
+            .required
+            .iter()
+            .cloned()
+            .chain(link_audit::subjects(&inventory).unwrap())
+            .collect();
+        for id in &ids {
             let bundle = ReviewBundle::prepare(&inventory, id, &[]).unwrap();
             evidence::record(&inventory, &bundle, &review(&bundle)).unwrap();
         }
@@ -111,6 +121,47 @@ fn review(bundle: &ReviewBundle) -> ReviewRecord {
         rationale: "Fixture approval used to test the syntactic record lifecycle.".into(),
         limitations: vec!["This fixture record establishes no semantic claim.".into()],
         supersedes: vec![],
+        audit: if link_audit::is_subject(&bundle.unit) {
+            Some(match link_audit::manifest(bundle).unwrap() {
+                Manifest::Coverage { source } => Assessment::Coverage {
+                    prose: "Synthetic coverage for the fixture prose.".into(),
+                    mathematics: "Synthetic coverage for the fixture mathematics.".into(),
+                    links: source
+                        .occurrences
+                        .into_iter()
+                        .map(|link| LinkAssessment {
+                            occurrence: link.id,
+                            role: LinkRole::Conceptual,
+                            rationale: "Synthetic conceptual link.".into(),
+                        })
+                        .collect(),
+                },
+                Manifest::Target { target } => Assessment::Target {
+                    subject: "Synthetic target".into(),
+                    definition: DefinitionSpan {
+                        path: target.location.path,
+                        start: target.location.range.start,
+                        end: target.location.range.start + 1,
+                    },
+                    clarity: "Synthetic clarity assessment.".into(),
+                    independence: "Synthetic separation assessment.".into(),
+                },
+                Manifest::Forward { source, .. } => Assessment::Forward {
+                    assessment: OrderAssessment::Forward {
+                        necessity: "Synthetic rearrangement rationale.".into(),
+                        signposting: "Synthetic signposting rationale.".into(),
+                        signpost: DefinitionSpan {
+                            path: source.path,
+                            start: source.range.start,
+                            end: source.range.start + 1,
+                        },
+                        minimal_use: "Synthetic reliance rationale.".into(),
+                    },
+                },
+            })
+        } else {
+            None
+        },
     }
 }
 
@@ -134,7 +185,7 @@ fn complete_current_reviews_pass_and_remain_distinct_from_mechanical_checks() {
     let inventory = fixture.inventory();
     let report = evidence::check(&inventory).unwrap();
     assert!(report.is_ok(), "{}", report.render(&inventory));
-    assert_eq!(report.statuses.len(), 2);
+    assert_eq!(report.statuses.len(), 4);
     for status in &report.statuses {
         assert_eq!(status.evidence, "current");
         assert_eq!(status.correspondence, "corresponds");
@@ -333,7 +384,7 @@ fn recording_rechecks_sources_even_with_an_existing_inventory() {
 }
 
 #[test]
-fn moving_a_unit_without_changing_its_contents_preserves_review() {
+fn moving_a_unit_preserves_correspondence_but_stales_link_order_audits() {
     let fixture = Fixture::new();
     fixture.complete_reviews();
     let old_bundle = fixture.bundle();
@@ -345,7 +396,16 @@ fn moving_a_unit_without_changing_its_contents_preserves_review() {
         .unwrap()
         .is_empty());
     let report = evidence::check(&inventory).unwrap();
-    assert!(report.is_ok(), "{}", report.render(&inventory));
+    assert!(!report.is_ok());
+    assert!(report
+        .statuses
+        .iter()
+        .filter(|status| !link_audit::is_subject(&status.unit))
+        .all(|status| status.correspondence == "corresponds"));
+    assert!(report
+        .statuses
+        .iter()
+        .any(|status| link_audit::is_subject(&status.unit) && status.evidence == "stale"));
     evidence::save_bundle(&inventory, &new_bundle)
         .expect("preparing the same content at a new source line must remain idempotent");
 }
@@ -468,7 +528,7 @@ fn malformed_and_rewritten_records_are_reported() {
         assert!(!report.is_ok());
         assert!(report
             .render(&inventory)
-            .contains("malformed correspondence review"));
+            .contains("malformed stored review"));
     }
 }
 
@@ -689,9 +749,14 @@ fn draft_definitions_can_be_prepared_but_require_formalization_before_review() {
 
     let report = evidence::check(&inventory).unwrap();
     assert!(!report.is_ok());
-    assert_eq!(report.statuses.len(), 1);
-    assert_eq!(report.statuses[0].evidence, "draft");
-    assert_eq!(report.statuses[0].correspondence, "not asserted");
+    assert_eq!(report.statuses.len(), 2);
+    let status = report
+        .statuses
+        .iter()
+        .find(|status| status.unit == "model.draft")
+        .unwrap();
+    assert_eq!(status.evidence, "draft");
+    assert_eq!(status.correspondence, "not asserted");
     assert!(mdbook_dada::mechanical::status(&inventory.root)
         .unwrap()
         .is_empty());
@@ -726,7 +791,15 @@ fn draft_status_cannot_hide_missing_or_wrong_kind_citations() {
         assert!(ReviewBundle::prepare(&inventory, "model.draft", &[]).is_err());
         let report = evidence::check(&inventory).unwrap();
         assert!(!report.is_ok());
-        assert_eq!(report.statuses[0].evidence, "invalid sources");
+        assert_eq!(
+            report
+                .statuses
+                .iter()
+                .find(|status| status.unit == "model.draft")
+                .unwrap()
+                .evidence,
+            "invalid sources"
+        );
         let diagnostic = report.render(&inventory);
         assert!(diagnostic.contains(target), "{diagnostic}");
     }
@@ -844,6 +917,26 @@ fn configured_context(fixture: &Fixture, lean_root: &str) -> serde_json::Value {
 
 fn chapter(source: &str) -> serde_json::Value {
     serde_json::json!({"items": [{"Chapter": {"path": "model.md", "source_path": "model.md", "content": source, "sub_items": []}}]})
+}
+
+#[test]
+fn configured_renderer_rejects_a_correct_claim_in_the_wrong_chapter() {
+    let fixture = Fixture::new();
+    fixture.write("md/other.md", "# Other chapter\n");
+    let source = MODEL.replace(
+        "The empty list has no variables:",
+        "[Variables](other.md#claim-model.variable) are the list elements:",
+    );
+    fixture.write("md/model.md", &source);
+    let mut book = chapter(&source);
+    let error = mdbook_dada::process_configured(&configured_context(&fixture, "lean"), &mut book)
+        .unwrap_err();
+    let diagnostic = format!("{error:#}");
+    assert!(diagnostic.contains("md/model.md:"), "{diagnostic}");
+    assert!(
+        diagnostic.contains("other.md#claim-model.variable"),
+        "{diagnostic}"
+    );
 }
 
 #[test]
@@ -1012,6 +1105,10 @@ fn future_notes_are_publishable_but_cannot_receive_correspondence_reviews() {
         .any(|input| input.key == "unit:model.variable"));
     for id in ["model.variable", "model.empty"] {
         let bundle = ReviewBundle::prepare(&inventory, id, &[]).unwrap();
+        evidence::record(&inventory, &bundle, &review(&bundle)).unwrap();
+    }
+    for id in link_audit::subjects(&inventory).unwrap() {
+        let bundle = ReviewBundle::prepare(&inventory, &id, &[]).unwrap();
         evidence::record(&inventory, &bundle, &review(&bundle)).unwrap();
     }
     let report = evidence::check(&inventory).unwrap();

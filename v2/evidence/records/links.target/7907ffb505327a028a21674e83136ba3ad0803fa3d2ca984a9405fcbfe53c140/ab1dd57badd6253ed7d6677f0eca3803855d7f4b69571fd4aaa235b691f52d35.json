@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "5f15a3634988d45d3e875d467252b6bd5b6383da2ae66e15f18d5c55246ac45d",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared liveness through owning edges passage without searching a neighboring block for the actual definition or claim. Both occupied-slot premises link lookup and κ is grounded by the reference link. Recursive Live defines the relation independent of mode.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared liveness through owning edges",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 17196,
+      "end": 17624
+    },
+    "clarity": "The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared liveness through owning edges passage without searching a neighboring block for the actual definition or claim. Both occupied-slot premises link lookup and κ is grounded by the reference link. Recursive Live defines the relation independent of mode."
+  }
+}

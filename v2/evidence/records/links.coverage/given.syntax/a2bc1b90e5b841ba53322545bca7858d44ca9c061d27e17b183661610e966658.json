@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "1f44db694ca3dea400ba4e45a3d208f227682bad6e15f5831a0c554985d88b22",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ea88350f35acf3dbe92ab2a6eee84184c0fb823f75907318dc522380864a6084",
+    "audit:unit:given.classes",
+    "audit:unit:given.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links field names back to class declarations; defines p, e, t, fresh variables, gives, and constructors together as the syntax grammar. The explanatory operation words here do not invoke a later formal judgment. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links field names back to class declarations; defines p, e, t, fresh variables, gives, and constructors together as the syntax grammar. The explanatory operation words here do not invoke a later formal judgment.",
+    "mathematics": "The p/e/t grammar defines the syntactic categories together; x is introduced as a variable name, and field names have the preceding class link.",
+    "links": [
+      {
+        "occurrence": "given.syntax:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “fields” uses Given class declarations and their ordered field names; the target given.classes supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

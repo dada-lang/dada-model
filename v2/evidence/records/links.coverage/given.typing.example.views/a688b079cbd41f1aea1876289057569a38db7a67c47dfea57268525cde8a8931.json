@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "1f87cb05650528fdee2801621a7c5e6bb0deb35c6e3be036d42e74338c4348b3",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cce19ef6a71eb7d3cab3d2e2c78a524748e4bdf086d09a170c945dcbe7dcef9",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.full",
+    "audit:unit:given.typing.views",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses. The table contains literal view notation, not an unlinked equation or inference judgment. Full versus partial is explained before the table and formally linked.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses.",
+    "mathematics": "The table contains literal view notation, not an unlinked equation or inference judgment. Full versus partial is explained before the table and formally linked.",
+    "links": [
+      {
+        "occurrence": "given.typing.example.views:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'formal fullness predicate' supplies the formal fullness predicate while explaining the Token/Pair/Box declarations and their view examples. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

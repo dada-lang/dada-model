@@ -87,6 +87,8 @@ Evidence validation fails while a unit is draft, and no affirmative
 correspondence decision can be recorded for it. Add the matching formalization
 and remove `:status: draft` before preparing a correspondence review.
 
+### Future notes
+
 Use a **Future note** for exploratory ideas that are not part of the current
 specification. Unlike a draft specification, a future note is publishable without
 formalization:
@@ -109,6 +111,8 @@ recording of correspondence reviews are rejected. Once an idea has an associated
 formalization, change it to the appropriate specification kind and review it.
 These checks reject declared source associations; they do not discover uncited
 implementations elsewhere in the repository.
+
+### Checking the formalization
 
 Check Lean with `just test-lean`; its `lake build --wfail` rejects warnings,
 including those emitted by `sorry`. Do not use `sorry` to complete a formalization
@@ -218,3 +222,15 @@ dependencies, and preparing reviews. It is not a mass relabeling exercise.
 
 After editing a covered unit, follow [Correspondence review](correspondence-review.md)
 to prepare a fresh packet and retain the comparison evidence.
+
+## Check definition links
+
+Link each referenced concept or equation where it is used, including MathJax
+rule premises. Ordinary Markdown links, anchor-reference roles, and MathJax
+`\href{#claim-UNIT}{symbol}` are inventoried automatically. Cross-chapter
+MathJax links use `.html` paths. Leave defining occurrences unlinked.
+
+Run `dada-spec links` to inspect destinations and reading order. The
+[link-review procedure](link-audits.md) explains coverage, target clarity, and
+forward-reference evidence. A link that resolves is only the start: it should
+land directly on the definition the reader needs.

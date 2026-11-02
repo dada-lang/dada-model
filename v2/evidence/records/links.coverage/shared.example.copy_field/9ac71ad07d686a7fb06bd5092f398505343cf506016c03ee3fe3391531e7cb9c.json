@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "acd3d01bf4d661170619a71e06dccad9ad6f02d68f6c9388c93c9d4d24dd43d0",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:unit:shared.example.copy_field",
+    "audit:unit:shared.give",
+    "audit:unit:shared.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links already-defined give behavior; classes and full five-statement program are local. Explains copy versus move before introducing storage machinery without relying on a later judgment. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links already-defined give behavior; classes and full five-statement program are local. Explains copy versus move before introducing storage machinery without relying on a later judgment.",
+    "mathematics": "Source declarations and the entire five-let example are local. Its modes are explained by the linked give table rather than an undeclared evaluation symbol.",
+    "links": [
+      {
+        "occurrence": "shared.example.copy_field:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “give rules” uses Shared giving, including move/copy/final-slot conversion; the target shared.give supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

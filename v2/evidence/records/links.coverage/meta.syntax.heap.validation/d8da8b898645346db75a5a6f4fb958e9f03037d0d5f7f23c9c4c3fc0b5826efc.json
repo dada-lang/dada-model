@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "8b63ea7dbd4d16c1ff0dc065081e2491cfc27e98b50449c44ad6678b554c3278",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:594ea809f0d04ba629b1de28589abf9e58c62a74c0f0c2c381cc09175e201d33",
+    "audit:target:b20705f3e353f94b364e5cbddd1eb281eec7a3997129b64ea696b10fd0a0febf",
+    "audit:unit:meta.syntax.heap.nodes",
+    "audit:unit:meta.syntax.heap.validation",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Node declarations and slot assignments now link separate precise passages. Validation conditions and allowed cyclic/conflicting graphs are stated directly, so readers are not asked to infer language ownership invariants. The α.f, vars.p and items[0] fragments illustrate the slot syntax supplied by the links; there is no mathematical inference relation.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Node declarations and slot assignments now link separate precise passages. Validation conditions and allowed cyclic/conflicting graphs are stated directly, so readers are not asked to infer language ownership invariants.",
+    "mathematics": "The α.f, vars.p and items[0] fragments illustrate the slot syntax supplied by the links; there is no mathematical inference relation.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.heap.validation:1",
+        "role": "conceptual",
+        "rationale": "The unique-declaration check applies to the listed node constructors."
+      },
+      {
+        "occurrence": "meta.syntax.heap.validation:2",
+        "role": "conceptual",
+        "rationale": "The assignment check applies to the separately defined slot syntax."
+      }
+    ]
+  }
+}

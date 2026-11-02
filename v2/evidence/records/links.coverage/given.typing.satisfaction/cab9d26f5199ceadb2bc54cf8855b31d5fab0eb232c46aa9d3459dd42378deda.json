@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "bundle": "76cbbfa226b68c365d9e935e2b2a5d0f3b34fa93dafbb651fd62f212ab8e2b57",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:target:a14dc4154473cd4e6b925fe365042cf755bfaefd1e260d6da362c2d9e498f9ca",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:unit:given.allocated",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.observations",
+    "audit:unit:given.typing.read",
+    "audit:unit:given.typing.satisfaction",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition. base, pos, neg, read, and class-at each link at their uses. The models judgment is the defining occurrence here.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition.",
+    "mathematics": "base, pos, neg, read, and class-at each link at their uses. The models judgment is the defining occurrence here.",
+    "links": [
+      {
+        "occurrence": "given.typing.satisfaction:1",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{base}' supplies the base-class projection from a nominal view while explaining object satisfaction of a nominal view type. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:2",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{pos}' supplies known-initialized and known-empty path observations while explaining object satisfaction of a nominal view type. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:3",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\mathsf{read}' supplies reading a relative field path from an object while explaining object satisfaction of a nominal view type. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:4",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'allocated object' supplies the allocated-object predicate while explaining object satisfaction of a nominal view type. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:5",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{class}' supplies valid relative paths and their final declared class while explaining object satisfaction of a nominal view type. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:6",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{base}' supplies the base-class projection from a nominal view while explaining object satisfaction of a nominal view type. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:7",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{neg}' supplies known-initialized and known-empty path observations while explaining object satisfaction of a nominal view type. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:8",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\mathsf{read}' supplies reading a relative field path from an object while explaining object satisfaction of a nominal view type. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

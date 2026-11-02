@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "dfd7b430c99cdfe72b04fc41e65c865a524c6300d3f0890f314bd6406144d88a",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:9152f90a41f757fc02cb545765b11e8fad2e3801166666165f01b88d1a383bb0",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.configurations unit has a visible identity and directly presents configuration typing with a fixed final environment. Configuration, realization, statement typing, and well-formed class tables each link directly to their definitions. The current-versus-final environment distinction is explained locally. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. Both conjuncts of the defining equivalence link to the respective realization and sequence-typing judgments. The outer configuration-typing judgment is being defined.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "configuration typing with a fixed final environment",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 32122,
+      "end": 32833
+    },
+    "clarity": "The named given.typing.configurations unit has a visible identity and directly presents configuration typing with a fixed final environment. Configuration, realization, statement typing, and well-formed class tables each link directly to their definitions. The current-versus-final environment distinction is explained locally.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. Both conjuncts of the defining equivalence link to the respective realization and sequence-typing judgments. The outer configuration-typing judgment is being defined."
+  }
+}

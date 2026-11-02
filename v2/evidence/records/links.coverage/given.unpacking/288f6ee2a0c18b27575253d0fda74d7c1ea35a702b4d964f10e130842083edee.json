@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "bundle": "6d64882861268c406215b0b4e91b709bb1328dbeb68695767d571c5c44742908",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:target:d6c2319422bc09f8bd5db42388b5e094818d235328c57f2f2ed44355c8fd76d1",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.patterns",
+    "audit:unit:given.programs",
+    "audit:unit:given.state",
+    "audit:unit:given.steps",
+    "audit:unit:given.unpacking",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Eval, original Let, extended pattern syntax and the class table. The removal/map-extension equations are local adjuncts defining Unpack, not unexplained global operators. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Eval, original Let, extended pattern syntax and the class table. The removal/map-extension equations are local adjuncts defining Unpack, not unexplained global operators.",
+    "mathematics": "Eval and Δ(C) in the rule are linked. Removal of the container and adding the enumerated field slots are given by local equations and freshness/order adjuncts.",
+    "links": [
+      {
+        "occurrence": "given.unpacking:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “evaluate e” uses Given expression evaluation; the target given.evaluation supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.unpacking:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “Let rule” uses Given statement stepping; the target given.steps supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.unpacking:3",
+        "role": "conceptual",
+        "rationale": "The prose reference “statementsyntax” uses Given unpacking-pattern syntax; the target given.patterns supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.unpacking:4",
+        "role": "conceptual",
+        "rationale": "The formula \\Delta\\vdash\\langle S,e\\rangle\\Downarrow\\langle S',\\alpha\\rangle uses Given expression evaluation; the destination given.evaluation supplies that operation or result."
+      },
+      {
+        "occurrence": "given.unpacking:5",
+        "role": "conceptual",
+        "rationale": "The formula \\Delta(C) uses Given programs, class tables and statement sequences; the destination given.programs supplies that operation or result."
+      }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "6a345a85ce4dd075d274d0226dba231072c3b0f0e4bc814a5062ee143dc55575",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:shared.evaluation",
+    "audit:unit:shared.example.share_value",
+    "audit:unit:shared.give",
+    "audit:unit:shared.state",
+    "audit:unit:shared.steps",
+    "audit:unit:shared.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Local class/object/slot table supplies the example state; the action links give-share evaluation. Sharing the returned box reference leaves child-reference modes unchanged. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Local class/object/slot table supplies the example state; the action links give-share evaluation. Sharing the returned box reference leaves child-reference modes unchanged.",
+    "mathematics": "The obj0/obj1 state and slot modes are enumerated locally, using preceding identity/reference notation. The transition links give-share evaluation.",
+    "links": [
+      {
+        "occurrence": "shared.example.share_value:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “give-share evaluation” uses Shared expression evaluation; the target shared.evaluation supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "d1c2e52dc1c980fffb54b25bef5caf1cf0d7182974dbc0e386a3b3a4cb3ad582",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ebdeea3b59a8faa30c8f509e50a54e57e87ac3a935955695b920e1672ca8ac11",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.programs unit has a visible identity and directly presents whole-program typing from the empty environment. The well-formed class-table premise links directly. The final environment is existentially introduced and need not be empty. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The statement-sequence judgment links to its defining rules. Empty environment and existential final environment are ordinary locally scoped notation.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "whole-program typing from the empty environment",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 24608,
+      "end": 24973
+    },
+    "clarity": "The named given.typing.programs unit has a visible identity and directly presents whole-program typing from the empty environment. The well-formed class-table premise links directly. The final environment is existentially introduced and need not be empty.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The statement-sequence judgment links to its defining rules. Empty environment and existential final environment are ordinary locally scoped notation."
+  }
+}

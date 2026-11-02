@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "e3881a593074544d8f45972dcdfd6b38e82d27cdc6551c76a66969068c09a52c",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inspected the exact target and surrounding chapter rather than inferring clarity from an anchor ID. Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.environments",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 13221,
+      "end": 13642
+    },
+    "clarity": "Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here.",
+    "independence": "The selected passage is the destination's own subject, introduced at its start; supporting notation is linked to earlier definitions. Its landing does not require searching unrelated definitions."
+  }
+}

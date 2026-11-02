@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "d70b09b9ef69bfddc0870c78d39b8e7b9e815659bdf62c5b8274ad0d7135a662",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:49d19d3e6321b8309608988f0dba1cb54f8a069b5a7946d9f117d0fb274166d9",
+    "audit:unit:given.lookup",
+    "audit:unit:given.state",
+    "audit:unit:given.update",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit only defines the slot replacement operation; its defined-slot premise links to lookup. No auxiliary judgment is buried in this target. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit only defines the slot replacement operation; its defined-slot premise links to lookup. No auxiliary judgment is buried in this target.",
+    "mathematics": "S[q←s] is introduced here and its lookup prerequisite is linked. It has no hidden auxiliary predicate or notation for deleting a slot.",
+    "links": [
+      {
+        "occurrence": "given.update:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “defined lookup” uses Given partial slot lookup; the target given.lookup supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

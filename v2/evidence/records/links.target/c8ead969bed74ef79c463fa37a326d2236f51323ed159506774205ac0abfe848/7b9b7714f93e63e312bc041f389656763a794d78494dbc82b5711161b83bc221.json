@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "f2598ad0aef7634b464068b7a12b0e87873a313f77e37836e922044ff5c19505",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c8ead969bed74ef79c463fa37a326d2236f51323ed159506774205ac0abfe848",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given stuck configurations passage without searching a neighboring block for the actual definition or claim. Both Finished and the excluded Step in the iff formula link directly to their defining blocks.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given stuck configurations",
+    "definition": {
+      "path": "md/given.md",
+      "start": 13364,
+      "end": 14005
+    },
+    "clarity": "Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given stuck configurations passage without searching a neighboring block for the actual definition or claim. Both Finished and the excluded Step in the iff formula link directly to their defining blocks."
+  }
+}

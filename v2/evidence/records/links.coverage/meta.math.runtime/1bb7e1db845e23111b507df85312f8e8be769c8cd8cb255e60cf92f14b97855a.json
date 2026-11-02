@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "353db7d9b8156affbb34c77029f5b77fda78915fd93a14ceaf531e6ec8ffbde7",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:495573557cbd18357f32548655128ad41947aed83299b509c1c38ceca7f36384",
+    "audit:target:4a21645966bc500800b0d38fd94ff68e58ed55da0e2ed756db07501884925d89",
+    "audit:unit:meta.math.runtime",
+    "audit:unit:meta.math.source_view",
+    "audit:unit:meta.math.typesetting",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The runtime unit links math delimiters and source-view selectors at their reuse. Pinned loader, CDN access and display overflow are explained locally without implying browser-proof evidence. No formulas are introduced. The version and build names are concrete runtime configuration, with the delimiter notation supplied by its link.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The runtime unit links math delimiters and source-view selectors at their reuse. Pinned loader, CDN access and display overflow are explained locally without implying browser-proof evidence.",
+    "mathematics": "No formulas are introduced. The version and build names are concrete runtime configuration, with the delimiter notation supplied by its link.",
+    "links": [
+      {
+        "occurrence": "meta.math.runtime:1",
+        "role": "conceptual",
+        "rationale": "The runtime consumes the explicit authored delimiters defined by typesetting."
+      },
+      {
+        "occurrence": "meta.math.runtime:2",
+        "role": "conceptual",
+        "rationale": "Source-view controls remain usable independently of CDN typesetting."
+      }
+    ]
+  }
+}

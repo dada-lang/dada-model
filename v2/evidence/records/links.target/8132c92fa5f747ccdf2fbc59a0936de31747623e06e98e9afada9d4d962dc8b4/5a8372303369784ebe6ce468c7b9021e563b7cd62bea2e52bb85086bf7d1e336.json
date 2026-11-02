@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "6e33fca9727ec477163a636c928af5644b25dd6f9cf83706d3aead19112c209c",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8132c92fa5f747ccdf2fbc59a0936de31747623e06e98e9afada9d4d962dc8b4",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Finished iff no statements is a standalone target and links machine configuration. It preserves final storage. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared finished configurations passage without searching a neighboring block for the actual definition or claim. Finished is defined directly by P=[] after a configuration link. The formula does not rely on Step.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared finished configurations",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 10470,
+      "end": 10675
+    },
+    "clarity": "Finished iff no statements is a standalone target and links machine configuration. It preserves final storage. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared finished configurations passage without searching a neighboring block for the actual definition or claim. Finished is defined directly by P=[] after a configuration link. The formula does not rely on Step."
+  }
+}

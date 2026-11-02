@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "33f8699e0de1d0b7372925a0451e4ca5bcc667bfbcdf6ed3d18e7683cd68ee08",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c72617e2e092741fb75d1f15cd59a10e3c8c772581b4f5c204a64f9733998f34",
+    "audit:unit:meta.lean.definitions.navigation",
+    "audit:unit:meta.sources.configuration",
+    "audit:unit:meta.sources.exact_selection",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The configured Lean source root is linked at the first use; literal qualification, retained context and rejected source forms are explained directly. The section does not ask the reader to infer namespace resolution. No mathematical content is reused; file/citation forms are the locally discussed navigation interface.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The configured Lean source root is linked at the first use; literal qualification, retained context and rejected source forms are explained directly. The section does not ask the reader to infer namespace resolution.",
+    "mathematics": "No mathematical content is reused; file/citation forms are the locally discussed navigation interface.",
+    "links": [
+      {
+        "occurrence": "meta.lean.definitions.navigation:1",
+        "role": "conceptual",
+        "rationale": "The configured root determines what cited paths mean and which escapes fail."
+      }
+    ]
+  }
+}

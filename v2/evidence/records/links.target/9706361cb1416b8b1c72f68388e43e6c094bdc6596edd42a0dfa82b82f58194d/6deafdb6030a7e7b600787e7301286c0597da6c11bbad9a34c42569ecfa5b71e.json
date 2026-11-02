@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "c0f618cf787df23d277be50122b76b6e15554358d73f29089027db7c07e9308c",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:9706361cb1416b8b1c72f68388e43e6c094bdc6596edd42a0dfa82b82f58194d",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.forgetting unit has a visible identity and directly presents view weakening by inclusion of initialization observations. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. Both sides of the pos/neg inclusions link the observation definitions. The weakening relation is the subject defined by those inclusions.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "view weakening by inclusion of initialization observations",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 14566,
+      "end": 15732
+    },
+    "clarity": "The named given.typing.forgetting unit has a visible identity and directly presents view weakening by inclusion of initialization observations. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. Both sides of the pos/neg inclusions link the observation definitions. The weakening relation is the subject defined by those inclusions."
+  }
+}

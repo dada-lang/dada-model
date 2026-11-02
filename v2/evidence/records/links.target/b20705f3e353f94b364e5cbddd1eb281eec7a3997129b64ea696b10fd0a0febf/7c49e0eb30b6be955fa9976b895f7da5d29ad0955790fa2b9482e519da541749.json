@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "1a3f474c21b73f20e67c7fb250d9368a9c57b4ee506b44b3344b5db34e4a31ed",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b20705f3e353f94b364e5cbddd1eb281eec7a3997129b64ea696b10fd0a0febf",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The new anchor immediately introduces slot projections and contents, so stored-reference and assignment links reach the relevant subject. The paragraph enumerates reference constructors, aliases and empty array slots without relying on a language-layer permission model.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Diagram slot assignments and stored references",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 19522,
+      "end": 19783
+    },
+    "clarity": "The new anchor immediately introduces slot projections and contents, so stored-reference and assignment links reach the relevant subject.",
+    "independence": "The paragraph enumerates reference constructors, aliases and empty array slots without relying on a language-layer permission model."
+  }
+}

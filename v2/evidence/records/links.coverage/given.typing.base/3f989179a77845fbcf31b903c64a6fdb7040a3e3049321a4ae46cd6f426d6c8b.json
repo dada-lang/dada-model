@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "ce091bf643a439a0c2794b16dff2bee36e6be58bf045f9076e5a133ba875505d",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.views",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This is the defining occurrence of base itself; C.A denotes the locally destructured class/view pair, with no separate external prose predicate invoked. The sole equation projects C from C.A and introduces base. C and A are the components of its argument rather than operations needing self-links.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This is the defining occurrence of base itself; C.A denotes the locally destructured class/view pair, with no separate external prose predicate invoked.",
+    "mathematics": "The sole equation projects C from C.A and introduces base. C and A are the components of its argument rather than operations needing self-links.",
+    "links": []
+  }
+}

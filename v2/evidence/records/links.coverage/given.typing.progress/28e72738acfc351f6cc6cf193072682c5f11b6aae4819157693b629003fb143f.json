@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "bundle": "11a8b8a8b5ae721a7de17c413aaccdea8b282e3a5f0fcc270cbe86f7ab3dbdf0",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:2eb211ed1af6e33db9da6c78ac0c0d04580e44a1e68ee2ae9c068c83be977c96",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:target:9152f90a41f757fc02cb545765b11e8fad2e3801166666165f01b88d1a383bb0",
+    "audit:unit:given.finished",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.configurations",
+    "audit:unit:given.typing.erasure",
+    "audit:unit:given.typing.expression_soundness",
+    "audit:unit:given.typing.progress",
+    "audit:unit:given.unpacking",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Typed configurations, finishedness, and operational extended steps all link directly. The displayed premise and disjunction link configuration typing, Finished, erasure, and the step arrow.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Typed configurations, finishedness, and operational extended steps all link directly.",
+    "mathematics": "The displayed premise and disjunction link configuration typing, Finished, erasure, and the step arrow.",
+    "links": [
+      {
+        "occurrence": "given.typing.progress:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'well-typed configuration' supplies configuration typing with a fixed final environment while explaining progress for well-typed configurations. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.progress:2",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'finished' supplies finished configurations while explaining progress for well-typed configurations. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.progress:3",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'step' supplies the extended transition relation including unpacking while explaining progress for well-typed configurations. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.progress:4",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\Sigma\\\\vdash K:\\\\Gamma_f' supplies configuration typing with a fixed final environment while explaining progress for well-typed configurations. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.progress:5",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\mathsf{Finished}' supplies finished configurations while explaining progress for well-typed configurations. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.progress:6",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\lfloor\\\\Sigma\\\\rfloor' supplies erasing static field types from a class table while explaining progress for well-typed configurations. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.progress:7",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\longrightarrow_u' supplies the extended transition relation including unpacking while explaining progress for well-typed configurations. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

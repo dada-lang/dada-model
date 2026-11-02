@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "b49d96d4ed3158d2418fce9067114761b73455815662ad068d1bfc0f4e4c5690",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e2a8996e1d48de8e7921a6bfb09f14a9fa9f213b2d19363568752083dc6c81c7",
+    "audit:unit:meta.links.coverage",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit defines a coverage review and links the link inventory it classifies. It explicitly distinguishes missing-link judgment from occurrence-set checking, and explains navigation versus conceptual roles. Inline/display math are included in review scope; no formula is invoked by this meta definition itself.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit defines a coverage review and links the link inventory it classifies. It explicitly distinguishes missing-link judgment from occurrence-set checking, and explains navigation versus conceptual roles.",
+    "mathematics": "Inline/display math are included in review scope; no formula is invoked by this meta definition itself.",
+    "links": [
+      {
+        "occurrence": "meta.links.coverage:1",
+        "role": "conceptual",
+        "rationale": "Coverage must assess exactly the occurrences recorded by the earlier inventory."
+      }
+    ]
+  }
+}

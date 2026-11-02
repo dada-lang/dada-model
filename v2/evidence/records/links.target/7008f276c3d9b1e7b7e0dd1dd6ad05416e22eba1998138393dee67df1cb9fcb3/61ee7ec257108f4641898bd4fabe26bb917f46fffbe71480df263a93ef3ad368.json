@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "8b9377dd9225fa23f6d5130dac6381bffbf1eeb6bd4745a78ea077c98139b7f1",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.observations unit has a visible identity and directly presents known-initialized and known-empty path observations. The type and valid-descendant concepts link directly. The four bullets define positive/negative observations and explain the negative-slot boundary. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. pos and neg are introduced as the two observations of one view; epsilon, entries, and prefix relations are the view grammar components explained in the bullets.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "known-initialized and known-empty path observations",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 6084,
+      "end": 6850
+    },
+    "clarity": "The named given.typing.observations unit has a visible identity and directly presents known-initialized and known-empty path observations. The type and valid-descendant concepts link directly. The four bullets define positive/negative observations and explain the negative-slot boundary.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. pos and neg are introduced as the two observations of one view; epsilon, entries, and prefix relations are the view grammar components explained in the bullets."
+  }
+}

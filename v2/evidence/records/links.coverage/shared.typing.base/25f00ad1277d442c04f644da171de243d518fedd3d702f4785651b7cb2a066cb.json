@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "061c0c67e5af4a59c2272063e9b345f7a386dd7af6b6be923ccb93c11ba8ea4b",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:shared.typing.base",
+    "audit:unit:shared.typing.normalization",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. The direct equation extracts C independent of permission/view and links normalized form.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The direct equation extracts C independent of permission/view and links normalized form.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.base projects nominal.className, ignoring the outer permission and view entries. The displayed equation has the same domain (normalized types) and result.",
+    "links": [
+      {
+        "occurrence": "shared.typing.base:1",
+        "role": "conceptual",
+        "rationale": "The use 'normalized type' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.normalization is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

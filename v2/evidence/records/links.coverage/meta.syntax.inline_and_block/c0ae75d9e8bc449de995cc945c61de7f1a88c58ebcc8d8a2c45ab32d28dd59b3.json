@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "3e03aaaa494a0a0b678efde2ac1339771480766a49bd96e0aee337d4f282b20b",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1f7a5686f1ade1d96f51f430abce68f4805e63ed85e8238b1c8780ae7b61da69",
+    "audit:target:83be7fbcf36059917cb21e26e5a9bdcd7b053305236cec331e30f20d2fee917b",
+    "audit:unit:meta.syntax.inline_and_block",
+    "audit:unit:meta.units.closed_body",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker. The unit has no formulas; braced directive names are explicitly introduced literal authoring syntax.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker.",
+    "mathematics": "The unit has no formulas; braced directive names are explicitly introduced literal authoring syntax.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.inline_and_block:1",
+        "role": "conceptual",
+        "rationale": "The role/directive distinction reuses the exact defining-role and reference-role meanings."
+      },
+      {
+        "occurrence": "meta.syntax.inline_and_block:2",
+        "role": "conceptual",
+        "rationale": "The structured-block opening uses the identity syntax and namespace defined earlier."
+      }
+    ]
+  }
+}

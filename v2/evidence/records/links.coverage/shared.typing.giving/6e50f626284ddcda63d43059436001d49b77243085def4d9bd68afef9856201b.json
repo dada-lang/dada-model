@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "bundle": "c352acb644db1f3968a0c810cc498406be9bf8a70b550e8e37caa9f5fdeb06f4",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2e73a816de64641201d0a60f2df58d7490dcf3352f6e52f13591043ab00ec548",
+    "audit:target:7ca3252c424052cffbaaf2fb3da6b66220637dbf063c6038d7142db073228302",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "audit:target:e7e0f8b9dd7a01deb04577dbf0ca6cde46937da80276da4055e44d628d562b56",
+    "audit:target:fb4a0a7c76309b32e5a213a669d711379cd8a6679fb9638296922e99112ebcb4",
+    "audit:unit:given.typing.paths",
+    "audit:unit:shared.syntax",
+    "audit:unit:shared.typing.emptying",
+    "audit:unit:shared.typing.environments",
+    "audit:unit:shared.typing.focus",
+    "audit:unit:shared.typing.giving",
+    "audit:unit:shared.typing.observations",
+    "audit:unit:shared.typing.perm",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links environment, place syntax, relative path, pos, focus, perm and emptying. All three Γ′ cases use explicit linked operators; the source-retained shared case is not an unmentioned dynamic choice.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links environment, place syntax, relative path, pos, focus, perm and emptying. All three Γ′ cases use explicit linked operators; the source-retained shared case is not an unmentioned dynamic choice.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. give splits the source place into a root and suffix, requires an inhabited variable and successful focus, then has exactly the three displayed branches: preserve the environment for shared, empty the root for given/epsilon, or apply emptyPath for a given field. It depends only on the static descriptions.",
+    "links": [
+      {
+        "occurrence": "shared.typing.giving:1",
+        "role": "conceptual",
+        "rationale": "The use 'environment' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.environments is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.giving:2",
+        "role": "conceptual",
+        "rationale": "The use 'place' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.syntax is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.giving:3",
+        "role": "conceptual",
+        "rationale": "The use 'relative path' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.paths is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.giving:4",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{pos}_{\\\\Sigma}(U)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.giving:5",
+        "role": "conceptual",
+        "rationale": "The use 'U\\\\downarrow\\\\rho' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.focus is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.giving:6",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{perm}(T)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.perm is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.giving:7",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{perm}(T)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.perm is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.giving:8",
+        "role": "conceptual",
+        "rationale": "The use 'U[-\\\\rho]' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.emptying is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.giving:9",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{perm}(T)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.perm is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.giving:10",
+        "role": "conceptual",
+        "rationale": "The use 'empties the field path' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.emptying is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

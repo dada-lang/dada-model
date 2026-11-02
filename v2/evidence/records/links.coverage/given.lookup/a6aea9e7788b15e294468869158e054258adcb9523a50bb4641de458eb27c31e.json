@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "350cbd131e5c8ea55f5e1255c798fa24c3af745a8ea5c0d1e5036a6d6407fdf1",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:27b635e54c096761d195bd023a2b9ff0f50da07131758a43c3e240e9dc3b2ab7",
+    "audit:unit:given.lookup",
+    "audit:unit:given.slots",
+    "audit:unit:given.state",
+    "audit:unit:given.storage_places",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The storage-place link is direct and both variable and field lookup equations are here. Undefined lookup versus a defined empty slot is explained without invoking stuckness ahead of its definition. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The storage-place link is direct and both variable and field lookup equations are here. Undefined lookup versus a defined empty slot is explained without invoking stuckness ahead of its definition.",
+    "mathematics": "Both displayed equations define S[q]. The partialness side conditions and S=⟨O,V,ν⟩ decomposition are stated locally, with q linked to its grammar.",
+    "links": [
+      {
+        "occurrence": "given.lookup:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “storage place” uses direct Given storage places; the target given.storage_places supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

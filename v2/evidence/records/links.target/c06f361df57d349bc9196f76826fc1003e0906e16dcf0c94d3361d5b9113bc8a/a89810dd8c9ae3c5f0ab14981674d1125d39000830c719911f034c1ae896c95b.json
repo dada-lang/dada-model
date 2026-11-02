@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "c6ee364b49cb134c4186e6b614eb27da06b26667d50ffb07e7c8cc7a5c64aa16",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c06f361df57d349bc9196f76826fc1003e0906e16dcf0c94d3361d5b9113bc8a",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The Future notes heading lands directly on its definition, before the authoring example and rejection rules. The opening contrasts future ideas with the current specification and explicitly says formalization is not required.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Future note",
+    "definition": {
+      "path": "md/repo/authoring.md",
+      "start": 4143,
+      "end": 4316
+    },
+    "clarity": "The Future notes heading lands directly on its definition, before the authoring example and rejection rules.",
+    "independence": "The opening contrasts future ideas with the current specification and explicitly says formalization is not required."
+  }
+}

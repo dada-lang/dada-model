@@ -5,12 +5,17 @@ Read `v1/AGENTS.md` before changing that model. Its paths and commands are relat
 to `v1/`. The v2 design draft is an mdBook in `v2/md/`, configured by `v2/book.toml`.
 The book separates repository methods and specification-system requirements
 (`v2/md/repo/`), Dada language goals (`v2/md/dada/`), and the Given/Shared language layers.
-Future tooling requirements live in `v2/md/repo/future-work.md`. Its link-audit
-proposal calls for coverage of concept/equation references in prose and MathJax,
-plus evidence that each target identifies one clear definition. Conceptual-order
-audits should detect forward references and require evidence that rearrangement
-cannot avoid them, the text marks them explicitly, and their use is minimal.
-These audits are not yet implemented.
+Link and conceptual-order audits are implemented in the mdBook plugin and evidence
+validator; see `v2/md/repo/link-audits.md`. Existing unit IDs and Markdown/role/MathJax
+links generate the audit inventory; no extra Markdown metadata is needed.
+`dada-spec links [--json]` shows occurrences, reading order, and generated review
+subjects. Coverage reviews examine prose and all mathematics for missing links;
+target reviews require a clearly separated defining passage. Forward references
+require explicit necessity, signposting, and minimal-use evidence. Same-unit
+links use the actual defining span, not just the block header, for order.
+`cargo test --workspace` requires current audit evidence alongside correspondence.
+Future notes also receive editorial link audits, without acquiring a formal
+correspondence obligation.
 `v2/mdbook-dada` is a shared Rust library in the v2 Cargo workspace, with the
 `mdbook-dada` renderer and `dada-spec` evidence CLI. Read `v2/AGENTS.md` before
 changing structured units, evidence, or the tooling. `v2/spec.json` explicitly

@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "bundle": "8fbd3742a2fb81008c4a9aa4dce89c2da9881e516fb2b4ce51a9fe9a72a8670d",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:b50fba7e62f9aaf161a6e1aaec2b60ca9f8ca33678e15facd8c24af1d87648a9",
+    "audit:target:e352bf1830e74f15198be0594d0061f7c9c957dfd9710c03023c40e4b5b65bf8",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:shared.evaluation",
+    "audit:unit:shared.example.share_value",
+    "audit:unit:shared.example.shared_middle",
+    "audit:unit:shared.give",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.state",
+    "audit:unit:shared.steps",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate.",
+    "mathematics": "The earlier state is linked explicitly; the two source statements use known syntax, and the resulting route interpretation links resolution.",
+    "links": [
+      {
+        "occurrence": "shared.example.shared_middle:1",
+        "role": "conceptual",
+        "rationale": "The referenced example shared.example.share_value supplies the concrete starting state used here."
+      },
+      {
+        "occurrence": "shared.example.shared_middle:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “constructor” uses Shared expression evaluation; the target shared.evaluation supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.example.shared_middle:3",
+        "role": "conceptual",
+        "rationale": "The prose reference “Resolving” uses Shared place resolution with effective mode; the target shared.resolution supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.example.shared_middle:4",
+        "role": "conceptual",
+        "rationale": "The prose reference “object table” uses Shared storage and its component tables/counter; the target shared.state supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

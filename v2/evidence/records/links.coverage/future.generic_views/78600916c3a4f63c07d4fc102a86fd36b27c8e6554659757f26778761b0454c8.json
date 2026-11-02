@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "273b054421bc3c422f75099c3bbcf688c73215757910e3e4d9e13626a3e0d240",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:target:a65eb6e25dc5992af74682e3ee7637608f951cbca91ff863784472c2c21591a9",
+    "audit:unit:future.generic_views",
+    "audit:unit:given.typing.expressions",
+    "audit:unit:given.typing.views",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. The proposal introduces the view parameter V and prefixing notation locally. Existing signed views and the current whole-argument Construct restriction have direct backward links; the empty-view caveat is part of the proposed design rather than a current theorem.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The proposal introduces the view parameter V and prefixing notation locally. Existing signed views and the current whole-argument Construct restriction have direct backward links; the empty-view caveat is part of the proposed design rather than a current theorem.",
+    "mathematics": "The quantified signature is explicitly proposed, binds V, and explains c.V immediately. Its referenced current view notion is linked; no claim of a current Lean derivation is made.",
+    "links": [
+      {
+        "occurrence": "future.generic_views:1",
+        "role": "conceptual",
+        "rationale": "The use 'view' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.views is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "future.generic_views:2",
+        "role": "conceptual",
+        "rationale": "The use 'Construct rule' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.expressions is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

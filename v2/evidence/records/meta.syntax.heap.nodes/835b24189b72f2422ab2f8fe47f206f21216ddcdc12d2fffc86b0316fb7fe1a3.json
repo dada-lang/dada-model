@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "96324a083912e715ca162c53fddccf47e40b5ee1e8e2cdd3709f629496b82f84",
+  "reviewer": "Codex repo-contract reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/graph.rs:args",
+    "rust:mdbook-dada/src/graph.rs:identifier",
+    "rust:mdbook-dada/src/graph.rs:label",
+    "rust:mdbook-dada/src/graph.rs:parse",
+    "test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices",
+    "test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds",
+    "test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved",
+    "test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges",
+    "unit:meta.syntax.heap.nodes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "graph::parse, identifier, args and label implement the listed node constructors, Unicode ID rule, JSON labels, slot assignments and aliases. Arrays materialize empty slots, and the variable-store group is explicitly not an object target. Tests retain quoted commas and Unicode while distinguishing lease/shared aliases. The prose carefully describes a diagram language rather than claiming these forms belong to current Given/Shared semantics.",
+  "limitations": [
+    "This is a source-level comparison of the retained authored unit, exact cited declarations/tests and policy. It is not proof of exhaustive implementation behavior, a browser rendering test or a claim that every conservative context file was read. The reviewer authored the new audit integration/tests, then performed this separate comparison pass; no independence from that implementation is claimed."
+  ],
+  "supersedes": [
+    "80f0d5b78eb80b03b972dc118ac29d5e3a9ee5c430f476129444157f1f3fcc74"
+  ]
+}

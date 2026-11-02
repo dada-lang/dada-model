@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "15f5e9491822cd526f4ff64ce2722fff2363520f357aeb1a06eb2412990bd2b6",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.sources.exact_selection",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The first paragraph now defines exact source selection; subsequent paragraphs explain rule and mutual-group special cases directly. This unit is the introduction of the extraction boundary, so no self-link is needed. There are no formulas. Constructor names, quoted identifiers and mutual are source-language syntax whose treatment is explained here.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The first paragraph now defines exact source selection; subsequent paragraphs explain rule and mutual-group special cases directly. This unit is the introduction of the extraction boundary, so no self-link is needed.",
+    "mathematics": "There are no formulas. Constructor names, quoted identifiers and mutual are source-language syntax whose treatment is explained here.",
+    "links": []
+  }
+}

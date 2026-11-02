@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "bundle": "6981c5248d4f2043bbf828eb35b1de47a5a22633a87554ad346a3eb11b19aafc",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:11aed29a6b82dfc70e7df19c3fad999a9f8fa3cfb7d1b2ebf35e0b7a63f92a16",
+    "audit:target:8413a9827dd730e438bc0c027d5a8e0b0375cf3b64b8dc044fdc5fb8b250d751",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:b525b2193e0c35e677269ca5a180c068848ebca97990c0e69502745a2fc78704",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.emptying",
+    "audit:unit:given.typing.focus",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.views",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.nominal_table",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links Given typed table, current declarations and each reused view operation. Relative paths now target given.typing.paths, not the older combined views block.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Given typed table, current declarations and each reused view operation. Relative paths now target given.typing.paths, not the older combined views block.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ClassTable.nominal drops each field's permission while retaining its className. The equation preserves class and field order and points to the Given operations that subsequently use this table; it does not erase nominal field types as operational erasure does.",
+    "links": [
+      {
+        "occurrence": "shared.typing.nominal_table:1",
+        "role": "conceptual",
+        "rationale": "The use \"Given's typed class table\" supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.declarations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.nominal_table:2",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma(C)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.declarations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.nominal_table:3",
+        "role": "conceptual",
+        "rationale": "The use 'relative paths' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.paths is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.nominal_table:4",
+        "role": "conceptual",
+        "rationale": "The use 'views' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.views is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.nominal_table:5",
+        "role": "conceptual",
+        "rationale": "The use 'view normalization' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.normalization is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.nominal_table:6",
+        "role": "conceptual",
+        "rationale": "The use 'nominal focusing' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.focus is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.nominal_table:7",
+        "role": "conceptual",
+        "rationale": "The use 'emptying' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.emptying is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

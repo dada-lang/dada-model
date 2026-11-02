@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "24f53136392a8bd179000f42fbf41cbc2e43908b9c8295366e8d79a3e14a11a5",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:69b3d55447d920253867baf2a85e8926fb42f26962b21ba3fe0049eb1951e922",
+    "audit:target:96c9b9b5cd25895c1a9810c7ca3007a977353f311c7ff2e268efd415d4833cca",
+    "audit:target:aa210780e33166914e582e1f2aa597e7876855cb4a8137adc65a043a6c43be2f",
+    "audit:unit:given.typing.views",
+    "audit:unit:given.typing.well_formed_types",
+    "audit:unit:shared.typing.base",
+    "audit:unit:shared.typing.nominal_table",
+    "audit:unit:shared.typing.well_formed_types",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links base, Given view-admissibility predicate, and nominal table. The reused conditions have their precise targets.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links base, Given view-admissibility predicate, and nominal table. The reused conditions have their precise targets.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.WellFormed delegates to nominal.WellFormed on classes.nominal. The linked Given conditions require a declared base, valid paths, and prefix-incomparable entries. No permission-specific restriction is asserted.",
+    "links": [
+      {
+        "occurrence": "shared.typing.well_formed_types:1",
+        "role": "conceptual",
+        "rationale": "The use 'base class' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.base is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.well_formed_types:2",
+        "role": "conceptual",
+        "rationale": "The use \"Given's view conditions\" supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.well_formed_types is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.well_formed_types:3",
+        "role": "conceptual",
+        "rationale": "The use 'nominal class table' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.nominal_table is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

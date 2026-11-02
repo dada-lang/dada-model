@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "dedf28c6743be40307da6c8a003dd61b61a0f0820c00cfd7a76d1bae945a45d8",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.storage_places",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "StoragePlace has variable(name) and field(object,name), exactly x and α.f. Place is a different recursive datatype, so the prose distinction between route and direct slot is reflected in the formalization. Notation and premises are supplied by the examined units given.classes, given.collections, given.identities, given.programs, given.syntax.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run."
+  ],
+  "supersedes": [
+    "d1aae6f22766c891eac80eba4780036f3d904aff9b8016325ad513412d34094c"
+  ]
+}

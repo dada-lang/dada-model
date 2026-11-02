@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "07eb6ff4a3ecccc3725b3bc7ecc8246f1a9c8a78c22e845d837f7d32a8cc4db5",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:de8c17107cd2bbf6e44d0bf15ada676d4d817578ead32b69effa4f7154e93041",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.realization unit has a visible identity and directly presents storage realization of an environment and pending values. Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The satisfaction clauses and erasure operator have direct mathematical links. The new realization relation, pending pair/list notation, and variable-domain equality are defined in this unit.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "storage realization of an environment and pending values",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 29556,
+      "end": 31102
+    },
+    "clarity": "The named given.typing.realization unit has a visible identity and directly presents storage realization of an environment and pending values. Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The satisfaction clauses and erasure operator have direct mathematical links. The new realization relation, pending pair/list notation, and variable-domain equality are defined in this unit."
+  }
+}

@@ -4,7 +4,7 @@
 
 ````{example} shared.typing.example.copy
 :lean: Shared/TypingExecutionChecks:copying_through_shared
-:uses: shared.example.copy_field given.typing.views shared.give given.patterns
+:uses: shared.example.copy_field given.typing.views shared.give given.patterns shared.typing.types
 
 The type of a place tells us whether giving it [moves or copies](shared.md#claim-shared.give).
 Consider a box whose field has type `Token`:
@@ -30,7 +30,9 @@ The field is declared `Token`, but access through `s` makes its effective type
 `shared Token`. The first field give changes its stored reference to shared and
 returns a shared copy; the second copies it again. Neither changes `s`'s type.
 
-This chapter adds two permissions, `given` and `shared`, to
+The [permission grammar below](#claim-shared.typing.types) formalizes the two
+labels used here, `given` and `shared`. This example needs only their move/copy
+distinction. The chapter adds these permissions to
 [Given's types and views](given-typing.md#claim-given.typing.views).
 `Token` is shorthand for `given Token`. It also carries
 [Given's unpacking patterns](given.md#claim-given.patterns) into Shared, with
@@ -66,7 +68,7 @@ to objects.
 :lean: Shared/TypingViews:Perm.comp
 :uses: shared.typing.types
 
-*Permission composition* \\(\pi\pi'\\) combines an outer permission with an
+*Permission composition* \\(\pi\pi'\\) combines an outer [permission](#claim-shared.typing.types) with an
 inner one. The result is `given` only when both are `given`:
 
 | Outer permission | Inner `given` | Inner `shared` |
@@ -133,7 +135,7 @@ independent of its permission and view. For a
 :lean: Shared/TypingViews:FieldType Shared/TypingViews:FieldType.toType Shared/TypingViews:TypedClass Shared/TypingViews:ClassTable
 :uses: shared.typing.types given.typing.declarations
 
-A *typed class table* \\(\Sigma\\) gives each field a permission and a class.
+A *typed class table* \\(\Sigma\\) gives each field a [permission and a class](#claim-shared.typing.types).
 Constructor arguments must supply whole values of the declared types:
 
 \\[
@@ -159,10 +161,10 @@ by a field type is declared in \\(\Sigma\\).
 
 ```{definition} shared.typing.erasure
 :lean: Shared/TypingViews:ClassTable.erase
-:uses: shared.typing.declarations shared.syntax
+:uses: shared.typing.declarations shared.syntax shared.programs
 
 *Class-table erasure* \\(\lfloor\Sigma\rfloor\\) supplies the
-[operational class table](shared.md#claim-shared.syntax) by removing field
+[operational class table](shared.md#claim-shared.programs) by removing field
 types. It retains every class name and the order of its fields:
 
 \\[
@@ -173,7 +175,7 @@ types. It retains every class name and the order of its fields:
 
 ```{definition} shared.typing.nominal_table
 :lean: Shared/TypingViews:ClassTable.nominal
-:uses: shared.typing.declarations given.typing.declarations given.typing.views given.typing.normalization given.typing.focus given.typing.emptying
+:uses: shared.typing.declarations given.typing.declarations given.typing.views given.typing.normalization given.typing.focus given.typing.emptying given.typing.paths
 
 The *nominal class table* \\(\Sigma_{\mathrm{nom}}\\) supplies
 [Given's typed class table](given-typing.md#claim-given.typing.declarations)
@@ -184,7 +186,8 @@ by removing each field's permission and retaining its class:
 \quad\text{where }\href{#claim-shared.typing.declarations}{\Sigma(C)}=[f_1:\pi_1 C_1,\ldots,f_n:\pi_n C_n].
 \\]
 
-Use this table for Given's [relative paths and views](given-typing.md#claim-given.typing.views),
+Use this table for Given's [relative paths](given-typing.md#claim-given.typing.paths) and
+[views](given-typing.md#claim-given.typing.views),
 [view normalization](given-typing.md#claim-given.typing.normalization),
 [nominal focusing](given-typing.md#claim-given.typing.focus), and
 [emptying](given-typing.md#claim-given.typing.emptying).
@@ -192,11 +195,11 @@ Use this table for Given's [relative paths and views](given-typing.md#claim-give
 
 ```{definition} shared.typing.well_formed_types
 :lean: Shared/TypingViews:ValueType.WellFormed
-:uses: shared.typing.base shared.typing.nominal_table given.typing.views
+:uses: shared.typing.base shared.typing.nominal_table given.typing.views given.typing.well_formed_types
 
 A type is *well formed* when its [base class](#claim-shared.typing.base) is
 declared and its view satisfies
-[Given's view conditions](given-typing.md#claim-given.typing.views) under
+[Given's view conditions](given-typing.md#claim-given.typing.well_formed_types) under
 the [nominal class table](#claim-shared.typing.nominal_table): paths are valid,
 distinct, and pairwise prefix-incomparable.
 ```
@@ -207,7 +210,7 @@ distinct, and pairwise prefix-incomparable.
 
 The *known-initialized paths* \\(\operatorname{pos}_{\Sigma}(T)\\) and
 *known-empty paths* \\(\operatorname{neg}_{\Sigma}(T)\\) depend on a type's
-nominal view, not its permission. For normalized \\(T=\pi N\\), use
+nominal view, not its permission. For [normalized](#claim-shared.typing.normalization) \\(T=\pi N\\), use
 [Given's observations](given-typing.md#claim-given.typing.observations) under
 the [nominal class table](#claim-shared.typing.nominal_table):
 
@@ -226,9 +229,10 @@ and inaccessible.
 
 ````{example} shared.typing.example.paths
 :lean: Shared/TypingChecks:permission_paths
-:uses: shared.typing.declarations shared.resolution
+:uses: shared.typing.declarations shared.resolution shared.typing.composition
 
-A shared link may occur anywhere along a path:
+With [permission composition](#claim-shared.typing.composition), a shared link
+may occur anywhere along a path:
 
 ```dada
 class Token {}
@@ -254,10 +258,10 @@ contain a field that is copied when given.
 
 ```{definition} shared.typing.declared_permission
 :lean: Shared/TypingViews:declaredPermission
-:uses: shared.typing.declarations shared.typing.composition shared.typing.nominal_table given.typing.views
+:uses: shared.typing.declarations shared.typing.composition shared.typing.nominal_table given.typing.views given.typing.paths given.typing.class_at
 
 The *declared permission* \\(\operatorname{decl}_{\Sigma}(C,\rho)\\)
-combines the field permissions along a relative path \\(\rho\\) from class
+combines the field permissions along a [relative path](given-typing.md#claim-given.typing.paths) \\(\rho\\) from class
 \\(C\\), using [permission composition](#claim-shared.typing.composition):
 
 \\[
@@ -269,19 +273,19 @@ combines the field permissions along a relative path \\(\rho\\) from class
 \end{aligned}
 \\]
 
-It is defined exactly on [paths valid from](given-typing.md#claim-given.typing.views)
+It is defined exactly on [paths valid from](given-typing.md#claim-given.typing.class_at)
 \\(C\\) under the [nominal class table](#claim-shared.typing.nominal_table).
 ```
 
 ```{definition} shared.typing.focus
 :lean: Shared/TypingViews:focus
-:uses: shared.typing.declared_permission shared.typing.nominal_table shared.typing.observations given.typing.focus shared.typing.example.paths shared.typing.types shared.typing.normalization given.typing.views
+:uses: shared.typing.declared_permission shared.typing.nominal_table shared.typing.observations given.typing.focus shared.typing.example.paths shared.typing.types shared.typing.normalization given.typing.views shared.typing.declarations shared.typing.composition
 
 *Focusing* \\(T\downarrow\rho\\) finds the type reached by a path, carrying
-the enclosing permission into each field. Access to a field declared
+the enclosing permission into each field. Access to a field [declared](#claim-shared.typing.declarations)
 \\(F\\) through a whole value of type \\(\pi\,C\\) has type \\(\pi F\\).
 
-Extend
+Using [permission composition](#claim-shared.typing.composition), extend
 [Given's focusing operation](given-typing.md#claim-given.typing.focus)
 (\\(\href{given-typing.html#claim-given.typing.focus}{N\downarrow\rho}\\)) to a
 [type](#claim-shared.typing.types) \\(T=\pi N\\), where the
@@ -306,7 +310,7 @@ It does not restore moved or hidden fields.
 :uses: shared.typing.normalization shared.typing.observations shared.typing.nominal_table given.typing.emptying
 
 *Emptying* \\(T[-\rho]\\) marks a field path as empty while retaining the
-outer permission and every other branch's information. For normalized
+outer permission and every other branch's information. For [normalized](#claim-shared.typing.normalization)
 \\(T=\pi N\\):
 
 \\[
@@ -342,15 +346,15 @@ the domain and cannot be reused as fresh names.
 
 ```{definition} shared.typing.giving
 :lean: Shared/Typing:splitPlace Shared/Typing:give
-:uses: shared.typing.environments shared.typing.perm shared.typing.focus shared.typing.observations shared.typing.emptying
+:uses: shared.typing.environments shared.typing.perm shared.typing.focus shared.typing.observations shared.typing.emptying shared.syntax given.typing.paths
 
 The *static give operation* computes the type produced by giving a place and
-the environment afterwards. Write
+the [environment](#claim-shared.typing.environments) afterwards. Write
 \\(\mathsf{give}_{\Sigma}(\Gamma,p)=(T,\Gamma')\\): the result has type \\(T\\),
 and the variable slots have descriptions \\(\Gamma'\\).
 
-Write a place as \\(p=x.\rho\\): for `o.box.item`, the root variable is `o`
-and the relative path is `box.item`; for `o`, the relative path is
+Write a [place](shared.md#claim-shared.syntax) as \\(p=x.\rho\\): for `o.box.item`, the root variable is `o`
+and the [relative path](given-typing.md#claim-given.typing.paths) is `box.item`; for `o`, the relative path is
 \\(\epsilon\\). The operation is defined exactly when \\(\Gamma(x)=U\\)
 and \\(\rho\in\href{#claim-shared.typing.observations}{\operatorname{pos}_{\Sigma}(U)}\\). Its outputs are:
 
@@ -375,7 +379,7 @@ give operation undefined. A field hidden by a view may still hold a value at run
 
 ```{definition} shared.typing.weakening
 :lean: Shared/TypingViews:Subtype
-:uses: shared.typing.normalization shared.typing.observations given.typing.forgetting
+:uses: shared.typing.normalization shared.typing.observations given.typing.forgetting shared.evaluation
 
 As in [Given](given-typing.md#claim-given.typing.forgetting), view weakening
 can hide initialization facts while preserving the permission.
@@ -394,7 +398,7 @@ T\preceq_{\Sigma}U
 
 For example, `shared Box` can be weakened to `shared Box.{}`. There is no
 weakening from `Box` to `shared Box`: creating a shared reference requires the
-runtime give-share operation. Different aliases may expose different views
+runtime [give-share operation](shared.md#claim-shared.evaluation). Different aliases may expose different views
 of the same object.
 ```
 
@@ -471,7 +475,7 @@ let a = h.item→;
 let b = h.item→;
 ```
 
-The constructor requires a `shared Token`, so its argument explicitly shares
+The [constructor rule](#claim-shared.typing.expressions) requires a `shared Token`, so its argument explicitly shares
 the token. Afterwards `t` is empty, `h: Holder`, and both `a` and `b` have
 type `shared Token`. Giving `h.item` does not empty it.
 
@@ -497,7 +501,7 @@ let a = s.right→;
 let b = s.right→;
 ```
 
-Moving `left` leaves `p: Pair.{-left, right}`. Give-share then empties `p` and
+Moving `left` leaves `p: Pair.{-left, right}`. [Give-share](#claim-shared.typing.expressions) then empties `p` and
 produces `s: shared Pair.{-left, right}`. The last two statements produce
 shared tokens and preserve that view of `s`.
 
@@ -529,22 +533,29 @@ pattern is immaterial. `f` abbreviates `f: f`;
 there are no `_` or `..` patterns here.
 ```
 
-```{definition} shared.typing.steps
-:lean: Shared/Unpacking:Configuration Shared/Unpacking:Transfer Shared/Unpacking:Bind Shared/Unpacking:Step
-:uses: shared.typing.patterns given.unpacking shared.steps shared.state
+```{definition} shared.typing.machine
+:lean: Shared/Unpacking:Configuration
+:uses: shared.typing.patterns shared.state
 
-A *configuration* \\(K=\langle S,P\rangle\\) pairs storage with the remaining
-statement sequence. An *extended statement step*
-\\(\Delta\vdash K\longrightarrow_u K'\\) runs one `let` statement with a
+A *configuration* \\(K=\langle S,P\rangle\\) pairs [storage](shared.md#claim-shared.state) with the remaining
+[statements](#claim-shared.typing.patterns).
+```
+
+```{definition} shared.typing.steps
+:lean: Shared/Unpacking:Transfer Shared/Unpacking:Bind Shared/Unpacking:Step
+:uses: shared.typing.machine shared.typing.patterns given.unpacking shared.evaluation shared.state shared.allocated
+
+An *extended statement step*
+\\(\Delta\vdash K\longrightarrow_u K'\\) changes a [configuration](#claim-shared.typing.machine) by running one `let` statement with a
 [binding pattern](#claim-shared.typing.patterns).
 
-Write \\(\href{shared.html#claim-shared.steps}{\Delta\vdash\langle S,e\rangle\Downarrow\langle S',r\rangle}\\)
-for [Shared's expression evaluation](shared.md#claim-shared.steps). It is
+Write \\(\href{shared.html#claim-shared.evaluation}{\Delta\vdash\langle S,e\rangle\Downarrow\langle S',r\rangle}\\)
+for [Shared's expression evaluation](shared.md#claim-shared.evaluation). It is
 unchanged. The extended step first evaluates the expression, then binds its result:
 
 - A variable pattern stores the reference, of either mode, in its fresh slot.
 - A `C → { ... }` pattern requires \\(r=(\mathsf{unique},\alpha)\\) and
-  an allocated `C` object at \\(\alpha\\). Transfer every field slot to its
+  an [allocated](shared.md#claim-shared.allocated) `C` object at \\(\alpha\\). Transfer every field slot to its
   named destination and remove \\(\alpha\\) from the object table.
 
 Field references retain their modes and targets; empty fields become empty
@@ -563,28 +574,36 @@ of zero or more [extended statement steps](#claim-shared.typing.steps), all
 using the same class table \\(\Delta\\).
 ```
 
-```{definition} shared.typing.outcomes
-:lean: Shared/Unpacking:Configuration.finished Shared/Unpacking:Stuck
-:uses: shared.typing.steps
+```{definition} shared.typing.finished
+:lean: Shared/Unpacking:Configuration.finished
+:uses: shared.typing.machine
 
-A configuration is *finished* when no statements remain. It is *stuck* when
-statements remain but no [extended step](#claim-shared.typing.steps) is possible:
+A [configuration](#claim-shared.typing.machine) is *finished* when no statements remain:
 
 \\[
-\begin{aligned}
-\mathsf{Finished}(\langle S,P\rangle)&\iff P=[],\\
-\mathsf{Stuck}_{\Delta}(\langle S,P\rangle)&\iff
+\mathsf{Finished}(\langle S,P\rangle)\iff P=[].
+\\]
+```
+
+```{definition} shared.typing.outcomes
+:lean: Shared/Unpacking:Stuck
+:uses: shared.typing.machine shared.typing.steps
+
+A [configuration](#claim-shared.typing.machine) is *stuck* when statements remain but no
+[extended step](#claim-shared.typing.steps) is possible:
+
+\\[
+\mathsf{Stuck}_{\Delta}(\langle S,P\rangle)\iff
   P\ne[]\ \land\ \neg\exists K'.\;\href{#claim-shared.typing.steps}{\Delta\vdash\langle S,P\rangle\longrightarrow_u K'}.
-\end{aligned}
 \\]
 ```
 
 ```{definition} shared.typing.field
 :lean: Shared/Typing:fieldDescription
-:uses: shared.typing.environments shared.typing.focus shared.typing.observations
+:uses: shared.typing.environments shared.typing.focus shared.typing.observations shared.typing.patterns
 
-The *field description* \\(\mathsf{field}_{\Sigma}(T,f)\\) tells an unpacking
-pattern whether a direct field is empty or which type it transfers:
+The *field description* \\(\mathsf{field}_{\Sigma}(T,f)\\) tells an [unpacking
+pattern](#claim-shared.typing.patterns) whether a direct field is empty or which type it transfers:
 
 \\[
 \mathsf{field}_{\Sigma}(T,f)=\begin{cases}
@@ -601,7 +620,7 @@ An unknown field has no description.
 :uses: shared.typing.patterns shared.typing.environments shared.typing.field shared.typing.perm shared.typing.base shared.typing.declarations given.typing.bindings
 
 *Binding typing* \\(\Sigma;\Gamma\vdash b:T\Rightarrow\Gamma'\\) describes
-where a result goes. A fresh variable receives its type unchanged:
+where a result goes in the [environment](#claim-shared.typing.environments). A fresh variable receives its type unchanged:
 
 \\[
 \frac{x\notin\operatorname{dom}(\Gamma)}
@@ -646,7 +665,7 @@ let Holder → { item } = h→;
 let c = item→;
 ```
 
-The first statement empties `h`, consumes the holder, and binds
+The [unpacking rule](#claim-shared.typing.bindings) empties `h`, consumes the holder, and binds
 `item: shared Token`. The aliases `a` and `b` still own the token. The second
 copies it again, leaving `item` initialized.
 
@@ -709,10 +728,10 @@ Completion retains the final storage; the final environment need not be empty.
 
 ```{definition} shared.typing.mode
 :lean: Shared/TypingViews:Perm.toMode
-:uses: shared.typing.types shared.state
+:uses: shared.typing.types shared.state shared.references
 
-The *runtime mode* \\(\operatorname{mode}(\pi)\\) maps a type permission to
-the corresponding [reference mode](shared.md#claim-shared.state):
+The *runtime mode* \\(\operatorname{mode}(\pi)\\) maps a [type permission](#claim-shared.typing.types) to
+the corresponding [reference mode](shared.md#claim-shared.references):
 
 \\[
 \begin{aligned}
@@ -722,34 +741,41 @@ the corresponding [reference mode](shared.md#claim-shared.state):
 \\]
 ```
 
+```{definition} shared.typing.read
+:lean: Shared/TypingPaths:enter Shared/TypingPaths:readPath
+:uses: shared.resolution shared.references given.typing.paths
+
+For \\(r=(\kappa,\alpha)\\), the *reference-path read* \\(\mathsf{read}_S(r,\rho)\\) follows a [relative path](given-typing.md#claim-given.typing.paths) \\(\rho\\) from
+\\(\alpha\\), accumulating reference modes starting with \\(\kappa\\),
+as in {anchor-ref}`shared.resolution`. The empty path returns \\(r\\) if its object exists.
+A missing object or field encountered while following the path, or an empty
+intermediate slot, makes traversal undefined. The final slot may be empty;
+if occupied, its reference is returned without dereferencing the target.
+```
+
 ```{definition} shared.typing.reference_realization
-:lean: Shared/TypingPaths:enter Shared/TypingPaths:readPath Shared/TypingRealization:Satisfies
-:uses: shared.typing.observations shared.typing.declared_permission shared.typing.mode shared.typing.normalization shared.resolution given.typing.realization
+:lean: Shared/TypingRealization:Satisfies
+:uses: shared.typing.read shared.typing.observations shared.typing.declared_permission shared.typing.mode shared.typing.normalization shared.typing.composition shared.allocated given.typing.satisfaction given.typing.class_at
 
 *Reference realization* \\(\Sigma;S\models r:T\\) says that a reference's
 type describes access from that reference. It does not prescribe one view for
 the object independent of its aliases.
 
-For \\(r=(\kappa,\alpha)\\), follow a relative path \\(\rho\\) from
-\\(\alpha\\), accumulating reference modes starting with \\(\kappa\\),
-as in {anchor-ref}`shared.resolution`. The empty path returns \\(r\\).
-A missing object or field, or an empty intermediate slot, makes traversal
-undefined; a final slot may be empty.
-
-The relation holds, for a
+Using the [reference-path read](#claim-shared.typing.read), the relation holds for a
 [normalized type](#claim-shared.typing.normalization) \\(T=\pi C.A\\), when:
 
 1. The root reference has mode \\(\href{#claim-shared.typing.mode}{\operatorname{mode}(\pi)}\\) and targets
-   an allocated object of class \\(C\\).
+   an [allocated object](shared.md#claim-shared.allocated) of class \\(C\\).
 2. Every \\(\rho\in\href{#claim-shared.typing.observations}{\operatorname{pos}_{\Sigma}(T)}\\) reaches an allocated
    object of its declared class. Every \\(\rho\in\href{#claim-shared.typing.observations}{\operatorname{neg}_{\Sigma}(T)}\\)
    reaches an existing empty slot.
-3. Every valid finite path from \\(C\\) that reaches an occupied slot from
+3. Every [valid](given-typing.md#claim-given.typing.class_at) finite [path read](#claim-shared.typing.read) from \\(C\\) that reaches an occupied slot from
    this root, including paths hidden by the view,
    has effective mode
    \\(\href{#claim-shared.typing.mode}{\operatorname{mode}}(\pi\href{#claim-shared.typing.declared_permission}{\operatorname{decl}_{\Sigma}(C,\rho)})\\).
 
-The third condition concerns the whole route. A field declared given inside a
+The third condition [composes](#claim-shared.typing.composition) permissions
+along the whole route. A field declared given inside a
 shared container may store a unique reference before copying and a shared one
 afterwards. Both routes have effective shared mode.
 ```
@@ -758,7 +784,7 @@ afterwards. Both routes have effective shared mode.
 :lean: Shared/TypingRealization:FieldsMatchClasses Shared/TypingRealization:PendingValues Shared/TypingRealization:Realizes
 :uses: shared.typing.environments shared.typing.reference_realization shared.typing.well_formed_classes shared.typing.well_formed_types shared.state shared.well_formed
 
-*Storage realization* \\(\Sigma;\Gamma\models(S;R)\\) relates all variables
+*Storage realization* \\(\Sigma;\Gamma\models(S;R)\\) relates all [variables](#claim-shared.typing.environments)
 and pending results to their type descriptions.
 
 Here \\(S=\langle O,V,\nu\rangle\\) is the
@@ -779,14 +805,15 @@ or constructor. The relation holds when:
   \\(\href{#claim-shared.typing.reference_realization}{\Sigma;S\models r:T}\\).
 
 The [table](#claim-shared.typing.well_formed_classes) \\(\Sigma\\) and all
-[types](#claim-shared.typing.well_formed_types) must be well formed. Shared aliases
+[types](#claim-shared.typing.well_formed_types) must be well formed; types must
+also be [normalized](#claim-shared.typing.normalization). Shared aliases
 may carry different views; each must describe the actual storage. Hidden
 references still contribute to ownership and liveness.
 ```
 
 ```{lemma} shared.typing.expression_soundness
 :lean: Shared/TypingSafety:expression_soundness
-:uses: shared.typing.realization shared.typing.expressions shared.typing.well_formed_classes shared.typing.erasure shared.steps
+:uses: shared.typing.realization shared.typing.expressions shared.typing.well_formed_classes shared.typing.erasure shared.steps shared.evaluation
 
 For any [well-formed](#claim-shared.typing.well_formed_classes) \\(\Sigma\\),
 if [expression typing](#claim-shared.typing.expressions) and
@@ -797,11 +824,11 @@ if [expression typing](#claim-shared.typing.expressions) and
 \qquad\href{#claim-shared.typing.realization}{\Sigma;\Gamma\models(S;R)},
 \\]
 
-then an [evaluation](shared.md#claim-shared.steps) exists:
+then an [evaluation](shared.md#claim-shared.evaluation) exists:
 
 \\[
 \exists S',r.\;
-\href{#claim-shared.typing.erasure}{\lfloor\Sigma\rfloor}\vdash\langle S,e\rangle\href{shared.html#claim-shared.steps}{\Downarrow}\langle S',r\rangle.
+\href{#claim-shared.typing.erasure}{\lfloor\Sigma\rfloor}\vdash\langle S,e\rangle\href{shared.html#claim-shared.evaluation}{\Downarrow}\langle S',r\rangle.
 \\]
 
 Every such evaluation satisfies
@@ -813,9 +840,9 @@ a move preserves the types of the other owning roots.
 
 ```{definition} shared.typing.configurations
 :lean: Shared/TypedConfigurations:ConfigurationTyped
-:uses: shared.typing.realization shared.typing.sequences shared.typing.steps shared.typing.well_formed_classes
+:uses: shared.typing.realization shared.typing.sequences shared.typing.steps shared.typing.well_formed_classes shared.typing.machine
 
-A [configuration](#claim-shared.typing.steps) \\(K=\langle S,P\rangle\\)
+A [configuration](#claim-shared.typing.machine) \\(K=\langle S,P\rangle\\)
 is *well typed* with final
 environment \\(\Gamma_f\\) when:
 
@@ -837,16 +864,16 @@ The class table \\(\Sigma\\) must be
 
 ```{theorem} shared.typing.progress
 :lean: Shared/TypingSafety:ConfigurationTyped.progress
-:uses: shared.typing.configurations shared.typing.expression_soundness shared.typing.bindings shared.typing.outcomes shared.typing.steps shared.typing.erasure
+:uses: shared.typing.configurations shared.typing.expression_soundness shared.typing.bindings shared.typing.outcomes shared.typing.steps shared.typing.erasure shared.typing.finished
 
 A [well-typed configuration](#claim-shared.typing.configurations) has
-[finished](#claim-shared.typing.outcomes) or can take a
+[finished](#claim-shared.typing.finished) or can take a
 [step](#claim-shared.typing.steps):
 
 \\[
 \href{#claim-shared.typing.configurations}{\Sigma\vdash K:\Gamma_f}
 \quad\Longrightarrow\quad
-\href{#claim-shared.typing.outcomes}{\mathsf{Finished}(K)}\ \lor\
+\href{#claim-shared.typing.finished}{\mathsf{Finished}(K)}\ \lor\
 \exists K'.\;\href{#claim-shared.typing.erasure}{\lfloor\Sigma\rfloor}\vdash K\href{#claim-shared.typing.steps}{\longrightarrow_u} K'.
 \\]
 ```
@@ -884,15 +911,15 @@ copying, give-share, and unpacking unique containers with given or shared fields
 
 ```{theorem} shared.typing.given_fragment
 :lean: Correspondence/UniqueSharedTyping:given_fragment
-:uses: shared.typing.statements shared.typing.sequences shared.typing.patterns shared.typing.steps shared.typing.outcomes given.typing.statements shared.embedding shared.correspondence given.unpacking
+:uses: shared.typing.statements shared.typing.sequences shared.typing.patterns shared.typing.steps shared.typing.outcomes given.typing.statements shared.embedding shared.correspondence given.unpacking shared.typing.finished
 
 Restrict field declarations and types to `given` and omit give-share
 expressions. The typing rules then agree with
 [Given's rules](given-typing.md#claim-given.typing.statements), including its
-[unpacking extension](given.md#claim-given.unpacking). Embedding every runtime
+[unpacking extension](given.md#claim-given.unpacking). [Embedding](shared.md#claim-shared.embedding) every runtime
 reference with mode `unique` preserves and reflects
 [statement transitions](#claim-shared.typing.steps) and
-[completion](#claim-shared.typing.outcomes) in this fragment.
+[completion](#claim-shared.typing.finished) in this fragment.
 
 This extends the [earlier correspondence](shared.md#claim-shared.correspondence),
 which covers only single-variable bindings, to the machines with unpacking.

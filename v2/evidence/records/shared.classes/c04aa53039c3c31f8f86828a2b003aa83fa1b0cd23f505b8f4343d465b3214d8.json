@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "82f806915e2a2b42938523885f41eb240fd1767483e4810567f84e753da30adf",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Reference.owned",
+    "lean:Shared/State:Reference.shared",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:ClassName",
+    "lean:Shared/Syntax:FieldName",
+    "lean:Shared/Syntax:ObjectId",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.classes",
+    "unit:shared.references"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "ClassName/FieldName are String categories and Class has List FieldName. The declaration is ordered and carries no field types, including the empty list. Notation and premises are supplied by the examined units given.classes, given.collections, given.identities, given.programs, given.syntax, shared.references.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run."
+  ],
+  "supersedes": []
+}

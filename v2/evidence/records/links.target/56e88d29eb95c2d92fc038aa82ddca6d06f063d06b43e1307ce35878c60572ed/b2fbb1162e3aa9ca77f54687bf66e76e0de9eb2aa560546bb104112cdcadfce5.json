@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "64cd7f7bbec64808343146e4101d9c4df267929338becd3833d00d53201cd106",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:56e88d29eb95c2d92fc038aa82ddca6d06f063d06b43e1307ce35878c60572ed",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given liveness through owning edges passage without searching a neighboring block for the actual definition or claim. Each lookup premise links its definition. Live recursion defines this judgment rather than referring to another result.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given liveness through owning edges",
+    "definition": {
+      "path": "md/given.md",
+      "start": 17570,
+      "end": 18094
+    },
+    "clarity": "The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given liveness through owning edges passage without searching a neighboring block for the actual definition or claim. Each lookup premise links its definition. Live recursion defines this judgment rather than referring to another result."
+  }
+}

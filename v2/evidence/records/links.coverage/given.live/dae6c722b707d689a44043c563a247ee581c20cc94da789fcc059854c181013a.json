@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "7503a66fde18d69d42d426f9d6d7fa5e13ba0fb03ca8980c0806fad1e3c9ca9d",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:49d19d3e6321b8309608988f0dba1cb54f8a069b5a7946d9f117d0fb274166d9",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:unit:given.allocated",
+    "audit:unit:given.live",
+    "audit:unit:given.lookup",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference.",
+    "mathematics": "Each lookup premise links its definition. Live recursion defines this judgment rather than referring to another result.",
+    "links": [
+      {
+        "occurrence": "given.live:1",
+        "role": "conceptual",
+        "rationale": "The formula S[x] uses Given partial slot lookup; the destination given.lookup supplies that operation or result."
+      },
+      {
+        "occurrence": "given.live:2",
+        "role": "conceptual",
+        "rationale": "The formula S[\\beta.f] uses Given partial slot lookup; the destination given.lookup supplies that operation or result."
+      },
+      {
+        "occurrence": "given.live:3",
+        "role": "conceptual",
+        "rationale": "The prose reference “Allocation” uses Given allocation as object-table membership; the target given.allocated supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

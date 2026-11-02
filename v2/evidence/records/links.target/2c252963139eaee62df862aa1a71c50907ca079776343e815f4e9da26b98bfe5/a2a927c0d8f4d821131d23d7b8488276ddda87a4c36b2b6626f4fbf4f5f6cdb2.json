@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "a93ee9584fa28cc17f49a8c95a6aa15a363c079aa0e6eefe757ca8437b81625c",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links field names back to class declarations; defines p, e, t, fresh variables, gives, and constructors together as the syntax grammar. The explanatory operation words here do not invoke a later formal judgment. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given place, value and statement syntax passage without searching a neighboring block for the actual definition or claim. The p/e/t grammar defines the syntactic categories together; x is introduced as a variable name, and field names have the preceding class link.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given place, value and statement syntax",
+    "definition": {
+      "path": "md/given.md",
+      "start": 1100,
+      "end": 2108
+    },
+    "clarity": "Links field names back to class declarations; defines p, e, t, fresh variables, gives, and constructors together as the syntax grammar. The explanatory operation words here do not invoke a later formal judgment. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given place, value and statement syntax passage without searching a neighboring block for the actual definition or claim. The p/e/t grammar defines the syntactic categories together; x is introduced as a variable name, and field names have the preceding class link."
+  }
+}

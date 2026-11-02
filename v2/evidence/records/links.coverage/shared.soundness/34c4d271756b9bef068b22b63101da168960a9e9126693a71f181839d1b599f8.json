@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "bundle": "2966cf296ce38c19744af76a7b38d9f4959c13134defb9ace8a51c1db7f21319",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:486cb05457ebcad15bab1c76ab655c1f301c2a8be2a2eb137d9138cf04969718",
+    "audit:target:5622717387ebfdf87c5d3f86c337a128b567967f67969be864ff86c108809a19",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:85bba34d7493853d754e20469c6b70e7fc1ff7e55767b2f552cf9f47ed2e9102",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:target:f518fc51a45f1599c96e5cca147f3048043bee6a5718ef54dd66d238eb0b8dcf",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:shared.evaluation",
+    "audit:unit:shared.executions",
+    "audit:unit:shared.give",
+    "audit:unit:shared.liveness",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.path_exclusivity",
+    "audit:unit:shared.programs",
+    "audit:unit:shared.soundness",
+    "audit:unit:shared.state",
+    "audit:unit:shared.steps",
+    "audit:unit:shared.syntax",
+    "audit:unit:shared.well_formed",
+    "audit:unit:shared.well_formed_classes",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links class-table WF, finite execution, initial machine, state WF, liveness, path exclusivity, give-share and copying. No static typing is presupposed by structural preservation. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links class-table WF, finite execution, initial machine, state WF, liveness, path exclusivity, give-share and copying. No static typing is presupposed by structural preservation.",
+    "mathematics": "All execution/preservation and liveness/path consequences are linked in prose. No standalone formula assumes a further unintroduced predicate.",
+    "links": [
+      {
+        "occurrence": "shared.soundness:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “well-formed class table” uses Shared class-table well-formedness; the target shared.well_formed_classes supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.soundness:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “finite execution” uses Shared zero-or-more-step execution; the target shared.executions supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.soundness:3",
+        "role": "conceptual",
+        "rationale": "The prose reference “empty initial state” uses Shared configurations and initialization; the target shared.machine supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.soundness:4",
+        "role": "conceptual",
+        "rationale": "The prose reference “well-formed state” uses Shared structural storage well-formedness; the target shared.well_formed supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.soundness:5",
+        "role": "conceptual",
+        "rationale": "The prose reference “live” uses the Shared allocated/live equivalence; the target shared.liveness supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.soundness:6",
+        "role": "conceptual",
+        "rationale": "The prose reference “No object has botha unique path and a shared path” uses the unique/shared route exclusion theorem; the target shared.path_exclusivity supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.soundness:7",
+        "role": "conceptual",
+        "rationale": "The prose reference “give-share” uses Shared expression evaluation; the target shared.evaluation supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.soundness:8",
+        "role": "conceptual",
+        "rationale": "The prose reference “copying” uses Shared giving, including move/copy/final-slot conversion; the target shared.give supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

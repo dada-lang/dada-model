@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "a7b3c1a0e863a082581f42b35e5cfecfdd9e7c075830c31d52c064da6b2273d5",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links machine configurations, full expression evaluation in both prose and the Let premise, and finished configurations. State-binding notation is a local adjunct to this single Let rule. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given statement stepping passage without searching a neighboring block for the actual definition or claim. The Let premise links expression evaluation. K is linked to machine configuration; the output binding and fresh-variable dom condition are explained as local rule notation.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given statement stepping",
+    "definition": {
+      "path": "md/given.md",
+      "start": 11372,
+      "end": 12717
+    },
+    "clarity": "Links machine configurations, full expression evaluation in both prose and the Let premise, and finished configurations. State-binding notation is a local adjunct to this single Let rule. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given statement stepping passage without searching a neighboring block for the actual definition or claim. The Let premise links expression evaluation. K is linked to machine configuration; the output binding and fresh-variable dom condition are explained as local rule notation."
+  }
+}

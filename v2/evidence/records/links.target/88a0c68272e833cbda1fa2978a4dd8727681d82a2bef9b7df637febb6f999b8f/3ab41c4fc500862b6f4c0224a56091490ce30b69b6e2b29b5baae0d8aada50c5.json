@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "834dcae4f16118627968a1f61f663596d66c8b766b7c6cff39ff2f91a1b66105",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:88a0c68272e833cbda1fa2978a4dd8727681d82a2bef9b7df637febb6f999b8f",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Empty storage has its own formula and zero allocation counter. The empty-map symbol is explained beside the equation, so machine initialization no longer lands inside general storage. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete empty Given storage passage without searching a neighboring block for the actual definition or claim. S_empty is defined by its tuple equation and the empty-map symbol is explained locally. It is not a reference to a later initial-machine rule.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "empty Given storage",
+    "definition": {
+      "path": "md/given.md",
+      "start": 5348,
+      "end": 5547
+    },
+    "clarity": "Empty storage has its own formula and zero allocation counter. The empty-map symbol is explained beside the equation, so machine initialization no longer lands inside general storage. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete empty Given storage passage without searching a neighboring block for the actual definition or claim. S_empty is defined by its tuple equation and the empty-map symbol is explained locally. It is not a reference to a later initial-machine rule."
+  }
+}

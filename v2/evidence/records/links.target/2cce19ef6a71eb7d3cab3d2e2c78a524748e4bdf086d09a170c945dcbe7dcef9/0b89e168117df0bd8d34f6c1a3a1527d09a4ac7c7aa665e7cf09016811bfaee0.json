@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "ca56ab578d012874a3e928433b4c5bc9cc946d68e73b0df2a60e29a7525c542e",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cce19ef6a71eb7d3cab3d2e2c78a524748e4bdf086d09a170c945dcbe7dcef9",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.full unit has a visible identity and directly presents the formal fullness predicate. Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The equation directly links pos, neg, class-at, and base. Quantified paths and fields are locally bound; Full is its defining occurrence.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the formal fullness predicate",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 6989,
+      "end": 7649
+    },
+    "clarity": "The named given.typing.full unit has a visible identity and directly presents the formal fullness predicate. Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The equation directly links pos, neg, class-at, and base. Quantified paths and fields are locally bound; Full is its defining occurrence."
+  }
+}

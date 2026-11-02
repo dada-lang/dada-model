@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "bundle": "b39ee285ce661d435aad1111b06f491e62b379ae59527b8e9ff7ff53a3c61afe",
+  "reviewer": "Codex repo-contract reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "FiniteMap stores a finite List of key/value pairs and requires Nodup of entries.map Prod.fst. This is exactly at most one stored value per key without an ordering or DecidableEq assumption. FiniteMap.empty supplies the empty list and its vacuous Nodup proof, matching the stated empty map. The prose correctly distinguishes list order from ordering keys.",
+  "limitations": [
+    "This is a source-level comparison of the retained authored unit, exact cited declarations/tests and policy. It is not proof of exhaustive implementation behavior, a browser rendering test or a claim that every conservative context file was read. The reviewer authored the new audit integration/tests, then performed this separate comparison pass; no independence from that implementation is claimed."
+  ],
+  "supersedes": [
+    "66131b35e9464ae736935474e2a8ab20e3b807e7c9c452c47a8b11a3b3ae6e14"
+  ]
+}

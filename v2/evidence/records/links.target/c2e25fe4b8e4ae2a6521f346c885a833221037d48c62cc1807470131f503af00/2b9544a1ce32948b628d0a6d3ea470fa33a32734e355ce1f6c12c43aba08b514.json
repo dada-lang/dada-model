@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "c1df0b41ddfefb90d609e427990adfae98d78e9be72fb64ba2b4b402c28a6fbe",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared structural storage well-formedness passage without searching a neighboring block for the actual definition or claim. WF is the defined predicate. Its declaration and allocated-identity conditions link directly; pairwise owner-mode compatibility is written out rather than using an unexplained auxiliary relation.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared structural storage well-formedness",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 17830,
+      "end": 18958
+    },
+    "clarity": "Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared structural storage well-formedness passage without searching a neighboring block for the actual definition or claim. WF is the defined predicate. Its declaration and allocated-identity conditions link directly; pairwise owner-mode compatibility is written out rather than using an unexplained auxiliary relation."
+  }
+}

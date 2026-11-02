@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "2f81cc7dbf722a75fad1fe8465e40ad79910006b2fba28d00923d268f9c089ea",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d7a4e8940ecceee98134469b8995cce9e8285a49108151e7d7cfbb7f6afb5aa0",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The block begins with the defining key-uniqueness sentence and immediately introduces map notation and representation. The first paragraph introduces domains, entries and the unique-key restriction without relying on a later operation.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Finite map",
+    "definition": {
+      "path": "md/repo/evidence-pilot.md",
+      "start": 6883,
+      "end": 7213
+    },
+    "clarity": "The block begins with the defining key-uniqueness sentence and immediately introduces map notation and representation.",
+    "independence": "The first paragraph introduces domains, entries and the unique-key restriction without relying on a later operation."
+  }
+}

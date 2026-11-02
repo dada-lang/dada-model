@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "ac946cb3af66d19a373994335371e9195632666d29b34ab11a8dea87ee9ba376",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d23f620a4d543e74b2a0c0ebf99c040dfd62ccaae87df02e867c7c374fa3bc58",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given slots and their owning-reference contents passage without searching a neighboring block for the actual definition or claim. The s/o grammar defines empty/reference contents and object fields. α is connected to the identity definition and C to class names.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given slots and their owning-reference contents",
+    "definition": {
+      "path": "md/given.md",
+      "start": 4049,
+      "end": 4560
+    },
+    "clarity": "Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given slots and their owning-reference contents passage without searching a neighboring block for the actual definition or claim. The s/o grammar defines empty/reference contents and object fields. α is connected to the identity definition and C to class names."
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "ce0623b5ab1b5785cb58b94c2c7472aff4280a413ca87dce60a9307aed5aa8cc",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:837551691616f7856e5628608f269668034d86818f25ff4e307500ffcff69cb3",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.take unit has a visible identity and directly presents taking a source place and updating its root environment entry. Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The accessibility premise links pos; the result and update cases link focusing and emptying. The new take operator and root-empty case are defined here.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "taking a source place and updating its root environment entry",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 17028,
+      "end": 18061
+    },
+    "clarity": "The named given.typing.take unit has a visible identity and directly presents taking a source place and updating its root environment entry. Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The accessibility premise links pos; the result and update cases link focusing and emptying. The new take operator and root-empty case are defined here."
+  }
+}

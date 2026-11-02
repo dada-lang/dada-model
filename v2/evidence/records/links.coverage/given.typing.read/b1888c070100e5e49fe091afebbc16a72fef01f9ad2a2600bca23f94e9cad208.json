@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "1fbe0e89edb6602ea12da8bb366f757131af9eac0ac4c1af23ccf29b24457d6b",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:unit:given.lookup",
+    "audit:unit:given.state",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.read",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly. read is introduced here; alpha and rho are the input object/path, bot is the existing empty-slot notation. No unlinked auxiliary equation is used.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly.",
+    "mathematics": "read is introduced here; alpha and rho are the input object/path, bot is the existing empty-slot notation. No unlinked auxiliary equation is used.",
+    "links": [
+      {
+        "occurrence": "given.typing.read:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'relative path' supplies finite relative field paths and their composition while explaining reading a relative field path from an object. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

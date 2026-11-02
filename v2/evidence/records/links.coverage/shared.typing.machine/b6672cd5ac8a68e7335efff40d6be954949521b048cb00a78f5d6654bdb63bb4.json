@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "f3c3e4dba7d2f609878408e1f193cd2414dd1aa1ec65055b958da21472bfd4d5",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:unit:shared.state",
+    "audit:unit:shared.typing.machine",
+    "audit:unit:shared.typing.patterns",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links storage and the extended statements; configuration is a separate direct target from the step relation.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links storage and the extended statements; configuration is a separate direct target from the step relation.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Configuration contains precisely state and code (the remaining list of extended statements). The focused definition now introduces this pair directly, separately from the transition relation.",
+    "links": [
+      {
+        "occurrence": "shared.typing.machine:1",
+        "role": "conceptual",
+        "rationale": "The use 'storage' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.state is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.machine:2",
+        "role": "conceptual",
+        "rationale": "The use 'statements' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.patterns is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

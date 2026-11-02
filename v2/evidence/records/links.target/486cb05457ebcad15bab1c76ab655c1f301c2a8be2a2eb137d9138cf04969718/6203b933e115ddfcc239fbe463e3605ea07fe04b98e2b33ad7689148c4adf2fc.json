@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "1078ff50c11631aafd36e6234ae462c7d4350de095436474565a09e4a488ada3",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:486cb05457ebcad15bab1c76ab655c1f301c2a8be2a2eb137d9138cf04969718",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Direct target for distinct class keys and distinct fields; links the operational table instead of hiding validity in storage or syntax. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared class-table well-formedness passage without searching a neighboring block for the actual definition or claim. No separate formula is used: distinct class keys and distinct listed fields are the complete local definition.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared class-table well-formedness",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 4636,
+      "end": 4771
+    },
+    "clarity": "Direct target for distinct class keys and distinct fields; links the operational table instead of hiding validity in storage or syntax. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared class-table well-formedness passage without searching a neighboring block for the actual definition or claim. No separate formula is used: distinct class keys and distinct listed fields are the complete local definition."
+  }
+}

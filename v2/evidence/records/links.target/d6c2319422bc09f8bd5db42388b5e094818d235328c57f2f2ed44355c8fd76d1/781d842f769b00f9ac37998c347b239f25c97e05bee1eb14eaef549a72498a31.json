@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "d4dcd9fc1e8f85a36f8b2a1088993e9446238fce7c7abdd098310ce83154f262",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d6c2319422bc09f8bd5db42388b5e094818d235328c57f2f2ed44355c8fd76d1",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines the binding-pattern extension locally and links unchanged expression evaluation. Removed the unnecessary forward announcement of the later preservation theorem. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given unpacking-pattern syntax passage without searching a neighboring block for the actual definition or claim. b/t/P are the locally defined syntax extension; e remains the linked original value evaluation. Ellipses in the illustrative form do not act as an omission pattern.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given unpacking-pattern syntax",
+    "definition": {
+      "path": "md/given.md",
+      "start": 21733,
+      "end": 22738
+    },
+    "clarity": "Defines the binding-pattern extension locally and links unchanged expression evaluation. Removed the unnecessary forward announcement of the later preservation theorem. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given unpacking-pattern syntax passage without searching a neighboring block for the actual definition or claim. b/t/P are the locally defined syntax extension; e remains the linked original value evaluation. Ellipses in the illustrative form do not act as an omission pattern."
+  }
+}

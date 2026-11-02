@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "bundle": "9a6a9b3957e1ed5e2299ddb14aefaa6dac6196aa071f833d92fdb2d34d9c836c",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:01136db71db4cfa667c6e3740ce6232362099005c519039ee87981eda09ab977",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:target:c606944c55fcc1af8071d20ef9cfffd91dabf71226ad1a2eab085091751daee3",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:given.unpacking",
+    "audit:unit:shared.allocated",
+    "audit:unit:shared.evaluation",
+    "audit:unit:shared.state",
+    "audit:unit:shared.typing.machine",
+    "audit:unit:shared.typing.patterns",
+    "audit:unit:shared.typing.steps",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Step evaluates the expression then applies Bind. Variable binding accepts either reference mode at a fresh variable; unpack requires an owned reference, declared class/field shape, exhaustive Transfer and fresh distinct destinations, then removes the container. Transfer preserves empty slots and reference values, matching the prose.",
+    "links": [
+      {
+        "occurrence": "shared.typing.steps:1",
+        "role": "conceptual",
+        "rationale": "The use 'configuration' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.machine is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.steps:2",
+        "role": "conceptual",
+        "rationale": "The use 'binding pattern' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.patterns is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.steps:3",
+        "role": "conceptual",
+        "rationale": "The use \"\\\\Delta\\\\vdash\\\\langle S,e\\\\rangle\\\\Downarrow\\\\langle S',r\\\\rangle\" supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.evaluation is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.steps:4",
+        "role": "conceptual",
+        "rationale": "The use \"Shared's expression evaluation\" supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.evaluation is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.steps:5",
+        "role": "conceptual",
+        "rationale": "The use 'allocated' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.allocated is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

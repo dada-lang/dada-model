@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "48b4914332c5a2c6bd0238d655dde0c8d3b36bb7fd0ff33fc1499e9d2d9c29f0",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c8516104fc1674d15869cc1933d40e82e643211b67246f3c71d9b8fe0a5b28c3",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inspected the exact target and surrounding chapter rather than inferring clarity from an anchor ID. Links table WF and sequence typing from empty Γ; final Γ is existential and completion need not destroy its objects.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.programs",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 28333,
+      "end": 28752
+    },
+    "clarity": "Links table WF and sequence typing from empty Γ; final Γ is existential and completion need not destroy its objects.",
+    "independence": "The selected passage is the destination's own subject, introduced at its start; supporting notation is linked to earlier definitions. Its landing does not require searching unrelated definitions."
+  }
+}

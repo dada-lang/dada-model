@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "a66e153279c507931f7d27370e78e2b60355f8a8b893a0b49394599685178ab2",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.identities",
+    "audit:unit:given.programs",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines tagged object identities and index in the displayed representation. n is locally quantified over natural numbers; it is not an unlinked object identifier or future semantic concept. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines tagged object identities and index in the displayed representation. n is locally quantified over natural numbers; it is not an unlinked object identifier or future semantic concept.",
+    "mathematics": "obj(n), index and the Nat domain are defined here; α and β are explicitly introduced as object identities.",
+    "links": []
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "9e290c46b29f70c5fb68617f79d9af4e743d3b6e2a5645a1234cdaceb6ef8efb",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6b62588dc91e02fb002f06c49a255ee88f8214c8d7ccbfa6ccf50802d1e5930a",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:given.collections",
+    "audit:unit:shared.objects",
+    "audit:unit:shared.programs",
+    "audit:unit:shared.references",
+    "audit:unit:shared.state",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets.",
+    "mathematics": "S/O/V/ν are introduced with their map domains; identity tagging and finite-map notation link backwards. The allocation counter is part of this representation.",
+    "links": [
+      {
+        "occurrence": "shared.state:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “tagged numbers” uses Shared reference modes and reference/slot representation; the target shared.references supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.state:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “finite-map notation” uses finite partial-map and finite-list notation; the target given.collections supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

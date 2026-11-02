@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "dfef59e1269caf2a17595a7e971ffd28323bf2e91f3cb9cd1c271e0916500c61",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.syntax",
+    "context:lean/Unique/Step.lean"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "State stores object entries, variable/Slot entries, and nextId : Nat. The tuple and table domains match these components; the finite-map presentation is for distinct keys, whose enforcement is stated separately. The counter behavior is exhibited by State.allocate in retained Step context. Notation and premises are supplied by the examined units given.classes, given.collections, given.identities, given.programs, given.slots, given.syntax.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run.",
+    "Additional containing-module snapshots were consulted for referenced definitions and example setup; proof bodies beyond what establishes the statement context were not independently audited."
+  ],
+  "supersedes": [
+    "dacd2b67ee1f515622337c6e4aa1d9db11d2849152857e071a87bff3bb04b821"
+  ]
+}

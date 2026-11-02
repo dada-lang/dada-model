@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "bb4f3ad896f970d42f17c061eef6e8154a9091fdc376f601b52f866e36ff1d77",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e2a8996e1d48de8e7921a6bfb09f14a9fa9f213b2d19363568752083dc6c81c7",
+    "audit:unit:meta.links.targets",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Target clarity is introduced here and its source inventory is linked. The paragraph states both the landing requirement and the limit of choosing an interior span, preventing span validity from replacing readability. There is no formal mathematics; byte spans and UTF-8 are input representations rather than undefined model operations.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Target clarity is introduced here and its source inventory is linked. The paragraph states both the landing requirement and the limit of choosing an interior span, preventing span validity from replacing readability.",
+    "mathematics": "There is no formal mathematics; byte spans and UTF-8 are input representations rather than undefined model operations.",
+    "links": [
+      {
+        "occurrence": "meta.links.targets:1",
+        "role": "conceptual",
+        "rationale": "A target review identifies one destination from the existing inventory."
+      }
+    ]
+  }
+}

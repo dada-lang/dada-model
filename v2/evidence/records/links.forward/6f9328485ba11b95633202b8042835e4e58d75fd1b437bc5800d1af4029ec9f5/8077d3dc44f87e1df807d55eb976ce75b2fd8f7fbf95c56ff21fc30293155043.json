@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "0eb290575f0a644fe513e39b2f0580e803c963de3f83b9ee742596d7cc5a9f0b",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cce19ef6a71eb7d3cab3d2e2c78a524748e4bdf086d09a170c945dcbe7dcef9",
+    "audit:unit:given.typing.example.views",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The first concrete view table should explain the distinction between complete knowledge and complete initialization before the general path-observation machinery. Moving the full predicate earlier also requires moving pos/neg and class-at prerequisites ahead of the first view examples; moving this example later would leave the new signed view notation without that motivating contrast. Splitting off the word full would remove the contrast the two explicitly marked rows demonstrate. Keeping this tightly bounded preview preserves the example-led introduction. The opening two sentences define full as accounting for every field recursively including empty fields, and partial as leaving some statuses unknown. The table uses only that distinction for two full-view labels; it invokes no Full judgment or proof before the formal definition.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The first concrete view table should explain the distinction between complete knowledge and complete initialization before the general path-observation machinery. Moving the full predicate earlier also requires moving pos/neg and class-at prerequisites ahead of the first view examples; moving this example later would leave the new signed view notation without that motivating contrast. Splitting off the word full would remove the contrast the two explicitly marked rows demonstrate. Keeping this tightly bounded preview preserves the example-led introduction.",
+      "signposting": "The passage explicitly calls the linked item the formal fullness predicate and says it comes after this example, immediately limiting what is needed to read the table.",
+      "signpost": {
+        "path": "md/given-typing.md",
+        "start": 5062,
+        "end": 5196
+      },
+      "minimal_use": "The opening two sentences define full as accounting for every field recursively including empty fields, and partial as leaving some statuses unknown. The table uses only that distinction for two full-view labels; it invokes no Full judgment or proof before the formal definition."
+    }
+  }
+}
