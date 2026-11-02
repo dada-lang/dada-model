@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "e6f568df0f305d8e8182a3d85d7a61244d2109f3aff2b7cbd02f324d22d1297b",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e7568deab02a8362a2cff702a90471c7db87143fb7dcec6e5fadfef6433c94d7",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit only defines the slot replacement operation; its defined-slot premise links to lookup. No auxiliary judgment is buried in this target. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given replacement of an existing slot passage without searching a neighboring block for the actual definition or claim. S[q←s] is introduced here and its lookup prerequisite is linked. It has no hidden auxiliary predicate or notation for deleting a slot.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given replacement of an existing slot",
+    "definition": {
+      "path": "md/given.md",
+      "start": 6751,
+      "end": 7011
+    },
+    "clarity": "The unit only defines the slot replacement operation; its defined-slot premise links to lookup. No auxiliary judgment is buried in this target. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given replacement of an existing slot passage without searching a neighboring block for the actual definition or claim. S[q←s] is introduced here and its lookup prerequisite is linked. It has no hidden auxiliary predicate or notation for deleting a slot."
+  }
+}

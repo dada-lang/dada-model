@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "1b00ab6e5dfc4f2ea4bd7548e610bc4130eec3812f0159e51617d1ef1f665134",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6b62588dc91e02fb002f06c49a255ee88f8214c8d7ccbfa6ccf50802d1e5930a",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Finite-map and finite-list notation now has its own direct unit before programs. A and B are explicitly the domain/codomain; the named FiniteMap structure supplies finite entries with distinct keys. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete finite partial-map and finite-list notation passage without searching a neighboring block for the actual definition or claim. The two inline constructors A↛B and List(A) are the defined notation. A and B are locally identified domains rather than unlinked operations.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "finite partial-map and finite-list notation",
+    "definition": {
+      "path": "md/given.md",
+      "start": 2196,
+      "end": 2373
+    },
+    "clarity": "Finite-map and finite-list notation now has its own direct unit before programs. A and B are explicitly the domain/codomain; the named FiniteMap structure supplies finite entries with distinct keys. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete finite partial-map and finite-list notation passage without searching a neighboring block for the actual definition or claim. The two inline constructors A↛B and List(A) are the defined notation. A and B are locally identified domains rather than unlinked operations."
+  }
+}

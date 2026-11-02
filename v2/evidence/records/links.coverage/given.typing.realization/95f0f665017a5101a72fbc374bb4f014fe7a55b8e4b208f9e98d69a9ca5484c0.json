@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "bundle": "7eb5c7bda8165502532d7e14eb5e57212eb7415286a3c849d8166e1e3b6c1b6e",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2eb211ed1af6e33db9da6c78ac0c0d04580e44a1e68ee2ae9c068c83be977c96",
+    "audit:target:69b3d55447d920253867baf2a85e8926fb42f26962b21ba3fe0049eb1951e922",
+    "audit:target:90551fc1b4acbc85cd0af545697c9e6593adef6b426431e751cb7e9684fbc7b8",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:target:ac85c564dc457ba585dd4c12afa6ab2e4d9772e96e37c160d63281e8a19edb08",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.state",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.erasure",
+    "audit:unit:given.typing.realization",
+    "audit:unit:given.typing.satisfaction",
+    "audit:unit:given.typing.well_formed_classes",
+    "audit:unit:given.typing.well_formed_types",
+    "audit:unit:given.well_formed",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here. The satisfaction clauses and erasure operator have direct mathematical links. The new realization relation, pending pair/list notation, and variable-domain equality are defined in this unit.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here.",
+    "mathematics": "The satisfaction clauses and erasure operator have direct mathematical links. The new realization relation, pending pair/list notation, and variable-domain equality are defined in this unit.",
+    "links": [
+      {
+        "occurrence": "given.typing.realization:1",
+        "role": "conceptual",
+        "rationale": "The anchor_ref occurrence 'given.well_formed' supplies the storage ownership and structural invariant while explaining storage realization of an environment and pending values. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.realization:2",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\Sigma;S\\\\models\\\\alpha:T' supplies object satisfaction of a nominal view type while explaining storage realization of an environment and pending values. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.realization:3",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\Sigma;S\\\\models\\\\alpha:T' supplies object satisfaction of a nominal view type while explaining storage realization of an environment and pending values. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.realization:4",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'well-formed typed class table' supplies well-formed typed class tables while explaining storage realization of an environment and pending values. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.realization:5",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\lfloor\\\\Sigma\\\\rfloor' supplies erasing static field types from a class table while explaining storage realization of an environment and pending values. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.realization:6",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'well formed' supplies well-formed nominal views with nonoverlapping valid entries while explaining storage realization of an environment and pending values. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.realization:7",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'normalized' supplies normalization of finite signed views while explaining storage realization of an environment and pending values. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

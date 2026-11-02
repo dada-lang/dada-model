@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "1bec19c657ea6a724024c26cf0f4c5f8a430c2bfad2829402aaa3330a66868f8",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a395ec3d77295857a26e9571e271df4e3a3c5c6ae23ac869fc9fd981731e6507",
+    "audit:unit:given.allocated",
+    "audit:unit:given.state",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table.",
+    "mathematics": "Allocated is the predicate being defined; O and dom are identified by the local S decomposition and the linked object table.",
+    "links": [
+      {
+        "occurrence": "given.allocated:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “object table” uses Given storage and its component tables/counter; the target given.state supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

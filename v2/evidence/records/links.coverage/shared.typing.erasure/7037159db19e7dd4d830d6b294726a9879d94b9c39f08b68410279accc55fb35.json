@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "f2eb90e9a83f76e77306f31fc28c9a2a58af36513e509e0b0f985ea1d7aaf43b",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:11aed29a6b82dfc70e7df19c3fad999a9f8fa3cfb7d1b2ebf35e0b7a63f92a16",
+    "audit:target:f0800758e25ea7ee9fd903ee7d59491b9696d69585d50197192201ce0604d301",
+    "audit:unit:shared.programs",
+    "audit:unit:shared.syntax",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.erasure",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links operational class table and typed Σ in its equation; removes field types without changing field order.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links operational class table and typed Σ in its equation; removes field types without changing field order.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ClassTable.erase maps each declaration to the list of its field names, dropping FieldType values while preserving order. The displayed map equation and operational-table link describe that same transformation.",
+    "links": [
+      {
+        "occurrence": "shared.typing.erasure:1",
+        "role": "conceptual",
+        "rationale": "The use 'operational class table' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.programs is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.erasure:2",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma(C)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.declarations is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

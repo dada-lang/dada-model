@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "bundle": "c6de35d25b64bd6ed5d824d9fd047826855b264b0fed099e3a17507a4594144a",
+  "reviewer": "Codex repo-contract reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMapExamples:empty_map",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.empty"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected anonymous example specializes FiniteMap.empty to Nat keys and values and concludes its entries equal []. That matches both concrete type choices and the asserted empty entry list; the example does not claim lookup behavior absent from the statement.",
+  "limitations": [
+    "This is a source-level comparison of the retained authored unit, exact cited declarations/tests and policy. It is not proof of exhaustive implementation behavior, a browser rendering test or a claim that every conservative context file was read. The reviewer authored the new audit integration/tests, then performed this separate comparison pass; no independence from that implementation is claimed."
+  ],
+  "supersedes": [
+    "080d1c97770cfc6cbc3900dcbc31a546ce29ced82de1793313428d363f1c9194"
+  ]
+}

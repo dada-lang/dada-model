@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "bundle": "d3ab9a69c2607c3078650713e5ce7814cbae4cb6d94468f1d7a6c1e3795aaa5d",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:7182ffe25a84f5fbb71fc4b99d76d34d5086f0b0437229df2fdd4106cd7c96b7",
+    "audit:target:8413a9827dd730e438bc0c027d5a8e0b0375cf3b64b8dc044fdc5fb8b250d751",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:b525b2193e0c35e677269ca5a180c068848ebca97990c0e69502745a2fc78704",
+    "audit:unit:given.syntax",
+    "audit:unit:given.typing.emptying",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.focus",
+    "audit:unit:given.typing.observations",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.take",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations. The accessibility premise links pos; the result and update cases link focusing and emptying. The new take operator and root-empty case are defined here.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations.",
+    "mathematics": "The accessibility premise links pos; the result and update cases link focusing and emptying. The new take operator and root-empty case are defined here.",
+    "links": [
+      {
+        "occurrence": "given.typing.take:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'relative place' supplies finite relative field paths and their composition while explaining taking a source place and updating its root environment entry. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.take:2",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'place expression' supplies source place expressions while explaining taking a source place and updating its root environment entry. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.take:3",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'environment description' supplies slot descriptions and typing environments while explaining taking a source place and updating its root environment entry. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.take:4",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{pos}' supplies known-initialized and known-empty path observations while explaining taking a source place and updating its root environment entry. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.take:5",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\downarrow' supplies focusing a nominal view at an initialized relative place while explaining taking a source place and updating its root environment entry. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.take:6",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence 'U[-\\\\rho]' supplies emptying a known-initialized nonempty path in a view while explaining taking a source place and updating its root environment entry. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

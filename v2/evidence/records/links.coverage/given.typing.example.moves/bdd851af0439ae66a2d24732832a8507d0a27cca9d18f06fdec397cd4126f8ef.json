@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "e1c1d829888430fc4be46fe1078c16b385161cc87e38fface3de0a2b7de2bdd5",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "audit:target:c04103a1d651b8b9ae272310c435e218a3c69ad8ef05bf3d1f49e157898c6ce6",
+    "audit:unit:given.typing.example.moves",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.statements",
+    "audit:unit:given.unpacking",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The Token/Pair/Box setup, statement rules, and operational unpacking each link to their definitions. The example table supplies all intermediate updated and fresh variable types. There is no inference-rule mathematics here. The table uses literal source/type notation from its linked declarations and rules, and defines 0 in prose.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The Token/Pair/Box setup, statement rules, and operational unpacking each link to their definitions. The example table supplies all intermediate updated and fresh variable types.",
+    "mathematics": "There is no inference-rule mathematics here. The table uses literal source/type notation from its linked declarations and rules, and defines 0 in prose.",
+    "links": [
+      {
+        "occurrence": "given.typing.example.moves:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'declarations above' supplies the Token/Pair/Box declarations and their view examples while explaining the nested move and unpacking example. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.example.moves:2",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'statement rules' supplies typing a let statement by expression and binding composition while explaining the nested move and unpacking example. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.example.moves:3",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'Unpacking' supplies the extended transition relation including unpacking while explaining the nested move and unpacking example. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

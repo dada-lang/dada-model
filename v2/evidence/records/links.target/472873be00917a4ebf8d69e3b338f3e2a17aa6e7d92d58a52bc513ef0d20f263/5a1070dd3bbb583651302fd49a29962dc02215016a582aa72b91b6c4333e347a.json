@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "ee83f4effee6bdd405bcba0e8e9d77f3337eb80bc6b6edc51a479540d42224fb",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:472873be00917a4ebf8d69e3b338f3e2a17aa6e7d92d58a52bc513ef0d20f263",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given zero-or-more-step execution passage without searching a neighboring block for the actual definition or claim. The one-step premise links the Step definition. Reflexivity and recursion define the starred execution relation in place.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given zero-or-more-step execution",
+    "definition": {
+      "path": "md/given.md",
+      "start": 12850,
+      "end": 13226
+    },
+    "clarity": "Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given zero-or-more-step execution passage without searching a neighboring block for the actual definition or claim. The one-step premise links the Step definition. Reflexivity and recursion define the starred execution relation in place."
+  }
+}

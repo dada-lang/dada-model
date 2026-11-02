@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "4ce4081173f5594298e11311744f4e3dbb2ddb80b1e7776d6878ee2871dd866f",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:df2da7caa3d89bc04ce4d503cad0e61b7f1272ee7dabab94f8f5a29def49bc73",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines class and field names, field order and untyped constructor fields. It does not assume Shared typing field permissions. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared class declarations passage without searching a neighboring block for the actual definition or claim. The declaration grammar introduces C, f, d and arity n. Field type permissions are absent at this operational layer.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared class declarations",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 2329,
+      "end": 2641
+    },
+    "clarity": "Defines class and field names, field order and untyped constructor fields. It does not assume Shared typing field permissions. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared class declarations passage without searching a neighboring block for the actual definition or claim. The declaration grammar introduces C, f, d and arity n. Field type permissions are absent at this operational layer."
+  }
+}

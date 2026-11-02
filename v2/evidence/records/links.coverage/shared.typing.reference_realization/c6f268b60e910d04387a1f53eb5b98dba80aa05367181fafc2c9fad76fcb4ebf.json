@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "bundle": "9eb1b075322fb07f16318ec7deb65caacdeea62e8fbbb548129e8570f8e070f0",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:01136db71db4cfa667c6e3740ce6232362099005c519039ee87981eda09ab977",
+    "audit:target:4ba614a624608047955c9ae8f552242a0a12fdc9b4cec2848e20eb9b3287e39c",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:6ae020898c20f3d892b21e9251af69ba2058cb06a104349ed5e92d1e155dc6f0",
+    "audit:target:7ca3252c424052cffbaaf2fb3da6b66220637dbf063c6038d7142db073228302",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:target:ebfba957e71355eb935d98a00e36f333b32109122d87727b953f4a40601942fe",
+    "audit:target:f29489e967a6cadff5984ff843d6ff1c223b21d70b9274d19a823475227234f8",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.satisfaction",
+    "audit:unit:shared.allocated",
+    "audit:unit:shared.typing.composition",
+    "audit:unit:shared.typing.declared_permission",
+    "audit:unit:shared.typing.mode",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.observations",
+    "audit:unit:shared.typing.read",
+    "audit:unit:shared.typing.reference_realization",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links read, normalized types, mode, allocation, pos/neg, valid paths, declared permission and composition. Its three conditions define access from a reference, including hidden routes.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links read, normalized types, mode, allocation, pos/neg, valid paths, declared permission and composition. Its three conditions define access from a reference, including hidden routes.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Satisfies requires matching root mode/class, allocated correctly classed results for all positive paths, empty slots for negative paths, and composed declared modes on every valid inhabited read, including paths omitted by the view. The three conditions preserve the distinction between a stored mode and effective path mode.",
+    "links": [
+      {
+        "occurrence": "shared.typing.reference_realization:1",
+        "role": "conceptual",
+        "rationale": "The use 'reference-path read' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.read is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.reference_realization:2",
+        "role": "conceptual",
+        "rationale": "The use 'normalized type' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.normalization is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.reference_realization:3",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{mode}(\\\\pi)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.mode is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.reference_realization:4",
+        "role": "conceptual",
+        "rationale": "The use 'allocated object' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.allocated is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.reference_realization:5",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{pos}_{\\\\Sigma}(T)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.reference_realization:6",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{neg}_{\\\\Sigma}(T)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.reference_realization:7",
+        "role": "conceptual",
+        "rationale": "The use 'valid' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.class_at is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.reference_realization:8",
+        "role": "conceptual",
+        "rationale": "The use 'path read' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.read is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.reference_realization:9",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{mode}' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.mode is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.reference_realization:10",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{decl}_{\\\\Sigma}(C,\\\\rho)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.declared_permission is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.reference_realization:11",
+        "role": "conceptual",
+        "rationale": "The use 'composes' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.composition is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

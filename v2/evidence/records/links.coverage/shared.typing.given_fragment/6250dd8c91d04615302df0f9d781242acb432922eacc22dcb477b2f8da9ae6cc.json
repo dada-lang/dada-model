@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "bundle": "8dfb271d1693992fc46b06035f5e5f64d7b6f09e91b20858286d9c98adf55f23",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:target:6da213a18937e4126d7e96483f8007dabd404477df24caffc5a0862001bcce8b",
+    "audit:target:7b9572fe001e266c185e795f8b2fb6d9e4095389cfc90d0fae7eb97acf562bca",
+    "audit:target:a2dba596236442a6114b2c590477d26ad6ec94d10e80f673b409f34c1bc2449b",
+    "audit:target:c04103a1d651b8b9ae272310c435e218a3c69ad8ef05bf3d1f49e157898c6ce6",
+    "audit:unit:given.typing.statements",
+    "audit:unit:given.unpacking",
+    "audit:unit:shared.correspondence",
+    "audit:unit:shared.embedding",
+    "audit:unit:shared.typing.finished",
+    "audit:unit:shared.typing.given_fragment",
+    "audit:unit:shared.typing.outcomes",
+    "audit:unit:shared.typing.patterns",
+    "audit:unit:shared.typing.sequences",
+    "audit:unit:shared.typing.statements",
+    "audit:unit:shared.typing.steps",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links Given typing/unpacking, runtime embedding, Shared steps, Finished, and prior base correspondence. The all-given and no-give-share restrictions are local and explicit.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Given typing/unpacking, runtime embedding, Shared steps, Finished, and prior base correspondence. The all-given and no-give-share restrictions are local and explicit.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. given_fragment relates expressions, patterns, statements, sequences and programs under embedding, reflects arbitrary extended Shared successors/traces into Given, and preserves/reflects completion. The prose's restricted given fragment and unpacking correspondence are covered; it does not claim the reverse for programs using sharing.",
+    "links": [
+      {
+        "occurrence": "shared.typing.given_fragment:1",
+        "role": "conceptual",
+        "rationale": "The use \"Given's rules\" supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.statements is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.given_fragment:2",
+        "role": "conceptual",
+        "rationale": "The use 'unpacking extension' supplies a concept, equation, or example setup needed here; md/given.md#claim-given.unpacking is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.given_fragment:3",
+        "role": "conceptual",
+        "rationale": "The use 'Embedding' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.embedding is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.given_fragment:4",
+        "role": "conceptual",
+        "rationale": "The use 'statement transitions' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.steps is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.given_fragment:5",
+        "role": "conceptual",
+        "rationale": "The use 'completion' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.finished is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.given_fragment:6",
+        "role": "conceptual",
+        "rationale": "The use 'earlier correspondence' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.correspondence is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

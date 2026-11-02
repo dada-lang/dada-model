@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "d4d9db0555b604e91b4f760998e77c6eec02d9a097e4c616ecb691de7b909cef",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:unit:given.allocated",
+    "audit:unit:given.single_owner",
+    "audit:unit:given.well_formed",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links WF and allocated objects; owning occurrences are counted explicitly rather than conflated with whole paths. It invokes no new counting operator. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links WF and allocated objects; owning occurrences are counted explicitly rather than conflated with whole paths. It invokes no new counting operator.",
+    "mathematics": "The prose count is of immediately occupied owner slots, with WF and allocated objects linked. No unnamed path-count equation is used.",
+    "links": [
+      {
+        "occurrence": "given.single_owner:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “well-formed state” uses Given structural storage well-formedness; the target given.well_formed supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.single_owner:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “allocated object” uses Given allocation as object-table membership; the target given.allocated supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

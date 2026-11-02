@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "885b9d7ab473b97408f4ec5884cfab8ed1ac568290df8ee53fe183479c16296c",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared place, value and statement syntax passage without searching a neighboring block for the actual definition or claim. p/e/t introduce the extended grammar; the give operation has a direct link and give-share is explained as its result conversion.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared place, value and statement syntax",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 2821,
+      "end": 3870
+    },
+    "clarity": "Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared place, value and statement syntax passage without searching a neighboring block for the actual definition or claim. p/e/t introduce the extended grammar; the give operation has a direct link and give-share is explained as its result conversion."
+  }
+}

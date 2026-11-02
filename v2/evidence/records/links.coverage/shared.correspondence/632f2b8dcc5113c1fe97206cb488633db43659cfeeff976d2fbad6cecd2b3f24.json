@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "bundle": "15a452d408c8a0b16ca90ef388c08588b176345a0eda24636ac793df4e7c6f90",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:6da213a18937e4126d7e96483f8007dabd404477df24caffc5a0862001bcce8b",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "audit:unit:given.steps",
+    "audit:unit:shared.correspondence",
+    "audit:unit:shared.embedding",
+    "audit:unit:shared.steps",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links E in prose and both languages’ Step judgments in the directional formulas; the reverse quantification over arbitrary Shared successors is explicit. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links E in prose and both languages’ Step judgments in the directional formulas; the reverse quantification over arbitrary Shared successors is explicit.",
+    "mathematics": "E is linked in prose, and every Step formula links the correct language-specific transition definition; the arbitrary Shared successor d is locally quantified.",
+    "links": [
+      {
+        "occurrence": "shared.correspondence:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “embedding” uses the componentwise Given-to-Shared embedding; the target shared.embedding supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.correspondence:2",
+        "role": "conceptual",
+        "rationale": "The formula \\Delta\\vdash c\\longrightarrow c' uses Given statement stepping; the destination given.steps supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.correspondence:3",
+        "role": "conceptual",
+        "rationale": "The formula E(\\Delta)\\vdash E(c)\\longrightarrow E(c') uses Shared statement stepping; the destination shared.steps supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.correspondence:4",
+        "role": "conceptual",
+        "rationale": "The formula E(\\Delta)\\vdash E(c)\\longrightarrow d uses Shared statement stepping; the destination shared.steps supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.correspondence:5",
+        "role": "conceptual",
+        "rationale": "The formula \\Delta\\vdash c\\longrightarrow c' uses Given statement stepping; the destination given.steps supplies that operation or result."
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "bfe639b0624413590d548caee351619eaae624178b76db2baa3c2114dff17075",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f518fc51a45f1599c96e5cca147f3048043bee6a5718ef54dd66d238eb0b8dcf",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Step in prose and the transitive rule; defines finite traces with recursive occurrences kept local. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared zero-or-more-step execution passage without searching a neighboring block for the actual definition or claim. The Step premise links its definition; recursive starred arrows and reflexivity define the closure here.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared zero-or-more-step execution",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 13697,
+      "end": 14035
+    },
+    "clarity": "Links Step in prose and the transitive rule; defines finite traces with recursive occurrences kept local. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared zero-or-more-step execution passage without searching a neighboring block for the actual definition or claim. The Step premise links its definition; recursive starred arrows and reflexivity define the closure here."
+  }
+}

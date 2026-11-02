@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "bb17f93d62d0e9fe34634607f40609af6c21ba7166364ed6a0a598e355d788c1",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8d81c7b4f11aeea46a624df3356f9dcaa7eda85398e02854dbe437303e0c69ea",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inspected the exact target and surrounding chapter rather than inferring clarity from an anchor ID. Links read, normalized types, mode, allocation, pos/neg, valid paths, declared permission and composition. Its three conditions define access from a reference, including hidden routes.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.reference_realization",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 30291,
+      "end": 31751
+    },
+    "clarity": "Links read, normalized types, mode, allocation, pos/neg, valid paths, declared permission and composition. Its three conditions define access from a reference, including hidden routes.",
+    "independence": "The selected passage is the destination's own subject, introduced at its start; supporting notation is linked to earlier definitions. Its landing does not require searching unrelated definitions."
+  }
+}

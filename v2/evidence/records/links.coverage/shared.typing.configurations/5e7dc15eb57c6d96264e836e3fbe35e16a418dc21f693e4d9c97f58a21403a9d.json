@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "bundle": "9bda701c48d7139f2c7811cdf493ccc90b660fbdfa78d2eb840867120e7e0cc5",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:79283484adee6a2142c00e38e1f1accde4d861bb79aa4ecbf735a13e187ee7c9",
+    "audit:target:985201bc93a5266f348c3a476dcf079ac55befb8aeed7289dd70aee7694c722c",
+    "audit:target:c606944c55fcc1af8071d20ef9cfffd91dabf71226ad1a2eab085091751daee3",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:unit:shared.typing.configurations",
+    "audit:unit:shared.typing.machine",
+    "audit:unit:shared.typing.realization",
+    "audit:unit:shared.typing.sequences",
+    "audit:unit:shared.typing.steps",
+    "audit:unit:shared.typing.well_formed_classes",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links extended machine, storage realization, sequence typing and table WF in formula/prose. No finished/stuck definition hides in this unit.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links extended machine, storage realization, sequence typing and table WF in formula/prose. No finished/stuck definition hides in this unit.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ConfigurationTyped existentially chooses a current environment realizing storage with no pending values and typing the remaining sequence to the fixed final environment. Realizes supplies class well-formedness; the equation and explanation preserve this distinction between current and final environments.",
+    "links": [
+      {
+        "occurrence": "shared.typing.configurations:1",
+        "role": "conceptual",
+        "rationale": "The use 'configuration' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.machine is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.configurations:2",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma;\\\\Gamma\\\\models(S;[])' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.realization is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.configurations:3",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma;\\\\Gamma\\\\vdash P\\\\Rightarrow\\\\Gamma_f' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.sequences is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.configurations:4",
+        "role": "conceptual",
+        "rationale": "The use 'storage realization' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.realization is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.configurations:5",
+        "role": "conceptual",
+        "rationale": "The use 'statement-sequence typing' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.sequences is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.configurations:6",
+        "role": "conceptual",
+        "rationale": "The use 'well formed' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.well_formed_classes is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

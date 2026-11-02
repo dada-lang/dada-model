@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "382449aafc4cbd720d650d76faf5d2002405b191138d54225e5bbfa1a14f84f3",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:83be7fbcf36059917cb21e26e5a9bdcd7b053305236cec331e30f20d2fee917b",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The target begins with an italicized defining term rather than a later shield-rendering detail. The opening paragraph supplies permitted characters, shared namespace and invalid-reference behavior.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Book identity",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 601,
+      "end": 991
+    },
+    "clarity": "The target begins with an italicized defining term rather than a later shield-rendering detail.",
+    "independence": "The opening paragraph supplies permitted characters, shared namespace and invalid-reference behavior."
+  }
+}

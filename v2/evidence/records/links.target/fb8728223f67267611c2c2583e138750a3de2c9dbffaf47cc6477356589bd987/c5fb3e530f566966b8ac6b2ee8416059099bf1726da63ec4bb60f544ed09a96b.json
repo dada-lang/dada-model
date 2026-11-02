@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "bf4f83327cae92d3e01efcea9739a2e851e17c20a83596f1752fe12f3bf0ee59",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:fb8728223f67267611c2c2583e138750a3de2c9dbffaf47cc6477356589bd987",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The box field-move execution example is the explicit subject of this example block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the Box field-move execution example passage without searching a neighboring block for the actual definition or claim. The Token/Box declarations bind example names; the source code uses known give syntax, and its execution/completion references link to the corresponding definitions.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the Box field-move execution example",
+    "definition": {
+      "path": "md/given.md",
+      "start": 14760,
+      "end": 15462
+    },
+    "clarity": "The box field-move execution example is the explicit subject of this example block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the Box field-move execution example passage without searching a neighboring block for the actual definition or claim. The Token/Box declarations bind example names; the source code uses known give syntax, and its execution/completion references link to the corresponding definitions."
+  }
+}

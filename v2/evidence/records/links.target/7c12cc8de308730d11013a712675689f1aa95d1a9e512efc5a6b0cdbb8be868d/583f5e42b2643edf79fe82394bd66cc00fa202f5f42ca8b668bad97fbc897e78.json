@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "820118d6f30840be3cabde06b68ec00f5f18af5f09ae7779066851bea9a4a705",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inspected the exact target and surrounding chapter rather than inferring clarity from an anchor ID. Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.bindings",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 24818,
+      "end": 26166
+    },
+    "clarity": "Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment.",
+    "independence": "The selected passage is the destination's own subject, introduced at its start; supporting notation is linked to earlier definitions. Its landing does not require searching unrelated definitions."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "4fefcf65182109f099bfaad8a3833cedb31eacc0c84fa9fd9f79d0950f2eb588",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:11aed29a6b82dfc70e7df19c3fad999a9f8fa3cfb7d1b2ebf35e0b7a63f92a16",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.well_formed_classes",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links typed table and directly states key/field uniqueness and declared nominal targets.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links typed table and directly states key/field uniqueness and declared nominal targets.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ClassTable.WellFormed requires distinct class keys, distinct field keys per declaration, and membership of each field class in the class table. These are exactly the three listed conditions; no constructor initialization requirement is added here.",
+    "links": [
+      {
+        "occurrence": "shared.typing.well_formed_classes:1",
+        "role": "conceptual",
+        "rationale": "The use 'typed class table' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.declarations is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

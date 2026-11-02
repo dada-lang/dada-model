@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "a4b0d4daaa92f7b5a596f16647641e8c00002a6b224bf15b82c9ce415e3c2594",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4ba614a624608047955c9ae8f552242a0a12fdc9b4cec2848e20eb9b3287e39c",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:shared.typing.composition",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.types",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. RawType.normalize supplies given at a nominal leaf and composes each outer permission with the normalized inner permission. normalize changes only the nominal view using Given normalization. This matches the two equations and the single outer-permission representation; nested shared is absorbed.",
+    "links": [
+      {
+        "occurrence": "shared.typing.normalization:1",
+        "role": "conceptual",
+        "rationale": "The use 'composition' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.composition is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.normalization:2",
+        "role": "conceptual",
+        "rationale": "The use \"\\\\pi\\\\pi'\" supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.composition is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.normalization:3",
+        "role": "conceptual",
+        "rationale": "The use \"Given's view normalization\" supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.normalization is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

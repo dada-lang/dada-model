@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "bundle": "52a4d8053f460adffa753c04658c8ec0f3f9bf2a893969422af797c11b6796db",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:11aed29a6b82dfc70e7df19c3fad999a9f8fa3cfb7d1b2ebf35e0b7a63f92a16",
+    "audit:target:4ba614a624608047955c9ae8f552242a0a12fdc9b4cec2848e20eb9b3287e39c",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:aa210780e33166914e582e1f2aa597e7876855cb4a8137adc65a043a6c43be2f",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.views",
+    "audit:unit:shared.typing.composition",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.declared_permission",
+    "audit:unit:shared.typing.nominal_table",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. declaredPermission returns given at the empty path and recursively looks up a field's permission/class, composing its permission with the suffix. Lookup failure makes the result absent. The recursive equations and validity condition use the same nominal path domain.",
+    "links": [
+      {
+        "occurrence": "shared.typing.declared_permission:1",
+        "role": "conceptual",
+        "rationale": "The use 'relative path' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.paths is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.declared_permission:2",
+        "role": "conceptual",
+        "rationale": "The use 'permission composition' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.composition is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.declared_permission:3",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma(C)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.declarations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.declared_permission:4",
+        "role": "conceptual",
+        "rationale": "The use 'paths valid from' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.class_at is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.declared_permission:5",
+        "role": "conceptual",
+        "rationale": "The use 'nominal class table' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.nominal_table is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

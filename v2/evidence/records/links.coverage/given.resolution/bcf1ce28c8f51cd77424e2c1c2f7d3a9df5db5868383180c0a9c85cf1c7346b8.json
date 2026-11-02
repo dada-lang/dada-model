@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "bundle": "05c521361958898f4ac0a67059f39baab26151823ea83215f6476cdefa3e519e",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:27b635e54c096761d195bd023a2b9ff0f50da07131758a43c3e240e9dc3b2ab7",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:49d19d3e6321b8309608988f0dba1cb54f8a069b5a7946d9f117d0fb274166d9",
+    "audit:unit:given.lookup",
+    "audit:unit:given.resolution",
+    "audit:unit:given.storage_places",
+    "audit:unit:given.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment.",
+    "mathematics": "The lookup symbols in both inference-rule premises link to given.lookup. Resolve occurrences in premise/conclusion recursively define this same judgment.",
+    "links": [
+      {
+        "occurrence": "given.resolution:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “route” uses Given place, value and statement syntax; the target given.syntax supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.resolution:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “storage place” uses direct Given storage places; the target given.storage_places supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.resolution:3",
+        "role": "conceptual",
+        "rationale": "The formula S[x] uses Given partial slot lookup; the destination given.lookup supplies that operation or result."
+      },
+      {
+        "occurrence": "given.resolution:4",
+        "role": "conceptual",
+        "rationale": "The formula S[\\beta.f] uses Given partial slot lookup; the destination given.lookup supplies that operation or result."
+      },
+      {
+        "occurrence": "given.resolution:5",
+        "role": "conceptual",
+        "rationale": "The prose reference “Undefined lookup” uses Given partial slot lookup; the target given.lookup supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

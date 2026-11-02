@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "e9dec49eb498601e6c70bd25c467d8e809a61310dfdbba7ece01af028da301c9",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.example.views unit has a visible identity and directly presents the Token/Pair/Box declarations and their view examples. The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The table contains literal view notation, not an unlinked equation or inference judgment. Full versus partial is explained before the table and formally linked.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the Token/Pair/Box declarations and their view examples",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 5198,
+      "end": 5320
+    },
+    "clarity": "The named given.typing.example.views unit has a visible identity and directly presents the Token/Pair/Box declarations and their view examples. The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The table contains literal view notation, not an unlinked equation or inference judgment. Full versus partial is explained before the table and formally linked."
+  }
+}

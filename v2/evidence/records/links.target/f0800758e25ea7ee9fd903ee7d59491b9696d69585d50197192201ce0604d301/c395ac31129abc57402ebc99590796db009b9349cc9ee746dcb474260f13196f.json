@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "9d8c27c396eca9b3cf30c209bffb7b7acb3f97b12e999f306ca1b2c4e96d4fb0",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f0800758e25ea7ee9fd903ee7d59491b9696d69585d50197192201ce0604d301",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links statements, class declarations and finite-map/list convention. Program/table/sequence grammar is here; table WF was separated for direct targeting. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared program, class-table and statement-sequence grammar passage without searching a neighboring block for the actual definition or claim. The Δ/P/Π grammar introduces its three syntactic components; finite maps/lists, statement syntax and class declarations each have links.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared program, class-table and statement-sequence grammar",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 4029,
+      "end": 4521
+    },
+    "clarity": "Links statements, class declarations and finite-map/list convention. Program/table/sequence grammar is here; table WF was separated for direct targeting. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared program, class-table and statement-sequence grammar passage without searching a neighboring block for the actual definition or claim. The Δ/P/Π grammar introduces its three syntactic components; finite maps/lists, statement syntax and class declarations each have links."
+  }
+}

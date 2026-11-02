@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "ebf2286b0f2d7a3566fd3efa7882cae2975307de42926d6b5ed70d893152c419",
+  "reviewer": "Codex repo-contract reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/graph.rs:args",
+    "rust:mdbook-dada/src/graph.rs:edge_target",
+    "rust:mdbook-dada/src/graph.rs:identifier",
+    "rust:mdbook-dada/src/graph.rs:label",
+    "rust:mdbook-dada/src/graph.rs:parse",
+    "test:mdbook-dada/src/graph.rs:cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically",
+    "test:mdbook-dada/src/graph.rs:lease_tests::leases_join_edges_and_shleases_target_objects",
+    "test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices",
+    "test:mdbook-dada/src/graph.rs:tests::bad_facts_fail_instead_of_silently_changing_the_graph",
+    "test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds",
+    "test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved",
+    "test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_array_size_boundary_preserves_all_slots",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges",
+    "unit:meta.syntax.heap.nodes",
+    "unit:meta.syntax.heap.validation"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "parse checks unique declarations/assignments, projections, target existence and the 64-slot array limit. edge_target rejects variable-store targets and requires leases to name initialized owned/leased edges. Tests deliberately allow ownership cycles/conflicting owners while rejecting malformed graph facts. Thus the text correctly promises structural diagram validation, not language well-formedness.",
+  "limitations": [
+    "This is a source-level comparison of the retained authored unit, exact cited declarations/tests and policy. It is not proof of exhaustive implementation behavior, a browser rendering test or a claim that every conservative context file was read. The reviewer authored the new audit integration/tests, then performed this separate comparison pass; no independence from that implementation is claimed."
+  ],
+  "supersedes": [
+    "b7c648ecd82dd27791e86058b2915eaf6f32ee537f131429d09eb7a66823f01e"
+  ]
+}

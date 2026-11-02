@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "5557291b8164694a69a6fb9dd35c6ea2bacb7fdd7ff860419d8b3c600de1388b",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:69b3d55447d920253867baf2a85e8926fb42f26962b21ba3fe0049eb1951e922",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.well_formed_types unit has a visible identity and directly presents well-formed nominal views with nonoverlapping valid entries. Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. C is the locally named base class; the C.{f,-f.g} notation is a literal counterexample to the condition, not a new operation.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "well-formed nominal views with nonoverlapping valid entries",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 4309,
+      "end": 4793
+    },
+    "clarity": "The named given.typing.well_formed_types unit has a visible identity and directly presents well-formed nominal views with nonoverlapping valid entries. Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. C is the locally named base class; the C.{f,-f.g} notation is a literal counterexample to the condition, not a new operation."
+  }
+}

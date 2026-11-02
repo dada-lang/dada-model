@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "829ba49f4d4c2fb7ac2a2f12203a621b919e53fd975cf921842dc0c47baa0163",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5622717387ebfdf87c5d3f86c337a128b567967f67969be864ff86c108809a19",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The shared allocated/live equivalence is the explicit subject of this theorem block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the Shared allocated/live equivalence passage without searching a neighboring block for the actual definition or claim. WF, Live and Allocated are individually linked in the equivalence formula.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the Shared allocated/live equivalence",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 19906,
+      "end": 20373
+    },
+    "clarity": "The shared allocated/live equivalence is the explicit subject of this theorem block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the Shared allocated/live equivalence passage without searching a neighboring block for the actual definition or claim. WF, Live and Allocated are individually linked in the equivalence formula."
+  }
+}

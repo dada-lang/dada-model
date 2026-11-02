@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "4ed7cf7e5c21bdcca38831a9e9046c7576588d8a1e7afe85539c0fe28cb74b40",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:unit:given.programs",
+    "audit:unit:given.well_formed_classes",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly.",
+    "mathematics": "There is no separate formula: the two distinctness conditions directly define the named property.",
+    "links": [
+      {
+        "occurrence": "given.well_formed_classes:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “class table” uses Given programs, class tables and statement sequences; the target given.programs supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

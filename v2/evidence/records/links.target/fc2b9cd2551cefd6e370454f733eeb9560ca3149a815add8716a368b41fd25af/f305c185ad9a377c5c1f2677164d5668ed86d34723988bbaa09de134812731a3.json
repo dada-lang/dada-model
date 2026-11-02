@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "2f08e47c10344f4ec601b880c3a8159d779d9c205ccd055741505736ce728b65",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:fc2b9cd2551cefd6e370454f733eeb9560ca3149a815add8716a368b41fd25af",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared partial slot lookup passage without searching a neighboring block for the actual definition or claim. S[x] and S[α.f] are defined by the two partial equations. Storage decomposition and defined-slot conditions are local; q and references are linked.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared partial slot lookup",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 7579,
+      "end": 8126
+    },
+    "clarity": "Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared partial slot lookup passage without searching a neighboring block for the actual definition or claim. S[x] and S[α.f] are defined by the two partial equations. Storage decomposition and defined-slot conditions are local; q and references are linked."
+  }
+}

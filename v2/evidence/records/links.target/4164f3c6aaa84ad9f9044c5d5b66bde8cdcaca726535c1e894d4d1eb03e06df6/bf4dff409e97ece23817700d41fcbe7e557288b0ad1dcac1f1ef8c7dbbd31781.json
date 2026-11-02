@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "5d8c500aa05d9232d49f879986a1214250e1e1a0331c3513f1b1495abbaba83c",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4164f3c6aaa84ad9f9044c5d5b66bde8cdcaca726535c1e894d4d1eb03e06df6",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inspected the exact target and surrounding chapter rather than inferring clarity from an anchor ID. This target is an explicit example unit, not a hidden definition; links to it are checked as references to its stated result or concrete scenario.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.example.arguments",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 18902,
+      "end": 19574
+    },
+    "clarity": "This target is an explicit example unit, not a hidden definition; links to it are checked as references to its stated result or concrete scenario.",
+    "independence": "The selected passage is the destination's own subject, introduced at its start; supporting notation is linked to earlier definitions. Its landing does not require searching unrelated definitions."
+  }
+}

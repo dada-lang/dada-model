@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "16e0489daf996d7a6ae0137e21bc01ab2601d1877eefd1a90d414c2ec086c06b",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6b62588dc91e02fb002f06c49a255ee88f8214c8d7ccbfa6ccf50802d1e5930a",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:df2da7caa3d89bc04ce4d503cad0e61b7f1272ee7dabab94f8f5a29def49bc73",
+    "audit:unit:given.collections",
+    "audit:unit:given.programs",
+    "audit:unit:shared.classes",
+    "audit:unit:shared.programs",
+    "audit:unit:shared.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links statements, class declarations and finite-map/list convention. Program/table/sequence grammar is here; table WF was separated for direct targeting. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links statements, class declarations and finite-map/list convention. Program/table/sequence grammar is here; table WF was separated for direct targeting.",
+    "mathematics": "The Δ/P/Π grammar introduces its three syntactic components; finite maps/lists, statement syntax and class declarations each have links.",
+    "links": [
+      {
+        "occurrence": "shared.programs:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “statements” uses Shared place, value and statement syntax; the target shared.syntax supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.programs:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “finite-map and list notation” uses finite partial-map and finite-list notation; the target given.collections supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.programs:3",
+        "role": "conceptual",
+        "rationale": "The prose reference “class declaration” uses Shared class declarations; the target shared.classes supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

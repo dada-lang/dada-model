@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "a0fd280a8f67c568b917f8b84fad163612f93ccdfa22193643dcd4874ac86099",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6da213a18937e4126d7e96483f8007dabd404477df24caffc5a0862001bcce8b",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the Given single-variable grammar, storage/program/configuration, and Shared reference representation. Defines E componentwise in one translation unit. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the componentwise Given-to-Shared embedding passage without searching a neighboring block for the actual definition or claim. E is introduced by its componentwise definitions; state/program/configuration and reference representation have direct links to the respective layers.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the componentwise Given-to-Shared embedding",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 22210,
+      "end": 23221
+    },
+    "clarity": "Links the Given single-variable grammar, storage/program/configuration, and Shared reference representation. Defines E componentwise in one translation unit. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the componentwise Given-to-Shared embedding passage without searching a neighboring block for the actual definition or claim. E is introduced by its componentwise definitions; state/program/configuration and reference representation have direct links to the respective layers."
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "bundle": "fe505c65562e37451f19ca679935dbc58b3ce21b65aac0488337ca7ff4a0a3eb",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2e73a816de64641201d0a60f2df58d7490dcf3352f6e52f13591043ab00ec548",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:future.path_permissions",
+    "audit:unit:given.typing.views",
+    "audit:unit:shared.give",
+    "audit:unit:shared.resolution",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation.",
+    "mathematics": "P and T are locally bound; the displayed identity and absorption laws link through the preceding explanation to current normalization, while the path-dependent extension is explicitly unsettled. No later borrowing formalism is assumed.",
+    "links": [
+      {
+        "occurrence": "future.path_permissions:1",
+        "role": "conceptual",
+        "rationale": "The use 'paths rooted at bindings' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.syntax is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "future.path_permissions:2",
+        "role": "conceptual",
+        "rationale": "The use 'paths are relative' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.paths is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "future.path_permissions:3",
+        "role": "conceptual",
+        "rationale": "The use 'typing environment' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.environments is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "future.path_permissions:4",
+        "role": "conceptual",
+        "rationale": "The use 'effective permission of a field path' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.focus is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "future.path_permissions:5",
+        "role": "conceptual",
+        "rationale": "The use 'identity and shared-absorption laws' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.normalization is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

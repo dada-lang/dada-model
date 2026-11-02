@@ -50,9 +50,11 @@ impl Input {
     /// Context snapshots are available to reviewers, without asserting that every
     /// unrelated declaration or proof in a conservatively captured file was read.
     pub fn requires_examination(&self) -> bool {
-        ["unit:", "lean:", "rust:", "test:", "policy:", "extra:"]
-            .iter()
-            .any(|prefix| self.key.starts_with(prefix))
+        [
+            "unit:", "lean:", "rust:", "test:", "policy:", "extra:", "audit:",
+        ]
+        .iter()
+        .any(|prefix| self.key.starts_with(prefix))
     }
 }
 
@@ -206,11 +208,7 @@ impl Inventory {
         // strict about free-floating prose. Legacy directives are not units.
         required.extend(units.keys().cloned());
         for unit in units.values() {
-            for dependency in unit
-                .uses
-                .iter()
-                .chain(units::required_linked_ids(&unit.body)?.iter())
-            {
+            for dependency in &unit.uses {
                 ensure!(
                     units.contains_key(dependency),
                     "{}: {} uses missing unit {dependency}",
@@ -222,14 +220,18 @@ impl Inventory {
         for path in config.policies.iter().chain(&config.context) {
             input_path(&root, path)?;
         }
-        Ok(Self {
+        let inventory = Self {
             root,
             config,
             source_configuration,
             units,
             required,
             sources,
-        })
+        };
+        // Resolve authored URLs against actual chapter locations. Checking only
+        // global IDs misses wrong-chapter links and excludes legacy anchors.
+        crate::links::Links::build(&inventory)?;
+        Ok(inventory)
     }
 
     fn file_input(&self, key: String, name: &str) -> Result<Input> {
@@ -326,8 +328,34 @@ impl Inventory {
 
     /// Derive required snapshots from current sources, never from a review record.
     pub fn inputs(&self, id: &str) -> Result<Vec<Input>> {
+        if crate::link_audit::is_subject(id) {
+            return crate::link_audit::inputs(self, id);
+        }
         let mut inputs = BTreeMap::new();
         self.add_unit(id, &mut inputs, &mut BTreeSet::new())?;
+        for input in self.common_inputs()? {
+            inputs.insert(input.key.clone(), input);
+        }
+        if inputs.keys().any(|key| key.starts_with("lean:")) {
+            let lean_root = self.source_configuration.lean_root(&self.root)?;
+            for path in files(&self.root, &lean_root, "lean")? {
+                let name = relative_path(&self.root, &path)?;
+                let input = self.file_input(format!("context:{name}"), &name)?;
+                inputs.insert(input.key.clone(), input);
+            }
+            for path in ["lean-toolchain", "lakefile.toml", "lake-manifest.json"] {
+                let name = relative_path(&self.root, &lean_root.join(path))?;
+                let input = self.file_input(format!("context:{name}"), &name)?;
+                inputs.insert(input.key.clone(), input);
+            }
+        }
+        Ok(inputs.into_values().collect())
+    }
+
+    /// Shared freshness inputs for correspondence and editorial audits. The
+    /// subject-specific derivation supplies the material the reviewer examines.
+    pub fn common_inputs(&self) -> Result<Vec<Input>> {
+        let mut inputs = BTreeMap::new();
         for path in [
             "spec.json",
             "book.toml",
@@ -366,19 +394,6 @@ impl Inventory {
         ] {
             for path in paths {
                 let input = self.file_input(format!("{prefix}:{path}"), path)?;
-                inputs.insert(input.key.clone(), input);
-            }
-        }
-        if inputs.keys().any(|key| key.starts_with("lean:")) {
-            let lean_root = self.source_configuration.lean_root(&self.root)?;
-            for path in files(&self.root, &lean_root, "lean")? {
-                let name = relative_path(&self.root, &path)?;
-                let input = self.file_input(format!("context:{name}"), &name)?;
-                inputs.insert(input.key.clone(), input);
-            }
-            for path in ["lean-toolchain", "lakefile.toml", "lake-manifest.json"] {
-                let name = relative_path(&self.root, &lean_root.join(path))?;
-                let input = self.file_input(format!("context:{name}"), &name)?;
                 inputs.insert(input.key.clone(), input);
             }
         }

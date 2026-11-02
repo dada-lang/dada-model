@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "bundle": "0c4e30ed89e044dee7d99743c6d5073719c4b96c78a5518b20a1b225b353f5b8",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7ca3252c424052cffbaaf2fb3da6b66220637dbf063c6038d7142db073228302",
+    "audit:target:9706361cb1416b8b1c72f68388e43e6c094bdc6596edd42a0dfa82b82f58194d",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:given.typing.forgetting",
+    "audit:unit:shared.evaluation",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.observations",
+    "audit:unit:shared.typing.weakening",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Subtype requires equal permissions and the Given nominal subtype relation. For normalized types that relation is equal base class plus inclusion of the target's positive and negative observations in the source. Thus weakening cannot silently convert given into shared.",
+    "links": [
+      {
+        "occurrence": "shared.typing.weakening:1",
+        "role": "conceptual",
+        "rationale": "The use 'Given' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.forgetting is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.weakening:2",
+        "role": "conceptual",
+        "rationale": "The use 'normalized types' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.normalization is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.weakening:3",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{pos}_{\\\\Sigma}(U)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.weakening:4",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{pos}_{\\\\Sigma}(T)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.weakening:5",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{neg}_{\\\\Sigma}(U)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.weakening:6",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{neg}_{\\\\Sigma}(T)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.weakening:7",
+        "role": "conceptual",
+        "rationale": "The use 'give-share operation' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.evaluation is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

@@ -2,6 +2,8 @@ use anyhow::{bail, ensure, Result};
 use mdbook_dada::{
     evidence::{self, ReviewBundle},
     inventory::{find_root, Inventory},
+    link_audit,
+    links::{LinkInventory, LinkTarget},
     mechanical,
 };
 use std::path::Path;
@@ -59,6 +61,39 @@ fn run() -> Result<bool> {
     }
     let inventory = Inventory::load(&root)?;
     match command.as_str() {
+        "links" => {
+            let rest: Vec<_> = args.collect();
+            ensure!(rest.is_empty() || rest == ["--json"], "usage: dada-spec links [--json]");
+            let links = LinkInventory::build(&inventory)?;
+            let subjects = link_audit::subjects(&inventory)?;
+            if rest == ["--json"] {
+                println!("{}", serde_json::to_string_pretty(&serde_json::json!({
+                    "links": links, "audit_subjects": subjects,
+                }))?);
+            } else {
+                for source in links.sources.values() {
+                    println!("{}: {} links{}", source.unit_id, source.occurrences.len(),
+                        if source.unit_kind == mdbook_dada::units::UnitKind::FutureNote {
+                            " (future note; editorial audits only)"
+                        } else { "" });
+                    for occurrence in &source.occurrences {
+                        let target = match &occurrence.target {
+                            LinkTarget::Internal { target } => &target.key,
+                            LinkTarget::External { url } => url,
+                            LinkTarget::Asset { path } => path,
+                        };
+                        println!("  {}:{} {:?} {} -> {}", occurrence.source.path,
+                            occurrence.source.line, occurrence.direction, occurrence.id, target);
+                    }
+                }
+                for cycle in &links.cycles {
+                    println!("Candidate reference cycle: {}", cycle.join(" -> "));
+                }
+                println!("Required audit subjects (prepare each with dada-spec prepare):");
+                for subject in subjects { println!("  {subject}"); }
+            }
+            Ok(true)
+        }
         "check" | "status" => {
             let rest: Vec<_> = args.collect();
             ensure!(rest.is_empty() || rest == ["--explain"], "usage: dada-spec {command} [--explain]");
@@ -93,7 +128,7 @@ fn run() -> Result<bool> {
             println!("{}", evidence::record(&inventory, &bundle, &review)?.display());
             Ok(true)
         }
-        _ => bail!("usage: dada-spec check | status [--explain] | prepare <unit-id> [--input <file>]... | record <bundle.json> <review.json> | run-check <check-name> | mechanical-status"),
+        _ => bail!("usage: dada-spec check | status [--explain] | links [--json] | prepare <subject-id> [--input <file>]... | record <bundle.json> <review.json> | run-check <check-name> | mechanical-status"),
     }
 }
 

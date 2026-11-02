@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "5de1cbe2088b9a67acec342e3604dd01c53a453e6d0f8b95e270157eeb644e1a",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c04103a1d651b8b9ae272310c435e218a3c69ad8ef05bf3d1f49e157898c6ce6",
+    "audit:unit:given.programs",
+    "audit:unit:given.typing.sequences",
+    "audit:unit:given.typing.statements",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The statement-typing prerequisite links directly. The sequence environment threading is the one subject introduced. The cons rule links the per-statement premise; the recursive sequence premise and empty-sequence conclusion define the new judgment locally.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The statement-typing prerequisite links directly. The sequence environment threading is the one subject introduced.",
+    "mathematics": "The cons rule links the per-statement premise; the recursive sequence premise and empty-sequence conclusion define the new judgment locally.",
+    "links": [
+      {
+        "occurrence": "given.typing.sequences:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'statement typings' supplies typing a let statement by expression and binding composition while explaining typing finite statement sequences. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.sequences:2",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\Sigma;\\\\Gamma\\\\vdash t\\\\Rightarrow\\\\Gamma_1' supplies typing a let statement by expression and binding composition while explaining typing finite statement sequences. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

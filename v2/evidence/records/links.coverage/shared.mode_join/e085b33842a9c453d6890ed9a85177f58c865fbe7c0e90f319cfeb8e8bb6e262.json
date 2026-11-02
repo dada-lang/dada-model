@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "78621b6337d1163e030536c123239481b4aed8491d10b90ea588efe34ebbc0ba",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:shared.mode_join",
+    "audit:unit:shared.references",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines only mode combination, with a backwards link to reference modes and the exact unique/otherwise table. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines only mode combination, with a backwards link to reference modes and the exact unique/otherwise table.",
+    "mathematics": "The sqcup case definition is introduced here. κ_0 and κ_1 range over the linked modes, with no latent type-level permission operator.",
+    "links": [
+      {
+        "occurrence": "shared.mode_join:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “mode” uses Shared reference modes and reference/slot representation; the target shared.references supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

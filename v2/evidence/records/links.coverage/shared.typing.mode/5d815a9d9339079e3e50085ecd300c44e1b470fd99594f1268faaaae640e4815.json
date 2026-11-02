@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "a3e2f50f24d8aaacf84e2ad24b0692031bee77e24a7e158fd351b10ac897cace",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:shared.references",
+    "audit:unit:shared.state",
+    "audit:unit:shared.typing.mode",
+    "audit:unit:shared.typing.types",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.toMode maps given to unique and shared to shared. The displayed equations connect static permissions with reference modes, without placing modes on objects.",
+    "links": [
+      {
+        "occurrence": "shared.typing.mode:1",
+        "role": "conceptual",
+        "rationale": "The use 'type permission' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.types is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.mode:2",
+        "role": "conceptual",
+        "rationale": "The use 'reference mode' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.references is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

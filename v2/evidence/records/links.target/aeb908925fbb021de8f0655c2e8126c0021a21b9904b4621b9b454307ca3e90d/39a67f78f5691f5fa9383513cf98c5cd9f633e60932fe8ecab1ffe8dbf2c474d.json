@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "702752d2955674f08cecfb2ad0e4d6fc5dc31644ad35537bc9d9b012afc20448",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:aeb908925fbb021de8f0655c2e8126c0021a21b9904b4621b9b454307ca3e90d",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Empty storage has its own formula, with no variables, no objects and zero counter. Initial-state and empty-storage links land directly here. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete empty Shared storage passage without searching a neighboring block for the actual definition or claim. The empty-state tuple and empty-map notation are explicitly defined here, independently of later machine initialization.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "empty Shared storage",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 6916,
+      "end": 7097
+    },
+    "clarity": "Empty storage has its own formula, with no variables, no objects and zero counter. Initial-state and empty-storage links land directly here. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete empty Shared storage passage without searching a neighboring block for the actual definition or claim. The empty-state tuple and empty-map notation are explicitly defined here, independently of later machine initialization."
+  }
+}

@@ -63,6 +63,8 @@ policy. Changes affecting those inputs require renewed review. A stored line num
 only a diagnostic location and does not participate in the bundle digest.
 Moving text within a conservatively fingerprinted source file still changes that
 file's contents and therefore invalidates the current implementation's evidence.
+Link and reading-order audits additionally hash source positions as inventory
+content, so moving an unchanged use or definition changes those audit inputs.
 
 Changing the definition of `live`, for example, can invalidate review even when a
 theorem's displayed statement is unchanged. A change confined to proof technique need not change the mathematical intent.
@@ -133,8 +135,10 @@ book source root, including dot-prefixed files and directories, requires current
 positive correspondence evidence, even when its chapter is not strict about surrounding prose. Explicit dependencies must name
 existing units and become review inputs. Future notes remain in the inventory
 and undergo structural and reference checks, but assert no correspondence and
-require no review. Their explicit boundary is described by
-{anchor-ref}`meta.future_notes`.
+require no correspondence review. Their explicit boundary is
+described under [Future notes](authoring.md#future-notes). Specification units
+and future notes both require [link audits](link-audits.md), including review
+of future notes used as link targets.
 
 Mechanical execution records remain separate from correspondence judgments. A
 review cannot stand in for a command result, and a command result cannot approve

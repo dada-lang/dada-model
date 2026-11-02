@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "589722ca27fa6e509451b59587836f2b1fab89eefad749f2928ff627bd4ba92d",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:unit:given.syntax",
+    "audit:unit:shared.classes",
+    "audit:unit:shared.give",
+    "audit:unit:shared.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar.",
+    "mathematics": "p/e/t introduce the extended grammar; the give operation has a direct link and give-share is explained as its result conversion.",
+    "links": [
+      {
+        "occurrence": "shared.syntax:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “placeexpression” uses Given place, value and statement syntax; the target given.syntax supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.syntax:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “give” uses Shared giving, including move/copy/final-slot conversion; the target shared.give supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

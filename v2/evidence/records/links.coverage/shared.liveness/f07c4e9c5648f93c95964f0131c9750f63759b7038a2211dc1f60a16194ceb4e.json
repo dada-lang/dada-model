@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "70e966907b84ae0d2811d75329dea1ebeb6eaaf200f3bcd790bde44847958f8e",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:01136db71db4cfa667c6e3740ce6232362099005c519039ee87981eda09ab977",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:shared.allocated",
+    "audit:unit:shared.live",
+    "audit:unit:shared.liveness",
+    "audit:unit:shared.well_formed",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "WF, Live and Allocated each link to their standalone definitions in the equivalence. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "WF, Live and Allocated each link to their standalone definitions in the equivalence.",
+    "mathematics": "WF, Live and Allocated are individually linked in the equivalence formula.",
+    "links": [
+      {
+        "occurrence": "shared.liveness:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “well-formed state” uses Shared structural storage well-formedness; the target shared.well_formed supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.liveness:2",
+        "role": "conceptual",
+        "rationale": "The formula \\mathsf{WF}_{\\Delta}(S) uses Shared structural storage well-formedness; the destination shared.well_formed supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.liveness:3",
+        "role": "conceptual",
+        "rationale": "The formula \\mathsf{Live}_S(\\alpha) uses Shared liveness through owning edges; the destination shared.live supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.liveness:4",
+        "role": "conceptual",
+        "rationale": "The formula \\mathsf{Allocated}_S(\\alpha) uses Shared allocation as object-table membership; the destination shared.allocated supplies that operation or result."
+      }
+    ]
+  }
+}

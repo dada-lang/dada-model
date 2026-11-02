@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "bundle": "7c0fbd7f65666fa8425416831061468e15e235d69828f3ca2aa27ecca4b8b5a9",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e411ab3d3f4538324e304fd37a80dd02fef29ff116e7f948292a5133e615d1f",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:79283484adee6a2142c00e38e1f1accde4d861bb79aa4ecbf735a13e187ee7c9",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:shared.evaluation",
+    "audit:unit:shared.steps",
+    "audit:unit:shared.typing.erasure",
+    "audit:unit:shared.typing.expression_soundness",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.realization",
+    "audit:unit:shared.typing.well_formed_classes",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. expression_soundness quantifies over arbitrary pending values, guarantees an Eval exists, and requires every Eval result to realize the output environment with the result appended to pending. The prose states both existence and universal preservation, including earlier constructor arguments; it does not assume successful evaluation as a premise.",
+    "links": [
+      {
+        "occurrence": "shared.typing.expression_soundness:1",
+        "role": "conceptual",
+        "rationale": "The use 'well-formed' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.well_formed_classes is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:2",
+        "role": "conceptual",
+        "rationale": "The use 'expression typing' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.expressions is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:3",
+        "role": "conceptual",
+        "rationale": "The use 'storage realization' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.realization is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:4",
+        "role": "conceptual",
+        "rationale": "The use \"\\\\Sigma;\\\\Gamma\\\\vdash e:T\\\\;\\\\triangleright\\\\;\\\\Gamma'\" supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.expressions is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:5",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma;\\\\Gamma\\\\models(S;R)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.realization is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:6",
+        "role": "conceptual",
+        "rationale": "The use 'evaluation' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.evaluation is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:7",
+        "role": "conceptual",
+        "rationale": "The use '\\\\lfloor\\\\Sigma\\\\rfloor' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.erasure is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:8",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Downarrow' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.evaluation is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:9",
+        "role": "conceptual",
+        "rationale": "The use \"\\\\Sigma;\\\\Gamma'\\\\models(S';R\\\\mathbin{+\\\\!\\\\!+}[(r:T)])\" supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.realization is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

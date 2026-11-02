@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "05107997bb53e15c4b0a9e23a544a98e36f40a830806f251841a4f553e0a366f",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.collections",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Finite-map and finite-list notation now has its own direct unit before programs. A and B are explicitly the domain/codomain; the named FiniteMap structure supplies finite entries with distinct keys. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Finite-map and finite-list notation now has its own direct unit before programs. A and B are explicitly the domain/codomain; the named FiniteMap structure supplies finite entries with distinct keys.",
+    "mathematics": "The two inline constructors A↛B and List(A) are the defined notation. A and B are locally identified domains rather than unlinked operations.",
+    "links": []
+  }
+}

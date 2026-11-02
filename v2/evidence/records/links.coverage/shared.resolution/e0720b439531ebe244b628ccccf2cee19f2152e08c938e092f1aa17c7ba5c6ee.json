@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "bundle": "02239b0f7779743e0a080169c0e608532aa14fa28776c38e035768dcf20210fe",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:814b7bb4e3d32eda0efafbf7230b7f13fb9b65f060cb74b4dfc52e767a1e1906",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:fc2b9cd2551cefd6e370454f733eeb9560ca3149a815add8716a368b41fd25af",
+    "audit:target:ff3e7738076ec20cf83e1713f8a2f88cd97eba66768aa681e849e215d51fcdbe",
+    "audit:unit:shared.lookup",
+    "audit:unit:shared.mode_join",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.storage_places",
+    "audit:unit:shared.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links place syntax, storage place, lookup and mode combination in prose/rules. Recursive resolution premises define this judgment; it does not mutate storage. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links place syntax, storage place, lookup and mode combination in prose/rules. Recursive resolution premises define this judgment; it does not mutate storage.",
+    "mathematics": "Both lookup premises and the mode-join result carry direct links. The recursive resolution occurrence belongs to the judgment being defined.",
+    "links": [
+      {
+        "occurrence": "shared.resolution:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “place” uses Shared place, value and statement syntax; the target shared.syntax supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.resolution:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “storage place” uses direct Shared storage places; the target shared.storage_places supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.resolution:3",
+        "role": "conceptual",
+        "rationale": "The prose reference “mode combination” uses Shared access-mode combination; the target shared.mode_join supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.resolution:4",
+        "role": "conceptual",
+        "rationale": "The formula S[x] uses Shared partial slot lookup; the destination shared.lookup supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.resolution:5",
+        "role": "conceptual",
+        "rationale": "The formula S[\\beta.f] uses Shared partial slot lookup; the destination shared.lookup supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.resolution:6",
+        "role": "conceptual",
+        "rationale": "The formula (\\kappa_0\\sqcup\\kappa_1) uses Shared access-mode combination; the destination shared.mode_join supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.resolution:7",
+        "role": "conceptual",
+        "rationale": "The prose reference “absent variable” uses Shared partial slot lookup; the target shared.lookup supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

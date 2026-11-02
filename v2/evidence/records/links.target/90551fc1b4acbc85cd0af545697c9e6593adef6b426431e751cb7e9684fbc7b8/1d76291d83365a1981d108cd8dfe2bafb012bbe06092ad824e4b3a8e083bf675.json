@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "3d28dc2cc9b54af16f09f09edd85a2738427e5d94f7c192eeeaed65c03792e20",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:90551fc1b4acbc85cd0af545697c9e6593adef6b426431e751cb7e9684fbc7b8",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.well_formed_classes unit has a visible identity and directly presents well-formed typed class tables. The typed-class-table link identifies the exact object constrained by the three conditions. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. There is no separate displayed equation or undefined operator: Sigma names the linked table.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "well-formed typed class tables",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 1182,
+      "end": 1403
+    },
+    "clarity": "The named given.typing.well_formed_classes unit has a visible identity and directly presents well-formed typed class tables. The typed-class-table link identifies the exact object constrained by the three conditions.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. There is no separate displayed equation or undefined operator: Sigma names the linked table."
+  }
+}

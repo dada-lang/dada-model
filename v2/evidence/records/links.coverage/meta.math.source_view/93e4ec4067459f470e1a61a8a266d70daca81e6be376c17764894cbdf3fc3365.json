@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "31b9890e11635314c2316e9da72de1cf6af65e224ad795e265e2d9aab8d3ec85",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:83be7fbcf36059917cb21e26e5a9bdcd7b053305236cec331e30f20d2fee917b",
+    "audit:target:bcbf7b2e6e35008f601cfc25ccf052cb44486c1ce12214fa55a4362b1030db7a",
+    "audit:unit:meta.math.source_view",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Header identity and Draft status each link the exact earlier subject. The present unit introduces source-view selectors, defaults, ownership of nested controls and leading-anchor placement. No mathematical judgment is assumed; Lean/Rust/Facts labels are the interface choices being defined.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Header identity and Draft status each link the exact earlier subject. The present unit introduces source-view selectors, defaults, ownership of nested controls and leading-anchor placement.",
+    "mathematics": "No mathematical judgment is assumed; Lean/Rust/Facts labels are the interface choices being defined.",
+    "links": [
+      {
+        "occurrence": "meta.math.source_view:1",
+        "role": "conceptual",
+        "rationale": "Header placement depends on the previously defined unit identity."
+      },
+      {
+        "occurrence": "meta.math.source_view:2",
+        "role": "conceptual",
+        "rationale": "The visibility promise concerns precisely the separately anchored draft-status marker."
+      }
+    ]
+  }
+}

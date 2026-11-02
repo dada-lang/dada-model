@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "a0b8b37882bb5b4880667de4f1454693d4315057ab77a5c4257570eb9e0d6c03",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.example.normalization",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.observations",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here. The rewrite is a defining rule for normalization, with A, rho, and the complete nonempty field list specified in adjacent prose. N is introduced here and requires no self-link.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here.",
+    "mathematics": "The rewrite is a defining rule for normalization, with A, rho, and the complete nonempty field list specified in adjacent prose. N is introduced here and requires no self-link.",
+    "links": [
+      {
+        "occurrence": "given.typing.normalization:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'class at' supplies valid relative paths and their final declared class while explaining normalization of finite signed views. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "579a4eedde7f5d86b6ac9b2011edb24e690d3f18c9a0cec6ea931be4dc5677ec",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:unit:shared.references",
+    "audit:unit:shared.storage_places",
+    "audit:unit:shared.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Gives q grammar and links routed places for the distinction; no lookup equation is buried here. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Gives q grammar and links routed places for the distinction; no lookup equation is buried here.",
+    "mathematics": "q has the local x/α.f grammar and is distinguished from a linked recursive place expression.",
+    "links": [
+      {
+        "occurrence": "shared.storage_places:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “place expression” uses Shared place, value and statement syntax; the target shared.syntax supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

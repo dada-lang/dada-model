@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "8e13750ea9a78ade2186bde9a109a13d5479526c4a0544000a9887570868ced3",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared storage and its component tables/counter passage without searching a neighboring block for the actual definition or claim. S/O/V/ν are introduced with their map domains; identity tagging and finite-map notation link backwards. The allocation counter is part of this representation.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared storage and its component tables/counter",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 6321,
+      "end": 6822
+    },
+    "clarity": "Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared storage and its component tables/counter passage without searching a neighboring block for the actual definition or claim. S/O/V/ν are introduced with their map domains; identity tagging and finite-map notation link backwards. The allocation counter is part of this representation."
+  }
+}

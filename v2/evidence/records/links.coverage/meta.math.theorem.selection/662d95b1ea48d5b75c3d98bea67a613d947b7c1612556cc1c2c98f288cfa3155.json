@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "d982fad5f4a741eb0b0f4426961528446e42aa5173abc57e514be9e6cb9ae67c",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.theorem.selection",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected theorem shape, complete proof display and citation exclusions are introduced here. Source-check versus proof-check responsibilities are explicit; nesting has its own precise anchor. No theorem of the language is assumed. Terms assumptions, quantifiers and conclusion describe what correspondence reviews inspect, not an unlinked object-level equation.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The selected theorem shape, complete proof display and citation exclusions are introduced here. Source-check versus proof-check responsibilities are explicit; nesting has its own precise anchor.",
+    "mathematics": "No theorem of the language is assumed. Terms assumptions, quantifiers and conclusion describe what correspondence reviews inspect, not an unlinked object-level equation.",
+    "links": []
+  }
+}

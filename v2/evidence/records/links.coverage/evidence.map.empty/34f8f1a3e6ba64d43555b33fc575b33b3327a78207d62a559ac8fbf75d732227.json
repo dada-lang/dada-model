@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "ebd4ddedac8f2f4baef1fad1e3eccfd798e8a80e0f781347989efe48b0d69230",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c4f4614282bcbc1eeacf56cc51774e318230c1a0983b9b7c32160b81f84bee8a",
+    "audit:unit:evidence.map",
+    "audit:unit:evidence.map.empty",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The example links the exact empty-map definition before specifying Nat keys/values and an empty list. No other model concept is needed. The only mathematical value is [], explicitly described as the entry list; Nat is explained as natural numbers, not an undeclared model type.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The example links the exact empty-map definition before specifying Nat keys/values and an empty list. No other model concept is needed.",
+    "mathematics": "The only mathematical value is [], explicitly described as the entry list; Nat is explained as natural numbers, not an undeclared model type.",
+    "links": [
+      {
+        "occurrence": "evidence.map.empty:1",
+        "role": "conceptual",
+        "rationale": "The example needs the empty map, and the new link lands on its no-entries definition."
+      }
+    ]
+  }
+}

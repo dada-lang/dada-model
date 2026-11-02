@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "2d2136f05b55618b0a4502805b2456fcd6d14ef0f4e4f511b79fc1f92e9313a2",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:df2da7caa3d89bc04ce4d503cad0e61b7f1272ee7dabab94f8f5a29def49bc73",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:shared.classes",
+    "audit:unit:shared.objects",
+    "audit:unit:shared.references",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Object data now has its own o grammar, with direct class and slot-contents links. Storage no longer starts with a different data-type definition. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Object data now has its own o grammar, with direct class and slot-contents links. Storage no longer starts with a different data-type definition.",
+    "mathematics": "o and its field-slot form are locally defined; the linked class/slot definitions supply C and s.",
+    "links": [
+      {
+        "occurrence": "shared.objects:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “class name” uses Shared class declarations; the target shared.classes supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.objects:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “contents” uses Shared reference modes and reference/slot representation; the target shared.references supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

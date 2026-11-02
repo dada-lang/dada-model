@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "4d556c4871a51aa91eb363734124627901ca53f0897370b53f9d4202377cc880",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.syntax",
+    "context:lean/Unique/Step.lean"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Place has exactly variable and field constructors; Value has give and recursive new arguments; Statement is a destination/value pair. These match p/e/t and nested constructors. Freshness is enforced by the Step definition in context rather than by the raw syntax datatype. Notation and premises are supplied by the examined units given.classes.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run.",
+    "Additional containing-module snapshots were consulted for referenced definitions and example setup; proof bodies beyond what establishes the statement context were not independently audited."
+  ],
+  "supersedes": [
+    "d945b3705b03baedb178319a8ddecc005e9efe4d312d0f47a4b975d842e04063"
+  ]
+}

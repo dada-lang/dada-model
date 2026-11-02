@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "4be718476ce492cfb32130c750af473b1dcaff752592e06da0222295cb2d7a4a",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c4f4614282bcbc1eeacf56cc51774e318230c1a0983b9b7c32160b81f84bee8a",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The anchor is immediately before the single sentence defining empty maps; the example no longer lands at the more general map block header. The sentence gives the entire distinction: there are no entries. Its enclosing definition supplies finite-map representation.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Empty finite map",
+    "definition": {
+      "path": "md/repo/evidence-pilot.md",
+      "start": 7255,
+      "end": 7302
+    },
+    "clarity": "The anchor is immediately before the single sentence defining empty maps; the example no longer lands at the more general map block header.",
+    "independence": "The sentence gives the entire distinction: there are no entries. Its enclosing definition supplies finite-map representation."
+  }
+}

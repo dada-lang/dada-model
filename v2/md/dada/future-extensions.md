@@ -6,7 +6,7 @@
 :uses: given.typing.views given.typing.expressions
 
 A constructor could store a value without requiring all of its fields to be
-initialized. Its result type would preserve the argument's view. Consider:
+initialized. Its result type would preserve the argument's [view](../given-typing.md#claim-given.typing.views). Consider:
 
 ```dada
 class Token {}
@@ -27,8 +27,8 @@ that view into the result's field \\(c\\). For example, an argument of type
 `C.{-left, right}` would produce `D.{-c.left, c.right}`: the moved-out field
 stays empty, and the other field stays accessible.
 
-This is a future extension. The current Construct rule requires whole declared
-argument types; it has neither user-defined constructors nor view parameters.
+This is a future extension. The current [Construct rule](../given-typing.md#claim-given.typing.expressions)
+requires whole declared argument types; it has neither user-defined constructors nor view parameters.
 
 The notation must also preserve the presence of the stored object. If
 \\(V=\{\}\\), the argument is an existing `C` whose fields are hidden. Simply
@@ -43,8 +43,9 @@ The operators and their typing rules remain to be defined.
 :uses: shared.give shared.resolution given.typing.views
 
 A later permission `given[p₁, …, pₙ]` would describe access derived from named
-places. These are paths rooted at bindings, such as `x.item`, whereas a view's
-paths are relative to the described object. Plain `given` abbreviates
+places. These are [paths rooted at bindings](../shared.md#claim-shared.syntax),
+such as `x.item`, whereas a view's
+[paths are relative](../given-typing.md#claim-given.typing.paths) to the described object. Plain `given` abbreviates
 `given[]`, the owning permission.
 
 The permission of a named place matters. For example, these proposed function
@@ -56,11 +57,11 @@ fn foo(x: shared Point) -> shared Point
 ```
 
 Because `x` provides shared ownership, deriving access from it produces shared
-ownership. Simplification therefore consults the typing environment, including
-the effective permission of a field path. It cannot inspect the permission
+ownership. Simplification therefore consults the [typing environment](../shared-typing.md#claim-shared.typing.environments), including
+the [effective permission of a field path](../shared-typing.md#claim-shared.typing.focus). It cannot inspect the permission
 expression alone.
 
-Permission application should retain the identity and shared-absorption laws.
+Permission application should retain the [identity and shared-absorption laws](../shared-typing.md#claim-shared.typing.normalization).
 For a permission \\(P\\) and a type \\(T\\), the intended equations include:
 
 \\[
@@ -83,7 +84,7 @@ type system uses only `given` and `shared`; it has no permissions that name plac
 :uses: future.path_permissions shared.give given.typing.environments
 
 A result may have different ownership permissions on different branches.
-Consider this intended use of `given[x, y]`:
+Consider this intended use of a [path-dependent permission](#claim-future.path_permissions), `given[x, y]`:
 
 ```dada
 fn foo(x: shared Point, y: Point) -> given[x, y] Point {
@@ -99,7 +100,7 @@ part of the current straight-line fragments.
 
 If `foo` returns from `x`, `r` contains a shared reference and `r→` copies it.
 If it returns from `y`, `r` contains a given reference and `r→` moves it.
-The machine can inspect the runtime reference; the type checker must account
+The [machine](../shared.md#claim-shared.give) can inspect the runtime reference; the type checker must account
 for both possibilities. Simplifying this result to an always-shared type would
 lose the second case.
 
@@ -112,6 +113,6 @@ shared borrowing types. The notation alone does not settle those choices.
 Initialization tracking also needs a distinction between an empty slot and
 one that can no longer be used. After the final give above, using `r` again is
 unsafe in the given case, but claiming that its slot is empty is false in the
-shared case. Given's current variable marker `0` means *known empty*. This
+shared case. Given's current [variable marker `0`](../given-typing.md#claim-given.typing.environments) means *known empty*. This
 extension must describe the uncertainty without changing that fact silently.
 ````

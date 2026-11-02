@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "bundle": "29777ff1e7738e1a18052b44939854b0531fad9c1faa1d96acfccb2ab159ce47",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Unique/Syntax ClassName and FieldName are String categories and Class has an ordered List FieldName; the prose declaration packages the class name with those fields. Distinct declared names/fields are the well-formedness convention, not extra fields in Class. Empty lists support empty classes.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run."
+  ],
+  "supersedes": [
+    "60cc36ff2a5dac96c75c650babeba065801b48f3ad54f4aa7ad713a62142d7bc"
+  ]
+}

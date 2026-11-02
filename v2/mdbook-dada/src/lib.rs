@@ -4,6 +4,8 @@ pub mod evidence;
 pub mod graph;
 pub mod inventory;
 pub mod lean;
+pub mod link_audit;
+pub mod links;
 pub mod lint;
 pub mod mechanical;
 mod routing;
@@ -688,6 +690,9 @@ pub fn process_configured(context: &Value, book: &mut Value) -> Result<()> {
     let configuration = configuration::SourceConfiguration::load(&root)?;
     configuration.check_context(context)?;
     configuration.validate_chapters(&root, book)?;
+    if root.join("spec.json").exists() {
+        inventory::Inventory::load(&root)?;
+    }
     let lean_root = configuration.lean_root(&root)?;
     process_with_roots(book, Some(&lean_root), Some(&root))
 }

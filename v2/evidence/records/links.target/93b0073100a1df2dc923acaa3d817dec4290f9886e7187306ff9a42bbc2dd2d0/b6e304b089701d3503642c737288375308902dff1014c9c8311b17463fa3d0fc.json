@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "c241baabfb6b6e3f305029ccef9db48f876599569ffcefac2f45580bac9bf178",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.base unit has a visible identity and directly presents the base-class projection from a nominal view. This is the defining occurrence of base itself; C.A denotes the locally destructured class/view pair, with no separate external prose predicate invoked. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The sole equation projects C from C.A and introduces base. C and A are the components of its argument rather than operations needing self-links.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the base-class projection from a nominal view",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 4042,
+      "end": 4095
+    },
+    "clarity": "The named given.typing.base unit has a visible identity and directly presents the base-class projection from a nominal view. This is the defining occurrence of base itself; C.A denotes the locally destructured class/view pair, with no separate external prose predicate invoked.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The sole equation projects C from C.A and introduces base. C and A are the components of its argument rather than operations needing self-links."
+  }
+}

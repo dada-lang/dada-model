@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "ebee40e120bab63da06f5e7209c1f6505a00fbf64003f88ec01fcc5f59226b70",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2eb211ed1af6e33db9da6c78ac0c0d04580e44a1e68ee2ae9c068c83be977c96",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.erasure unit has a visible identity and directly presents erasing static field types from a class table. The target operational class table links to its grammar. The text says exactly which annotations erasure removes. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The source Sigma(C) links to the typed-class-table definition; the floor operator is introduced by this equation.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "erasing static field types from a class table",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 1532,
+      "end": 1785
+    },
+    "clarity": "The named given.typing.erasure unit has a visible identity and directly presents erasing static field types from a class table. The target operational class table links to its grammar. The text says exactly which annotations erasure removes.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The source Sigma(C) links to the typed-class-table definition; the floor operator is introduced by this equation."
+  }
+}

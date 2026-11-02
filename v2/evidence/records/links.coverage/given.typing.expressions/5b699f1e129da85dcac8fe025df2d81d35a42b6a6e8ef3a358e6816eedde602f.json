@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "bundle": "583098eac32a5c5053aed9eae3a7f32df89c18a9406058bb71b2dd7fc6fb0080",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:034fca959e031c3624784f688113964c8c0e08ff896e1f66ce03e89144fbd75d",
+    "audit:target:7182ffe25a84f5fbb71fc4b99d76d34d5086f0b0437229df2fdd4106cd7c96b7",
+    "audit:target:837551691616f7856e5628608f269668034d86818f25ff4e307500ffcff69cb3",
+    "audit:target:9706361cb1416b8b1c72f68388e43e6c094bdc6596edd42a0dfa82b82f58194d",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.expressions",
+    "audit:unit:given.typing.forgetting",
+    "audit:unit:given.typing.take",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule. Give links static take, Construct links Sigma(C), and Weaken links the subtype relation. The expression-typing judgments in conclusions and recursive premises are defined in this unit.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule.",
+    "mathematics": "Give links static take, Construct links Sigma(C), and Weaken links the subtype relation. The expression-typing judgments in conclusions and recursive premises are defined in this unit.",
+    "links": [
+      {
+        "occurrence": "given.typing.expressions:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'environment' supplies slot descriptions and typing environments while explaining expression typing: Give, Construct, and Weaken. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.expressions:2",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\mathsf{take}' supplies taking a source place and updating its root environment entry while explaining expression typing: Give, Construct, and Weaken. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.expressions:3",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\Sigma(C)' supplies typed class declarations and the typed class table Sigma while explaining expression typing: Give, Construct, and Weaken. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.expressions:4",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'less information' supplies view weakening by inclusion of initialization observations while explaining expression typing: Give, Construct, and Weaken. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.expressions:5",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\preceq' supplies view weakening by inclusion of initialization observations while explaining expression typing: Give, Construct, and Weaken. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.expressions:6",
+        "role": "navigation",
+        "rationale": "This link points to proposals for later generic-view constructor signatures. The preceding text fully states the present whole-argument restriction; no future rule is needed to apply it."
+      }
+    ]
+  }
+}

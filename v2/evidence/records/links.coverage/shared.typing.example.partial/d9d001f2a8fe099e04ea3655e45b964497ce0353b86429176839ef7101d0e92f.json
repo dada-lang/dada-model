@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "8c9fcc5fca184e58c1281bffd4cded62445c40ac273332716e772f9847aef037",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e0e30b85b0197fab44a8ae02cdee7f7f84182b2175ddfdff24c007254c4a47e",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:shared.typing.example.partial",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.weakening",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links Give-share and weakening, with its classes local. The concrete sequence retains known-empty left and accessible right information.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Give-share and weakening, with its classes local. The concrete sequence retains known-empty left and accessible right information.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. sharing_partial_views establishes the five-step execution, partialPair.shared description, empty p, two shared right-field results, retained empty left slot, and rejection of a subsequent left give. The prose preserves the hole and does not infer it can be recovered by weakening.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.partial:1",
+        "role": "conceptual",
+        "rationale": "The use 'Give-share' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.expressions is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.example.partial:2",
+        "role": "conceptual",
+        "rationale": "The use 'Weakening' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.weakening is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

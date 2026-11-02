@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "52e2987200184aa57d9a24f4de80cbf912d6cf484ed6c815976c04f7a7f07e44",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.perm",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. The direct equation extracts the outer permission and links normalized form. No grammar or unrelated operation precedes it in this unit.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The direct equation extracts the outer permission and links normalized form. No grammar or unrelated operation precedes it in this unit.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.perm projects permission from the already normalized ValueType record. The equation perm(pi C.A)=pi and the printed implicit given case identify precisely that projection.",
+    "links": [
+      {
+        "occurrence": "shared.typing.perm:1",
+        "role": "conceptual",
+        "rationale": "The use 'normalized form' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.normalization is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

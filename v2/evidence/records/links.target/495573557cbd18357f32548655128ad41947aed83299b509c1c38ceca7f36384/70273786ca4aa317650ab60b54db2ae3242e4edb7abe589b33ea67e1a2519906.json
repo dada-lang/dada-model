@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "0da2a2c764081faa43cdb477e46eade1d74e4318391b6a4c484863ee2fe170b3",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:495573557cbd18357f32548655128ad41947aed83299b509c1c38ceca7f36384",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The first paragraph identifies header layout and immediately names Rendered/Lean, Rendered/Rust and Rendered/Facts choices. The paragraph explains default selection and scope of independent controls; later identity placement elaborates the same facility.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Source view selectors",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 4578,
+      "end": 4915
+    },
+    "clarity": "The first paragraph identifies header layout and immediately names Rendered/Lean, Rendered/Rust and Rendered/Facts choices.",
+    "independence": "The paragraph explains default selection and scope of independent controls; later identity placement elaborates the same facility."
+  }
+}

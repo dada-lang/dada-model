@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "5627ec52d612441c3db248243f96938526b8fa47c52e7a3769625b0ab07a819c",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:7182ffe25a84f5fbb71fc4b99d76d34d5086f0b0437229df2fdd4106cd7c96b7",
+    "audit:target:8413a9827dd730e438bc0c027d5a8e0b0375cf3b64b8dc044fdc5fb8b250d751",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.field",
+    "audit:unit:given.typing.focus",
+    "audit:unit:given.typing.observations",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The empty-slot description links to the environment grammar. The current-field description is the single subject being introduced. The case split links neg, pos, and focusing. The outer field operator is its defining occurrence.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The empty-slot description links to the environment grammar. The current-field description is the single subject being introduced.",
+    "mathematics": "The case split links neg, pos, and focusing. The outer field operator is its defining occurrence.",
+    "links": [
+      {
+        "occurrence": "given.typing.field:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'empty-slot description' supplies slot descriptions and typing environments while explaining the direct-field slot description. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.field:2",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{neg}' supplies known-initialized and known-empty path observations while explaining the direct-field slot description. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.field:3",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\downarrow' supplies focusing a nominal view at an initialized relative place while explaining the direct-field slot description. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.field:4",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{pos}' supplies known-initialized and known-empty path observations while explaining the direct-field slot description. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

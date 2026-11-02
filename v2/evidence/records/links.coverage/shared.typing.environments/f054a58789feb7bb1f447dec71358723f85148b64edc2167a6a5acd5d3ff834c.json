@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "db18910f3afdfd1d89fdf2cfff55e8325b63b14dabe26d05c7493d69c9245c2d",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7a4e714d94614dfcf82ae12cf39b0fc48783107cffa0afff778a59a28df6719d",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:given.typing.environments",
+    "audit:unit:shared.typing.environments",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.types",
+    "audit:unit:shared.typing.well_formed_types",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SlotDescription is Option ValueType, distinguishing empty from absent lookup; Environment is a list with distinct variable keys. Environment.WellFormed requires Admissible (well-formed and normalized) inhabited descriptions. Replacement retains allocated variable keys, matching the freshness explanation.",
+    "links": [
+      {
+        "occurrence": "shared.typing.environments:1",
+        "role": "conceptual",
+        "rationale": "The use 'well formed' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.well_formed_types is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.environments:2",
+        "role": "conceptual",
+        "rationale": "The use 'normalized' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.normalization is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

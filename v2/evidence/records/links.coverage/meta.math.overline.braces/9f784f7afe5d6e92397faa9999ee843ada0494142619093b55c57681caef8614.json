@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "34e5aad4455e9d9e31bd65a9160b6c736928b56b0a552ddfc2248a20d6878352",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.overline.braces",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit introduces the overbar adjacency convention through its literal sample and states its raw-source scope and limits. No undefined custom concept is required. The only TeX fragment is the defining example for overline; f is a placeholder for its argument, not a model metavariable.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit introduces the overbar adjacency convention through its literal sample and states its raw-source scope and limits. No undefined custom concept is required.",
+    "mathematics": "The only TeX fragment is the defining example for overline; f is a placeholder for its argument, not a model metavariable.",
+    "links": []
+  }
+}

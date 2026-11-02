@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "bccdae18ded6c6057e0a5029ff05d3e9e097823feb02796bf40ec1ead25f1299",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:target:2e73a816de64641201d0a60f2df58d7490dcf3352f6e52f13591043ab00ec548",
+    "audit:target:7ca3252c424052cffbaaf2fb3da6b66220637dbf063c6038d7142db073228302",
+    "audit:unit:shared.typing.environments",
+    "audit:unit:shared.typing.field",
+    "audit:unit:shared.typing.focus",
+    "audit:unit:shared.typing.observations",
+    "audit:unit:shared.typing.patterns",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links pattern context, pos/neg and focus; defines the one direct-field-description operator.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links pattern context, pos/neg and focus; defines the one direct-field-description operator.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. fieldDescription returns an existing empty description when the single-field path is negative, otherwise maps successful focus to an inhabited description. The cases distinguish unknown from empty, and shared focusing preserves the effective permission.",
+    "links": [
+      {
+        "occurrence": "shared.typing.field:1",
+        "role": "conceptual",
+        "rationale": "The use 'unpackingpattern' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.patterns is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.field:2",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{neg}_{\\\\Sigma}(T)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.field:3",
+        "role": "conceptual",
+        "rationale": "The use 'T\\\\downarrow f' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.focus is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.field:4",
+        "role": "conceptual",
+        "rationale": "The use '\\\\operatorname{pos}_{\\\\Sigma}(T)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.observations is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

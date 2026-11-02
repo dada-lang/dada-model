@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "6ac23efa1212b0853211e5e74e10e39b89950782a53f85dbbdc80771613e0332",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:594ea809f0d04ba629b1de28589abf9e58c62a74c0f0c2c381cc09175e201d33",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The anchor lands on the constructor list, rather than on general graph-introduction prose. The list and following sentence identify all node kinds and explain the variable-store group.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Diagram node constructors",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 19193,
+      "end": 19487
+    },
+    "clarity": "The anchor lands on the constructor list, rather than on general graph-introduction prose.",
+    "independence": "The list and following sentence identify all node kinds and explain the variable-store group."
+  }
+}

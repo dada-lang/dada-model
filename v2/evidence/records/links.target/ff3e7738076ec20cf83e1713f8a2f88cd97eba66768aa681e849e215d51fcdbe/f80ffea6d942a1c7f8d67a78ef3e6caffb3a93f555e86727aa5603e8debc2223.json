@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "f14955f850e36789047093902262d291c1d5d11005de4046d6535ba920bdaf91",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ff3e7738076ec20cf83e1713f8a2f88cd97eba66768aa681e849e215d51fcdbe",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Gives q grammar and links routed places for the distinction; no lookup equation is buried here. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete direct Shared storage places passage without searching a neighboring block for the actual definition or claim. q has the local x/α.f grammar and is distinguished from a linked recursive place expression.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "direct Shared storage places",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 7214,
+      "end": 7455
+    },
+    "clarity": "Gives q grammar and links routed places for the distinction; no lookup equation is buried here. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete direct Shared storage places passage without searching a neighboring block for the actual definition or claim. q has the local x/α.f grammar and is distinguished from a linked recursive place expression."
+  }
+}

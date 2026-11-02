@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "cd4634277ee94fc7e79068426c4973f1b9401565216f73be27c74f1cb55aa548",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a395ec3d77295857a26e9571e271df4e3a3c5c6ae23ac869fc9fd981731e6507",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines only the storage tuple, table domains and allocation counter. The finite-map convention links to given.collections; empty storage has been extracted into its own definition. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given storage and its component tables/counter passage without searching a neighboring block for the actual definition or claim. S/O/V/ν are locally introduced storage components. The displayed map domains use the prior identity/slot categories; the finite-map convention has its own direct link.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given storage and its component tables/counter",
+    "definition": {
+      "path": "md/given.md",
+      "start": 4688,
+      "end": 5256
+    },
+    "clarity": "Defines only the storage tuple, table domains and allocation counter. The finite-map convention links to given.collections; empty storage has been extracted into its own definition. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given storage and its component tables/counter passage without searching a neighboring block for the actual definition or claim. S/O/V/ν are locally introduced storage components. The displayed map domains use the prior identity/slot categories; the finite-map convention has its own direct link."
+  }
+}

@@ -97,8 +97,11 @@ that every line of every existing proof was examined. For each unit:
 In the rationale, identify the units that introduce the notation and judgments
 needed for the comparison. Report undefined symbols and forward references as
 discrepancies; if their meaning cannot be established, mark the review
-inconclusive. These are review criteria. The validator does not check notation
-introductions or the order of mathematical definitions.
+inconclusive. These are review criteria. The validator does not discover notation
+introductions from prose. The separate [link audits](link-audits.md) extract
+authored references, check their order, and require current coverage, target,
+and forward-reference reviews. These audits use the same prepare/record
+workflow with generated subject IDs and an additional typed `audit` assessment.
 
 Do not re-prove a theorem or audit its tactic choices as part of this review.
 Do inspect assumptions that affect its statement. A successfully checked proof
@@ -207,6 +210,36 @@ citation and give the preparation command. Read the reported cause before
 preparing again: an invalid source target needs a source or citation fix, while
 a stale packet needs renewed comparison. The test is a guard against missing
 or stale work, not a semantic oracle.
+
+## Link review policy
+
+For each unit, examine prose and both inline and display mathematics for uses
+of concepts defined elsewhere. Check that each has a definition link, including
+operations in inference-rule premises. Locally bound metavariables need an
+introduction and scope; defining occurrences need no self-link. Explain every
+extracted link's conceptual or navigation role. A navigation label cannot exempt
+information the reader needs to understand the unit.
+
+For each destination, identify the subject and its defining source span. The
+landing must clearly introduce that subject on its own. Selecting a precise span
+inside a multi-part block does not make a buried destination acceptable: split
+the explanation or change the link. Inspect surrounding text in the retained
+chapter when judging the landing.
+
+For a forward reference, consider moving the definition earlier, moving the use
+later, and splitting the explanation. Retain it only if those rearrangements
+would prevent a coherent introduction. Record why; select the explicit forward
+signpost; identify the minimum facts needed and where the passage states them.
+A motivating example or dependency cycle is not an automatic exception. Local
+references must be ordered by the actual defining passage, not by the unit's
+header. Inspect the reading order and relevant chapter context retained in the
+packet. Unknown order cannot establish a backward reference.
+
+Use mismatch or inconclusive when these requirements are not met. Syntactic
+validation checks the inventory and evidence, not the truth of these judgments.
+Follow [Link and reading-order review](link-audits.md) for the generated subject
+IDs and assessment fields. Future notes also receive these editorial audits;
+they still have no formal correspondence obligation.
 
 ## Record mechanical checks
 

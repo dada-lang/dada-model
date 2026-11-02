@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "b694377e4a61f2bef8fe7418e84ef5148079ed99be01970e73cb55667eac446b",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.paths unit has a visible identity and directly presents finite relative field paths and their composition. This unit introduces finite relative field paths, epsilon, concatenation, and append in place. It uses field names from the operational syntax without introducing another semantic predicate. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The rho production is its defining grammar; every new symbol is assigned meaning in the preceding sentence.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "finite relative field paths and their composition",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 1922,
+      "end": 2185
+    },
+    "clarity": "The named given.typing.paths unit has a visible identity and directly presents finite relative field paths and their composition. This unit introduces finite relative field paths, epsilon, concatenation, and append in place. It uses field names from the operational syntax without introducing another semantic predicate.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The rho production is its defining grammar; every new symbol is assigned meaning in the preceding sentence."
+  }
+}

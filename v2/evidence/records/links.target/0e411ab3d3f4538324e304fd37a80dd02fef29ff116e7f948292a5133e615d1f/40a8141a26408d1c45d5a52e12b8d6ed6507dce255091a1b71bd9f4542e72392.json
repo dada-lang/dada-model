@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "2cb02ba8abaefca9a9c5386b9c0806b5186410a0d124d99c80d1f2cc589be548",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e411ab3d3f4538324e304fd37a80dd02fef29ff116e7f948292a5133e615d1f",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inspected the exact target and surrounding chapter rather than inferring clarity from an anchor ID. Links operational class table and typed Σ in its equation; removes field types without changing field order.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.erasure",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 5576,
+      "end": 5924
+    },
+    "clarity": "Links operational class table and typed Σ in its equation; removes field types without changing field order.",
+    "independence": "The selected passage is the destination's own subject, introduced at its start; supporting notation is linked to earlier definitions. Its landing does not require searching unrelated definitions."
+  }
+}

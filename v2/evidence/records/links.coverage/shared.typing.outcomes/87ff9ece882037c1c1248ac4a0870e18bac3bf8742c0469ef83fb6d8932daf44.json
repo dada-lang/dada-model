@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "1d6c4f5eb532efbf3d15df4b5a2eef130ba101fc699feaf3896309da4c0020b5",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:target:c606944c55fcc1af8071d20ef9cfffd91dabf71226ad1a2eab085091751daee3",
+    "audit:unit:shared.typing.machine",
+    "audit:unit:shared.typing.outcomes",
+    "audit:unit:shared.typing.steps",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Now targets only Stuck, with configuration and extended-step links; empty/nonempty code supplies the local failure condition.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Now targets only Stuck, with configuration and extended-step links; empty/nonempty code supplies the local failure condition.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Stuck is not finished and no Step successor. Expanding finished to P=[] yields the displayed equation; it does not classify successful completion as stuck.",
+    "links": [
+      {
+        "occurrence": "shared.typing.outcomes:1",
+        "role": "conceptual",
+        "rationale": "The use 'configuration' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.machine is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.outcomes:2",
+        "role": "conceptual",
+        "rationale": "The use 'extended step' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.steps is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.outcomes:3",
+        "role": "conceptual",
+        "rationale": "The use \"\\\\Delta\\\\vdash\\\\langle S,P\\\\rangle\\\\longrightarrow_u K'\" supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.steps is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

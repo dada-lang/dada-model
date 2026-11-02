@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "6ee6abc15683c474f5f6a308567297190b2b1a0fd0ded67854594cc53de5001d",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.evidence.mechanical_execution",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Mechanical execution receipts are introduced by name and then their recording, success, validation and freshness criteria are spelled out. The Lean assumptions command is explicitly described as a separate limited observation rather than an unexplained theorem. There are no equations or model judgments. Command names and generated-directory names are literal execution-interface details.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Mechanical execution receipts are introduced by name and then their recording, success, validation and freshness criteria are spelled out. The Lean assumptions command is explicitly described as a separate limited observation rather than an unexplained theorem.",
+    "mathematics": "There are no equations or model judgments. Command names and generated-directory names are literal execution-interface details.",
+    "links": []
+  }
+}

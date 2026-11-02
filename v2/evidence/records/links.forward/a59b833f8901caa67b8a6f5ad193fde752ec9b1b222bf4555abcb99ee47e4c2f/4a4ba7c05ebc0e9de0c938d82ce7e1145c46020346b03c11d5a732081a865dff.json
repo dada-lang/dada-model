@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "9f660fe1b4577c0a0a77a940cfc88fa677b5f3b0fd5fc65006fae0ae498099dc",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:unit:shared.typing.example.copy",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The sole Shared typing forward reference is a signposted motivating preview; examined the source example, the target grammar, and their chapter order. No later typing rule is needed to read the behavior table.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The opening example motivates the permission grammar with an observable move/copy contrast. Moving the full grammar ahead of it would remove that intent-first introduction; moving the example after the grammar would remove the concrete motivation. Splitting out a separate pre-grammar definition would repeat the same two labels without adding needed information. The link is confined to naming the formalization that follows.",
+      "signposting": "The source explicitly says permission grammar below and limits its present use to the two labels and their move/copy distinction.",
+      "signpost": {
+        "path": "md/shared-typing.md",
+        "start": 1086,
+        "end": 1256
+      },
+      "minimal_use": "Only given versus shared and whether a give moves or copies are needed; the earlier Shared operational semantics already supplies those behaviors. Recursive type syntax, composition and normalization are deferred to the later definitions."
+    }
+  }
+}

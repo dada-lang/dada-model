@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "ea5e21cd94eedee281b8460365844a6b21fcc7ded4832c3d22fbb947741e441f",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:56968a0b61d069156a3c6cf55db5ba12bcfdf730847f49c102707a617d46863b",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:unit:given.programs",
+    "audit:unit:given.unpacking",
+    "audit:unit:given.unpacking.soundness",
+    "audit:unit:given.well_formed",
+    "audit:unit:given.well_formed_classes",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result.",
+    "mathematics": "The theorem is stated in prose with links to class-table WF, the extended transition and state WF; there is no separate hidden predicate.",
+    "links": [
+      {
+        "occurrence": "given.unpacking.soundness:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “well-formed class table” uses Given class-table well-formedness; the target given.well_formed_classes supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.unpacking.soundness:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “extended step” uses Given unpacking transition semantics; the target given.unpacking supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.unpacking.soundness:3",
+        "role": "conceptual",
+        "rationale": "The prose reference “well-formed storage” uses Given structural storage well-formedness; the target given.well_formed supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

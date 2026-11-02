@@ -202,3 +202,28 @@ when expanding the set of proof assumptions to report.
 Renderer contracts live in `md/repo/renderer-contracts.md`; source/test citations
 and checked-in theme JS/CSS are conservative correspondence inputs. A source
 change requires renewed review, not a manufactured positive receipt or verdict.
+
+## Links and conceptual order
+
+Use the existing Markdown, anchor-reference roles, and MathJax `\href` links;
+do not add a parallel concept-tagging syntax. `dada-spec links [--json]` derives
+link occurrences and reading order from `SUMMARY.md` and source positions.
+Internal destinations are checked against both chapter path and anchor. Use
+`.html` paths in authored MathJax links, because MathJax does not run mdBook's
+Markdown URL rewriting.
+
+`links.coverage/UNIT`, `links.target/HASH`, and `links.forward/HASH` are generated
+review subjects for the existing `prepare` and `record` commands. Read
+`md/repo/link-audits.md` and the link-review policy in
+`md/repo/correspondence-review.md`. Examine unlinked prose and math as well as the
+extracted occurrence list. Target evidence must identify a clear landing, not
+justify a buried definition by selecting its precise span. Prefer rearranging
+forward references; retained ones require explicit source signposting and
+reasons for necessity and minimal use. Navigation classifications are reviewed,
+not blanket exceptions. Local references must follow the actual definition.
+
+Draft units and future notes also need link audits. Editorial audits of future
+notes do not assert correspondence with a formalization. Saved
+audits retain exact source/target snapshots, relevant chapters, order/position
+metadata, policy, and tool/theme inputs. Their deterministic validation runs in
+the existing Cargo evidence test without invoking an agent, network, or Lean.

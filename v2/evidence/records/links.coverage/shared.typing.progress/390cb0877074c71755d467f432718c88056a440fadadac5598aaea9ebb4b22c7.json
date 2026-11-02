@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "bundle": "85f04e31cf3b1aa043737a12bab6b1524cbd58d36764b96216a28d3a7016d801",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e411ab3d3f4538324e304fd37a80dd02fef29ff116e7f948292a5133e615d1f",
+    "audit:target:2125be554c01949722a01b484938c16897339c8d6ac2c317a9fc821a16faeeaa",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:target:7b9572fe001e266c185e795f8b2fb6d9e4095389cfc90d0fae7eb97acf562bca",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.configurations",
+    "audit:unit:shared.typing.erasure",
+    "audit:unit:shared.typing.expression_soundness",
+    "audit:unit:shared.typing.finished",
+    "audit:unit:shared.typing.outcomes",
+    "audit:unit:shared.typing.progress",
+    "audit:unit:shared.typing.steps",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links typed configuration, Finished, erasure and Step in both prose and math.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links typed configuration, Finished, erasure and Step in both prose and math.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ConfigurationTyped.progress concludes finished or an existential Unpacking.Step under classes.erase from an arbitrary typed configuration. The rendered disjunction has those same alternatives and no additional dynamic-success assumption.",
+    "links": [
+      {
+        "occurrence": "shared.typing.progress:1",
+        "role": "conceptual",
+        "rationale": "The use 'well-typed configuration' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.configurations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.progress:2",
+        "role": "conceptual",
+        "rationale": "The use 'finished' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.finished is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.progress:3",
+        "role": "conceptual",
+        "rationale": "The use 'step' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.steps is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.progress:4",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma\\\\vdash K:\\\\Gamma_f' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.configurations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.progress:5",
+        "role": "conceptual",
+        "rationale": "The use '\\\\mathsf{Finished}(K)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.finished is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.progress:6",
+        "role": "conceptual",
+        "rationale": "The use '\\\\lfloor\\\\Sigma\\\\rfloor' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.erasure is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.progress:7",
+        "role": "conceptual",
+        "rationale": "The use '\\\\longrightarrow_u' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.steps is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

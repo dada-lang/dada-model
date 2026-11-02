@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "bundle": "e1ce151c43b088e4a8426d449437f5e15c56ba38ae809cb1c6208aec0ac37d41",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "audit:unit:given.allocated",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.identities",
+    "audit:unit:given.programs",
+    "audit:unit:given.state",
+    "audit:unit:given.well_formed",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links evaluation for pending references, class declarations, allocated identities, and index. The remaining conditions jointly define one storage invariant rather than separate unintroduced predicates. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links evaluation for pending references, class declarations, allocated identities, and index. The remaining conditions jointly define one storage invariant rather than separate unintroduced predicates.",
+    "mathematics": "WF and its component conditions are introduced here; the numeric projection index links identities and allocation links domain membership. Pending expression references are explained with the evaluation link.",
+    "links": [
+      {
+        "occurrence": "given.well_formed:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “expression evaluation” uses Given expression evaluation; the target given.evaluation supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.well_formed:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “declared” uses Given programs, class tables and statement sequences; the target given.programs supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.well_formed:3",
+        "role": "conceptual",
+        "rationale": "The prose reference “allocated identity” uses Given allocation as object-table membership; the target given.allocated supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.well_formed:4",
+        "role": "conceptual",
+        "rationale": "The formula \\operatorname{index}(\\alpha) uses tagged object identities and their numeric projection; the destination given.identities supplies that operation or result."
+      }
+    ]
+  }
+}
