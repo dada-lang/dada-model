@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "71c58ba9786c4d40d3b8fd1ed62c8002359199e51d95fb77f66d8be1159a8396",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:ReviewBundle::prepare",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/units.rs:parse",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:future_notes_are_publishable_but_cannot_receive_correspondence_reviews",
+    "test:mdbook-dada/tests/units.rs:future_notes_reject_formalizations_and_nested_specifications",
+    "test:mdbook-dada/tests/units.rs:future_notes_render_without_formalization_or_draft_status",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.future_notes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "parse and parse_block require top-level ID-first future-note units and forbid formalization options, draft status, citation-as-ID and nested specification blocks. render_unit shows the Future note identity with no alternate source selector or Draft badge. Inventory still indexes references and dependencies; ReviewBundle::prepare and record reject future notes while check reports future note/not applicable. The cited tests cover lists/quotes, malformed options, nested blocks, literal syntax samples, unresolved references, old approvals reused after conversion, and publication without correspondence records.",
+  "limitations": [
+    "The machinery checks explicit associations and declared boundaries; it cannot infer that uncited code implements a future idea."
+  ],
+  "supersedes": [
+    "bfd75aaf3eb29bc12a5a5cd60831a4ea5b1413b99e09d044852ee509f3bb24bf"
+  ]
+}

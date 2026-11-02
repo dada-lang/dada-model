@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "46f877aa69be45667f9fe2150127985cc930ad3406b4a18ef541304f4e53808f",
+  "reviewer": "Codex /root/shared_unpacking — Given correspondence review",
+  "provenance": "Agent source review on 2026-11-02. This agent implemented the new Shared unpacking and binding proofs, not the Given chapters or their Unique formalization. It reread both Given chapters, required dependent units, the selected Unique definitions and theorem/example statements, relevant setup/helper declarations, and the review policy. The prepared packet selections were checked against these inspected source contents. Each rationale was written from that comparison before recording; neither preparation nor a passing build supplied the verdict.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:md/repo/authoring.md",
+    "context:md/repo/spec-system.md",
+    "context:md/repo/writing-style.md",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/State:Updated",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "StoragePlace selects either a variable or one object's field. Stored is membership in the variable list or object/field lists, which coincides with partial lookup under given.state's distinct-key convention; some none and absence remain different. Updated decomposes the existing list at the chosen slot and changes only its contents, retaining field names, object IDs, classes and counter. The unit introduces q and S[q] using p and storage from given.syntax/given.state; it does not identify references with object data.",
+  "limitations": [
+    "Correspondence review compares prose, mathematics, definitions and theorem/example statements; Lean proof validity and command results are separate checks. Listing relevant source-context snapshots records definitions and assumptions consulted, not an audit of every tactic or unrelated declaration.",
+    "Finite-map notation uses the documented distinct-key and well-formedness conventions. Raw Lean list representations also admit malformed values; no functional-lookup or preservation claim is made for those outside the stated premises."
+  ],
+  "supersedes": [
+    "5c49c28aca1e7b81e38177eb83fe392640a8702319dcdd59deba70cb3daa7622"
+  ]
+}

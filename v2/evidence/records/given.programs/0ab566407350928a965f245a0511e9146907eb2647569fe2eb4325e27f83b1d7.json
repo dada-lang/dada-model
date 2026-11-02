@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "047b031dc02dff0026ffaff684382eddfe974a2b9b48dec697775d6ed3d658cc",
+  "reviewer": "Codex /root/shared_unpacking — Given correspondence review",
+  "provenance": "Agent source review on 2026-11-02. This agent implemented the new Shared unpacking and binding proofs, not the Given chapters or their Unique formalization. It reread both Given chapters, required dependent units, the selected Unique definitions and theorem/example statements, relevant setup/helper declarations, and the review policy. The prepared packet selections were checked against these inspected source contents. Each rationale was written from that comparison before recording; neither preparation nor a passing build supplied the verdict.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:md/repo/authoring.md",
+    "context:md/repo/spec-system.md",
+    "context:md/repo/writing-style.md",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Program pairs the class table with a finite ordered statement list. Classes is a list representation of a finite map; ClassesWellFormed requires both distinct class keys and distinct fields in each declaration, matching the declared-once convention and field restriction. The unit introduces Delta, P, Pi, finite-map notation and list notation after given.classes/given.syntax. The list representation retains field and statement order without adding an extra language construct.",
+  "limitations": [
+    "Correspondence review compares prose, mathematics, definitions and theorem/example statements; Lean proof validity and command results are separate checks. Listing relevant source-context snapshots records definitions and assumptions consulted, not an audit of every tactic or unrelated declaration.",
+    "Finite-map notation uses the documented distinct-key and well-formedness conventions. Raw Lean list representations also admit malformed values; no functional-lookup or preservation claim is made for those outside the stated premises."
+  ],
+  "supersedes": [
+    "8666b8b453ee9e54093759600bbc43d0b063e0dc8897cd61b92427ad65ea7893"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "cc70f1519162b486eaddb3d113432f692cafe74f10040d408398db24cc5f4f86",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "extra:lean/CheckAxioms.lean",
+    "extra:scripts/check-assumptions.sh",
+    "extra:spec-checks.json",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/mechanical.rs:Execution::validate",
+    "rust:mdbook-dada/src/mechanical.rs:records",
+    "rust:mdbook-dada/src/mechanical.rs:run",
+    "rust:mdbook-dada/src/mechanical.rs:snapshot",
+    "rust:mdbook-dada/src/mechanical.rs:status",
+    "test:mdbook-dada/tests/evidence_validation.rs:workspace_validation_rejects_malformed_execution_receipts",
+    "test:mdbook-dada/tests/mechanical.rs:execution_preserves_success_failure_and_non_utf8_output",
+    "test:mdbook-dada/tests/mechanical.rs:execution_retains_source_mutations_additions_and_deletions",
+    "test:mdbook-dada/tests/mechanical.rs:failed_after_snapshot_and_launch_failures_are_retained",
+    "test:mdbook-dada/tests/mechanical.rs:later_failures_and_tied_failures_cannot_be_hidden_by_success",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_rejects_tampering_and_profile_substitution",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_requires_selected_sources_and_runner_snapshots",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_and_records_reject_symbolic_links",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_record_empty_directories_and_ignore_generated_outputs",
+    "test:mdbook-dada/tests/mechanical.rs:source_or_profile_changes_stale_receipts_without_corrupting_history",
+    "test:mdbook-dada/tests/mechanical.rs:status_and_record_validation_never_execute_profile_commands",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.evidence.mechanical_execution"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "run captures the configured command, working directory, raw output bytes, exit information and version probes with before/after snapshots; snapshot and Execution::validate enforce roots, directory membership, profile/runner identity and generated/symlink exclusions. status chooses the latest finish time and conservatively handles tied failures or stale receipts. The cited tests cover non-UTF8 output, launch/command/recapture failure, additions/deletions/mutations, hash-recomputed omissions, profile substitution, tied results, and nonexecution during validation. The separately retained spec-checks.json selects lean-assumptions; scripts/check-assumptions.sh rebuilds with --wfail before running CheckAxioms.lean, whose explicit #print axioms commands identify the reported theorems. This supports the final paragraph without confusing an assumptions report with semantic correspondence.",
+  "limitations": [
+    "The implementation is not hermetic or authenticated; restored-between-snapshot mutations, ambient dependencies and excluded generated files remain outside the receipt. I inspected source and test assertions; command execution results belong to separate receipts."
+  ],
+  "supersedes": [
+    "ba617f70d9a2cc3dcea1c790ec482629a29dae7b5478a9f365f166f05b10b6b9"
+  ]
+}

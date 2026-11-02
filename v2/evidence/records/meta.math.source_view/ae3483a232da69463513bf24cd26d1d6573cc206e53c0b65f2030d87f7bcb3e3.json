@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "7d9dc2f8e57f036c76cdec8c7cdb78b6ae57d5f4be656450d76bb0969aab77fd",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lib.rs:markdown_heading",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/lib.rs:selector_header",
+    "test:mdbook-dada/tests/book.rs:leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup",
+    "test:mdbook-dada/tests/book.rs:nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body",
+    "test:mdbook-dada/tests/book.rs:unanchored_rendered_blocks_share_named_headers_and_grouped_choices",
+    "test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent",
+    "test:mdbook-dada/tests/units.rs:meta_units_show_named_rust_implementation_and_test",
+    "test:mdbook-dada/tests/units.rs:structured_units_render_identified_headers_and_exact_lean_views",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.math.source_view"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "selector_header supplies a common header with checked Rendered and one source alternative; render_unit keeps the unit shield and Draft status in the header and selects Lean or Rust content. markdown_heading promotes only leading defining roles, retaining later body roles. render gives nested blocks distinct radio groups. The retained CSS uses margin-left:auto for view controls and direct-child selector guards so nested choices do not switch outer panes. Tests check single IDs, all block kinds, source labels, exact cited selections, leading versus later roles, independent radio groups and the CSS rules.",
+  "limitations": [
+    "The tests inspect generated HTML/CSS without a browser. These controls support manual comparison, not semantic or proof validation."
+  ],
+  "supersedes": [
+    "9d4691ebae246b7a1a12b0231a740a505110e81fced3fad0ee9cb1faa6d57906"
+  ]
+}

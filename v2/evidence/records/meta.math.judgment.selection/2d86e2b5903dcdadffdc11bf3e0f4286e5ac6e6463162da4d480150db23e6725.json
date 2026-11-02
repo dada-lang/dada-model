@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "e76c4128aab45295e6bb2650fbb0bffe71b26685e76be9c860d1a381aaeb32b9",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:validate_mutual_groups",
+    "test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection",
+    "test:mdbook-dada/src/lean.rs:tests::selects_a_case_without_interpreting_its_binders",
+    "test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations",
+    "test:mdbook-dada/tests/book.rs:authored_judgments_and_rules_keep_tex_and_show_cited_source",
+    "test:mdbook-dada/tests/book.rs:authored_math_rejects_missing_or_wrong_kind_source_selections",
+    "test:mdbook-dada/tests/book.rs:authored_math_requires_one_opening_argument_and_a_body",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.math.judgment.selection",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "render_authored and select require exactly one inductive citation for a judgment and one Judgment.constructor for a rule. extract_case retains the inductive header and the selected complete constructor but excludes neighbors, while keeping binder text and nested match cases without interpreting them. Tests explicitly select every first/middle/final constructor, check wrong-kind/missing/malformed citations and empty bodies, preserve authored premises/conclusions, and admit an unknown binder type in the extraction test. There is no Prop-result restriction or premise-classification logic, as the unit states.",
+  "limitations": [
+    "The renderer does not generate, elaborate or verify the authored judgment; the tests establish only selection and rendering behavior."
+  ],
+  "supersedes": [
+    "6484f6f237239e806b91a874c7e96502f550124ec8e2a6b4c38146f672722c62"
+  ]
+}

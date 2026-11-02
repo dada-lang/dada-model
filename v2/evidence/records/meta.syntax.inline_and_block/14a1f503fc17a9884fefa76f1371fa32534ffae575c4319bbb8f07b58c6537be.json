@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "1b07d1e3e0e8ebca41114fc5f90e690458334134114005aabdde0c294910b262",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/lib.rs:directive_blocks",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/book.rs:block_directives_are_distinct_from_literal_code_and_inline_roles",
+    "test:mdbook-dada/tests/book.rs:generated_grammar_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:inferred_judgment_and_rule_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:informational_paragraphs_preserve_markdown_and_literal_examples",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:draft_status_is_explicit_and_does_not_relax_citation_checks",
+    "test:mdbook-dada/tests/units.rs:drafts_keep_their_semantic_kind_without_claiming_a_formalization",
+    "test:mdbook-dada/tests/units.rs:removed_obligation_syntax_is_rejected_at_every_authoring_entry_point",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.syntax.inline_and_block",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "directive_blocks recognizes supported brace-prefixed directives while ordinary lean/heap/grammar/text fences remain untouched; parse_block separates an ID, options and body. Draft parsing preserves UnitKind and permits omitted citations, but render still selects supplied citations with kind checking and omits a selector when no source exists. The parser/renderer reject removed obligation and generated-lean syntax with migration guidance. Tests cover these entry points, malformed statuses, wrong-kind draft citations, literal samples and preserved informational paragraph Markdown. render labels informational paragraphs only at the documented marker and space, without creating an identity.",
+  "limitations": [
+    "Draft presentation is not approval; evidence validation separately rejects unfinished units. Literal authoring examples remain ordinary code."
+  ],
+  "supersedes": [
+    "690bec63865db24cafb837bab10552605077883a425a04bd8f2d2a27a0aecbe8"
+  ]
+}

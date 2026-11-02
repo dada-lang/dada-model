@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "ed1d2fba7302b3970aff486544e757ec3869c2483bc1c187092e8a8711e6d5c0",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lib.rs:escape",
+    "rust:mdbook-dada/src/lib.rs:protect_math",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order",
+    "test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders",
+    "test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles",
+    "test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.math.typesetting"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "render_authored and math-kind render_unit escape raw authored LaTeX, preserve newlines via entities and wrap it with display delimiters; they never derive notation from Lean. protect_math identifies explicit doubled-backslash delimiters outside code/link/HTML contexts, escapes display bodies, and entity-encodes inline punctuation so Markdown smart punctuation cannot alter primes or row breaks. The cited tests retain authors chosen placeholder text, HTML-sensitive characters, braces/underscores/primes and multiple citation order, while leaving literal contexts unchanged. escape also protects source excerpts.",
+  "limitations": [
+    "The renderer does not validate arbitrary TeX or establish that authored mathematics denotes the selected Lean declaration."
+  ],
+  "supersedes": [
+    "a3f11b2e1e0ae6125f953efedc4e108f5f874a0077c4f828c85577ad09001662"
+  ]
+}

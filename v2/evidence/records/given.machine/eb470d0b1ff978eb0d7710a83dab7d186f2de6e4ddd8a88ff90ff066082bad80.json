@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "4c45fd81ccc296e58ec7aeed5e6c219bd9458b3b7913234508d66987abbc0d5a",
+  "reviewer": "Codex /root/shared_unpacking — Given correspondence review",
+  "provenance": "Agent source review on 2026-11-02. This agent implemented the new Shared unpacking and binding proofs, not the Given chapters or their Unique formalization. It reread both Given chapters, required dependent units, the selected Unique definitions and theorem/example statements, relevant setup/helper declarations, and the review policy. The prepared packet selections were checked against these inspected source contents. Each rationale was written from that comparison before recording; neither preparation nor a passing build supplied the verdict.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:md/repo/authoring.md",
+    "context:md/repo/spec-system.md",
+    "context:md/repo/writing-style.md",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Configuration",
+    "lean:Unique/State:Configuration.finished",
+    "lean:Unique/State:Configuration.initial",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Step:Step",
+    "lean:Unique/Step:Steps",
+    "lean:Unique/Step:Stuck",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.machine",
+    "unit:given.programs",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Configuration is State plus List Statement; initial uses empty storage and program.body, and finished is exactly code=[]. Step executes the head statement via complete Eval and removes that head, so no partial evaluation state is exposed. The unit explicitly introduces K and the step notation before promising its later rules; given.programs/given.state introduce the components. Including Steps/Stuck as source context does not change the prose's finished criterion.",
+  "limitations": [
+    "Correspondence review compares prose, mathematics, definitions and theorem/example statements; Lean proof validity and command results are separate checks. Listing relevant source-context snapshots records definitions and assumptions consulted, not an audit of every tactic or unrelated declaration.",
+    "Finite-map notation uses the documented distinct-key and well-formedness conventions. Raw Lean list representations also admit malformed values; no functional-lookup or preservation claim is made for those outside the stated premises."
+  ],
+  "supersedes": [
+    "5468f29115130fe5ef34363bcd3c56c25d60dd0387a424a7c6f6c3e6ee093a09"
+  ]
+}

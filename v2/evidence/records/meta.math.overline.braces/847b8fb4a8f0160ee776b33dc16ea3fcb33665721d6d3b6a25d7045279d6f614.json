@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "b4b0afb55ed0d51c3f669911fa267bc9753e0c402a4fb33ffe79a0fa83e1ccb1",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lint.rs:check_latex",
+    "test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions",
+    "test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex",
+    "test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf",
+    "test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed",
+    "test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.math.overline.braces"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "check_latex matches the exact overline control word unless extended by ASCII letters, checks an immediately preceding opening brace and exactly one literal following ASCII space, and counts source newlines for diagnostics. The negative cases include tabs/newlines/CRLF/nonbreaking-space, missing braces and command endings; positive cases include nested groups and longer command names. process checks raw chapter text, while all_book_markdown_follows_latex_conventions recursively scans Markdown under md independently of SUMMARY. The claim correctly calls this an adjacency check rather than brace balancing or TeX parsing.",
+  "limitations": [
+    "Literal samples are intentionally linted too; successful lint does not establish valid TeX beyond these adjacent characters."
+  ],
+  "supersedes": [
+    "1638a826e5b141a48268dad1d3bbd31992aa01c7da3e52cd8edecfce7e2f445e"
+  ]
+}

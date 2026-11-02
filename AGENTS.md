@@ -45,19 +45,23 @@ Render give syntax as `p→` and
 `p→share`. The table of contents groups Operational semantics and Type system
 under Given and Shared, followed by CFlow. Navigation pages are
 `v2/md/given-overview.md` and `v2/md/shared-overview.md`.
-`v2/md/shared-typing.md` is a Markdown-first draft for user review: only `given`
-and `shared` permissions, signed views, and a proposed unique-only unpacking
-extension. Its definitions, examples, and soundness statements are Draft units;
-there is no Shared typing formalization yet. `v2/md/cflow.md` remains an
-editorial placeholder.
+`v2/md/shared-typing.md` adds `given` and `shared` permissions, signed views,
+and unique-only unpacking. `Shared/TypingViews`, `Shared/Typing`, and
+`Shared/TypingRealization` formalize its rules; `Shared/TypingSafety` proves
+expression soundness, progress, preservation, and counted completion.
+`v2/md/cflow.md` remains an editorial placeholder.
 The existing chapter paths remain unchanged. `v2/md/given-typing.md` contains
 strictly covered units for signed views, typing rules, and storage realization,
 with formal definitions and examples in `Unique/Views`, `Unique/Typing`,
 `Unique/TypingRealization`, and their checks. `Unique/TypingSafety` proves
 expression soundness for arbitrary pending values, machine progress and
 preservation, and completion after exactly one step per statement. `Unique/Unpacking` adds `Class → { fields }` patterns with structural
-preservation and embedding/reflection of the base machine. Shared correspondence
-still covers the base fragment. See `v2/AGENTS.md` for the formalization boundary.
+preservation and embedding/reflection of the base machine. `Shared/Unpacking`
+extends the Shared machine with the same patterns; only a unique reference can
+be unpacked, and shared fields retain their modes.
+`Correspondence/UniqueSharedUnpacking` relates the extended machines;
+`Correspondence/UniqueSharedTyping` relates the all-given typing fragment.
+See `v2/AGENTS.md` for the formalization boundary.
 View omissions mean unknown and inaccessible, not empty. Positive entries expose
 whole declared subtrees; negative entries describe existing empty slots.
 View entries are prefix-incomparable. Expanded views are valid and normalize

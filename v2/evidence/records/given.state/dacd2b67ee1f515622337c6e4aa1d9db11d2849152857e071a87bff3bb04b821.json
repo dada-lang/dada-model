@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "1977ef531b1e9efb4b4a19ae291442aec7e891e1ff0ee3fef0391b91119968ec",
+  "reviewer": "Codex /root/shared_unpacking — Given correspondence review",
+  "provenance": "Agent source review on 2026-11-02. This agent implemented the new Shared unpacking and binding proofs, not the Given chapters or their Unique formalization. It reread both Given chapters, required dependent units, the selected Unique definitions and theorem/example statements, relevant setup/helper declarations, and the review policy. The prepared packet selections were checked against these inspected source contents. Each rationale was written from that comparison before recording; neither preparation nor a passing build supplied the verdict.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:md/repo/authoring.md",
+    "context:md/repo/spec-system.md",
+    "context:md/repo/writing-style.md",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "ObjectId is a structure wrapping Nat, distinct from Nat even though numeral notation is convenient. Slot=Option ObjectId distinguishes empty contents from an occupied reference; Object pairs className with named slots; State carries object and variable lists plus nextId. State.empty is precisely two empty lists and zero. The unit introduces alpha, beta, s, o, O, V, nu and their domains before use. The finite-map uniqueness convention is explicitly stated and later enforced by given.well_formed; no permission or ownership mode is stored on objects.",
+  "limitations": [
+    "Correspondence review compares prose, mathematics, definitions and theorem/example statements; Lean proof validity and command results are separate checks. Listing relevant source-context snapshots records definitions and assumptions consulted, not an audit of every tactic or unrelated declaration.",
+    "Finite-map notation uses the documented distinct-key and well-formedness conventions. Raw Lean list representations also admit malformed values; no functional-lookup or preservation claim is made for those outside the stated premises."
+  ],
+  "supersedes": [
+    "4338e696819fa458c035f24ac9f0d76d147ff93c9051fdb38715bf50a42aa599"
+  ]
+}

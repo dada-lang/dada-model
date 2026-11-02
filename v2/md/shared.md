@@ -349,8 +349,8 @@ final stored reference.
 :uses: given.classes given.state given.syntax given.unpacking shared.state shared.syntax
 
 The Shared language contains a translation of the Given fragment with
-single-variable bindings. The {anchor-ref}`given.unpacking` extension has no
-Shared counterpart yet. Write
+single-variable bindings. This section restricts the correspondence to that
+fragment. Write
 \\(E\\) for this translation, applied to programs, configurations, and their
 components.
 

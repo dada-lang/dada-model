@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "8098bfede8d9519df38d6cd227d7ed0a3839eec25c85f15c332da619dd67aa00",
+  "reviewer": "Codex /root",
+  "provenance": "Textual correspondence review on 2026-11-02 after Shared typing formalization. Read each complete authored unit and transitive introducing units, exact selected definitions and theorem/example statements, and the correspondence-review policy. Read Shared/Examples setup and intermediate-state definitions for execution claims. Reviewed actual immutable packet selections against those sources; conclusions were not copied from previous records or inferred from build success. Lean proof correctness is checked separately by the recorded --wfail build.",
+  "examined": [
+    "context:lean/Common/FiniteMap.lean",
+    "context:lean/Common/FiniteMapExamples.lean",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:lean/Shared/Syntax.lean",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMapExamples:empty_map",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.empty"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The anchored example specializes FiniteMap.empty to Nat keys and Nat values and proves its entries equal []. With evidence.map's entries representation, this exactly entails no stored key-value pair; the claim is only this concrete empty map and does not infer a broader map invariant from one example.",
+  "limitations": [
+    "This review compares semantic intent and formal statements; it does not independently re-prove Lean theorems or audit proof tactics.",
+    "Association lists represent raw states and class tables; finite-map prose uses the documented distinct-key/well-formedness conventions. Conservative whole-source snapshots not listed as examined serve freshness only."
+  ],
+  "supersedes": [
+    "3772ae991a132c9d73fd5af6e5b6178ffe2bc9b6fa045279f27ac58536bcacfa"
+  ]
+}

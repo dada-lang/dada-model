@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "ea846dd82082fdcdd4f503a2ddcab71ea400c0b4cbda922bba7a55096f0e4796",
+  "reviewer": "Codex /root/shared_unpacking — Given correspondence review",
+  "provenance": "Agent source review on 2026-11-02. This agent implemented the new Shared unpacking and binding proofs, not the Given chapters or their Unique formalization. It reread both Given chapters, required dependent units, the selected Unique definitions and theorem/example statements, relevant setup/helper declarations, and the review policy. The prepared packet selections were checked against these inspected source contents. Each rationale was written from that comparison before recording; neither preparation nor a passing build supplied the verdict.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Unique/Soundness.lean",
+    "context:lean/Unique/State.lean",
+    "context:lean/Unique/Step.lean",
+    "context:lean/Unique/Syntax.lean",
+    "context:lean/Unique/Unpacking.lean",
+    "context:md/repo/authoring.md",
+    "context:md/repo/spec-system.md",
+    "context:md/repo/writing-style.md",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "lean:Unique/Unpacking:Configuration",
+    "lean:Unique/Unpacking:Pattern",
+    "lean:Unique/Unpacking:Statement",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.patterns",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Pattern has variable and flat unpack(className, field/name pairs) forms; extended Statement pairs it with the unchanged Value type and Configuration contains these statements. The all-fields/distinct-variable conditions are validity conditions enforced by Bind/Transfer in given.unpacking rather than raw constructors. The prose distinguishes giving the reference from consuming its container, allows empty patterns for empty classes, and explicitly limits the preceding base-machine theorems. Class and expression notation comes from given.classes/given.syntax.",
+  "limitations": [
+    "Correspondence review compares prose, mathematics, definitions and theorem/example statements; Lean proof validity and command results are separate checks. Listing relevant source-context snapshots records definitions and assumptions consulted, not an audit of every tactic or unrelated declaration.",
+    "Finite-map notation uses the documented distinct-key and well-formedness conventions. Raw Lean list representations also admit malformed values; no functional-lookup or preservation claim is made for those outside the stated premises."
+  ],
+  "supersedes": [
+    "b43600625e51f64e28043ed6accc53a7e666c9c04174e4508fd49e845d5e83f8"
+  ]
+}

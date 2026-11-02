@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "56e933eb1343d032a2ced73d035fcb9f314f6ee146c4da9d3fc713f03809ceaa",
+  "reviewer": "Codex /root",
+  "provenance": "Textual correspondence review on 2026-11-02 after Shared typing formalization. Read each complete authored unit and transitive introducing units, exact selected definitions and theorem/example statements, and the correspondence-review policy. Read Shared/Examples setup and intermediate-state definitions for execution claims. Reviewed actual immutable packet selections against those sources; conclusions were not copied from previous records or inferred from build success. Lean proof correctness is checked separately by the recorded --wfail build.",
+  "examined": [
+    "context:lean/Common/FiniteMap.lean",
+    "context:lean/Common/FiniteMapExamples.lean",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:lean/Shared/Syntax.lean",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "FiniteMap is a structure with a finite List(Key×Value) and Nodup on entries.map fst. That proof field supplies at-most-one value per key while retaining list order and imposing no ordering on key values. FiniteMap.empty has entries=[] with nodup_nil. This directly matches the unit's finite partial-map and empty-map definitions; the key and value types are arbitrary Type parameters.",
+  "limitations": [
+    "This review compares semantic intent and formal statements; it does not independently re-prove Lean theorems or audit proof tactics.",
+    "Association lists represent raw states and class tables; finite-map prose uses the documented distinct-key/well-formedness conventions. Conservative whole-source snapshots not listed as examined serve freshness only."
+  ],
+  "supersedes": [
+    "c30617b1d1b7739281d29f8ac86452697b247a589f23fd1f0559c8ac156c7b29"
+  ]
+}

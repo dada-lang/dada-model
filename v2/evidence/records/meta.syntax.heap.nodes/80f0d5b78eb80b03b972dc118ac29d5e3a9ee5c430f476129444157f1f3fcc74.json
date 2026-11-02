@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "bfcbbb265c1dfa02796de17f0b72f38244aefd531c4ed2cd353624390dbea923",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/graph.rs:args",
+    "rust:mdbook-dada/src/graph.rs:identifier",
+    "rust:mdbook-dada/src/graph.rs:label",
+    "rust:mdbook-dada/src/graph.rs:parse",
+    "test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices",
+    "test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds",
+    "test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved",
+    "test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.syntax.heap.nodes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "graph::parse first collects node declarations and deferred slot assignments, which permits forward references and skips blank/comment lines. identifier uses Unicode alphabetic/alphanumeric characters with underscore support; args respects quoted commas/escapes and label delegates quoted strings to JSON decoding. Constructor matches enforce the stated arities and at most one variable store, prepopulate array slots, and distinguish lease/leased and shlease/shared aliases from showned. Tests verify Unicode labels, quoted comma/HTML escaping, variables as grouped slots, array empties, and equal diagrams for canonical/alias spellings despite retained distinct source descriptions.",
+  "limitations": [
+    "These are diagram facts only; the parser neither executes machine operations nor adds borrow/primitive/array semantics to the Given or Shared language layers."
+  ],
+  "supersedes": [
+    "c514ceb03ab3224590520bf26d418990a691e3b04fe37aaaec20e7bc3120b665"
+  ]
+}

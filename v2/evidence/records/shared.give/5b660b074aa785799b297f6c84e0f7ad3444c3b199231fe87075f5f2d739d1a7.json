@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "73d7a427104c74830d7f6b75f0fb136d3a2be5e1087f75f8a131ea306e73393a",
+  "reviewer": "Codex /root",
+  "provenance": "Textual correspondence review on 2026-11-02 after Shared typing formalization. Read each complete authored unit and transitive introducing units, exact selected definitions and theorem/example statements, and the correspondence-review policy. Read Shared/Examples setup and intermediate-state definitions for execution claims. Reviewed actual immutable packet selections against those sources; conclusions were not copied from previous records or inferred from build success. Lean proof correctness is checked separately by the recorded --wfail build.",
+  "examined": [
+    "context:lean/Common/FiniteMap.lean",
+    "context:lean/Common/FiniteMapExamples.lean",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:lean/Shared/Syntax.lean",
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Place",
+    "policy:md/repo/correspondence-review.md",
+    "unit:shared.give"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit introduces the place route and two reference modes before its table. Mode belongs to Reference, not Object. Resolve accumulates Mode.join; Give.move requires unique resolution and Take, copy requires shared resolution and a shared stored reference, and promote requires shared resolution and Promote. The latter changes precisely the selected unique reference to shared while returning a shared reference to the same object. Take/Promote decompositions retain all other slots, class names and counters. A shared stored reference cannot produce unique path access, explaining why the table needs only three rows. The prose describes exactly these cases, including fields whose stored mode remains unique until copied.",
+  "limitations": [
+    "This review compares semantic intent and formal statements; it does not independently re-prove Lean theorems or audit proof tactics.",
+    "Association lists represent raw states and class tables; finite-map prose uses the documented distinct-key/well-formedness conventions. Conservative whole-source snapshots not listed as examined serve freshness only."
+  ],
+  "supersedes": [
+    "5deffc04da30a213835585b2af3d1177444e26ea34b3d102273ff56e3a9be4a1"
+  ]
+}

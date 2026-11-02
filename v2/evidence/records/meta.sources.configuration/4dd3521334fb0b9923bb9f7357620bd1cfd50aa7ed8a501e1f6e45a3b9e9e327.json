@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "552ce4188ebbea019832c125c8566bfad0d8e8cc52df7406041fec4bb241129d",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::check_context",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::load",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::markdown_root",
+    "rust:mdbook-dada/src/inventory.rs:Inventory::inputs",
+    "rust:mdbook-dada/src/lib.rs:process_configured",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_lean_root_is_shared_by_rendering_and_evidence",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.sources.configuration"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "SourceConfiguration loads both Markdown and Lean roots from book.toml, validates project containment, and check_context rejects disagreeing preprocessor roots. process_configured and Inventory::inputs use that same configuration while Rust selections use the project root. The configured_lean_root test moves the Lean tree, changes its selected content, checks the new exact selection/context paths, rejects a mismatched runtime override, and still resolves Rust citations. Including book.toml in tool inputs makes root changes invalidate old bundles.",
+  "limitations": [
+    "The claim concerns the configured source roots; it does not make a source excerpt a standalone compilation unit."
+  ],
+  "supersedes": [
+    "8fe46d75642004a1148969b6232736ad6effcf80aea73d33846772e7670afcab"
+  ]
+}

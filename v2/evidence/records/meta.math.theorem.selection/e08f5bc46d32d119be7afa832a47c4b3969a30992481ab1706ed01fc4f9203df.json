@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "ea31222718eae33fc671b7c643fe44b86d86c3222a4113b7220d12057c185e8e",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:theorem_source",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections",
+    "test:mdbook-dada/src/lean.rs:tests::selects_complete_named_theorems_without_comment_or_string_decoys",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_reject_wrong_kinds_and_malformed_directives",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_select_literal_qualified_names",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_show_the_exact_named_statement_and_proof",
+    "test:mdbook-dada/tests/book.rs:markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.math.theorem.selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "select routes theorem/lemma units to the same theorem extractor; extract_declaration requires a literal named theorem and a genuine := body, retains indented statement/proof continuations, masks decoys and rejects wrong kinds, ambiguity and unsupported boundaries. theorem_source highlights and escapes the complete selected statement and proof. Tests compare complete excerpts, qualified literal names, rejected axioms/definitions/examples, neighboring declarations and malformed forms. chapter_roles rejects nesting any definition/theorem/lemma/example inside another of those four. These checks support source selection while leaving proof checking to Lean and claim comparison to review.",
+  "limitations": [
+    "No tactic proof was executed for this renderer review. Theorem versus lemma remains a presentation distinction, not a different checker."
+  ],
+  "supersedes": [
+    "15f66077ba3d2d86f65fa82453c240af8db7ec52372cf39e4d5d002d2ee5bdbd"
+  ]
+}
