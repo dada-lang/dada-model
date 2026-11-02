@@ -20,6 +20,7 @@
   - [Specification system reference](repo/spec-system.md)
   - [Implementation contracts](repo/evidence-pilot.md)
   - [Renderer contracts](repo/renderer-contracts.md)
+  - [Future tooling work](repo/future-work.md)
 
 ---
 
