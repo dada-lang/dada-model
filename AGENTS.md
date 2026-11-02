@@ -5,6 +5,12 @@ Read `v1/AGENTS.md` before changing that model. Its paths and commands are relat
 to `v1/`. The v2 design draft is an mdBook in `v2/md/`, configured by `v2/book.toml`.
 The book separates repository methods and specification-system requirements
 (`v2/md/repo/`), Dada language goals (`v2/md/dada/`), and the Given/Shared language layers.
+Future tooling requirements live in `v2/md/repo/future-work.md`. Its link-audit
+proposal calls for coverage of concept/equation references in prose and MathJax,
+plus evidence that each target identifies one clear definition. Conceptual-order
+audits should detect forward references and require evidence that rearrangement
+cannot avoid them, the text marks them explicitly, and their use is minimal.
+These audits are not yet implemented.
 `v2/mdbook-dada` is a shared Rust library in the v2 Cargo workspace, with the
 `mdbook-dada` renderer and `dada-spec` evidence CLI. Read `v2/AGENTS.md` before
 changing structured units, evidence, or the tooling. `v2/spec.json` explicitly
@@ -44,24 +50,34 @@ have been removed and must not serve as an implicit specification for later laye
 Render give syntax as `p→` and
 `p→share`. The table of contents groups Operational semantics and Type system
 under Given and Shared, followed by CFlow. Navigation pages are
-`v2/md/given-overview.md` and `v2/md/shared-overview.md`; `v2/md/shared-typing.md`
-and `v2/md/cflow.md` are editorial placeholders, with no semantic units yet.
+`v2/md/given-overview.md` and `v2/md/shared-overview.md`.
+`v2/md/shared-typing.md` adds `given` and `shared` permissions, signed views,
+and unique-only unpacking. `Shared/TypingViews`, `Shared/Typing`, and
+`Shared/TypingRealization` formalize its rules; `Shared/TypingSafety` proves
+expression soundness, progress, preservation, and counted completion.
+`v2/md/cflow.md` remains an editorial placeholder.
 The existing chapter paths remain unchanged. `v2/md/given-typing.md` contains
 strictly covered units for signed views, typing rules, and storage realization,
 with formal definitions and examples in `Unique/Views`, `Unique/Typing`,
 `Unique/TypingRealization`, and their checks. `Unique/TypingSafety` proves
 expression soundness for arbitrary pending values, machine progress and
 preservation, and completion after exactly one step per statement. `Unique/Unpacking` adds `Class → { fields }` patterns with structural
-preservation and embedding/reflection of the base machine. Shared correspondence
-still covers the base fragment. See `v2/AGENTS.md` for the formalization boundary.
+preservation and embedding/reflection of the base machine. `Shared/Unpacking`
+extends the Shared machine with the same patterns; only a unique reference can
+be unpacked, and shared fields retain their modes.
+`Correspondence/UniqueSharedUnpacking` relates the extended machines;
+`Correspondence/UniqueSharedTyping` relates the all-given typing fragment.
+See `v2/AGENTS.md` for the formalization boundary.
 View omissions mean unknown and inaccessible, not empty. Positive entries expose
 whole declared subtrees; negative entries describe existing empty slots.
 View entries are prefix-incomparable. Expanded views are valid and normalize
 by collapsing complete positive subtrees. Bare `C` is shorthand for `C.{ε}`,
 not a separate type constructor; emptying is written `T[-ρ]`.
 Constructor arguments still require their whole declared class types.
-`v2/md/dada/future-extensions.md` records generic views as a proposal to revisit,
-not part of the current rules.
+`v2/md/dada/future-extensions.md` records generic views, path-dependent
+`given[places]` permissions, and permission/type unions as proposals to revisit,
+not part of the current rules. Path-dependent permissions and mixed ownership
+possibilities do not belong in the initial Shared type system.
 The strict operational chapters live in `v2/md/given.md` and
 `v2/md/shared.md`, with standalone Lean modules under `v2/lean/Unique/` and
 `v2/lean/Shared/`. `Common/Rooted` supplies shared graph reasoning;

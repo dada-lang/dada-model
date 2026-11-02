@@ -1,4 +1,4 @@
 # Shared
 
 - [Operational semantics](shared.md)
-- [Type system (coming)](shared-typing.md)
+- [Type system](shared-typing.md)

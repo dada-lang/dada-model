@@ -11,27 +11,26 @@ The opening chapters separate execution from static typing:
 | Chapter | Scope |
 | --- | --- |
 | [Given: operational semantics](../given.md) | Classes, including empty classes; place and value expressions; `p→` transfers a unique owner. |
-| [Given: typing and soundness](../given-typing.md) (draft) | Views track initialization and moves; proposed configuration typing supports progress and preservation statements. |
+| [Given: typing and soundness](../given-typing.md) | Signed views track initialization and moves; progress, preservation, and completion are proved. |
 | [Shared: operational semantics](../shared.md) | Extend execution with sharing of values, written `p→share`; traversal through shared ownership yields a shared copy. |
+| [Shared: typing and soundness](../shared-typing.md) | Permissions determine whether giving moves or copies; views track accessible fields. Progress, preservation, and completion are proved. |
 
 The two operational models live in `lean/Unique/` and `lean/Shared/`;
 `lean/Correspondence/UniqueShared.lean`
 proves the embedding preserves and reflects steps, finite executions, and
 execution boundaries. Shared graph reasoning lives in `lean/Common/`.
 
-The Given chapter proposes explicit `Class → { x, y }` unpacking patterns. The
-typing chapter drafts nominal types and signed views, expression and statement
-typing, and the relation between the typing environment and runtime storage.
-Both additions use draft units and await Lean formalization and correspondence
-review. The typing chapter is included in strict evidence coverage. Given needs
-no permission types.
+Both layers support explicit `Class → { x, y }` unpacking patterns. Shared
+requires a unique reference to the container; its fields may be shared.
+The typing chapters define nominal types and signed views, expression and
+statement typing, and the relation between typing environments and storage.
+Given needs no permission types; Shared adds `given` and `shared`.
 
-The intended progress theorem says that a well-typed configuration is finished
-or can take a step. Preservation says that a step from a well-typed
-configuration yields a well-typed configuration, with views updated to account
-for moves. These are new proof targets; the existing heap well-formedness
-preservation theorems do not establish type soundness. Typing uses the Given
-execution rules, so adding it does not require a second operational model.
+Progress says that a well-typed configuration is finished or can take a step.
+Preservation says that every step retains configuration typing. Since each
+step consumes one statement, well-typed programs also finish after exactly
+one step per statement. These type soundness results are separate from the
+structural heap invariants proved by the operational chapters.
 
 Later extensions will cover control flow, class and struct distinctions,
 primitives, destruction, and borrowing. Introduce each feature when its behavior

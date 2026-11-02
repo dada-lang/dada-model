@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "6320d116207277624499ac3949da6e825cd3629e1a82701d5e8e865a7640cba5",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "parse_block rejects include/playground/rustdoc-include tokens even inside literal samples and rejects nested legacy source-citation blocks. SourceConfiguration::validate_chapters compares each received chapter against original source ordered structured-unit IDs and exact raw text. Tests cover raw forbidden content, attempts to acquire evidence for it, an already-expanded include, units injected by expansion, and edits by an earlier processor. The unit explicitly limits this guard to chapters received at this preprocessing stage, matching the implementation rather than claiming whole-pipeline integrity.",
+  "limitations": [
+    "The actual_mdbook_pipeline integration test is inspected as source; it is not claimed to have run in this review. Whole-chapter omission and later output mutations are explicitly outside this check."
+  ],
+  "supersedes": [
+    "267a382a6daf26f15d4725e26e36c4c4e518184446c4e40ec2d6f757e5177231"
+  ]
+}

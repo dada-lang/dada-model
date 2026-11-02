@@ -37,6 +37,11 @@ codomains. Distinguish formal syntax from convenient shorthand. When a rule
 needs local names, put their definitions beside the rule in a short “where”
 clause.
 
+Give named operations and normalization rules their own definition units, so
+links land directly on the defining text or equation.
+Link uses of named operations and judgments to those definitions, including
+uses inside mathematical rules. Leave the defining occurrence unlinked.
+
 ## Let prose and mathematics share the work
 
 Use prose to explain purpose and consequences, and mathematics to state the

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "8d47b8c46fe21aa39865cd66d120aad0ec5d7ceb5f299cadb45d760d1f7f2137",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.syntax.anchors.identity"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "roles validates the ASCII ID grammar and recognizes only adjacent supported role syntax outside code, links, images and HTML blocks, respecting escaped prefixes and double-backtick demonstrations. chapter_roles combines structured IDs and legacy definitions; process_with_roots indexes all nested chapters before rendering and rejects duplicates. render_role rejects unknown anchors, produces local shield HTML, inherits surrounding labels, and uses relative_html for normalized relative chapter paths. Tests cover forward and parent-directory references, duplicate IDs across role kinds, invalid IDs, literal examples and labels without proof implications. The inspected CSS has no remote badge URL.",
+  "limitations": [
+    "This is the documented custom role subset, not a full MyST parser; a Definition shield alone does not imply a cited formalization."
+  ],
+  "supersedes": [
+    "e101fdbb8097d20b353b8760f14287a935a9a4b97d097e417ec32277d066454e"
+  ]
+}

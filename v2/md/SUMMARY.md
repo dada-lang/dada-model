@@ -7,7 +7,7 @@
   - [Type system](given-typing.md)
 - [Shared](shared-overview.md)
   - [Operational semantics](shared.md)
-  - [Type system (coming)](shared-typing.md)
+  - [Type system](shared-typing.md)
 - [CFlow](cflow.md)
 - [Future extensions](dada/future-extensions.md)
 - [Contributing to the specification](introduction.md)
@@ -20,6 +20,7 @@
   - [Specification system reference](repo/spec-system.md)
   - [Implementation contracts](repo/evidence-pilot.md)
   - [Renderer contracts](repo/renderer-contracts.md)
+  - [Future tooling work](repo/future-work.md)
 
 ---
 

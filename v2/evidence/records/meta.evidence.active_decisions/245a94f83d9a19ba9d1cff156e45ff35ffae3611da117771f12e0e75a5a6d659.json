@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "14b27c14d1de689a21f4ca4de8f91b67c12aa2bba6dfd6bcc4a469c88481e467",
+  "reviewer": "Codex joint tooling review: root and shared_typing_core",
+  "provenance": "Source-and-test correspondence review during Shared typing formalization. Root read the exact extracted implementation/test selections in review chunks0/1 (evidence records, mechanical receipts, source configuration, declaration scanner and unit parser), then supplied per-source rationale and limitations. shared_typing_core independently read all23 raw unit bodies, the complete correspondence-review policy, every extracted implementation/test selection in chunks2–6, and the retained book/MathJax/CSS assets; it reconciled root findings with those selections. The three explicit assumptions-command extra inputs, when present, were read in full by shared_typing_core. Examined lists identify this joint actual reading; conservative snapshots are not represented as line-by-line reading. No test execution is asserted by this decision.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "test:mdbook-dada/tests/evidence_validation.rs:mismatch_and_inconclusive_reviews_never_count_as_correspondence",
+    "test:mdbook-dada/tests/evidence_validation.rs:recording_rechecks_sources_even_with_an_existing_inventory",
+    "test:mdbook-dada/tests/evidence_validation.rs:revised_review_can_supersede_same_unit_after_consulting_more_context",
+    "test:mdbook-dada/tests/evidence_validation.rs:stale_supersession_cannot_fall_back_to_an_independent_positive_review",
+    "tool:book.toml",
+    "tool:theme/dada.css",
+    "tool:theme/mathjax.js",
+    "unit:meta.evidence.active_decisions"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "record reloads Inventory before validate_bundle and validates same-unit supersedes targets while retaining immutable records. check derives current bundles, marks any unsuperseded stale decision stale, and checks every active current conclusion; therefore a second positive cannot hide an active mismatch or inconclusive decision. The cited tests mutate sources after loading an Inventory, retain negative decisions alongside a positive, replace a review after adding context, and make a superseding decision stale. Draft and FutureNote branches respectively reject affirmative recording and reject any correspondence review, matching the stated boundaries.",
+  "limitations": [
+    "This review checks source behavior and the assertions in the cited tests. It does not authenticate reviewers or execute the tests."
+  ],
+  "supersedes": [
+    "8692fa11eb0d1888838dae2e18a59c295d6e75ba7f4d58af2348bb771d9038bd"
+  ]
+}

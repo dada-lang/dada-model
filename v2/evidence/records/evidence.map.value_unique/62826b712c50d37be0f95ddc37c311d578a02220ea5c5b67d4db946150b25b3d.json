@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "695511520d76a90bc33c2eb343f1f1456d7ad537c98d407733657ece366e6dd6",
+  "reviewer": "Codex /root",
+  "provenance": "Textual correspondence review on 2026-11-02 after Shared typing formalization. Read each complete authored unit and transitive introducing units, exact selected definitions and theorem/example statements, and the correspondence-review policy. Read Shared/Examples setup and intermediate-state definitions for execution claims. Reviewed actual immutable packet selections against those sources; conclusions were not copied from previous records or inferred from build success. Lean proof correctness is checked separately by the recorded --wfail build.",
+  "examined": [
+    "context:lean/Common/FiniteMap.lean",
+    "context:lean/Common/FiniteMapExamples.lean",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/State.lean",
+    "context:lean/Shared/Step.lean",
+    "context:lean/Shared/Syntax.lean",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMap:FiniteMap.value_unique",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.value_unique"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected theorem universally quantifies FiniteMap Key Value, a key, two values, and two membership hypotheses for that key, then concludes their equality. It imposes no DecidableEq or key ordering assumption. This is exactly the authored lemma, using the unique-key invariant introduced by evidence.map; the proof implementation remains Lean's responsibility.",
+  "limitations": [
+    "This review compares semantic intent and formal statements; it does not independently re-prove Lean theorems or audit proof tactics.",
+    "Association lists represent raw states and class tables; finite-map prose uses the documented distinct-key/well-formedness conventions. Conservative whole-source snapshots not listed as examined serve freshness only."
+  ],
+  "supersedes": [
+    "c963c97fa33a90affc3e5018d4baf94b4f2fc48545ef17ea12ea90e1edb89b79"
+  ]
+}

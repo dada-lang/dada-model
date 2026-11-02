@@ -141,8 +141,13 @@ and independence from entry order.
 The separate `Unique/Unpacking` extension has operational rules, structural
 well-formedness preservation, and a faithful embedding/reflection of the base
 Given machine. `Unique/UnpackingChecks` checks field-order permutations, empty
-slots, and the complete book example. Shared correspondence still targets the
-original single-variable-binding fragment, not unpacking.
+slots, and the complete book example. `Shared/Unpacking` extends Shared with
+the same binding patterns and requires a unique reference for unpacking.
+`Correspondence/UniqueSharedUnpacking` proves forward and backward execution
+correspondence for the extended machines, including arbitrary successors,
+completion, and stuckness.
+`Correspondence/UniqueSharedTyping` preserves and reflects typing on the
+all-given fragment, including unpacking patterns.
 Positive view entries expose whole declared subtrees; negative entries mark
 existing empty slots; unlisted branches are unknown and inaccessible.
 View entries must have distinct, prefix-incomparable paths. Expanded views are
@@ -157,10 +162,24 @@ slots to empty bindings; interiors of transferred objects may remain partial.
 including the unresolved representation of an initialized field with no exposed
 interior. Do not implement that proposal as part of the current type system.
 
-The strict chapters are `md/given.md`, `md/given-typing.md`, and `md/shared.md`,
-plus the future-extensions chapter and the evidence pilot. The generic-views
-future note is publishable without formalization; adding a formalization citation
-to a future note is an error. Draft specification units still fail evidence validation. Changes to the evidence configuration and these instructions also
+`md/shared-typing.md` adds only `given` and `shared` permissions.
+`Shared/TypingViews` composes permissions and reuses Given signed views through
+a nominal class-table projection. `Shared/Typing` defines the static give
+operation and expression, binding, and statement typing. `Shared/TypingRealization`
+relates each reference to its view, including effective modes on hidden paths.
+`Shared/TypingPaths` and `Shared/TypingPathEffects` account for pending roots as
+well as stored roots: a unique route excludes other routes, while promotion
+through shared access preserves existing aliases.
+`Shared/TypingSafety` proves expression soundness for arbitrary pending values,
+progress, preservation, and completion in exactly one step per statement.
+`Shared/TypingChecks` and `Shared/UnpackingChecks` cover the chapter examples.
+Path-dependent permissions and permission/type unions remain future extensions
+in `md/dada/future-extensions.md`.
+
+The strict chapters are `md/given.md`, `md/given-typing.md`, `md/shared.md`,
+and `md/shared-typing.md`, plus future extensions and the evidence pilot.
+The future notes are publishable without formalization; adding a formalization
+citation to a future note is an error. Changes to the evidence configuration and these instructions also
 invalidate earlier reviews; do not claim those records remain current or
 refresh their hashes without performing new reviews.
 Keep their semantic content in cited units and renew affected review records

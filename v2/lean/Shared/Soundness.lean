@@ -284,7 +284,7 @@ theorem WellFormedWith.no_pending (wf : WellFormedWith classes state []) :
   exact ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, wf.older,
     by simpa using wf.ownersCompatible, by simpa using wf.referencesComplete⟩
 
-private theorem WellFormedWith.perm (wf : WellFormedWith classes state pending)
+theorem WellFormedWith.perm (wf : WellFormedWith classes state pending)
     (permutation : pending.Perm other) : WellFormedWith classes state other := by
   refine ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, wf.older, ?_, ?_⟩
   · exact (permutation.append_right _).pairwise wf.ownersCompatible compatible_symm
@@ -314,7 +314,7 @@ private theorem Give.pending_compatible (give : Give before path reference after
         copied compatible_symm
     exact (List.Perm.cons _ (newPerm.symm.append_left pending)).pairwise rearranged compatible_symm
 
-private theorem Give.preserves_pending (give : Give before path reference after)
+theorem Give.preserves_pending (give : Give before path reference after)
     (wf : WellFormedWith classes before pending) :
     WellFormedWith classes after (reference :: pending) := by
   have frame := give.frame
@@ -340,7 +340,7 @@ private theorem Give.preserves_pending (give : Give before path reference after)
     rw [or_left_comm, targets]
     simpa [List.mem_append, Allocated, frame.objectKeys] using wf.referencesComplete id
 
-private theorem WellFormedWith.share_result
+theorem WellFormedWith.share_result
     (wf : WellFormedWith classes state (reference :: pending)) :
     WellFormedWith classes state (.shared reference.object :: pending) := by
   refine ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, wf.older,
@@ -371,7 +371,7 @@ private theorem allocation_owners (state : State)
     (List.perm_append_comm (l₁ := slotOwners state.variables) (l₂ := references)).append_right
       (state.objects.flatMap (fun entry => slotOwners entry.2.fields))
 
-private theorem WellFormedWith.pending_bound (wf : WellFormedWith classes state pending)
+theorem WellFormedWith.pending_bound (wf : WellFormedWith classes state pending)
     (member : reference ∈ pending) : reference.object.index < state.nextId := by
   have referred := List.mem_append_left (References state)
     (List.mem_map_of_mem (f := Reference.object) member)
@@ -381,7 +381,7 @@ private theorem WellFormedWith.pending_bound (wf : WellFormedWith classes state 
   subst id
   exact wf.bounds reference.object data allocated
 
-private theorem WellFormedWith.allocate (classesWf : ClassesWellFormed classes)
+theorem WellFormedWith.allocate (classesWf : ClassesWellFormed classes)
     (wf : WellFormedWith classes state (references ++ pending))
     (declared : (className, declaration) ∈ classes)
     (lengths : references.length = declaration.fields.length)
@@ -431,7 +431,7 @@ private theorem WellFormedWith.allocate (classesWf : ClassesWellFormed classes)
     rw [targets, ← List.map_append, wf.referencesComplete]
     simp [Allocated, State.allocate, Reference.owned]
 
-private theorem WellFormedWith.bind (wf : WellFormedWith classes state [reference])
+theorem WellFormedWith.bind (wf : WellFormedWith classes state [reference])
     (fresh : destination ∉ state.variables.map Prod.fst) :
     WellFormed classes (state.bind destination reference) := by
   refine ⟨wf.objectKeys, ?_, wf.shapes, wf.bounds, wf.older, ?_, ?_⟩
