@@ -12,6 +12,10 @@ def Mode.join : Mode → Mode → Mode
   | .unique, .unique => .unique
   | _, _ => .shared
 
+def Kind.mode : Kind → Mode
+  | .sharedStruct => .shared
+  | _ => .unique
+
 structure Reference where
   reference ::
   mode : Mode

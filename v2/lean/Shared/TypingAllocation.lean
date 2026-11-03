@@ -61,6 +61,17 @@ inductive ArgumentsSatisfy (classes : ClassTable) (state : State) : List (FieldN
       ArgumentsSatisfy classes state fields objects →
       ArgumentsSatisfy classes state (entry :: fields) (object :: objects)
 
+theorem ArgumentsSatisfy.reference {reference : Reference} (arguments : ArgumentsSatisfy classes state fields objects)
+    (member : reference ∈ objects) :
+    ∃ field ∈ fields, Satisfies classes state reference field.2.toType := by
+  induction arguments with
+  | nil => simp at member
+  | @cons entry object fields objects head tail ih =>
+    rcases List.mem_cons.mp member with same | rest
+    · subst reference; exact ⟨entry, by simp, head⟩
+    · obtain ⟨field, found, sat⟩ := ih rest
+      exact ⟨field, List.mem_cons_of_mem _ found, sat⟩
+
 theorem ArgumentsSatisfy.lookup (arguments : ArgumentsSatisfy classes state fields objects)
     (found : fields.lookup field = some targetClass) :
     ∃ object, ((fields.map Prod.fst).zip (objects.map some)).lookup field = some (some object) ∧
@@ -220,11 +231,11 @@ theorem Realizes.allocate
     (realized : Realizes classes environment state
       (objects.zip (declaration.fields.map fun field => field.2.toType) ++ pending))
     (declared : (name, declaration) ∈ classes)
-    (admissible : Admissible classes (.whole name))
+    (admissible : Admissible classes (.whole name (initialPermission declaration.kind)))
     (lengths : objects.length = declaration.fields.length) :
     Realizes classes environment
       (state.allocate name (declaration.fields.map Prod.fst) objects)
-      ((Reference.owned ⟨state.nextId⟩, .whole name) :: pending) := by
+      ((⟨declaration.kind.mode, ⟨state.nextId⟩⟩, .whole name (initialPermission declaration.kind)) :: pending) := by
   have argumentViews : ArgumentsSatisfy classes state declaration.fields objects :=
     ArgumentsSatisfy.of_pending lengths (fun object ty member =>
       realized.pendingValues object ty (List.mem_append_left _ member))
@@ -232,7 +243,7 @@ theorem Realizes.allocate
     have keys : (objects.zip (declaration.fields.map fun field => field.2.toType)).map Prod.fst = objects :=
       List.map_fst_zip (by simp [lengths])
     simpa only [List.map_append, keys] using realized.ownership
-  have erased : (name, Class.mk (declaration.fields.map Prod.fst)) ∈ classes.erase :=
+  have erased : (name, Class.mk (declaration.fields.map Prod.fst) declaration.kind) ∈ classes.erase :=
     List.mem_map.mpr ⟨(name, declaration), declared, rfl⟩
   constructor
   · exact realized.classesWellFormed
@@ -241,7 +252,11 @@ theorem Realizes.allocate
     rcases List.mem_cons.mp member with same | old
     · cases same; exact admissible
     · exact realized.pendingTypes object ty (List.mem_append_right _ old)
-  · exact owners.allocate realized.classesWellFormed.erase erased (by simpa using lengths) realized.next_fresh
+  · have allocated := owners.allocate realized.classesWellFormed.erase erased (by simpa using lengths) realized.next_fresh
+    cases declaration.kind with
+    | classType => exact allocated
+    | structType => exact allocated
+    | sharedStruct => exact allocated.share_result
   · exact realized.fields.allocate declared argumentViews
   · exact realized.variableDomain
   · exact realized.emptyVariables
@@ -251,7 +266,11 @@ theorem Realizes.allocate
   · intro object ty member
     rcases List.mem_cons.mp member with same | old
     · cases same
-      exact Satisfies.allocated_whole realized.classesWellFormed declared realized.ownership argumentViews
+      have satisfied := Satisfies.allocated_whole realized.classesWellFormed declared realized.ownership argumentViews
+      cases declaration.kind with
+      | classType => exact satisfied
+      | structType => exact satisfied
+      | sharedStruct => exact satisfied.share
     · exact (realized.pendingValues object ty (List.mem_append_right _ old)).allocate realized.ownership
 
 end Dada.Shared.Typing

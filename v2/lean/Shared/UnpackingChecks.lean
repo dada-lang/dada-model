@@ -3,8 +3,8 @@ import Shared.Unpacking
 namespace Dada.Shared.Unpacking
 
 def exampleClasses : Classes :=
-  [("Token", ⟨[]⟩), ("Box", ⟨["item"]⟩), ("Outer", ⟨["box"]⟩),
-    ("Holder", ⟨["item"]⟩), ("Pair", ⟨["left", "right"]⟩)]
+  [("Token", ⟨[], .structType⟩), ("Box", ⟨["item"], .structType⟩), ("Outer", ⟨["box"], .classType⟩),
+    ("Holder", ⟨["item"], .structType⟩), ("Pair", ⟨["left", "right"], .structType⟩)]
 
 def tokenObject : Object := ⟨"Token", []⟩
 def holderObject : Object := ⟨"Holder", [("item", some (.shared 0))]⟩
@@ -40,13 +40,14 @@ def unpackingProgram : List Statement :=
 private theorem new_token : Eval exampleClasses State.empty (.new "Token" [])
     ⟨[(0, tokenObject)], [], 1⟩ (.owned 0) := by
   exact Eval.new (state := State.empty) (evaluated := State.empty)
-    (declaration := ⟨[]⟩) (references := [])
+    (declaration := ⟨[], .structType⟩) (references := [])
     (by simp [exampleClasses]) (.nil _) rfl (by simp [State.empty])
+    (by simp [StructArguments])
 
 private theorem new_holder : Eval exampleClasses tokenCreated
     (.new "Holder" [.giveShare (.variable "t")])
     ⟨[(1, holderObject), (0, tokenObject)], [("t", none)], 2⟩ (.owned 1) := by
-  apply Eval.new (declaration := ⟨["item"]⟩)
+  apply Eval.new (declaration := ⟨["item"], .structType⟩)
     (evaluated := ⟨[(0, tokenObject)], [("t", none)], 1⟩)
     (references := [.shared 0])
   · simp [exampleClasses]
@@ -55,9 +56,11 @@ private theorem new_holder : Eval exampleClasses tokenCreated
     · exact Eval.giveShare (reference := .owned 0) (Give.move (source := .variable "t")
         (Resolve.variable (reference := .owned 0) (by decide))
         (.variable [(0, tokenObject)] 1 [] [] "t" 0))
+        (by simp [StructReference, tokenObject, exampleClasses, Reference.owned, Kind.isStruct])
     · exact .nil _
   · rfl
   · decide
+  · simp [StructArguments, StructReference, tokenObject, exampleClasses, Reference.shared, Kind.isStruct]
 
 private theorem copy_item {state : State}
     (holder : ("h", some (.owned 1)) ∈ state.variables)
@@ -78,7 +81,7 @@ private theorem take_holder : Eval exampleClasses argumentsFinished
 private theorem unpack_holder : Bind exampleClasses holderTaken (.owned 1)
     (.unpack "Holder" [("item", "item")]) holderUnpacked := by
   apply Bind.unpack (before := []) (after := [(0, tokenObject)])
-    (declaration := ⟨["item"]⟩)
+    (declaration := ⟨["item"], .structType⟩)
     (bindings := [("item", some (.shared 0))])
   · simp [exampleClasses]
   · rfl
@@ -140,7 +143,7 @@ example : Bind exampleClasses
     (.owned 1) (.unpack "Pair" [("right", "r"), ("left", "l")])
     ⟨[(0, tokenObject)], [("r", some (.shared 0)), ("l", none)], 2⟩ := by
   apply Bind.unpack (before := []) (after := [(0, tokenObject)])
-    (declaration := ⟨["left", "right"]⟩)
+    (declaration := ⟨["left", "right"], .structType⟩)
     (bindings := [("r", some (.shared 0)), ("l", none)])
   · simp [exampleClasses]
   · rfl
@@ -153,7 +156,7 @@ example : Bind exampleClasses
 -- Even a fieldless object needs a unique reference to be consumed.
 example : Bind exampleClasses ⟨[(0, tokenObject)], [], 1⟩ (.owned 0)
     (.unpack "Token" []) ⟨[], [], 1⟩ := by
-  exact Bind.unpack (before := []) (after := []) (by simp [exampleClasses])
+  exact Bind.unpack (declaration := ⟨[], .structType⟩) (before := []) (after := []) (by simp [exampleClasses])
     rfl (by decide) (by decide) (by simp) .nil
 
 end Dada.Shared.Unpacking

@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "030cdc9177a08213c78932391fe93c6c0a22d4b85e1e7fcc0c06b11800ea6a79",
+  "reviewer": "Codex /root",
+  "provenance": "Author self-review renewing evidence after the Shared nominal-kind revision. Read the complete required authored units, exact selected declarations/implementation/tests and policy; shared identical inputs were read once across packets. Inspected supporting example-state and embedding definitions and evidence helper code in retained source context. Compared statements, assumptions, examples and rejection boundaries with the prose; did not treat hashes, compilation or prior approvals as a substitute for this comparison.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lib.rs:escape",
+    "rust:mdbook-dada/src/lib.rs:markdown_heading",
+    "rust:mdbook-dada/src/lib.rs:protect_math",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/lib.rs:selector_header",
+    "test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order",
+    "test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders",
+    "test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles",
+    "test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies",
+    "test:mdbook-dada/tests/book.rs:leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup",
+    "test:mdbook-dada/tests/book.rs:nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body",
+    "test:mdbook-dada/tests/book.rs:unanchored_rendered_blocks_share_named_headers_and_grouped_choices",
+    "test:mdbook-dada/tests/renderer_contracts.rs:pinned_mathjax_configuration_uses_one_loader",
+    "test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent",
+    "test:mdbook-dada/tests/units.rs:meta_units_show_named_rust_implementation_and_test",
+    "test:mdbook-dada/tests/units.rs:structured_units_render_identified_headers_and_exact_lean_views",
+    "tool:mdbook-dada/src/evidence.rs",
+    "tool:mdbook-dada/src/mechanical.rs",
+    "unit:meta.math.runtime",
+    "unit:meta.math.source_view",
+    "unit:meta.math.typesetting"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.runtime against rust:mdbook-dada/src/lib.rs:protect_math, rust:mdbook-dada/src/lean.rs:render_authored, test:mdbook-dada/tests/renderer_contracts.rs:pinned_mathjax_configuration_uses_one_loader, test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent. The runtime test inspects book.toml and theme/mathjax.js for one pinned 4.1.3 CommonHTML loader, built-in MathJax disabled, configured delimiters and display overflow. The CSS test checks horizontal overflow rules and independent selectors. These checks support configuration/emitted assets, while the unit explicitly excludes CDN availability and universal browser appearance guarantees. Notation and judgment context was checked in unit:meta.math.typesetting, unit:meta.math.source_view.",
+  "limitations": [
+    "Author self-review, not an independent fresh reviewer.",
+    "Lean checks proof correctness separately. Tooling review checks implementation and finite test coverage, not universal correctness or browser/CDN behavior. Additional context keys identify supporting definitions inspected in those files, not an audit of every proof or line."
+  ],
+  "supersedes": [
+    "2150a5477d6eea897eb3467aa089f789c437bfeaa5f8e74d3c2d86fc5dc16deb"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "3d2787e9599616f421853c252f8bb6daa5953b76316c4d31dfde272addb29e0d",
+  "reviewer": "Codex /root",
+  "provenance": "Author self-review renewing evidence after the Shared nominal-kind revision. Read the complete required authored units, exact selected declarations/implementation/tests and policy; shared identical inputs were read once across packets. Inspected supporting example-state and embedding definitions and evidence helper code in retained source context. Compared statements, assumptions, examples and rejection boundaries with the prose; did not treat hashes, compilation or prior approvals as a substitute for this comparison.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/lib.rs:directive_blocks",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/book.rs:block_directives_are_distinct_from_literal_code_and_inline_roles",
+    "test:mdbook-dada/tests/book.rs:generated_grammar_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:inferred_judgment_and_rule_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:informational_paragraphs_preserve_markdown_and_literal_examples",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:draft_status_is_explicit_and_does_not_relax_citation_checks",
+    "test:mdbook-dada/tests/units.rs:drafts_keep_their_semantic_kind_without_claiming_a_formalization",
+    "test:mdbook-dada/tests/units.rs:removed_obligation_syntax_is_rejected_at_every_authoring_entry_point",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "tool:mdbook-dada/src/evidence.rs",
+    "tool:mdbook-dada/src/mechanical.rs",
+    "unit:meta.syntax.inline_and_block",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.inline_and_block against rust:mdbook-dada/src/units.rs:parse_block, rust:mdbook-dada/src/lib.rs:directive_blocks, rust:mdbook-dada/src/lib.rs:render, test:mdbook-dada/tests/book.rs:block_directives_are_distinct_from_literal_code_and_inline_roles, test:mdbook-dada/tests/book.rs:informational_paragraphs_preserve_markdown_and_literal_examples, test:mdbook-dada/tests/book.rs:generated_grammar_directives_require_migration, test:mdbook-dada/tests/book.rs:inferred_judgment_and_rule_directives_require_migration, test:mdbook-dada/tests/units.rs:drafts_keep_their_semantic_kind_without_claiming_a_formalization, test:mdbook-dada/tests/units.rs:draft_status_is_explicit_and_does_not_relax_citation_checks, test:mdbook-dada/tests/units.rs:removed_obligation_syntax_is_rejected_at_every_authoring_entry_point. directive_blocks distinguishes brace-prefixed supported fences from ordinary language fences; parse_block retains semantic kind under draft status while still checking supplied citations; render rejects legacy inferred forms and paragraph examples. Tests cover literals, informational Markdown, old syntax diagnostics, draft forms and removed obligations at all entry points. The closed-body dependency supplies the structured nesting boundary. Notation and judgment context was checked in unit:meta.units.closed_body.",
+  "limitations": [
+    "Author self-review, not an independent fresh reviewer.",
+    "Lean checks proof correctness separately. Tooling review checks implementation and finite test coverage, not universal correctness or browser/CDN behavior. Additional context keys identify supporting definitions inspected in those files, not an audit of every proof or line."
+  ],
+  "supersedes": [
+    "14a1f503fc17a9884fefa76f1371fa32534ffae575c4319bbb8f07b58c6537be"
+  ]
+}

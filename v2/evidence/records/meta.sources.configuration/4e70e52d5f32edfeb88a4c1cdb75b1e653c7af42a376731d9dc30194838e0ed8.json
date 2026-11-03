@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "ede349ef16cf060f2df7866f258de18137505fbaa206bd829afb32ce82386aae",
+  "reviewer": "Codex /root",
+  "provenance": "Author self-review renewing evidence after the Shared nominal-kind revision. Read the complete required authored units, exact selected declarations/implementation/tests and policy; shared identical inputs were read once across packets. Inspected supporting example-state and embedding definitions and evidence helper code in retained source context. Compared statements, assumptions, examples and rejection boundaries with the prose; did not treat hashes, compilation or prior approvals as a substitute for this comparison.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::check_context",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::load",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::markdown_root",
+    "rust:mdbook-dada/src/inventory.rs:Inventory::inputs",
+    "rust:mdbook-dada/src/lib.rs:process_configured",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_lean_root_is_shared_by_rendering_and_evidence",
+    "tool:mdbook-dada/src/evidence.rs",
+    "tool:mdbook-dada/src/mechanical.rs",
+    "unit:meta.sources.configuration"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.sources.configuration against rust:mdbook-dada/src/configuration.rs:SourceConfiguration::load, rust:mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root, rust:mdbook-dada/src/configuration.rs:SourceConfiguration::markdown_root, rust:mdbook-dada/src/configuration.rs:SourceConfiguration::check_context, rust:mdbook-dada/src/lib.rs:process_configured, rust:mdbook-dada/src/inventory.rs:Inventory::inputs, test:mdbook-dada/tests/evidence_validation.rs:configured_lean_root_is_shared_by_rendering_and_evidence. SourceConfiguration loads book.toml and resolves both source roots through project containment; check_context rejects differing runtime overrides and process_configured uses those roots. Inventory includes book.toml. The test moves Lean sources under formal/model, verifies both renderer and bundle select the changed declaration, rejects an override and keeps Rust selection rooted at the project. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent fresh reviewer.",
+    "Lean checks proof correctness separately. Tooling review checks implementation and finite test coverage, not universal correctness or browser/CDN behavior. Additional context keys identify supporting definitions inspected in those files, not an audit of every proof or line."
+  ],
+  "supersedes": [
+    "4dd3521334fb0b9923bb9f7357620bd1cfd50aa7ed8a501e1f6e45a3b9e9e327"
+  ]
+}

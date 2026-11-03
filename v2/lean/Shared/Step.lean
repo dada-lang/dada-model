@@ -71,6 +71,14 @@ def State.allocate (state : State) (className : ClassName) (fields : List FieldN
   ⟨(⟨state.nextId⟩, ⟨className, fields.zip (references.map some)⟩) :: state.objects,
     state.variables, state.nextId + 1⟩
 
+def StructReference (classes : Classes) (state : State) (reference : Reference) : Prop :=
+  ∃ data declaration, (reference.object, data) ∈ state.objects ∧
+    (data.className, declaration) ∈ classes ∧ declaration.kind.isStruct = true
+
+def StructArguments (classes : Classes) (state : State) (kind : Kind)
+    (references : List Reference) : Prop :=
+  kind.isStruct = true → ∀ reference ∈ references, StructReference classes state reference
+
 mutual
 inductive Eval (classes : Classes) : State → Value → State → Reference → Prop where
   | give {state evaluated : State} {path : Place} {reference : Reference} :
@@ -78,6 +86,7 @@ inductive Eval (classes : Classes) : State → Value → State → Reference →
       Eval classes state (.give path) evaluated reference
   | giveShare {state evaluated : State} {path : Place} {reference : Reference} :
       Give state path reference evaluated →
+      StructReference classes evaluated reference →
       Eval classes state (.giveShare path) evaluated (.shared reference.object)
   | new {state evaluated : State} {className : ClassName} {declaration : Class}
       {arguments : List Value} {references : List Reference} :
@@ -85,8 +94,9 @@ inductive Eval (classes : Classes) : State → Value → State → Reference →
       EvalArgs classes state arguments evaluated references →
       references.length = declaration.fields.length →
       ObjectId.mk evaluated.nextId ∉ evaluated.objects.map Prod.fst →
+      StructArguments classes evaluated declaration.kind references →
       Eval classes state (.new className arguments)
-        (evaluated.allocate className declaration.fields references) (.owned ⟨evaluated.nextId⟩)
+        (evaluated.allocate className declaration.fields references) (⟨declaration.kind.mode, ⟨evaluated.nextId⟩⟩)
 
 inductive EvalArgs (classes : Classes) : State → List Value → State → List Reference → Prop where
   | nil (state : State) : EvalArgs classes state [] state []

@@ -29,20 +29,27 @@ theorem ExprTyped.sound_of_give
   induction typed using ExprTyped.rec
     (motive_2 := fun before values fields after _ => ArgumentsSound classes before values fields after) with
   | give wf taken admissible afterWf => exact giveSound _ _ _ _ wf taken admissible afterWf
-  | @giveShare before after place ty wf taken admissible afterWf =>
+  | @giveShare before after place ty wf taken admissible afterWf structTy =>
     intro state pending realized
     obtain ⟨existsGive, allGive⟩ := giveSound _ _ _ _ wf taken admissible afterWf state pending realized
     constructor
     · obtain ⟨result, reference, evaluated⟩ := existsGive
       cases evaluated with
-      | give given => exact ⟨result, .shared reference.object, .giveShare given⟩
+      | give given =>
+        have sat := (allGive result reference (.give given)).pendingValues reference ty (by simp)
+        obtain ⟨data, stored, name⟩ := sat.root
+        obtain ⟨declaration, declared, kind⟩ := structTy.declaration
+        exact ⟨result, .shared reference.object, .giveShare given
+          ⟨data, ⟨declaration.fields.map Prod.fst, declaration.kind⟩, stored,
+            List.mem_map.mpr ⟨(ty.base, declaration), lookup_member declared, by simp [ValueType.base, name]⟩,
+            kind⟩⟩
     · intro result reference evaluation
       cases evaluation with
-      | giveShare given =>
-        exact (allGive result _ (.give given)).share_pending
-  | @new before after name declaration arguments declared args admissible ih =>
+      | giveShare given _ =>
+        exact (allGive result _ (.give given)).share_pending structTy
+  | @new before after name declaration arguments declared args admissible structFields ih =>
     intro state pending realized
-    have erased : (name, Class.mk (declaration.fields.map Prod.fst)) ∈ classes.erase :=
+    have erased : (name, Class.mk (declaration.fields.map Prod.fst) declaration.kind) ∈ classes.erase :=
       List.mem_map.mpr ⟨(name, declaration), declared, rfl⟩
     obtain ⟨existsArgs, allArgs⟩ := ih state pending realized
     constructor
@@ -52,16 +59,26 @@ theorem ExprTyped.sound_of_give
         have argumentLengths := args.length
         have resultLengths := evaluatedArgs.length
         simpa using resultLengths.trans argumentLengths
-      exact ⟨_, _, .new erased evaluatedArgs (by simpa using lengths) current.next_fresh⟩
+      exact ⟨_, _, .new erased evaluatedArgs (by simpa using lengths) current.next_fresh (by
+        intro isStruct reference member
+        have views : ArgumentsSatisfy classes evaluated declaration.fields objects :=
+          ArgumentsSatisfy.of_pending lengths (fun object ty pair =>
+            current.pendingValues object ty (List.mem_append_left _ (by
+              simpa only [List.map_map, Function.comp_def] using pair)))
+        obtain ⟨entry, entryMember, sat⟩ := views.reference member
+        obtain ⟨data, stored, nameEq⟩ := sat.root
+        obtain ⟨target, targetDeclared, targetKind⟩ := (structFields isStruct entry entryMember).declaration
+        exact ⟨data, ⟨target.fields.map Prod.fst, target.kind⟩, stored,
+          List.mem_map.mpr ⟨(_, target), lookup_member targetDeclared, by simp [ValueType.base, FieldType.toType, ValueType.whole] at nameEq ⊢; exact nameEq.symm⟩,
+          targetKind⟩)⟩
     · intro result object evaluation
       cases evaluation with
-      | new runtimeDeclared evaluatedArgs lengths _ =>
+      | new runtimeDeclared evaluatedArgs lengths _ _ =>
         have same := member_value_unique realized.classesWellFormed.erase.1 runtimeDeclared erased
         cases same
         have current := allArgs _ _ evaluatedArgs
         simp only [List.map_map, Function.comp_def] at current
-        apply current.allocate declared admissible
-        simpa using lengths
+        exact current.allocate declared admissible (by simpa using lengths)
   | @weaken before after value ty other typed admissible subtype ih =>
     intro state pending realized
     obtain ⟨existsEval, allEval⟩ := ih state pending realized

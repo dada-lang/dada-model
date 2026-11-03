@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "f1ab83266624119d941a5818fa17889bb920137bef1c671f065cb8f990485a19",
+  "reviewer": "Codex /root",
+  "provenance": "Author self-review renewing evidence after the Shared nominal-kind revision. Read the complete required authored units, exact selected declarations/implementation/tests and policy; shared identical inputs were read once across packets. Inspected supporting example-state and embedding definitions and evidence helper code in retained source context. Compared statements, assumptions, examples and rejection boundaries with the prose; did not treat hashes, compilation or prior approvals as a substitute for this comparison.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lint.rs:check_latex",
+    "test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions",
+    "test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex",
+    "test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf",
+    "test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed",
+    "test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space",
+    "tool:mdbook-dada/src/evidence.rs",
+    "tool:mdbook-dada/src/mechanical.rs",
+    "unit:meta.math.overline.braces"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.overline.braces against rust:mdbook-dada/src/lint.rs:check_latex, test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space, test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed, test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf, test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex, test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions. check_latex uses a raw-source regex for the exact control word, requiring an immediately preceding brace and literal ASCII space after it. Tests distinguish tabs/newlines/nonbreaking spaces and longer names, verify Unicode/CRLF line counts, apply the lint in nested book chapters/literal samples and scan all md files recursively. The prose correctly limits this to adjacency rather than TeX parsing. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent fresh reviewer.",
+    "Lean checks proof correctness separately. Tooling review checks implementation and finite test coverage, not universal correctness or browser/CDN behavior. Additional context keys identify supporting definitions inspected in those files, not an audit of every proof or line."
+  ],
+  "supersedes": [
+    "847b8fb4a8f0160ee776b33dc16ea3fcb33665721d6d3b6a25d7045279d6f614"
+  ]
+}

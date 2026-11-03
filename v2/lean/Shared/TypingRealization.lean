@@ -130,7 +130,8 @@ theorem Satisfies.share (satisfied : Satisfies classes state reference ty) :
     cases old.mode <;> cases permission <;> rfl
 
 theorem Realizes.share_pending
-    (realized : Realizes classes environment state ((reference, ty) :: pending)) :
+    (realized : Realizes classes environment state ((reference, ty) :: pending))
+    (structTy : StructType classes ty) :
     Realizes classes environment state ((Reference.shared reference.object, ty.shared) :: pending) := by
   refine { realized with
     pendingTypes := ?_, ownership := realized.ownership.share_result,
@@ -138,7 +139,7 @@ theorem Realizes.share_pending
   · intro root view member
     rcases List.mem_cons.mp member with equal | member
     · cases equal
-      exact realized.pendingTypes reference ty (by simp)
+      exact (realized.pendingTypes reference ty (by simp)).share structTy
     · exact realized.pendingTypes root view (List.mem_cons_of_mem _ member)
   · intro root view member
     rcases List.mem_cons.mp member with equal | member

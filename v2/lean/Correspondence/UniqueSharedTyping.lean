@@ -8,7 +8,7 @@ namespace Dada.Correspondence.Typing
 def embedType (ty : Unique.Typing.ViewType) : Shared.Typing.ValueType := ⟨.given, ty⟩
 
 def embedClass (declaration : Unique.Typing.TypedClass) : Shared.Typing.TypedClass :=
-  ⟨declaration.fields.map fun field => (field.1, ⟨.given, field.2⟩)⟩
+  ⟨declaration.fields.map fun field => (field.1, ⟨.given, field.2⟩), .classType⟩
 
 def embedClasses (classes : Unique.Typing.ClassTable) : Shared.Typing.ClassTable :=
   classes.map fun entry => (entry.1, embedClass entry.2)
@@ -47,12 +47,42 @@ def eraseEnvironment (environment : Shared.Typing.Environment) : Unique.Typing.E
   simp [eraseEnvironment, embedEnvironment, embedType, List.map_map,
     Function.comp_def, Option.map_map]
 
+private theorem lookup_map_value {Key Value Result : Type} [BEq Key]
+    (entries : List (Key × Value)) (key : Key) (f : Value → Result) :
+    (entries.map (fun entry => (entry.1, f entry.2))).lookup key =
+      (entries.lookup key).map f := by
+  induction entries with
+  | nil => rfl
+  | cons entry rest ih =>
+    rcases entry with ⟨entryKey, entryValue⟩
+    by_cases same : key == entryKey
+    · simp [List.lookup_cons, same]
+    · simpa [List.lookup_cons, same] using ih
+
+@[simp] theorem lookup_embed_class (classes : Unique.Typing.ClassTable) (name : String) :
+    (embedClasses classes).lookup name = (classes.lookup name).map embedClass :=
+  lookup_map_value classes name _
+
+theorem kind_valid_embed (classes : Unique.Typing.ClassTable) (ty : Unique.Typing.ViewType)
+    (declared : (classes.lookup ty.className).isSome = true) :
+    Shared.Typing.KindValid (embedClasses classes) (embedType ty) := by
+  unfold Shared.Typing.KindValid
+  simp only [embedType, Shared.Typing.ValueType.base, lookup_embed_class]
+  cases found : classes.lookup ty.className with
+  | none => simp [found] at declared
+  | some declaration => simp [embedClass, Shared.Typing.kindAllows]
+
 @[simp] theorem admissible_embed (classes : Unique.Typing.ClassTable)
     (ty : Unique.Typing.ViewType) :
     Shared.Typing.Admissible (embedClasses classes) (embedType ty) ↔
       Unique.Typing.Admissible classes ty := by
-  simp [Shared.Typing.Admissible, Shared.Typing.ValueType.WellFormed,
-    Shared.Typing.Normalized, embedType, Unique.Typing.Admissible]
+  constructor
+  · intro h
+    exact ⟨by simpa [Shared.Typing.ValueType.WellFormed, embedType] using h.1.1,
+      by simpa [Shared.Typing.Normalized, embedType] using h.2⟩
+  · intro h
+    exact ⟨⟨by simpa [embedType] using h.1, kind_valid_embed classes ty h.1.1⟩,
+      by simpa [Shared.Typing.Normalized, embedType] using h.2⟩
 
 @[simp] theorem environment_wellFormed_embed (classes : Unique.Typing.ClassTable)
     (environment : Unique.Typing.Environment) :
@@ -84,22 +114,6 @@ def eraseEnvironment (environment : Shared.Typing.Environment) : Unique.Typing.E
   induction place with
   | «variable» => rfl
   | field base name ih => simp [Shared.Typing.splitPlace, Unique.Typing.splitPlace, embedPlace, ih]
-
-private theorem lookup_map_value {Key Value Result : Type} [BEq Key]
-    (entries : List (Key × Value)) (key : Key) (f : Value → Result) :
-    (entries.map (fun entry => (entry.1, f entry.2))).lookup key =
-      (entries.lookup key).map f := by
-  induction entries with
-  | nil => rfl
-  | cons entry rest ih =>
-    rcases entry with ⟨entryKey, entryValue⟩
-    by_cases same : key == entryKey
-    · simp [List.lookup_cons, same]
-    · simpa [List.lookup_cons, same] using ih
-
-@[simp] theorem lookup_embed_class (classes : Unique.Typing.ClassTable) (name : String) :
-    (embedClasses classes).lookup name = (classes.lookup name).map embedClass :=
-  lookup_map_value classes name _
 
 @[simp] theorem lookup_embed_field (declaration : Unique.Typing.TypedClass) (name : String) :
     (embedClass declaration).fields.lookup name =
@@ -227,6 +241,7 @@ theorem expression_forward
       (List.mem_map.mpr ⟨(name, declaration), declared, rfl⟩)
     · simpa [embedClass, List.map_map, Function.comp_def] using ih
     · exact (admissible_embed _ _).mpr admissible
+    · simp [embedClass, Shared.Kind.isStruct]
   | weaken _ admissible subtype ih =>
     exact .weaken ih ((admissible_embed _ _).mpr admissible) ((subtype_embed _ _ _).mpr subtype)
   | nil wf => exact .nil (by simpa using wf)
@@ -316,7 +331,7 @@ theorem expression_reflect_general
   | giveShare =>
     intro originalBefore originalValue _ valueEq
     cases originalValue <;> simp only [embedValue] at valueEq <;> cases valueEq
-  | @new before after name declaration arguments declared typedArgs admissible ih =>
+  | @new before after name declaration arguments declared typedArgs admissible _ ih =>
     intro originalBefore originalValue beforeEq valueEq
     cases originalValue with
     | give place => simp only [embedValue] at valueEq; cases valueEq
@@ -337,8 +352,7 @@ theorem expression_reflect_general
     obtain ⟨originalAfter, afterEq, given, originalTyped⟩ := ih originalBefore originalValue beforeEq valueEq
     have otherGiven := subtype.1.symm.trans given
     refine ⟨originalAfter, afterEq, otherGiven, .weaken originalTyped ?_ ?_⟩
-    · simpa [Shared.Typing.Admissible, Shared.Typing.ValueType.WellFormed,
-        Shared.Typing.Normalized, Unique.Typing.Admissible] using admissible
+    · exact ⟨by simpa using admissible.1.1, by simpa [Shared.Typing.Normalized] using admissible.2⟩
     · simpa using subtype.2
   | @nil environment wf =>
     rename_i originalBefore originalValues beforeEq valuesEq
@@ -537,7 +551,11 @@ theorem classes_wellFormed_correspondence (classes : Unique.Typing.ClassTable) :
       change field ∈ declaration.fields.map (fun field =>
         (field.1, (⟨.given, field.2⟩ : Shared.Typing.FieldType))) at member
       obtain ⟨⟨field, target⟩, originalMember, rfl⟩ := List.mem_map.mp member
-      simpa using (wf.2 _ declared).2 (field, target) originalMember
+      have present := (wf.2 _ declared).2 (field, target) originalMember
+      refine ⟨by simpa using present, ?_, ?_⟩
+      · apply kind_valid_embed classes (.whole target)
+        simpa [Unique.Typing.ViewType.whole, List.lookup_isSome_iff, List.mem_map, Prod.exists] using present
+      · simp [embedClass, Shared.Kind.isStruct]
 
 theorem program_correspondence (classes : Unique.Typing.ClassTable)
     (statements : List Unique.Unpacking.Statement) :

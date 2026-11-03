@@ -3,11 +3,11 @@ import Shared.Typing
 namespace Dada.Shared.Typing.Checks
 
 def classes : ClassTable :=
-  [("Token", ⟨[]⟩),
-   ("Box", ⟨[("item", ⟨.given, "Token"⟩)]⟩),
-   ("Outer", ⟨[("box", ⟨.shared, "Box"⟩)]⟩),
-   ("Holder", ⟨[("item", ⟨.shared, "Token"⟩)]⟩),
-   ("Pair", ⟨[("left", ⟨.given, "Token"⟩), ("right", ⟨.given, "Token"⟩)]⟩)]
+  [("Token", ⟨[], .structType⟩),
+   ("Box", ⟨[("item", ⟨.given, "Token"⟩)], .structType⟩),
+   ("Outer", ⟨[("box", ⟨.shared, "Box"⟩)], .classType⟩),
+   ("Holder", ⟨[("item", ⟨.shared, "Token"⟩)], .structType⟩),
+   ("Pair", ⟨[("left", ⟨.given, "Token"⟩), ("right", ⟨.given, "Token"⟩)], .structType⟩)]
 
 def token : ValueType := .whole "Token"
 def box : ValueType := .whole "Box"
@@ -19,7 +19,7 @@ def field (root name : String) : Place := .field (.variable root) name
 
 private theorem token_typed (wf : environment.WellFormed classes) :
     ExprTyped classes environment (.new "Token" []) token environment :=
-  .new (declaration := ⟨[]⟩) (by decide) (.nil wf) (by decide)
+  .new (declaration := ⟨[], .structType⟩) (by decide) (.nil wf) (by decide) (by decide)
 
 def copyProgram : List Unpacking.Statement :=
   [⟨.variable "b", .new "Box" [.new "Token" []]⟩,
@@ -33,12 +33,12 @@ def copyFinal : Environment :=
 theorem copy_typed : SequenceTyped classes [] copyProgram copyFinal := by
   apply SequenceTyped.cons (middle := [("b", some box)])
   · apply StatementTyped.letValue (ty := box) (middle := [])
-    · exact .new (declaration := ⟨[("item", ⟨.given, "Token"⟩)]⟩) (by decide)
-        (.cons (token_typed (by decide)) (.nil (by decide))) (by decide)
+    · exact .new (declaration := ⟨[("item", ⟨.given, "Token"⟩)], .structType⟩) (by decide)
+        (.cons (token_typed (by decide)) (.nil (by decide))) (by decide) (by decide)
     · exact .variable (by decide) (by decide) (by decide)
   · apply SequenceTyped.cons (middle := [("s", some box.shared), ("b", none)])
     · apply StatementTyped.letValue (ty := box.shared) (middle := [("b", none)])
-      · exact .giveShare (ty := box) (by decide) (by decide) (by decide) (by decide)
+      · exact .giveShare (ty := box) (by decide) (by decide) (by decide) (by decide) (by decide)
       · exact .variable (by decide) (by decide) (by decide)
     · apply SequenceTyped.cons
         (middle := [("u", some token.shared), ("s", some box.shared), ("b", none)])
@@ -95,9 +95,10 @@ theorem arguments_typed : SequenceTyped classes [] argumentProgram argumentFinal
   · exact .letValue (token_typed (by decide)) (.variable (by decide) (by decide) (by decide))
   · apply SequenceTyped.cons (middle := [("h", some holder), ("t", none)])
     · apply StatementTyped.letValue (ty := holder) (middle := [("t", none)])
-      · apply ExprTyped.new (declaration := ⟨[("item", ⟨.shared, "Token"⟩)]⟩) (by decide)
-        · exact .cons (.giveShare (ty := token) (by decide) (by decide) (by decide) (by decide))
+      · apply ExprTyped.new (declaration := ⟨[("item", ⟨.shared, "Token"⟩)], .structType⟩) (by decide)
+        · exact .cons (.giveShare (ty := token) (by decide) (by decide) (by decide) (by decide) (by decide))
             (.nil (by decide))
+        · decide
         · decide
       · exact .variable (by decide) (by decide) (by decide)
     · apply SequenceTyped.cons
@@ -126,7 +127,7 @@ theorem holder_requires_sharing :
       (.new "Holder" [.give (.variable "t")]) ty after := by
   intro typed
   obtain ⟨declaration, declared, arguments⟩ := typed.new_requires_arguments "Holder" _ rfl
-  have same : declaration = ⟨[("item", ⟨.shared, "Token"⟩)]⟩ := by
+  have same : declaration = ⟨[("item", ⟨.shared, "Token"⟩)], .structType⟩ := by
     simpa [classes] using declared
   subst declaration
   cases arguments with
@@ -138,7 +139,7 @@ theorem box_rejects_shared :
     ¬ ExprTyped classes argumentFinal (.new "Box" [.give (.variable "a")]) ty after := by
   intro typed
   obtain ⟨declaration, declared, arguments⟩ := typed.new_requires_arguments "Box" _ rfl
-  have same : declaration = ⟨[("item", ⟨.given, "Token"⟩)]⟩ := by
+  have same : declaration = ⟨[("item", ⟨.given, "Token"⟩)], .structType⟩ := by
     simpa [classes] using declared
   subst declaration
   cases arguments with
@@ -174,9 +175,9 @@ def partialFinal : Environment :=
 theorem partial_typed : SequenceTyped classes [] partialProgram partialFinal := by
   apply SequenceTyped.cons (middle := [("p", some pair)])
   · apply StatementTyped.letValue (ty := pair) (middle := [])
-    · exact .new (declaration := ⟨[("left", ⟨.given, "Token"⟩), ("right", ⟨.given, "Token"⟩)]⟩)
+    · exact .new (declaration := ⟨[("left", ⟨.given, "Token"⟩), ("right", ⟨.given, "Token"⟩)], .structType⟩)
         (by decide) (.cons (token_typed (by decide))
-          (.cons (token_typed (by decide)) (.nil (by decide)))) (by decide)
+          (.cons (token_typed (by decide)) (.nil (by decide)))) (by decide) (by decide)
     · exact .variable (by decide) (by decide) (by decide)
   · apply SequenceTyped.cons (middle := [("t", some token), ("p", some partialPair)])
     · apply StatementTyped.letValue (ty := token) (middle := [("p", some partialPair)])
@@ -186,7 +187,7 @@ theorem partial_typed : SequenceTyped classes [] partialProgram partialFinal := 
         (middle := [("s", some partialPair.shared), ("t", some token), ("p", none)])
       · apply StatementTyped.letValue (ty := partialPair.shared)
           (middle := [("t", some token), ("p", none)])
-        · exact .giveShare (ty := partialPair) (by decide) (by decide) (by decide) (by decide)
+        · exact .giveShare (ty := partialPair) (by decide) (by decide) (by decide) (by decide) (by decide)
         · exact .variable (by decide) (by decide) (by decide)
       · apply SequenceTyped.cons (middle := [("a", some token.shared),
           ("s", some partialPair.shared), ("t", some token), ("p", none)])
@@ -224,7 +225,7 @@ theorem unpack_typed : SequenceTyped classes argumentFinal
   apply SequenceTyped.cons (middle := ("item", some token.shared) :: emptied)
   · apply StatementTyped.letValue (ty := holder) (middle := emptied)
     · exact .give (by decide) (by decide) (by decide) (by decide)
-    · apply BindingTyped.unpack (declaration := ⟨[("item", ⟨.shared, "Token"⟩)]⟩)
+    · apply BindingTyped.unpack (declaration := ⟨[("item", ⟨.shared, "Token"⟩)], .structType⟩)
         (bindings := [("item", some token.shared)])
       · decide
       · decide

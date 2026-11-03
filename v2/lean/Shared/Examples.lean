@@ -3,7 +3,7 @@ import Shared.Step
 namespace Dada.Shared
 
 def exampleClasses : Classes :=
-  [("Token", ⟨[]⟩), ("Box", ⟨["value"]⟩)]
+  [("Token", ⟨[], .structType⟩), ("Box", ⟨["value"], .structType⟩)]
 
 def tokenState : State :=
   ⟨[(0, ⟨"Token", []⟩)], [("t", some (.owned 0))], 1⟩
@@ -32,11 +32,12 @@ theorem example_create_token (rest : List Statement) :
   apply Step.letValue (reference := .owned 0)
     (evaluated := State.empty.allocate "Token" [] [])
   · simp [State.empty, State.allocate]
-  · apply Eval.new (declaration := ⟨[]⟩) (references := [])
+  · apply Eval.new (declaration := ⟨[], .structType⟩) (references := [])
     · simp [exampleClasses]
     · exact EvalArgs.nil _
     · rfl
     · simp [State.empty]
+    · simp [StructArguments]
 
 theorem example_create_box (rest : List Statement) :
     Step exampleClasses
@@ -44,7 +45,7 @@ theorem example_create_box (rest : List Statement) :
   apply Step.letValue (reference := .owned 1)
     (evaluated := (State.mk tokenState.objects [("t", none)] 1).allocate "Box" ["value"] [.owned 0])
   · simp [State.allocate]
-  · apply Eval.new (declaration := ⟨["value"]⟩) (references := [.owned 0])
+  · apply Eval.new (declaration := ⟨["value"], .structType⟩) (references := [.owned 0])
     · simp [exampleClasses]
     · apply EvalArgs.cons (reference := .owned 0)
       · apply Eval.give
@@ -54,6 +55,7 @@ theorem example_create_box (rest : List Statement) :
       · exact EvalArgs.nil _
     · rfl
     · decide
+    · simp [StructArguments, StructReference, tokenState, exampleClasses, Reference.owned, Kind.isStruct]
 
 theorem example_share_box (rest : List Statement) :
     Step exampleClasses ⟨boxState, ⟨"s", .giveShare (.variable "b")⟩ :: rest⟩
@@ -65,6 +67,7 @@ theorem example_share_box (rest : List Statement) :
     apply Give.move (source := .variable "b")
     · exact Resolve.variable (reference := .owned 1) (by simp [boxState])
     · exact Take.variable boxState.objects 2 [] [("t", none)] "b" 1
+    all_goals simp [StructReference, boxState, exampleClasses, Reference.owned, Kind.isStruct]
 
 theorem example_copy_field (rest : List Statement) :
     Step exampleClasses
@@ -115,28 +118,30 @@ example : Steps exampleClasses ⟨State.empty, sharingCode⟩ ⟨twiceCopiedStat
       (.step (example_copy_field _) (.step (example_copy_again _) (.refl _)))))
 -- ANCHOR_END: sharing_execution
 
--- A unique outer Box contains a shared reference to the inner Box. Therefore
+-- A unique Outer class contains a shared reference to the inner Box. Therefore
 -- outer.value.value crosses a shared edge even though outer itself is unique.
+def nestedClasses : Classes := ("Outer", ⟨["value"], .classType⟩) :: exampleClasses
+
 def nestedSharedState : State :=
-  ⟨(2, ⟨"Box", [("value", some (.shared 1))]⟩) :: boxState.objects,
+  ⟨(2, ⟨"Outer", [("value", some (.shared 1))]⟩) :: boxState.objects,
     ("outer", some (.owned 2)) :: sharedBoxState.variables, 3⟩
 
 def nestedCopiedState : State :=
-  ⟨(2, ⟨"Box", [("value", some (.shared 1))]⟩) :: copiedState.objects,
+  ⟨(2, ⟨"Outer", [("value", some (.shared 1))]⟩) :: copiedState.objects,
     ("u", some (.shared 0)) :: nestedSharedState.variables, 3⟩
 
 -- ANCHOR: nested_shared_path
-example : Steps exampleClasses
-    ⟨sharedBoxState, [⟨"outer", .new "Box" [.give (.variable "s")]⟩,
+example : Steps nestedClasses
+    ⟨sharedBoxState, [⟨"outer", .new "Outer" [.give (.variable "s")]⟩,
       ⟨"u", .give (.field (.field (.variable "outer") "value") "value")⟩]⟩
     ⟨nestedCopiedState, []⟩ := by
   apply Steps.step (middle := ⟨nestedSharedState,
     [⟨"u", .give (.field (.field (.variable "outer") "value") "value")⟩]⟩)
   · apply Step.letValue (reference := .owned 2)
-      (evaluated := sharedBoxState.allocate "Box" ["value"] [.shared 1])
+      (evaluated := sharedBoxState.allocate "Outer" ["value"] [.shared 1])
     · simp [State.allocate, sharedBoxState]
-    · apply Eval.new (declaration := ⟨["value"]⟩) (references := [.shared 1])
-      · simp [exampleClasses]
+    · apply Eval.new (declaration := ⟨["value"], .classType⟩) (references := [.shared 1])
+      · simp [nestedClasses]
       · apply EvalArgs.cons (reference := .shared 1)
         · apply Eval.give
           apply Give.copy (source := .variable "s")
@@ -145,6 +150,7 @@ example : Steps exampleClasses
         · exact EvalArgs.nil _
       · rfl
       · decide
+      · simp [StructArguments, Kind.isStruct]
   apply Steps.step (middle := ⟨nestedCopiedState, []⟩)
   · apply Step.letValue (reference := .shared 0)
       (evaluated := ⟨nestedCopiedState.objects, nestedSharedState.variables, 3⟩)
@@ -154,22 +160,23 @@ example : Steps exampleClasses
       · apply Resolve.field (permission := .shared) (reference := .owned 0)
           (data := ⟨"Box", [("value", some (.owned 0))]⟩)
         · apply Resolve.field (permission := .unique) (reference := .shared 1)
-            (data := ⟨"Box", [("value", some (.shared 1))]⟩)
+            (data := ⟨"Outer", [("value", some (.shared 1))]⟩)
           · exact Resolve.variable (reference := .owned 2) (by simp [nestedSharedState])
           · simp [nestedSharedState, Reference.owned]
           · simp
         · simp [nestedSharedState, boxState]
         · simp
       · exact Promote.field nestedSharedState.variables 3
-          [(2, ⟨"Box", [("value", some (.shared 1))]⟩)] [(0, ⟨"Token", []⟩)]
+          [(2, ⟨"Outer", [("value", some (.shared 1))]⟩)] [(0, ⟨"Token", []⟩)]
           1 "Box" [] [] "value" 0
   exact Steps.refl _
+
 -- ANCHOR_END: nested_shared_path
 
 -- A nested constructor holds its unique result while the next argument copies
 -- the same shared source. Both copies preserve the original variable.
 def nestedArgumentClasses : Classes :=
-  ("Pair", ⟨["first", "second"]⟩) :: exampleClasses
+  ("Pair", ⟨["first", "second"], .structType⟩) :: exampleClasses
 
 def nestedArgumentState : State :=
   ⟨(3, ⟨"Pair", [("first", some (.owned 2)), ("second", some (.shared 1))]⟩) ::
@@ -185,11 +192,11 @@ example : Step nestedArgumentClasses
     (evaluated := (sharedBoxState.allocate "Box" ["value"] [.shared 1]).allocate
       "Pair" ["first", "second"] [.owned 2, .shared 1])
   · simp [State.allocate, sharedBoxState]
-  · apply Eval.new (declaration := ⟨["first", "second"]⟩)
+  · apply Eval.new (declaration := ⟨["first", "second"], .structType⟩)
       (references := [.owned 2, .shared 1])
     · simp [nestedArgumentClasses]
     · apply EvalArgs.cons (reference := .owned 2)
-      · apply Eval.new (declaration := ⟨["value"]⟩) (references := [.shared 1])
+      · apply Eval.new (declaration := ⟨["value"], .structType⟩) (references := [.shared 1])
           (evaluated := sharedBoxState)
         · simp [nestedArgumentClasses, exampleClasses]
         · apply EvalArgs.cons (reference := .shared 1)
@@ -200,6 +207,7 @@ example : Step nestedArgumentClasses
           · exact EvalArgs.nil _
         · rfl
         · decide
+        · simp [StructArguments, StructReference, sharedBoxState, boxState, nestedArgumentClasses, exampleClasses, Reference.shared, Kind.isStruct]
       · apply EvalArgs.cons (reference := .shared 1)
         · apply Eval.give
           apply Give.copy (source := .variable "s")
@@ -209,6 +217,8 @@ example : Step nestedArgumentClasses
         · exact EvalArgs.nil _
     · rfl
     · decide
+    · simp +decide [StructArguments, StructReference, State.allocate, sharedBoxState, boxState, nestedArgumentClasses, exampleClasses, Reference.owned, Reference.shared, Kind.isStruct]
+
 -- ANCHOR_END: nested_shared_arguments
 
 end Dada.Shared

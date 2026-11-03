@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "39364cbbe7baee825b4adcda9deb5e7f79812ce742894e32ad51adf79298901e",
+  "reviewer": "Codex /root",
+  "provenance": "Author self-review renewing evidence after the Shared nominal-kind revision. Read the complete required authored units, exact selected declarations/implementation/tests and policy; shared identical inputs were read once across packets. Inspected supporting example-state and embedding definitions and evidence helper code in retained source context. Compared statements, assumptions, examples and rejection boundaries with the prose; did not treat hashes, compilation or prior approvals as a substitute for this comparison.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "tool:mdbook-dada/src/evidence.rs",
+    "tool:mdbook-dada/src/mechanical.rs",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.units.closed_body against rust:mdbook-dada/src/units.rs:parse_block, rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters, test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations, test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence, test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation, test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content. parse_block rejects include/playground/rustdoc directives in raw unit text, including literal samples, and rejects nested legacy citations. validate_chapters reparses original and received content and compares ordered IDs/raw units. Tests cover raw includes and simulated pre-expansion/addition/rewrite; the real mdBook pipeline regression is explicitly ignored by default and requires a separate run. The claim correctly limits the boundary to received chapters and this preprocessing stage. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent fresh reviewer.",
+    "Lean checks proof correctness separately. Tooling review checks implementation and finite test coverage, not universal correctness or browser/CDN behavior. Additional context keys identify supporting definitions inspected in those files, not an audit of every proof or line.",
+    "The real mdBook pipeline regression is ignored by default; its execution is separate from this source comparison."
+  ],
+  "supersedes": [
+    "b8afca61e5897960f314985ea2e31c07865560a6797e4591ac0ec2f671a41747"
+  ]
+}

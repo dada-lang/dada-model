@@ -31,16 +31,83 @@ Copying one of those references later makes the final stored reference shared
 as well.
 ```
 
+## Nominal declarations
+
+```{definition} shared.declarations
+:lean: Shared/Syntax:Kind Shared/Syntax:Class Shared/State:Kind.mode
+
+A nominal type has a name and an ordered list of fields. Its declaration chooses
+whether its values can be shared and whether construction makes them shared
+immediately:
+
+| Declaration | May be shared | Constructor result |
+| --- | --- | --- |
+| `class C { ... }` | No | Given `C` |
+| `struct C { ... }` | Yes | Given `C` |
+| `shared struct C { ... }` | Yes | `shared C` |
+
+These three forms describe nominal types; they do not introduce three different
+kinds of runtime object representation. Modes still belong to references.
+```
+
+```{definition} shared.struct
+:lean: Shared/Syntax:Kind.isStruct Shared/TypingViews:StructType Shared/TypingViews:ClassTable.WellFormed Shared/TypingViews:KindValid
+:uses: shared.declarations
+
+The predicate `struct(T)` means that the nominal type underlying `T` is declared
+as either `struct` or `shared struct`. It does not depend on the reference's
+current permission or on which fields its view exposes. It is false for a class.
+
+Every field of a struct, including a shared struct, must itself have a struct
+type. This restriction applies to all declared fields, including ones hidden by
+a view or currently empty. Classes may contain either classes or structs.
+Thus sharing a container cannot expose a class through shared field access.
+A `shared C` type is permitted only when `struct(C)` holds.
+
+This layer checks `struct(T)` directly from nominal declarations. Generic type
+parameters, user-written predicates, and predicate where-clauses are not part of
+this language. Destructors and assignment belong to later layers.
+```
+
+````{example} shared.example.declarations
+:lean: Shared/KindChecks:declarations
+:uses: shared.declarations shared.struct
+
+These declarations distinguish the three forms without requiring primitive types:
+
+```dada
+struct Token {}
+struct Box { value: Token }
+shared struct SharedBox { value: Token }
+class Resource { token: Token }
+class Owner { resource: Resource, box: Box }
+```
+
+`Box` and `SharedBox` satisfy the struct-only field restriction. `Owner` may
+contain a `Resource` because `Owner` is a class. In contrast, both of the
+following declarations are rejected:
+
+```dada
+struct BadBox { resource: Resource }
+shared struct BadSharedBox { resource: Resource }
+```
+
+An empty view of `Resource` would not make either declaration valid: hiding its
+fields does not make the nominal type a struct.
+````
+
 ## Places, values, and programs
 
 ```{definition} shared.syntax
 :lean: Shared/Syntax:ClassName Shared/Syntax:FieldName Shared/Syntax:VariableId Shared/Syntax:Class Shared/Syntax:Classes Shared/Syntax:Place Shared/Syntax:Value Shared/Syntax:Statement Shared/Syntax:Program Shared/Step:Step
-:uses: shared.give given.programs
+:uses: shared.declarations shared.struct shared.give given.programs
 
-A *class* named \\(C\\), in \\(\mathsf{ClassName}\\), declares an ordered
+A *nominal declaration* named \\(C\\), in \\(\mathsf{ClassName}\\), declares an ordered
 list of \\(n\\) fields, where \\(n\\) is a natural number including zero.
 A *field name* \\(f\\) belongs to \\(\mathsf{FieldName}\\). Constructor
-arguments supply the fields in order. Fields have no declared types; all values
+arguments supply the fields in order. Source declarations give fields types,
+checked by the type system. The operational table retains each declaration's
+kind (`class`, `struct`, or `shared struct`) and ordered field names; all values
 are objects.
 
 A *variable name* \\(x\\) belongs to \\(\mathsf{VariableId}\\). A place
@@ -58,9 +125,12 @@ t &::= \mathsf{let}\ x=e
 \end{aligned}
 \\]
 
-The expression `p→share` performs the give, then makes its result a shared owner.
-Giving along a unique route empties the source. To share a newly constructed
-object, first construct it in a variable, then give-share that variable.
+The expression `p→share` requires the result's nominal declaration to be a
+struct or shared struct. It performs the give, then makes its result a shared
+owner. Giving along a unique route empties the source. Explicitly sharing a
+class is rejected. For an ordinary struct, construct it in a variable and then
+give-share that variable. A shared struct's constructor produces a shared
+reference immediately.
 
 A program has a class table \\(\Delta\\) and a finite sequence of `let`
 statements. Each `let` names a fresh runtime variable. Constructor arguments are
@@ -78,8 +148,8 @@ fragment.
 Start with no objects or variables and execute:
 
 ```dada
-class Token {}
-class Box { value }
+struct Token {}
+struct Box { value: Token }
 
 let t = new Token();
 let b = new Box(t→);
@@ -141,7 +211,9 @@ object's data.
 
 Object identities, variable names, and field names within each object are
 distinct in the states described here. A well-formed class table has distinct
-class names and distinct field names within each declaration.
+nominal names and distinct field names within each declaration. It also records
+the declaration kind used by construction and explicit sharing. The source
+type checker additionally enforces the struct-only field restriction.
 ```
 
 ## Reading a route
@@ -176,7 +248,7 @@ an empty slot prevents resolution.
 ## Executing statements
 
 ```{definition} shared.steps
-:lean: Shared/State:Configuration Shared/State:Configuration.initial Shared/State:Configuration.finished Shared/Step:Eval Shared/Step:EvalArgs Shared/Step:State.bind Shared/Step:State.allocate Shared/Step:Step Shared/Step:Steps Shared/Step:Stuck
+:lean: Shared/State:Configuration Shared/State:Configuration.initial Shared/State:Configuration.finished Shared/Step:Eval Shared/Step:EvalArgs Shared/Step:State.bind Shared/Step:State.allocate Shared/Step:Step Shared/Step:Steps Shared/Step:Stuck Shared/Step:StructReference Shared/Step:StructArguments Shared/State:Kind.mode
 :uses: shared.state shared.syntax shared.resolution shared.give
 
 A *configuration* \\(\langle S,P\rangle\\) pairs storage \\(S\\) with an
@@ -192,15 +264,22 @@ must be absent from the variable table. The step removes the first statement
 and leaves the remaining code unchanged.
 
 - `let x = p→` gives from \\(p\\) and stores the result in `x`.
-- `let x = p→share` performs the same give, then stores a shared owner of the
-  result's object in `x`.
+- `let x = p→share` requires a struct result, performs the same give, then
+  stores a shared owner of the result's object in `x`. A class result has no
+  give-share transition.
 - `let x = new C(e₁, …, eₙ)` evaluates its arguments from left to right,
   requiring one per declared field. After the arguments finish, it allocates
   a fresh object at \\(\mathsf{obj}(\nu)\\) and places their results in its fields.
-  Variable `x` receives a unique owner of that object, and the counter advances.
+  Variable `x` receives a unique owner for a class or ordinary struct, and a
+  shared owner for a shared struct. The counter advances in each case.
+  Construction does not promote the references stored in the fields. For either
+  kind of struct, every argument must reference a struct object; otherwise
+  construction has no transition. This check prevents an untyped program from
+  inserting a class into a shared container. The type system enforces the
+  stronger declaration-level restriction before execution.
 
-An empty class takes no arguments. Repeated gives through shared access leave
-the source initialized. A give through an entirely unique path empties its slot,
+An empty nominal declaration takes no arguments. Repeated gives through shared
+access leave the source initialized. A give through an entirely unique path empties its slot,
 so a second give from that slot fails. All argument evaluations belong to the
 statement's single transition. Argument results remain owned by the evaluation
 until placed in the new object's fields.
@@ -209,13 +288,44 @@ A finite execution consists of zero or more successful steps. A configuration
 is *stuck* when statements remain but no step is available.
 ```
 
+## Constructing an immediately shared value
+
+````{example} shared.example.immediately_shared
+:lean: Shared/KindChecks:immediately_shared
+:uses: shared.example.declarations shared.steps shared.give
+
+Using the declarations above:
+
+```dada
+let b = new SharedBox(new Token());
+let c = b→;
+let t = b.value→;
+```
+
+Construction gives `b` a shared reference immediately. Giving `b` copies that
+reference into `c`, leaving `b` initialized. The token field initially holds a
+unique reference; giving it through shared `b` promotes that stored reference
+and produces a shared token in `t`. Immediate sharing of the container does not
+require its fields to have been stored with shared modes.
+
+````
+
+````{example} shared.example.class_boundary
+:lean: Shared/KindChecks:class_boundary
+:uses: shared.example.declarations shared.steps shared.give
+
+`new Resource(new Token())` produces a unique class reference.
+Binding it to `r` and then evaluating `r→share` is rejected. Plain `r→` remains
+a move; a class may contain structs without becoming shareable itself.
+````
+
 ## A shared link inside a path
 
 ````{example} shared.example.share_value
 :lean: Shared/Examples:share_value
 :uses: shared.state shared.syntax shared.give shared.steps
 
-Use classes `Token {}` and `Box { value }`. Let object \\(\mathsf{obj}(0)\\) be a token and
+Use `struct Token {}` and `struct Box { value: Token }`. Let object \\(\mathsf{obj}(0)\\) be a token and
 object \\(\mathsf{obj}(1)\\) a box, with these slots and allocation counter \\(2\\):
 
 | Slot | Contents |
@@ -243,12 +353,13 @@ Start again from the final state of {anchor-ref}`shared.example.share_value`,
 before copying its field. Execute:
 
 ```dada
-let outer = new Box(s→);
+class Outer { value: shared Box }
+let outer = new Outer(s→);
 let u = outer.value.value→;
 ```
 
-The constructor copies shared variable `s` into the new box \\(\mathsf{obj}(2)\\); `s`
-remains initialized. Variable `outer` uniquely owns box \\(\mathsf{obj}(2)\\). The give
+The constructor copies shared variable `s` into the new outer object \\(\mathsf{obj}(2)\\); `s`
+remains initialized. Variable `outer` uniquely owns the outer object \\(\mathsf{obj}(2)\\). The give
 then traverses three references: unique `outer`, shared `outer.value` to box
 \\(\mathsf{obj}(1)\\), and the unique `value` field of box \\(\mathsf{obj}(1)\\) to token \\(\mathsf{obj}(0)\\).
 
@@ -262,7 +373,7 @@ All three objects remain allocated and the allocation counter is \\(3\\).
 ## Liveness and well-formedness
 
 ```{definition} shared.well_formed
-:lean: Shared/State:Allocated Shared/State:Live Shared/State:References Shared/Soundness:Owners Shared/Soundness:Compatible Shared/Soundness:WellFormed
+:lean: Shared/State:Allocated Shared/State:Live Shared/State:References Shared/Soundness:Owners Shared/Soundness:Compatible Shared/Soundness:WellFormed Shared/Soundness:WellFormedWith Shared/KindSafety:HasKind Shared/KindSafety:ReferenceAllowed Shared/KindSafety:KindCorrect Shared/KindSafety:WellFormedState
 :uses: shared.state
 
 An object is allocated when its identity appears in the object table. It is live
@@ -280,17 +391,25 @@ A state is well formed, written \\(\mathsf{WF}_{\Delta}(S)\\), when:
 - Every stored reference targets an allocated object, and every allocated
   object has at least one stored owning reference.
 - Any two distinct owning occurrences targeting the same object are both shared.
+- Every occupied field of a struct targets another struct object.
+- Every shared reference targets a struct, and every reference to an instance
+  of a shared struct is shared.
+
+The first five clauses are *structural well-formedness*. The final two are the
+declaration-kind invariants. Structural well-formedness also has a form that
+counts pending expression results as additional owning occurrences; this lets
+expression soundness describe values not yet placed in a slot.
 
 Owning occurrences are counted across all variable slots and all object fields.
-The last condition permits several shared references to an object, but a stored
-unique reference must be its only incoming owning reference. That local condition
+The ownership-compatibility condition permits several shared references to an
+object, but a stored unique reference must be its only incoming owning reference. That local condition
 does not by itself give a path unique access: every preceding reference must
 also be unique. The older-object condition follows construction order and prevents
 an owner-only cycle with no variable root.
 ```
 
 ```{theorem} shared.path_exclusivity
-:lean: Shared/Liveness:WellFormed.path_mode_exclusive
+:lean: Shared/KindSafety:WellFormedState.path_mode_exclusive
 :uses: shared.well_formed shared.resolution
 
 In a well-formed state, no object can be reached both by an entirely unique
@@ -311,7 +430,7 @@ already contains a shared reference.
 ```
 
 ```{theorem} shared.liveness
-:lean: Shared/Liveness:WellFormed.live_iff_allocated
+:lean: Shared/KindSafety:WellFormedState.live_iff_allocated
 :uses: shared.well_formed
 
 In a well-formed state, an object is live exactly when it is allocated:
@@ -327,7 +446,7 @@ allows several such paths without making missing objects reachable.
 ```
 
 ```{theorem} shared.soundness
-:lean: Shared/Soundness:Steps.from_initial
+:lean: Shared/KindSafety:Steps.wellFormed_from_initial
 :uses: shared.state shared.syntax shared.give shared.steps shared.well_formed shared.liveness shared.path_exclusivity
 
 For any program with a well-formed class table, every configuration reached by
@@ -360,7 +479,8 @@ field names, variable names, object identities, table order, and the next-identi
 counter are preserved.
 
 For a program, \\(E\\) preserves its class declarations, places, constructors,
-gives, and statement order. It introduces no give-share expression. For a
+gives, and statement order. Every Given declaration becomes a `class`, never a
+`struct` or `shared struct`. It introduces no give-share expression. For a
 configuration, it translates both the state and the remaining code. Thus a
 related pair describes the same point in the same computation, with explicit
 unique mode tags in the Shared state.

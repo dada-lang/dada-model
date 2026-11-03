@@ -12,8 +12,19 @@ abbrev VariableId := String
 abbrev FieldName := String
 abbrev ClassName := String
 
+inductive Kind where
+  | classType
+  | structType
+  | sharedStruct
+  deriving DecidableEq, BEq, ReflBEq, LawfulBEq, Repr
+
+def Kind.isStruct : Kind → Bool
+  | .classType => false
+  | _ => true
+
 structure Class where
   fields : List FieldName
+  kind : Kind := .structType
   deriving DecidableEq, Repr
 
 abbrev Classes := List (ClassName × Class)

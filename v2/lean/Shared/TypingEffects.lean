@@ -46,7 +46,7 @@ theorem ExprTyped.keys (typed : ExprTyped classes before value ty after) :
     (motive_2 := fun before _ _ after _ => after.map Prod.fst = before.map Prod.fst) with
   | give _ taken _ _ => exact give_keys taken
   | giveShare _ taken _ _ => exact give_keys taken
-  | new _ _ _ ih => exact ih
+  | new _ _ _ _ ih => exact ih
   | weaken _ _ _ ih => exact ih
   | nil => rfl
   | cons _ _ first rest => exact rest.trans first
@@ -67,8 +67,9 @@ theorem ExprTyped.wellFormed (typed : ExprTyped classes before value ty after) :
     (motive_2 := fun before _ _ after _ =>
       before.WellFormed classes ∧ after.WellFormed classes) with
   | give beforeWf _ admissible afterWf => exact ⟨beforeWf, admissible, afterWf⟩
-  | giveShare beforeWf _ admissible afterWf => exact ⟨beforeWf, admissible, afterWf⟩
-  | new _ _ admissible ih => exact ⟨ih.1, admissible, ih.2⟩
+  | giveShare beforeWf _ admissible afterWf structTy =>
+    exact ⟨beforeWf, admissible.share structTy, afterWf⟩
+  | new _ _ admissible _ ih => exact ⟨ih.1, admissible, ih.2⟩
   | weaken _ admissible _ ih => exact ⟨ih.1, admissible, ih.2.2⟩
   | nil wf => exact ⟨wf, wf⟩
   | cons _ _ first rest => exact ⟨first.1, rest.2⟩

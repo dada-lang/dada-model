@@ -21,15 +21,16 @@ def boxCopiedTwice : State := boxCopied.bind "v" (.shared 0)
 private theorem create_box : Eval classes.erase State.empty
     (.new "Box" [.new "Token" []])
     ⟨boxCreated.objects, [], 2⟩ (.owned 1) := by
-  apply Eval.new (declaration := ⟨["item"]⟩)
+  apply Eval.new (declaration := ⟨["item"], .structType⟩)
     (evaluated := ⟨[(0, ⟨"Token", []⟩)], [], 1⟩) (references := [.owned 0])
   · decide
   · apply EvalArgs.cons (middle := ⟨[(0, ⟨"Token", []⟩)], [], 1⟩) (reference := .owned 0)
-    · exact Eval.new (declaration := ⟨[]⟩) (evaluated := State.empty)
-        (references := []) (by decide) (.nil _) rfl (by simp [State.empty])
+    · exact Eval.new (declaration := ⟨[], .structType⟩) (evaluated := State.empty)
+        (references := []) (by decide) (.nil _) rfl (by simp [State.empty]) (by simp [StructArguments])
     · exact .nil _
   · rfl
   · decide
+  · simp [StructArguments, StructReference, classes, ClassTable.erase, Reference.owned, Kind.isStruct]
 
 private theorem share_box : Eval classes.erase boxCreated (.giveShare (.variable "b"))
     ⟨boxCreated.objects, [("b", none)], 2⟩ (.shared 1) := by
@@ -37,6 +38,7 @@ private theorem share_box : Eval classes.erase boxCreated (.giveShare (.variable
   exact Give.move (source := .variable "b")
     (Resolve.variable (reference := .owned 1) (by decide))
     (.variable boxCreated.objects 2 [] [] "b" 1)
+  all_goals simp [StructReference, boxCreated, classes, ClassTable.erase, Reference.owned, Kind.isStruct]
 
 private theorem first_copy : Eval classes.erase boxShared (.give (field "s" "item"))
     ⟨boxCopied.objects, boxShared.variables, 2⟩ (.shared 0) := by
@@ -148,18 +150,19 @@ private theorem create_pair : Eval classes.erase State.empty
     ⟨pairCreated.objects, [], 3⟩ (.owned 2) := by
   let first := State.empty.allocate "Token" [] []
   let second := first.allocate "Token" [] []
-  apply Eval.new (declaration := ⟨["left", "right"]⟩)
+  apply Eval.new (declaration := ⟨["left", "right"], .structType⟩)
     (evaluated := second) (references := [.owned 0, .owned 1])
   · decide
   · apply EvalArgs.cons (middle := first) (reference := .owned 0)
-    · exact Eval.new (declaration := ⟨[]⟩) (evaluated := State.empty)
-        (references := []) (by decide) (.nil _) rfl (by simp [State.empty])
+    · exact Eval.new (declaration := ⟨[], .structType⟩) (evaluated := State.empty)
+        (references := []) (by decide) (.nil _) rfl (by simp [State.empty]) (by simp [StructArguments])
     · apply EvalArgs.cons (middle := second) (reference := .owned 1)
-      · exact Eval.new (declaration := ⟨[]⟩) (evaluated := first)
-          (references := []) (by decide) (.nil _) rfl (by decide)
+      · exact Eval.new (declaration := ⟨[], .structType⟩) (evaluated := first)
+          (references := []) (by decide) (.nil _) rfl (by decide) (by simp [StructArguments])
       · exact .nil _
   · rfl
   · decide
+  · simp +decide [StructArguments, StructReference, first, second, State.allocate, State.empty, classes, ClassTable.erase, Reference.owned, Kind.isStruct]
 
 private theorem move_left : Eval classes.erase pairCreated (.give (field "p" "left"))
     ⟨pairMoved.objects, [("p", some (.owned 2))], 3⟩ (.owned 0) := by
@@ -177,6 +180,7 @@ private theorem share_pair : Eval classes.erase pairMoved (.giveShare (.variable
   exact Give.move (source := .variable "p")
     (Resolve.variable (reference := .owned 2) (by decide))
     (.variable pairMoved.objects 3 [("t", some (.owned 0))] [] "p" 2)
+  all_goals simp [StructReference, pairMoved, classes, ClassTable.erase, Reference.owned, Kind.isStruct]
 
 private theorem copy_right_first : Eval classes.erase pairShared (.give (field "s" "right"))
     ⟨pairCopied.objects, pairShared.variables, 3⟩ (.shared 1) := by

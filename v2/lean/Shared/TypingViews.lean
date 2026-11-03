@@ -47,6 +47,7 @@ def FieldType.toType (field : FieldType) : ValueType :=
 
 structure TypedClass where
   fields : List (FieldName × FieldType)
+  kind : Kind := .structType
   deriving DecidableEq, BEq, ReflBEq, LawfulBEq, Repr
 
 abbrev ClassTable := List (ClassName × TypedClass)
@@ -56,12 +57,36 @@ def ClassTable.nominal (classes : ClassTable) : Unique.Typing.ClassTable :=
     (name, ⟨declaration.fields.map fun (field, ty) => (field, ty.className)⟩)
 
 def ClassTable.erase (classes : ClassTable) : Classes :=
-  classes.map fun (name, declaration) => (name, ⟨declaration.fields.map Prod.fst⟩)
+  classes.map fun (name, declaration) => (name, ⟨declaration.fields.map Prod.fst, declaration.kind⟩)
+
+def StructType (classes : ClassTable) (ty : ValueType) : Prop :=
+  (classes.lookup ty.base).any (fun declaration => declaration.kind.isStruct) = true
+
+instance (classes : ClassTable) (ty : ValueType) : Decidable (StructType classes ty) :=
+  inferInstanceAs (Decidable (_ = true))
+
+def initialPermission : Kind → Perm
+  | .sharedStruct => .shared
+  | _ => .given
+
+def kindAllows (kind : Kind) (permission : Perm) : Bool :=
+  match kind with
+  | .classType => permission == .given
+  | .structType => true
+  | .sharedStruct => permission == .shared
+
+def KindValid (classes : ClassTable) (ty : ValueType) : Prop :=
+  (classes.lookup ty.base).any (fun declaration => kindAllows declaration.kind ty.permission) = true
+
+instance (classes : ClassTable) (ty : ValueType) : Decidable (KindValid classes ty) :=
+  inferInstanceAs (Decidable (_ = true))
 
 def ClassTable.WellFormed (classes : ClassTable) : Prop :=
   (classes.map Prod.fst).Nodup ∧
     ∀ entry ∈ classes, (entry.2.fields.map Prod.fst).Nodup ∧
-      ∀ field ∈ entry.2.fields, field.2.className ∈ classes.map Prod.fst
+      ∀ field ∈ entry.2.fields, field.2.className ∈ classes.map Prod.fst ∧
+        KindValid classes field.2.toType ∧
+        (entry.2.kind.isStruct = true → StructType classes field.2.toType)
 
 instance (classes : ClassTable) : Decidable classes.WellFormed := by
   unfold ClassTable.WellFormed
@@ -76,13 +101,15 @@ def normalize (classes : ClassTable) (ty : ValueType) : ValueType :=
   { ty with nominal := Unique.Typing.normalize classes.nominal ty.nominal }
 
 def RawType.normalize (classes : ClassTable) : RawType → ValueType
-  | .nominal view => ⟨.given, Unique.Typing.normalize classes.nominal view⟩
+  | .nominal view =>
+      ⟨initialPermission ((classes.lookup view.className).map TypedClass.kind |>.getD .classType),
+        Unique.Typing.normalize classes.nominal view⟩
   | .apply permission inner =>
       let result := inner.normalize classes
       { result with permission := permission.comp result.permission }
 
 def ValueType.WellFormed (ty : ValueType) (classes : ClassTable) : Prop :=
-  ty.nominal.WellFormed classes.nominal
+  ty.nominal.WellFormed classes.nominal ∧ KindValid classes ty
 
 def Normalized (classes : ClassTable) (ty : ValueType) : Prop :=
   Unique.Typing.Normalized classes.nominal ty.nominal
@@ -90,8 +117,9 @@ def Normalized (classes : ClassTable) (ty : ValueType) : Prop :=
 def Admissible (classes : ClassTable) (ty : ValueType) : Prop :=
   ty.WellFormed classes ∧ Normalized classes ty
 
-instance (ty : ValueType) (classes : ClassTable) : Decidable (ty.WellFormed classes) :=
-  inferInstanceAs (Decidable (ty.nominal.WellFormed classes.nominal))
+instance (ty : ValueType) (classes : ClassTable) : Decidable (ty.WellFormed classes) := by
+  unfold ValueType.WellFormed
+  infer_instance
 
 instance (classes : ClassTable) (ty : ValueType) : Decidable (Normalized classes ty) :=
   inferInstanceAs (Decidable (Unique.Typing.Normalized classes.nominal ty.nominal))
@@ -99,6 +127,22 @@ instance (classes : ClassTable) (ty : ValueType) : Decidable (Normalized classes
 instance (classes : ClassTable) (ty : ValueType) : Decidable (Admissible classes ty) := by
   unfold Admissible
   infer_instance
+
+theorem StructType.declaration (structTy : StructType classes ty) :
+    ∃ declaration, classes.lookup ty.base = some declaration ∧ declaration.kind.isStruct = true := by
+  unfold StructType at structTy
+  cases found : classes.lookup ty.base with
+  | none => simp [found] at structTy
+  | some declaration => exact ⟨declaration, rfl, by simpa [found] using structTy⟩
+
+theorem Admissible.share (admissible : Admissible classes ty)
+    (structTy : StructType classes ty) : Admissible classes ty.shared := by
+  obtain ⟨declaration, found, kind⟩ := structTy.declaration
+  refine ⟨⟨admissible.1.1, ?_⟩, admissible.2⟩
+  unfold KindValid
+  change (classes.lookup ty.base).any _ = true
+  rw [found]
+  cases kindEq : declaration.kind <;> simp_all [kindAllows, Kind.isStruct, ValueType.shared]
 
 def Pos (classes : ClassTable) (ty : ValueType) (path : Path) : Prop :=
   Unique.Typing.Pos classes.nominal ty.nominal path
@@ -173,7 +217,7 @@ theorem ClassTable.WellFormed.nominal {classes : ClassTable} (wf : classes.WellF
     · intro field member
       change field ∈ declaration.fields.map (fun field => (field.1, field.2.className)) at member
       obtain ⟨⟨fieldName, ty⟩, fieldMember, rfl⟩ := List.mem_map.mp member
-      simpa only [ClassTable.nominal_keys] using targets (fieldName, ty) fieldMember
+      simpa only [ClassTable.nominal_keys] using (targets (fieldName, ty) fieldMember).1
 
 theorem focus_eq_some_iff : focus classes ty path = some result ↔
     ∃ nominal permission,
@@ -186,7 +230,7 @@ theorem focus_eq_some_iff : focus classes ty path = some result ↔
 
 theorem focus_root (wf : ty.WellFormed classes) :
     focus classes ty [] = some (normalize classes ty) := by
-  simp [focus, Unique.Typing.focus_root wf, declaredPermission, normalize,
+  simp [focus, Unique.Typing.focus_root wf.1, declaredPermission, normalize,
     Perm.comp_given_right]
 
 theorem emptyPath_root (classes : ClassTable) (ty : ValueType) :

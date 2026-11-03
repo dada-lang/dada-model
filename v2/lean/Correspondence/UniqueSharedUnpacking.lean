@@ -62,7 +62,7 @@ theorem bind_forward (binding : Unique.Unpacking.Bind classes before object patt
         (after := after.map fun e => (embedId e.1, embedObject e.2))
         (variables := embedSlots variables) (nextId := nextId) (object := embedId object)
         (className := className) (fields := embedSlots fields) (pattern := pattern)
-        (bindings := embedSlots bindings) (declaration := ⟨declaration.fields⟩)
+        (bindings := embedSlots bindings) (declaration := ⟨declaration.fields, .classType⟩)
         (List.mem_map.mpr ⟨(className, declaration), declared, rfl⟩)
         (by simpa using shape) uniqueFields uniqueNames (by simpa using fresh)
         (transfer_forward transfer)

@@ -63,7 +63,7 @@ def embedStatement (statement : Unique.Statement) : Shared.Statement :=
   ⟨statement.destination, embedValue statement.value⟩
 
 def embedClasses (classes : Unique.Classes) : Shared.Classes :=
-  classes.map (fun entry => (entry.1, ⟨entry.2.fields⟩))
+  classes.map (fun entry => (entry.1, ⟨entry.2.fields, .classType⟩))
 
 def embedProgram (program : Unique.Program) : Shared.Program :=
   ⟨embedClasses program.classes, program.body.map embedStatement⟩
@@ -287,10 +287,10 @@ theorem eval_forward (evaluated : Unique.Eval classes before value after object)
       Shared.Eval.give (classes := embedClasses classes)
         (Shared.Give.move (resolve_forward resolved) (take_forward taken))
   | @new state evaluated className declaration arguments objects declared args lengths fresh ih =>
-    simpa only [embedValue, embed_allocate, embedReference, embedId, embedClasses, embed_nextId] using
-      Shared.Eval.new (declaration := ⟨declaration.fields⟩)
+    simpa only [embedValue, embed_allocate, embedReference, embedId, embedClasses, embed_nextId, Shared.Kind.mode, Shared.Reference.owned] using
+      Shared.Eval.new (declaration := ⟨declaration.fields, .classType⟩)
         (List.mem_map.mpr ⟨(_, _), declared, rfl⟩)
-        ih (by simpa using lengths) ((embed_object_fresh evaluated).mpr fresh)
+        ih (by simpa using lengths) ((embed_object_fresh evaluated).mpr fresh) (by simp [Shared.StructArguments, Shared.Kind.isStruct])
   | nil state => exact Shared.EvalArgs.nil (embedState state)
   | cons first rest firstIH restIH => exact Shared.EvalArgs.cons firstIH restIH
 
@@ -325,10 +325,10 @@ private theorem eval_backward_aux
       obtain ⟨source, object, resolved, taken, resultEq, roundtrip⟩ := give_backward given
       exact ⟨_, object, Unique.Eval.give resolved taken, roundtrip.symm, resultEq⟩
     | new name arguments => simp [embedValue] at valueEq
-  | giveShare given =>
+  | giveShare given _ =>
     intro original expression beforeEq valueEq
     cases expression <;> simp [embedValue] at valueEq
-  | @new state evaluated className declaration arguments references declared args lengths fresh ih =>
+  | @new state evaluated className declaration arguments references declared args lengths fresh _ ih =>
     intro original expression beforeEq valueEq
     cases expression with
     | give path => simp [embedValue] at valueEq

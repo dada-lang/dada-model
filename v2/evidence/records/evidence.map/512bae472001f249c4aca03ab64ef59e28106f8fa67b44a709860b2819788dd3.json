@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "f3900c50f8a0d0eefbd3860e2eb22193ac4eb70840db990d8a9a6d6b86142f1b",
+  "reviewer": "Codex /root",
+  "provenance": "Author self-review renewing evidence after the Shared nominal-kind revision. Read the complete required authored units, exact selected declarations/implementation/tests and policy; shared identical inputs were read once across packets. Inspected supporting example-state and embedding definitions and evidence helper code in retained source context. Compared statements, assumptions, examples and rejection boundaries with the prose; did not treat hashes, compilation or prior approvals as a substitute for this comparison.",
+  "examined": [
+    "context:lean/Correspondence/UniqueSharedTyping.lean",
+    "context:lean/Correspondence/UniqueSharedUnpacking.lean",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/KindChecks.lean",
+    "context:lean/Shared/KindSafety.lean",
+    "context:lean/Shared/TypingChecks.lean",
+    "context:lean/Shared/TypingExecutionChecks.lean",
+    "context:lean/Shared/UnpackingChecks.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/TypingChecks.lean",
+    "context:lean/Unique/TypingExecutionChecks.lean",
+    "context:lean/Unique/TypingRejectionChecks.lean",
+    "context:lean/Unique/UnpackingChecks.lean",
+    "context:lean/Unique/ViewChecks.lean",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/src/evidence.rs",
+    "tool:mdbook-dada/src/mechanical.rs",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:evidence.map against lean:Common/FiniteMap:FiniteMap, lean:Common/FiniteMap:FiniteMap.empty. FiniteMap stores a finite list of key/value pairs with Nodup on projected keys, exactly the ordered representation and uniqueness condition described. FiniteMap.empty supplies the empty list without requiring an ordering or DecidableEq. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent fresh reviewer.",
+    "Lean checks proof correctness separately. Tooling review checks implementation and finite test coverage, not universal correctness or browser/CDN behavior. Additional context keys identify supporting definitions inspected in those files, not an audit of every proof or line."
+  ],
+  "supersedes": [
+    "364461610db0549773d37cf09930266e957c1b43f501a74aca0d26f865ca1a7f"
+  ]
+}

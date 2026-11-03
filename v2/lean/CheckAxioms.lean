@@ -2,6 +2,7 @@
 import Unique.Normalization
 import Unique.TypingSafety
 import Unique.Liveness
+import Shared.KindSafety
 import Shared.Liveness
 import Shared.TypingSafety
 import Correspondence.UniqueSharedUnpacking
@@ -25,3 +26,6 @@ import Correspondence.UniqueShared
 #print axioms Dada.Correspondence.boundary_correspondence
 
 #print axioms Dada.Correspondence.Typing.given_fragment
+
+#print axioms Dada.Shared.Eval.preserves_kinds
+#print axioms Dada.Shared.Steps.wellFormed_from_initial

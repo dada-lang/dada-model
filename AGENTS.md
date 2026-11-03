@@ -84,7 +84,11 @@ The strict operational chapters live in `v2/md/given.md` and
 `Correspondence/UniqueShared` proves forward and backward execution
 correspondence, including arbitrary successors, completion, and stuckness.
 Both layers prove structural well-formedness preservation and rooted liveness.
-See `v2/AGENTS.md` for their deliberately limited language scope. Ownership modes
+See `v2/AGENTS.md` for their deliberately limited language scope. Shared distinguishes `class`, `struct`, and `shared struct`: only the latter two
+satisfy `struct(T)` and can be shared, their fields must have struct types, and
+shared structs construct shared references immediately. `Shared/KindSafety`
+proves kind-invariant preservation; `Shared/KindChecks` covers the new boundaries.
+Given declarations embed as classes. Ownership modes
 belong to references, not objects. Copying through shared access can change the
 final stored reference to shared. `Shared/Liveness` proves that no well-formed
 state admits both an entirely unique path and a shared path to the same object.

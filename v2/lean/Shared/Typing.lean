@@ -76,13 +76,17 @@ inductive ExprTyped (classes : ClassTable) : Environment → Value → ValueType
       before.WellFormed classes →
       Typing.give classes before place = some (ty, after) →
       Admissible classes ty → after.WellFormed classes →
+      StructType classes ty →
       ExprTyped classes before (.giveShare place) ty.shared after
   | new {before after : Environment} {name : ClassName} {declaration : TypedClass}
       {arguments : List Value} :
       (name, declaration) ∈ classes →
       ArgsTyped classes before arguments (declaration.fields.map Prod.snd) after →
-      Admissible classes (ValueType.whole name) →
-      ExprTyped classes before (.new name arguments) (ValueType.whole name) after
+      Admissible classes (ValueType.whole name (initialPermission declaration.kind)) →
+      (declaration.kind.isStruct = true →
+        ∀ field ∈ declaration.fields, StructType classes field.2.toType) →
+      ExprTyped classes before (.new name arguments)
+        (ValueType.whole name (initialPermission declaration.kind)) after
   | weaken {before after : Environment} {value : Value} {ty other : ValueType} :
       ExprTyped classes before value ty after →
       Admissible classes other → Subtype classes ty other →
@@ -209,10 +213,25 @@ theorem ExprTyped.new_requires_arguments
   induction typed using ExprTyped.rec (motive_2 := fun _ _ _ _ _ => True) with
   | give => intro name arguments equality; cases equality
   | giveShare => intro name arguments equality; cases equality
-  | new declared arguments _ _ =>
+  | new declared arguments _ _ _ =>
     intro name values equality
     cases equality
     exact ⟨_, declared, arguments⟩
+  | weaken _ _ _ ih => exact ih
+  | nil => trivial
+  | cons => trivial
+
+theorem ExprTyped.giveShare_requires_struct
+    (typed : ExprTyped classes before value ty after) :
+    ∀ place, value = .giveShare place → ∃ source,
+      Typing.give classes before place = some (source, after) ∧ StructType classes source := by
+  induction typed using ExprTyped.rec (motive_2 := fun _ _ _ _ _ => True) with
+  | give => intro place equality; cases equality
+  | giveShare _ taken _ _ structTy =>
+    intro place equality
+    cases equality
+    exact ⟨_, taken, structTy⟩
+  | new => intro place equality; cases equality
   | weaken _ _ _ ih => exact ih
   | nil => trivial
   | cons => trivial

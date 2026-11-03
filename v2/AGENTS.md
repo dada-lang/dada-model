@@ -99,9 +99,26 @@ claim that the textual selector computes Lean's semantic dependency graph.
 
 ## Incremental language layers
 
+Shared distinguishes nominal declaration kinds: `class` is not shareable,
+`struct` is shareable, and `shared struct` constructs shared references
+immediately. `Kind.isStruct` and `Typing.StructType` formalize `struct(T)` for
+both struct forms. `Typing.ClassTable.WellFormed` requires their field types to
+be structs; `KindValid` permits only given class types and shared shared-struct
+types. Operational `StructReference` and `StructArguments` guards prevent
+untyped sharing or construction from bypassing the restriction.
+`Shared/KindSafety` proves preservation of the reference-kind and struct-field
+invariants, with `WellFormedState` combining them with structural well-formedness.
+`Shared/KindChecks` checks declaration rejection, immediately shared construction,
+copying through its fields, and class-sharing rejection. Given declarations embed
+as classes in both the operational and typing correspondence.
+Destructors are the next planned layer, followed by Assignment, Branching,
+Looping explicit with declared invariants, and Looping natural with inference.
+Keep languages mostly independent and prove preservation and reflection of the
+preceding fragment; implementation reuse can be reconsidered after more layers.
+
 `lean/Unique/` defines the Given language; `lean/Shared/` independently defines
-the Shared language. Both use classes (including empty classes), ordered named
-fields, fresh-variable `let` statements, recursive constructor expressions,
+the Shared language. Given uses classes; Shared adds structs and shared structs. Both support empty
+declarations, ordered named fields, fresh-variable `let` statements, recursive constructor expressions,
 and tagged, monotonically allocated object IDs. `Eval` and `EvalArgs` evaluate
 arguments left to right within one statement step; temporary roots remain
 accounted for by `WellFormedWith` until construction or binding consumes them.

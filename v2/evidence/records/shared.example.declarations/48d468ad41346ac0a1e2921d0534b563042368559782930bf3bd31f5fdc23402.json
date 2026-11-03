@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "7174b2c99598050354d0e4d87d0d95177247ee4d079f800ef22b49064d0f2f09",
+  "reviewer": "Codex /root",
+  "provenance": "Author self-review renewing evidence after the Shared nominal-kind revision. Read the complete required authored units, exact selected declarations/implementation/tests and policy; shared identical inputs were read once across packets. Inspected supporting example-state and embedding definitions and evidence helper code in retained source context. Compared statements, assumptions, examples and rejection boundaries with the prose; did not treat hashes, compilation or prior approvals as a substitute for this comparison.",
+  "examined": [
+    "context:lean/Correspondence/UniqueSharedTyping.lean",
+    "context:lean/Correspondence/UniqueSharedUnpacking.lean",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/KindChecks.lean",
+    "context:lean/Shared/KindSafety.lean",
+    "context:lean/Shared/TypingChecks.lean",
+    "context:lean/Shared/TypingExecutionChecks.lean",
+    "context:lean/Shared/UnpackingChecks.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/TypingChecks.lean",
+    "context:lean/Unique/TypingExecutionChecks.lean",
+    "context:lean/Unique/TypingRejectionChecks.lean",
+    "context:lean/Unique/UnpackingChecks.lean",
+    "context:lean/Unique/ViewChecks.lean",
+    "lean:Shared/KindChecks:declarations",
+    "lean:Shared/State:Kind.mode",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:Kind",
+    "lean:Shared/Syntax:Kind.isStruct",
+    "lean:Shared/TypingViews:ClassTable.WellFormed",
+    "lean:Shared/TypingViews:KindValid",
+    "lean:Shared/TypingViews:StructType",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/src/evidence.rs",
+    "tool:mdbook-dada/src/mechanical.rs",
+    "unit:shared.declarations",
+    "unit:shared.example.declarations",
+    "unit:shared.struct"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:shared.example.declarations against lean:Shared/KindChecks:declarations. The declarations example proves well-formedness of Token/Box/SharedBox/Resource/Owner, positive struct predicates, negative Resource predicates including an empty view, and rejection of both bad container kinds. The concrete fields in KindChecks match the source declarations, including a class containing another class. Notation and judgment context was checked in unit:shared.declarations, unit:shared.struct.",
+  "limitations": [
+    "Author self-review, not an independent fresh reviewer.",
+    "Lean checks proof correctness separately. Tooling review checks implementation and finite test coverage, not universal correctness or browser/CDN behavior. Additional context keys identify supporting definitions inspected in those files, not an audit of every proof or line."
+  ],
+  "supersedes": []
+}

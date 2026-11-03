@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "9be91eab75fd146abf9fcbacb225117a882afbcd2cf0e09581816d3631dfaab7",
+  "reviewer": "Codex /root",
+  "provenance": "Author self-review renewing evidence after the Shared nominal-kind revision. Read the complete required authored units, exact selected declarations/implementation/tests and policy; shared identical inputs were read once across packets. Inspected supporting example-state and embedding definitions and evidence helper code in retained source context. Compared statements, assumptions, examples and rejection boundaries with the prose; did not treat hashes, compilation or prior approvals as a substitute for this comparison.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:validate_mutual_groups",
+    "test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection",
+    "test:mdbook-dada/src/lean.rs:tests::selects_a_case_without_interpreting_its_binders",
+    "test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations",
+    "test:mdbook-dada/tests/book.rs:authored_judgments_and_rules_keep_tex_and_show_cited_source",
+    "test:mdbook-dada/tests/book.rs:authored_math_rejects_missing_or_wrong_kind_source_selections",
+    "test:mdbook-dada/tests/book.rs:authored_math_requires_one_opening_argument_and_a_body",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "tool:mdbook-dada/src/evidence.rs",
+    "tool:mdbook-dada/src/mechanical.rs",
+    "unit:meta.math.judgment.selection",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.judgment.selection against rust:mdbook-dada/src/lean.rs:select, rust:mdbook-dada/src/lean.rs:extract_case, rust:mdbook-dada/src/lean.rs:render_authored, test:mdbook-dada/tests/book.rs:authored_judgments_and_rules_keep_tex_and_show_cited_source, test:mdbook-dada/tests/book.rs:authored_math_requires_one_opening_argument_and_a_body, test:mdbook-dada/tests/book.rs:authored_math_rejects_missing_or_wrong_kind_source_selections, test:mdbook-dada/src/lean.rs:tests::selects_a_case_without_interpreting_its_binders. select requires an inductive judgment; rule selection splits the constructor name, retains the inductive header plus exactly that constructor, and leaves binder interpretation untouched. Tests demonstrate authored TeX preservation, exclusion of neighboring cases, complex binders, wrong kinds, argument count and empty body errors. No Prop-result check is asserted or implemented. Notation and judgment context was checked in unit:meta.sources.exact_selection.",
+  "limitations": [
+    "Author self-review, not an independent fresh reviewer.",
+    "Lean checks proof correctness separately. Tooling review checks implementation and finite test coverage, not universal correctness or browser/CDN behavior. Additional context keys identify supporting definitions inspected in those files, not an audit of every proof or line."
+  ],
+  "supersedes": [
+    "2d86e2b5903dcdadffdc11bf3e0f4286e5ac6e6463162da4d480150db23e6725"
+  ]
+}

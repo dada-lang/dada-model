@@ -215,10 +215,10 @@ theorem BindingTyped.exists_bind
     obtain ⟨data, stored, rootClass⟩ := satisfied.root
     obtain ⟨leading, trailing, objects⟩ := List.mem_iff_append.mp stored
     obtain ⟨untypedDeclaration, untypedDeclared, shape, _⟩ := realized.ownership.shapes _ _ stored
-    have erasedDeclared : (name, ⟨declaration.fields.map Prod.fst⟩) ∈ classes.erase :=
+    have erasedDeclared : (name, ⟨declaration.fields.map Prod.fst, declaration.kind⟩) ∈ classes.erase :=
       List.mem_map.mpr ⟨(name, declaration), declared, rfl⟩
     have dataClass : data.className = name := rootClass.trans sameClass
-    have declarationEq : untypedDeclaration = ⟨declaration.fields.map Prod.fst⟩ :=
+    have declarationEq : untypedDeclaration = ⟨declaration.fields.map Prod.fst, declaration.kind⟩ :=
       member_value_unique realized.classesWellFormed.erase.1
         (dataClass ▸ untypedDeclared) erasedDeclared
     have actualFields : data.fields.map Prod.fst = declaration.fields.map Prod.fst := by

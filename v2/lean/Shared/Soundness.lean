@@ -361,7 +361,7 @@ private theorem zipped_field_owners (fields : List FieldName) (references : List
   have filtered := congrArg (List.filterMap id) seconds
   simpa [List.filterMap_map, Function.comp_def, slotOwners] using filtered
 
-private theorem allocation_owners (state : State)
+theorem allocation_owners (state : State)
     (lengths : references.length = fields.length) :
     (Owners (state.allocate className fields references)).Perm (references ++ Owners state) := by
   simp only [Owners, State.allocate, List.flatMap_cons]
@@ -451,10 +451,14 @@ theorem Eval.preserves_wellFormedWith (classesWf : ClassesWellFormed classes)
     ?_ ?_ ?_ ?_ ?_ evaluation pending wf
   · intro state evaluated path reference give pending wf
     exact give.preserves_pending wf
-  · intro state evaluated path reference give pending wf
+  · intro state evaluated path reference give _ pending wf
     exact (give.preserves_pending wf).share_result
-  · intro state evaluated className declaration arguments references declared args lengths fresh ih pending wf
-    exact (ih pending wf).allocate classesWf declared lengths fresh
+  · intro state evaluated className declaration arguments references declared args lengths fresh _ ih pending wf
+    have allocated := (ih pending wf).allocate classesWf declared lengths fresh
+    cases declaration.kind with
+    | classType => exact allocated
+    | structType => exact allocated
+    | sharedStruct => exact allocated.share_result
   · intro state pending wf
     exact wf
   · intro before middle after argument arguments reference references first rest ihFirst ihRest pending wf
@@ -469,8 +473,8 @@ theorem Eval.variable_keys (evaluation : Eval classes before value after referen
     (motive_2 := fun before _ after _ _ =>
       after.variables.map Prod.fst = before.variables.map Prod.fst) with
   | give give => exact give.frame.variableKeys
-  | giveShare give => exact give.frame.variableKeys
-  | new _ _ _ _ ih => exact ih
+  | giveShare give _ => exact give.frame.variableKeys
+  | new _ _ _ _ _ ih => exact ih
   | nil => rfl
   | cons _ _ first rest => exact rest.trans first
 

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "c1e3e91c7047ddca285f017ad1e733b85dcc818f0f902a9632717a1ccaa53eea",
+  "reviewer": "Codex /root",
+  "provenance": "Author self-review renewing evidence after the Shared nominal-kind revision. Read the complete required authored units, exact selected declarations/implementation/tests and policy; shared identical inputs were read once across packets. Inspected supporting example-state and embedding definitions and evidence helper code in retained source context. Compared statements, assumptions, examples and rejection boundaries with the prose; did not treat hashes, compilation or prior approvals as a substitute for this comparison.",
+  "examined": [
+    "context:lean/Correspondence/UniqueSharedTyping.lean",
+    "context:lean/Correspondence/UniqueSharedUnpacking.lean",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/KindChecks.lean",
+    "context:lean/Shared/KindSafety.lean",
+    "context:lean/Shared/TypingChecks.lean",
+    "context:lean/Shared/TypingExecutionChecks.lean",
+    "context:lean/Shared/UnpackingChecks.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/TypingChecks.lean",
+    "context:lean/Unique/TypingExecutionChecks.lean",
+    "context:lean/Unique/TypingRejectionChecks.lean",
+    "context:lean/Unique/UnpackingChecks.lean",
+    "context:lean/Unique/ViewChecks.lean",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/src/evidence.rs",
+    "tool:mdbook-dada/src/mechanical.rs",
+    "unit:given.classes",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.syntax against lean:Unique/Syntax:VariableId, lean:Unique/Syntax:Place, lean:Unique/Syntax:Value, lean:Unique/Syntax:Statement. Place has variable/field constructors; Value has only give/new, with recursive argument lists; Statement contains a destination and value. These match the grammars and distinguish place syntax from value production. Freshness is an operational condition, not encoded in String variable names. Notation and judgment context was checked in unit:given.classes.",
+  "limitations": [
+    "Author self-review, not an independent fresh reviewer.",
+    "Lean checks proof correctness separately. Tooling review checks implementation and finite test coverage, not universal correctness or browser/CDN behavior. Additional context keys identify supporting definitions inspected in those files, not an audit of every proof or line."
+  ],
+  "supersedes": [
+    "d945b3705b03baedb178319a8ddecc005e9efe4d312d0f47a4b975d842e04063"
+  ]
+}

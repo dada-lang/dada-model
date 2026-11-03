@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "f73aa3e06e48561e9440fbaac3ce5b9a27074da07ec1495f461f67c651794016",
+  "reviewer": "Codex /root",
+  "provenance": "Author self-review renewing evidence after the Shared nominal-kind revision. Read the complete required authored units, exact selected declarations/implementation/tests and policy; shared identical inputs were read once across packets. Inspected supporting example-state and embedding definitions and evidence helper code in retained source context. Compared statements, assumptions, examples and rejection boundaries with the prose; did not treat hashes, compilation or prior approvals as a substitute for this comparison.",
+  "examined": [
+    "context:mdbook-dada/src/evidence.rs",
+    "context:mdbook-dada/src/mechanical.rs",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/mechanical.rs:Execution::validate",
+    "rust:mdbook-dada/src/mechanical.rs:records",
+    "rust:mdbook-dada/src/mechanical.rs:run",
+    "rust:mdbook-dada/src/mechanical.rs:snapshot",
+    "rust:mdbook-dada/src/mechanical.rs:status",
+    "test:mdbook-dada/tests/evidence_validation.rs:workspace_validation_rejects_malformed_execution_receipts",
+    "test:mdbook-dada/tests/mechanical.rs:execution_preserves_success_failure_and_non_utf8_output",
+    "test:mdbook-dada/tests/mechanical.rs:execution_retains_source_mutations_additions_and_deletions",
+    "test:mdbook-dada/tests/mechanical.rs:failed_after_snapshot_and_launch_failures_are_retained",
+    "test:mdbook-dada/tests/mechanical.rs:later_failures_and_tied_failures_cannot_be_hidden_by_success",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_rejects_tampering_and_profile_substitution",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_requires_selected_sources_and_runner_snapshots",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_and_records_reject_symbolic_links",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_record_empty_directories_and_ignore_generated_outputs",
+    "test:mdbook-dada/tests/mechanical.rs:source_or_profile_changes_stale_receipts_without_corrupting_history",
+    "test:mdbook-dada/tests/mechanical.rs:status_and_record_validation_never_execute_profile_commands",
+    "tool:mdbook-dada/src/evidence.rs",
+    "tool:mdbook-dada/src/mechanical.rs",
+    "unit:meta.evidence.mechanical_execution"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.evidence.mechanical_execution against rust:mdbook-dada/src/mechanical.rs:run, rust:mdbook-dada/src/mechanical.rs:snapshot, rust:mdbook-dada/src/mechanical.rs:Execution::validate, rust:mdbook-dada/src/mechanical.rs:status, rust:mdbook-dada/src/mechanical.rs:records, rust:mdbook-dada/src/evidence.rs:check, test:mdbook-dada/tests/mechanical.rs:execution_preserves_success_failure_and_non_utf8_output, test:mdbook-dada/tests/mechanical.rs:execution_retains_source_mutations_additions_and_deletions, test:mdbook-dada/tests/mechanical.rs:failed_after_snapshot_and_launch_failures_are_retained, test:mdbook-dada/tests/mechanical.rs:status_and_record_validation_never_execute_profile_commands, test:mdbook-dada/tests/mechanical.rs:source_or_profile_changes_stale_receipts_without_corrupting_history, test:mdbook-dada/tests/mechanical.rs:later_failures_and_tied_failures_cannot_be_hidden_by_success, test:mdbook-dada/tests/mechanical.rs:receipt_validation_rejects_tampering_and_profile_substitution, test:mdbook-dada/tests/mechanical.rs:receipt_validation_requires_selected_sources_and_runner_snapshots, test:mdbook-dada/tests/mechanical.rs:snapshots_record_empty_directories_and_ignore_generated_outputs, test:mdbook-dada/tests/mechanical.rs:snapshots_and_records_reject_symbolic_links, test:mdbook-dada/tests/evidence_validation.rs:workspace_validation_rejects_malformed_execution_receipts. run snapshots before/after, captures both version probes and command outputs, and retains failed launch/recapture results. succeeded requires identical version results and snapshots plus successful command. validate checks required directory membership and profile consistency; status uses the latest finish time and gives stale/failure precedence on ties. The tests cover source mutations, binary output, missing required snapshots, symlinks, tampering and nonexecution during validation; none authenticates the runner or a hermetic environment. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent fresh reviewer.",
+    "Lean checks proof correctness separately. Tooling review checks implementation and finite test coverage, not universal correctness or browser/CDN behavior. Additional context keys identify supporting definitions inspected in those files, not an audit of every proof or line."
+  ],
+  "supersedes": [
+    "6aa8fca1d131f3203739608a67b39bbc90c91127d4015a48701b3be6763230a0"
+  ]
+}

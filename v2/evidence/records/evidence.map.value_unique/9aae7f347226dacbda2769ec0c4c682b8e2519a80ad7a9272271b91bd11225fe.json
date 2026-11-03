@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "a21d2a3cade97defbb10ba2acea993cc19e6ca7c5227d326f81db510117d2915",
+  "reviewer": "Codex /root",
+  "provenance": "Author self-review renewing evidence after the Shared nominal-kind revision. Read the complete required authored units, exact selected declarations/implementation/tests and policy; shared identical inputs were read once across packets. Inspected supporting example-state and embedding definitions and evidence helper code in retained source context. Compared statements, assumptions, examples and rejection boundaries with the prose; did not treat hashes, compilation or prior approvals as a substitute for this comparison.",
+  "examined": [
+    "context:lean/Correspondence/UniqueSharedTyping.lean",
+    "context:lean/Correspondence/UniqueSharedUnpacking.lean",
+    "context:lean/Shared/Examples.lean",
+    "context:lean/Shared/KindChecks.lean",
+    "context:lean/Shared/KindSafety.lean",
+    "context:lean/Shared/TypingChecks.lean",
+    "context:lean/Shared/TypingExecutionChecks.lean",
+    "context:lean/Shared/UnpackingChecks.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/TypingChecks.lean",
+    "context:lean/Unique/TypingExecutionChecks.lean",
+    "context:lean/Unique/TypingRejectionChecks.lean",
+    "context:lean/Unique/UnpackingChecks.lean",
+    "context:lean/Unique/ViewChecks.lean",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMap:FiniteMap.value_unique",
+    "policy:md/repo/correspondence-review.md",
+    "tool:mdbook-dada/src/evidence.rs",
+    "tool:mdbook-dada/src/mechanical.rs",
+    "unit:evidence.map",
+    "unit:evidence.map.value_unique"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:evidence.map.value_unique against lean:Common/FiniteMap:FiniteMap.value_unique. The theorem universally quantifies key and value types and both membership witnesses in one FiniteMap, concluding equality of values. Its signature has no ordering or decidable-equality assumptions; the unique-key invariant from evidence.map supplies the intended restriction. Notation and judgment context was checked in unit:evidence.map.",
+  "limitations": [
+    "Author self-review, not an independent fresh reviewer.",
+    "Lean checks proof correctness separately. Tooling review checks implementation and finite test coverage, not universal correctness or browser/CDN behavior. Additional context keys identify supporting definitions inspected in those files, not an audit of every proof or line."
+  ],
+  "supersedes": [
+    "62826b712c50d37be0f95ddc37c311d578a02220ea5c5b67d4db946150b25b3d"
+  ]
+}
