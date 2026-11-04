@@ -29,7 +29,7 @@ Subscripts and primes distinguish names in the same category.
 :uses: given.classes
 
 A *place expression* \\(p\\) follows a route from a variable through zero or
-more fields. Write \\(x\\) for a variable name in \\(\mathsf{VariableId}\\).
+more [fields](#claim-given.classes). Write \\(x\\) for a variable name in \\(\mathsf{VariableId}\\).
 A *value expression* \\(e\\) produces an owning reference. Giving a place,
 `p→`, is the only way to obtain a value from an existing place. A constructor
 creates an object from the values of its argument expressions:
@@ -58,17 +58,23 @@ scopes, function calls, assignment, or destruction.
 
 ## Programs
 
-```{definition} given.programs
-:lean: Unique/Syntax:Classes Unique/Syntax:Program Unique/Soundness:ClassesWellFormed
-:uses: given.classes given.syntax
+```{definition} given.collections
+:lean: Common/FiniteMap:FiniteMap
 
-A *program* \\(\Pi\\) supplies class declarations and an ordered sequence of
-statements. Its *class table* \\(\Delta\\) maps each declared class name to
+Write \\(A\rightharpoonup B\\) for *finite partial maps* from domain \\(A\\)
+to codomain \\(B\\), and \\(\mathsf{List}(A)\\) for finite ordered sequences
+of elements of \\(A\\).
+```
+
+```{definition} given.programs
+:lean: Unique/Syntax:Classes Unique/Syntax:Program
+:uses: given.classes given.syntax given.collections
+
+A *program* \\(\Pi\\) supplies [class declarations](#claim-given.classes) and an ordered sequence of
+[statements](#claim-given.syntax). Its *class table* \\(\Delta\\) maps each declared class name to
 its field names in declaration order. Each class name is declared once.
 
-Write \\(A\rightharpoonup B\\) for finite partial maps from domain \\(A\\)
-to codomain \\(B\\), and \\(\mathsf{List}(A)\\) for finite ordered sequences
-of elements of \\(A\\). A *statement sequence* \\(P\\) is empty, written
+A *statement sequence* \\(P\\) is empty, written
 \\([]\\), or has a first statement \\(t\\) followed by a sequence \\(P\\),
 written \\(t::P\\):
 
@@ -81,15 +87,22 @@ P &::= [] \mid t::P \\
 \\]
 
 For a declaration \\(\mathsf{class}\ C\ \{f_1,\ldots,f_n\}\\), the table
-contains \\(\Delta(C)=[f_1,\ldots,f_n]\\). The class table is *well formed*
-when each such list has distinct field names.
+contains \\(\Delta(C)=[f_1,\ldots,f_n]\\).
+```
+
+```{definition} given.well_formed_classes
+:lean: Unique/Soundness:ClassesWellFormed
+:uses: given.programs
+
+A [class table](#claim-given.programs) is *well formed* when class names
+are distinct and each declaration lists distinct field names.
 ```
 
 ## Objects and slots
 
-```{definition} given.state
-:lean: Unique/Syntax:ObjectId Unique/State:Slot Unique/State:Object Unique/State:State Unique/State:State.empty
-:uses: given.classes given.syntax given.programs
+```{definition} given.identities
+:lean: Unique/Syntax:ObjectId
+:uses: given.programs
 
 An *object identity* \\(\alpha\\) is a tagged natural number. The tag keeps
 identities distinct from ordinary numbers. We also use \\(\beta\\) for an
@@ -101,11 +114,16 @@ object identity; \\(\operatorname{index}\\) extracts its number:
 \qquad
 \operatorname{index}(\mathsf{obj}(n))=n.
 \\]
+```
+
+```{definition} given.slots
+:lean: Unique/State:Slot Unique/State:Object
+:uses: given.identities given.classes
 
 A *slot* is a variable or object field. Its *contents* \\(s\\), in the
-category \\(\mathsf{Slot}\\), are empty, written \\(\bot\\), or hold a
-reference to an object. An *object* \\(o\\), in the category
-\\(\mathsf{Object}\\), has a class name and an ordered list of named field
+category \\(\mathsf{Slot}\\), are empty, written \\(\bot\\), or hold an
+owning reference, represented by an [object identity](#claim-given.identities). An *object* \\(o\\), in the category
+\\(\mathsf{Object}\\), has a [class name](#claim-given.classes) and an ordered list of named field
 slots. All references in this language are owners:
 
 \\[
@@ -114,6 +132,11 @@ s &::= \bot \mid \alpha \\
 o &::= C\{f_1:s_1,\ldots,f_n:s_n\}.
 \end{aligned}
 \\]
+```
+
+```{definition} given.state
+:lean: Unique/State:State
+:uses: given.identities given.slots given.collections given.syntax
 
 A *storage state* \\(S\\) has an *object table* \\(O\\), a *variable table*
 \\(V\\), and an *allocation counter* \\(\nu\\):
@@ -128,16 +151,25 @@ S &::= \langle O,V,\nu\rangle.
 \\]
 
 The counter supplies \\(\mathsf{obj}(\nu)\\) for the next allocation, then
-increases by one. Write \\(\varnothing\\) for an empty map; the *empty state*
-is \\(S_{\emptyset}=\langle\varnothing,\varnothing,0\rangle\\).
-Finite-map notation assumes distinct keys. The well-formedness conditions below
-enforce this for the tables and field lists.
+increases by one. [Finite-map notation](#claim-given.collections) assumes distinct keys.
 The tables and field lists record empty slots as well as occupied ones.
 ```
 
+```{definition} given.empty_state
+:lean: Unique/State:State.empty
+:uses: given.state
+
+The *empty storage state* has no objects or variables, and its allocation
+counter is zero:
+
+\\[S_{\emptyset}=\langle\varnothing,\varnothing,0\rangle.\\]
+
+Here \\(\varnothing\\) denotes the empty map.
+```
+
 ```{definition} given.storage_places
-:lean: Unique/State:StoragePlace Unique/State:Stored Unique/State:Updated
-:uses: given.syntax given.state
+:lean: Unique/State:StoragePlace
+:uses: given.syntax given.identities
 
 A *storage place* \\(q\\) selects one slot directly: either a variable or a
 field of a particular object:
@@ -146,10 +178,16 @@ field of a particular object:
 q ::= x \mid \alpha.f.
 \\]
 
-A place expression such as `b.value` describes a route to a slot; a storage place
+A [place expression](#claim-given.syntax) such as `b.value` describes a route to a slot; a storage place
 such as \\(\mathsf{obj}(1).\mathsf{value}\\) identifies the slot itself.
+```
 
-For \\(S=\langle O,V,\nu\rangle\\), write \\(S[q]=s\\) for *slot lookup*.
+```{definition} given.lookup
+:lean: Unique/State:Stored
+:uses: given.state given.storage_places given.slots
+
+For \\(S=\langle O,V,\nu\rangle\\), write \\(S[q]=s\\) for *slot lookup* at a
+[storage place](#claim-given.storage_places).
 It is a partial operation, defined by:
 
 \\[
@@ -163,8 +201,13 @@ S[\alpha.f_i] &= s_i
 Lookup has no result for an absent variable, object, or field. An existing empty
 slot has the defined result \\(\bot\\). An occupied slot contains an object
 identity, not that object's data; the data is in \\(O\\).
+```
 
-For an existing slot, \\(S[q\leftarrow s]\\) replaces its contents and leaves
+```{definition} given.update
+:lean: Unique/State:Updated
+:uses: given.state given.lookup
+
+For a slot with [defined lookup](#claim-given.lookup), \\(S[q\leftarrow s]\\) replaces its contents and leaves
 all other slots, object identities, class names, and the counter unchanged.
 This update preserves the slot even when its new contents are \\(\bot\\).
 ```
@@ -172,11 +215,11 @@ This update preserves the slot even when its new contents are \\(\bot\\).
 ## The machine
 
 ```{definition} given.machine
-:lean: Unique/Frames:Frame Unique/Frames:Configuration Unique/Frames:Configuration.running Unique/Frames:Configuration.initial Unique/Frames:Configuration.state Unique/Frames:Configuration.finished
+:lean: Unique/Frames:Frame Unique/Frames:Configuration Unique/Frames:Configuration.running Unique/Frames:Configuration.initial Unique/Frames:Configuration.state
 :uses: given.state given.syntax
 
 A *frame* \\(f=(V,P)\\) owns its local variable store \\(V\\) and remaining
-statements \\(P\\). The program has one initial frame; after its exit there is
+[statements](#claim-given.syntax) \\(P\\). The [program](#claim-given.programs) has one initial frame; after its exit there is
 no frame. Heap objects \\(O\\) and the allocation counter \\(\nu\\) live outside it:
 
 \\[
@@ -184,29 +227,24 @@ K=\langle O,\nu,F\rangle,\qquad F::=\mathsf{none}\mid\mathsf{some}(V,P).
 \\]
 
 For expression evaluation, combine the live frame's locals with the heap and
-counter as the storage \\(S=\langle O,V,\nu\rangle\\). Write
+counter as the [storage](#claim-given.state) \\(S=\langle O,V,\nu\rangle\\). Write
 \\(\operatorname{run}(S,P)=\langle O,\nu,\mathsf{some}(V,P)\rangle\\).
 The pair \\(\langle S,P\rangle\\) used by local statement rules is an
 observation of that live frame, not a terminal program state.
 
 Initially \\(K=\operatorname{run}(S_{\emptyset},P)\\), including when \\(P=[]\\).
-A configuration is *finished* exactly when its frame is absent:
-
-\\[
-\mathsf{Finished}(\langle O,\nu,F\rangle)\iff F=\mathsf{none}.
-\\]
-
 Exhausting the statements leaves a live frame whose bindings can still be
 inspected. A separate exit step pops it. There are no nested scopes or calls in
 this layer; Functions will extend this single-frame lifetime to a stack.
 ```
 
+
 ```{definition} given.gc
 :lean: Unique/State:Live Unique/Frames:State.collect Unique/Frames:Configuration.collect
 :uses: given.machine given.state
 
-*Reachability* starts at an initialized slot of the live frame and follows
-initialized object fields. Write \\(\mathsf{Live}_S(\alpha)\\) when this reaches
+*Reachability* starts at an initialized slot of the [live frame](#claim-given.machine) and follows
+[initialized object fields](#claim-given.state). Write \\(\mathsf{Live}_S(\alpha)\\) when this reaches
 object \\(\alpha\\). An absent frame has no roots.
 
 *Eager collection* retains exactly reachable object entries. For object data
@@ -227,32 +265,47 @@ traversal. Collection runs after whole statements and frame exit, never between
 constructor operands or while an expression result awaits binding.
 ```
 
+
+```{definition} given.finished
+:lean: Unique/Frames:Configuration.finished
+:uses: given.machine
+
+A [configuration](#claim-given.machine) is *finished* exactly when its initial
+frame has been popped:
+
+\\[
+\mathsf{Finished}(\langle O,\nu,F\rangle)\iff F=\mathsf{none}.
+\\]
+
+An empty statement sequence still has a live frame and can take its exit step.
+Completion discards the frame's locals and collects its unreachable objects.
+```
 ## Operational semantics
 
 ### Resolving a place
 
 ```{definition} given.resolution
 :lean: Unique/Step:Resolve
-:uses: given.storage_places
+:uses: given.storage_places given.syntax given.lookup
 
 *Place resolution*, written \\(S\vdash p\Downarrow q:\alpha\\), follows
-route \\(p\\) to a storage place \\(q\\) holding reference \\(\alpha\\).
+[route](#claim-given.syntax) \\(p\\) to a [storage place](#claim-given.storage_places) \\(q\\) holding reference \\(\alpha\\).
 These two rules define it:
 
 \\[
-\frac{S[x]=\alpha}{S\vdash x\Downarrow x:\alpha}
+\frac{\href{#claim-given.lookup}{S[x]}=\alpha}{S\vdash x\Downarrow x:\alpha}
 \quad\text{Variable}
 \\]
 
 \\[
 \frac{
   S\vdash p\Downarrow q:\beta
-  \qquad S[\beta.f]=\alpha
+  \qquad \href{#claim-given.lookup}{S[\beta.f]}=\alpha
 }{S\vdash p.f\Downarrow\beta.f:\alpha}
 \quad\text{Field}
 \\]
 
-Each slot along the route must hold a reference. Undefined lookup and the empty
+Each slot along the route must hold a reference. [Undefined lookup](#claim-given.lookup) and the empty
 contents \\(\bot\\) satisfy neither rule's lookup premise. Resolution itself
 changes nothing.
 ```
@@ -261,7 +314,7 @@ changes nothing.
 
 ```{definition} given.evaluation
 :lean: Unique/Step:Eval Unique/Step:EvalArgs Unique/Step:State.allocate
-:uses: given.classes given.syntax given.programs given.state given.storage_places given.resolution
+:uses: given.classes given.syntax given.programs given.state given.storage_places given.resolution given.identities given.update given.slots
 
 *Expression evaluation*, written
 
@@ -269,15 +322,15 @@ changes nothing.
 \Delta\vdash\langle S,e\rangle\Downarrow\langle S',\alpha\rangle,
 \\]
 
-produces an owning reference \\(\alpha\\) and updated storage \\(S'\\).
+produces an [owning reference](#claim-given.slots) \\(\alpha\\) and updated [storage](#claim-given.state) \\(S'\\).
 The following rules define successful evaluation, including nested expressions.
 
-**Give.** Resolve the place and empty its slot. Return the reference taken:
+**Give.** [Resolve the place](#claim-given.resolution) and [empty its slot](#claim-given.update). Return the reference taken:
 
 \\[
-\frac{S\vdash p\Downarrow q:\alpha}{
+\frac{\href{#claim-given.resolution}{S\vdash p\Downarrow q:\alpha}}{
   \Delta\vdash\langle S,p\mathord{\to}\rangle
-  \Downarrow\langle S[q\leftarrow\bot],\alpha\rangle
+  \Downarrow\langle \href{#claim-given.update}{S[q\leftarrow\bot]},\alpha\rangle
 }
 \quad\text{Give}
 \\]
@@ -288,7 +341,7 @@ object and put their results into its fields in declaration order.
 \\[
 \frac{
   \begin{gathered}
-    \Delta(C)=[f_1,\ldots,f_n] \\
+    \href{#claim-given.programs}{\Delta(C)}=[f_1,\ldots,f_n] \\
     \Delta\vdash\langle S_{i-1},e_i\rangle
       \Downarrow\langle S_i,\alpha_i\rangle
       \quad\text{for each }i=1,\ldots,n \\
@@ -307,7 +360,7 @@ the first \\(i\\) arguments, with
 \\[
 \begin{aligned}
 S_n &= \langle O_n,V_n,\nu_n\rangle, \\
-\beta &= \mathsf{obj}(\nu_n), \\
+\beta &= \href{#claim-given.identities}{\mathsf{obj}(\nu_n)}, \\
 O' &= O_n[\beta\mapsto C\{f_1:\alpha_1,\ldots,f_n:\alpha_n\}], \\
 S' &= \langle O',V_n,\nu_n+1\rangle.
 \end{aligned}
@@ -331,7 +384,7 @@ An expression runs within one statement transition, but it can still fail.
 :lean: Unique/Step:State.bind Unique/Step:Step Unique/Frames:Step Unique/Frames:baseOperation Unique/Frames:patternOperation
 :uses: given.machine given.evaluation given.gc
 
-To execute `let x = e`, evaluate the expression completely, then put its result
+To execute `let x = e`, [evaluate the expression](#claim-given.evaluation) completely, then put its result
 in the new variable `x`. For the resulting storage
 \\(S'=\langle O',V',\nu'\rangle\\), write \\(V'[x\mapsto\alpha]\\) for the
 variable table extended with that binding, and abbreviate the updated state as:
@@ -376,7 +429,7 @@ operation. The program machine collects after it and has a separate exit rule:
 \\]
 
 The exit target has no frame and an empty heap, retaining counter \\(\nu\\).
-Even an empty program takes one exit step. A finished configuration has no
+Even an empty program takes one exit step. A finished [configuration](#claim-given.machine) has no
 successor. The Lean `Step` in `Unique/Step` is the auxiliary local relation;
 `Framed.Step` is this program machine. `baseOperation` selects the single-variable
 binding relation; later `patternOperation` selects the unpacking relation.
@@ -386,32 +439,37 @@ binding relation; later `patternOperation` selects the unpacking relation.
 ### Finite executions and failure
 
 ```{definition} given.executions
-:lean: Unique/Frames:Steps Unique/Frames:StepsExactly Unique/Frames:Stuck
+:lean: Unique/Frames:Steps Unique/Frames:StepsExactly
 :uses: given.machine given.steps
 
 A *finite execution*, written \\(\Delta\vdash K\longrightarrow^{*}K'\\),
-consists of zero or more steps. These rules define it:
+consists of zero or more [statement steps](#claim-given.steps). These rules define it:
 
 \\[
 \frac{}{\Delta\vdash K\longrightarrow^{*}K}
 \qquad
 \frac{
-  \Delta\vdash K\longrightarrow K'
+  \href{#claim-given.steps}{\Delta\vdash K\longrightarrow K'}
   \qquad \Delta\vdash K'\longrightarrow^{*}K''
 }{\Delta\vdash K\longrightarrow^{*}K''}.
 \\]
+```
 
-A configuration is *stuck* when its frame remains but no next step is possible:
+```{definition} given.stuck
+:lean: Unique/Frames:Stuck
+:uses: given.machine given.steps given.finished given.lookup given.evaluation
+
+A configuration is *stuck* when its frame remains but no next [step](#claim-given.steps) is possible:
 
 \\[
 \mathsf{Stuck}_{\Delta}(K)\iff
-\neg\mathsf{Finished}(K)\;\land\;
-\neg\exists K'.\;\Delta\vdash K\longrightarrow K'.
+\neg\href{#claim-given.finished}{\mathsf{Finished}(K)}\;\land\;
+\neg\exists K'.\;\href{#claim-given.steps}{\Delta\vdash K\longrightarrow K'}.
 \\]
 
 This is how execution *goes wrong*. For example, trying to give through an absent
-variable or an empty field yields no expression evaluation and therefore no
-statement step. Undefined lookup alone is a property of storage; attempting an
+variable or an empty field yields no [expression evaluation](#claim-given.evaluation) and therefore no
+statement step. [Undefined lookup](#claim-given.lookup) alone is a property of storage; attempting an
 operation that requires that lookup is what leaves the machine stuck.
 ```
 
@@ -428,7 +486,7 @@ class Token {}
 let t = new Token();
 ```
 
-Starting with empty storage, one step creates a `Token` object and puts its
+Starting with [empty storage](#claim-given.empty_state), one [step](#claim-given.steps) creates a `Token` object and puts its
 reference in `t`. No statements remain, but the initial frame is still live.
 The second step pops it and collects the object, leaving an empty heap and
 counter one. The check also covers the single exit step of an empty program.
@@ -449,7 +507,7 @@ let b = new Box(t→);
 let u = b.value→;
 ```
 
-Starting with empty storage, the machine takes three steps:
+Starting with [empty storage](#claim-given.empty_state), the machine takes three [steps](#claim-given.steps):
 
 1. Create the token and put its reference in `t`.
 2. Create a box and move `t` into its `value` field, leaving `t` empty.
@@ -464,7 +522,7 @@ its contents; the containing box remains in place.
 :lean: Unique/Examples:nested_constructor
 :uses: given.classes given.syntax given.evaluation given.steps
 
-Constructor arguments can create their own objects:
+[Constructor arguments](#claim-given.evaluation) can create their own objects:
 
 ```dada
 class Token {}
@@ -472,7 +530,7 @@ class Box { value }
 let b = new Box(new Token());
 ```
 
-Starting with empty storage, this is one statement step. Evaluate `new Token()`
+Starting with [empty storage](#claim-given.empty_state), this is one [statement step](#claim-given.steps). Evaluate `new Token()`
 first, then put its reference in the newly created box's `value` field. Bind the
 box's reference to `b`. The pre-exit observation contains both objects, with
 no temporary source variable needed in the program.
@@ -490,7 +548,7 @@ let v = b.value→;
 
 Let \\(\Delta\\) be that example's class table, and let \\(K_{\mathrm{bad}}\\)
 put that storage in a live frame with this one remaining statement.
-It is stuck: `b` still holds the box's reference, but its `value` field is empty.
+It is [stuck](#claim-given.stuck): `b` still holds the box's reference, but its `value` field is empty.
 The give cannot evaluate, so the statement cannot execute. Giving once leaves
 no reference behind for a second give.
 
@@ -508,40 +566,50 @@ first step, which does not exist.
 
 ## Liveness and well-formedness
 
-```{definition} given.well_formed
-:lean: Unique/State:Allocated Unique/State:Live Unique/State:References Unique/Soundness:WellFormed Unique/Soundness:WellFormedWith
-:uses: given.programs given.state given.storage_places given.evaluation
-
-The following conditions describe storage between statements, including before
-the first statement. References held temporarily during expression evaluation
-are accounted for within that evaluation.
+```{definition} given.allocated
+:lean: Unique/State:Allocated
+:uses: given.state
 
 For \\(S=\langle O,V,\nu\rangle\\), an object is *allocated* when its identity
-occurs in the object table:
+occurs in the [object table](#claim-given.state):
 
 \\[
 \mathsf{Allocated}_S(\alpha)\iff\alpha\in\operatorname{dom}(O).
 \\]
+```
+
+```{definition} given.live
+:lean: Unique/State:Live
+:uses: given.lookup given.allocated
 
 An object is *live* when an owning path reaches it from a variable. Write
 \\(\mathsf{Live}_S(\alpha)\\) for the judgment defined by these two rules:
 
 \\[
-\frac{S[x]=\alpha}{\mathsf{Live}_S(\alpha)}
+\frac{\href{#claim-given.lookup}{S[x]}=\alpha}{\mathsf{Live}_S(\alpha)}
 \qquad
-\frac{\mathsf{Live}_S(\beta)\qquad S[\beta.f]=\alpha}{\mathsf{Live}_S(\alpha)}.
+\frac{\mathsf{Live}_S(\beta)\qquad \href{#claim-given.lookup}{S[\beta.f]}=\alpha}{\mathsf{Live}_S(\alpha)}.
 \\]
 
-An empty slot contributes no edge to such a path. Allocation and liveness are
+An empty slot contributes no edge to such a path. [Allocation](#claim-given.allocated) and liveness are
 properties of the object graph, independent of how the state was produced.
+```
+
+```{definition} given.well_formed
+:lean: Unique/State:References Unique/Soundness:WellFormed Unique/Soundness:WellFormedWith
+:uses: given.programs given.state given.identities given.allocated given.evaluation
+
+The following conditions describe storage between statements, including before
+the first statement. References held temporarily during [expression evaluation](#claim-given.evaluation)
+are accounted for within that evaluation.
 
 Write \\(\mathsf{WF}_{\Delta}(S)\\) when the state meets all these conditions:
 
 - Object-table keys and variable names are each distinct.
-- Every object's class is declared. Its field names occur exactly in declaration
+- Every object's class is [declared](#claim-given.programs). Its field names occur exactly in declaration
   order, without duplicates, including fields whose slots are empty.
-- Every allocated identity \\(\alpha\\) satisfies
-  \\(\operatorname{index}(\alpha)<\nu\\). A reference in an object's field
+- Every [allocated identity](#claim-given.allocated) \\(\alpha\\) satisfies
+  \\(\href{#claim-given.identities}{\operatorname{index}(\alpha)}<\nu\\). A reference in an object's field
   targets an older object: its index is strictly smaller than the containing
   object's index.
 - The references in **all variable slots and all object fields**, counted by
@@ -557,14 +625,14 @@ fields. It excludes cycles of objects owning one another without a variable root
 
 ```{theorem} given.liveness
 :lean: Unique/Liveness:WellFormed.live_iff_allocated
-:uses: given.well_formed
+:uses: given.well_formed given.live given.allocated
 
-In every well-formed state, an object is live exactly when it is allocated:
+In every [well-formed state](#claim-given.well_formed), an object is live exactly when it is allocated:
 
 \\[
-\mathsf{WF}_{\Delta}(S)
+\href{#claim-given.well_formed}{\mathsf{WF}_{\Delta}(S)}
 \quad\Longrightarrow\quad
-\bigl(\mathsf{Live}_S(\alpha)\iff\mathsf{Allocated}_S(\alpha)\bigr).
+\bigl(\href{#claim-given.live}{\mathsf{Live}_S(\alpha)}\iff\href{#claim-given.allocated}{\mathsf{Allocated}_S(\alpha)}\bigr).
 \\]
 
 Thus every allocated object has an owning path from a variable, and following
@@ -573,34 +641,36 @@ owning paths cannot reach a missing object.
 
 ```{theorem} given.single_owner
 :lean: Unique/Liveness:WellFormed.owner_count
-:uses: given.well_formed
+:uses: given.well_formed given.allocated
 
-In every well-formed state, each allocated object has exactly one owning
+In every [well-formed state](#claim-given.well_formed), each [allocated object](#claim-given.allocated) has exactly one owning
 reference across all variable slots and object fields. This counts the slot
 that immediately holds its reference: a path through several enclosing objects
 does not add extra owners of its final target.
 ```
 
+
 ```{theorem} given.gc_inert
 :lean: Unique/Frames:State.collect_eq_self
 :uses: given.gc given.well_formed given.liveness
 
-Collection leaves structurally well-formed evaluation storage unchanged:
-every allocated object is already reachable. Ordinary statements preserve
+[Collection](#claim-given.gc) leaves structurally [well-formed evaluation storage](#claim-given.well_formed) unchanged:
+every allocated object is already [reachable](#claim-given.live). Ordinary statements preserve
 this property, so their following collection is inert. Popping the frame
 removes its roots; collection at that boundary empties the heap instead.
 ```
+
 
 ```{theorem} given.soundness
 :lean: Unique/Frames:base_soundness
 :uses: given.programs given.executions given.well_formed given.liveness given.single_owner
 
-For any program with a well-formed class table, every configuration reached by
-a finite execution from its empty initial state has a well-formed state.
+For any program with a [well-formed class table](#claim-given.well_formed_classes), every configuration reached by
+a [finite execution](#claim-given.executions) from its [empty initial state](#claim-given.machine) has a [well-formed state](#claim-given.well_formed).
 This includes zero steps, intermediate configurations, and completed executions.
 
-Consequently, every allocated object remains live and has exactly one owning
-reference. The theorem covers successful execution; it does not promise that a
+Consequently, every allocated object remains [live](#claim-given.liveness) and has [exactly one owning
+reference](#claim-given.single_owner). The theorem covers successful execution; it does not promise that a
 program can always take another step.
 ```
 
@@ -608,7 +678,7 @@ program can always take another step.
 
 ```{definition} given.patterns
 :lean: Unique/Unpacking:Pattern Unique/Unpacking:Statement Unique/Unpacking:Configuration
-:uses: given.classes given.syntax
+:uses: given.classes given.syntax given.evaluation
 
 An *unpacking pattern* consumes an object and transfers its field slots into
 new variables. This extends the statement syntax with a *binding pattern*
@@ -631,23 +701,22 @@ The expression `p→` transfers the reference out of `p`. The pattern
 An ordinary field give leaves the enclosing object in place. An empty class
 can be consumed with `C → {}`.
 
-This extension adds patterns while keeping expression evaluation unchanged.
-The preceding results concern single-variable bindings; the preservation result
-below also covers unpacking.
+This extension adds patterns while keeping [expression evaluation](#claim-given.evaluation) unchanged.
+The preceding results concern single-variable bindings.
 ```
 
 ```{definition} given.unpacking
 :lean: Unique/Unpacking:Transfer Unique/Unpacking:Bind Unique/Unpacking:Step
 :uses: given.patterns given.state given.evaluation given.steps
 
-To execute `let C → { ... } = e`, evaluate `e`, check that its result names a
+To execute `let C → { ... } = e`, [evaluate `e`](#claim-given.evaluation), check that its result names a
 `C` object, and transfer that object's slots into fresh variables. An initialized
 field becomes an initialized variable; an empty field becomes an empty variable.
 The consumed object's entry is removed from the object table.
 
 Write \\(\Delta\vdash K\rightsquigarrow_u K'\\) for the extended transition
-relation. It has the earlier **Let** rule, read over the extended statement
-syntax, and the following **Unpack** rule. We display the pattern fields in
+relation. It has the earlier [**Let** rule](#claim-given.steps), read over the extended [statement
+syntax](#claim-given.patterns), and the following **Unpack** rule. We display the pattern fields in
 declaration order:
 
 \\[
@@ -697,16 +766,16 @@ in the same collection and exit rules as single-variable bindings.
 :lean: Unique/Frames:pattern_preservation
 :uses: given.unpacking given.well_formed
 
-For a well-formed class table, every extended step from well-formed storage
+For a [well-formed class table](#claim-given.well_formed_classes), every [extended step](#claim-given.unpacking) from [well-formed storage](#claim-given.well_formed)
 preserves well-formedness. Unpacking transfers every field slot and removes
 only the consumed container, so its children retain their owners.
 ```
 
 ````{example} given.example.unpack
 :lean: Unique/UnpackingChecks:unpack_after_move
-:uses: given.patterns given.unpacking given.machine
+:uses: given.patterns given.unpacking given.machine given.finished
 
-Unpacking also works after a field has been moved:
+[Unpacking](#claim-given.unpacking) also works after a field has been moved:
 
 ```dada
 class Token {}
@@ -719,7 +788,7 @@ let Pair → { left, right } = p→;
 
 After the three-step execution, `taken` owns the first token and
 `right` owns the second. Variables `p` and `left` have empty slots. The pair
-object has been removed; both token objects remain. No statements remain.
+object has been removed; both token objects remain. The configuration is [finished](#claim-given.finished).
 
 The empty field does not produce a value: its new binding `left` is empty too.
 Trying to evaluate `left→` afterward would have no result.

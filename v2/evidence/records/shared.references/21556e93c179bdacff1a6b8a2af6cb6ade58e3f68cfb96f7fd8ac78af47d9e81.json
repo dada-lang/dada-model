@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "d2837bb974858115eb8996a094560bee916f4e059f26e44c3088d7590521cd23",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Reference.owned",
+    "lean:Shared/State:Reference.shared",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Syntax:ObjectId",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.references"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Mode has unique/shared constructors; Reference pairs mode and ObjectId; owned/shared select those modes; Slot is Option Reference. ObjectId wraps index : Nat. The displayed pair/slot grammar and object-independent ownership modes match these exact types. Notation and premises are supplied by the examined units given.classes, given.collections, given.identities, given.programs, given.syntax.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run."
+  ],
+  "supersedes": []
+}

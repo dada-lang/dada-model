@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "8a35ea6b6cc8338a92676e984320512b0cfc86654dd093f6cacb4d605dc470bb",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.well_formed_classes",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The typed-class-table link identifies the exact object constrained by the three conditions. There is no separate displayed equation or undefined operator: Sigma names the linked table.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The typed-class-table link identifies the exact object constrained by the three conditions.",
+    "mathematics": "There is no separate displayed equation or undefined operator: Sigma names the linked table.",
+    "links": [
+      {
+        "occurrence": "given.typing.well_formed_classes:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'typed class table' supplies typed class declarations and the typed class table Sigma while explaining well-formed typed class tables. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

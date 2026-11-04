@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "bundle": "c24df7645de6e0a592831ada16285828dd815e696e83ac9a7e75f931b3e9dd21",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:472873be00917a4ebf8d69e3b338f3e2a17aa6e7d92d58a52bc513ef0d20f263",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:target:c8ead969bed74ef79c463fa37a326d2236f51323ed159506774205ac0abfe848",
+    "audit:target:fb8728223f67267611c2c2583e138750a3de2c9dbffaf47cc6477356589bd987",
+    "audit:unit:given.example.empty_field",
+    "audit:unit:given.example.field",
+    "audit:unit:given.executions",
+    "audit:unit:given.finished",
+    "audit:unit:given.stuck",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded.",
+    "mathematics": "Δ and K_bad are introduced from the linked predecessor example. The starred arrow and Finished in the no-completion formula are linked.",
+    "links": [
+      {
+        "occurrence": "given.example.empty_field:1",
+        "role": "conceptual",
+        "rationale": "The referenced example given.example.field supplies the concrete starting state used here."
+      },
+      {
+        "occurrence": "given.example.empty_field:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “stuck” uses Given stuck configurations; the target given.stuck supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.example.empty_field:3",
+        "role": "conceptual",
+        "rationale": "The formula \\longrightarrow^{*} uses Given zero-or-more-step execution; the destination given.executions supplies that operation or result."
+      },
+      {
+        "occurrence": "given.example.empty_field:4",
+        "role": "conceptual",
+        "rationale": "The formula \\mathsf{Finished}(K') uses Given finished configurations; the destination given.finished supplies that operation or result."
+      }
+    ]
+  }
+}

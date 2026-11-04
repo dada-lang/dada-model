@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "af52e45607890352974ef3cb605c4dd51a9ee496ad1eb72b92a2f32079c0b559",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4ba614a624608047955c9ae8f552242a0a12fdc9b4cec2848e20eb9b3287e39c",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.typing.composition",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.example.paths",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Uses the already-defined composition table and local declarations to explain whole-type permission routes. Does not require a forward call to the later focusing algorithm.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Uses the already-defined composition table and local declarations to explain whole-type permission routes. Does not require a forward call to the later focusing algorithm.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. The permission_paths example asserts the four static give results for b.item, s.item, o.box.item, h.item. The given case updates the source view; the three shared cases preserve the environment. Its classes and declared permissions match the displayed Box/Outer/Holder setup.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.paths:1",
+        "role": "conceptual",
+        "rationale": "The use 'permission composition' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.composition is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

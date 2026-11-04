@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "38baef0550c4464dd1780b706a95f607940c3c8387bf1d8b76f68edce9d1ca8e",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:27b635e54c096761d195bd023a2b9ff0f50da07131758a43c3e240e9dc3b2ab7",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines q directly and links the distinction from a routed place expression. Object-number examples instantiate the preceding identity definition. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete direct Given storage places passage without searching a neighboring block for the actual definition or claim. The q grammar has variable and object-field alternatives. Its x/α/f components are previously introduced name/identity categories.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "direct Given storage places",
+    "definition": {
+      "path": "md/given.md",
+      "start": 5661,
+      "end": 5977
+    },
+    "clarity": "Defines q directly and links the distinction from a routed place expression. Object-number examples instantiate the preceding identity definition. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete direct Given storage places passage without searching a neighboring block for the actual definition or claim. The q grammar has variable and object-field alternatives. Its x/α/f components are previously introduced name/identity categories."
+  }
+}

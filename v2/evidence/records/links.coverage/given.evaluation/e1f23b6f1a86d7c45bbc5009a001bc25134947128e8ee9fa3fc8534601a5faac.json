@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "bundle": "ac16418c554f4ce72f48007c9f61a5e12ac7152231a73d438a38de106cbe8c40",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7ea3722fb38b69215437903009c22a0940e840a03133abb2cace53fb606d2c60",
+    "audit:target:a395ec3d77295857a26e9571e271df4e3a3c5c6ae23ac869fc9fd981731e6507",
+    "audit:target:d23f620a4d543e74b2a0c0ebf99c040dfd62ccaae87df02e867c7c374fa3bc58",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:target:e7568deab02a8362a2cff702a90471c7db87143fb7dcec6e5fadfef6433c94d7",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "audit:unit:given.classes",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.identities",
+    "audit:unit:given.programs",
+    "audit:unit:given.resolution",
+    "audit:unit:given.slots",
+    "audit:unit:given.state",
+    "audit:unit:given.storage_places",
+    "audit:unit:given.syntax",
+    "audit:unit:given.update",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local.",
+    "mathematics": "The Give premise and result link Resolve and slot update. Construct links Δ(C) and obj, while S_i, β, dom and map extension are scoped in its where explanation; recursive Eval is locally defined.",
+    "links": [
+      {
+        "occurrence": "given.evaluation:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “owning reference” uses Given slots and their owning-reference contents; the target given.slots supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.evaluation:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “storage” uses Given storage and its component tables/counter; the target given.state supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.evaluation:3",
+        "role": "conceptual",
+        "rationale": "The prose reference “Resolve the place” uses Given place resolution; the target given.resolution supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.evaluation:4",
+        "role": "conceptual",
+        "rationale": "The prose reference “empty its slot” uses Given replacement of an existing slot; the target given.update supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.evaluation:5",
+        "role": "conceptual",
+        "rationale": "The formula S\\vdash p\\Downarrow q:\\alpha uses Given place resolution; the destination given.resolution supplies that operation or result."
+      },
+      {
+        "occurrence": "given.evaluation:6",
+        "role": "conceptual",
+        "rationale": "The formula S[q\\leftarrow\\bot] uses Given replacement of an existing slot; the destination given.update supplies that operation or result."
+      },
+      {
+        "occurrence": "given.evaluation:7",
+        "role": "conceptual",
+        "rationale": "The formula \\Delta(C) uses Given programs, class tables and statement sequences; the destination given.programs supplies that operation or result."
+      },
+      {
+        "occurrence": "given.evaluation:8",
+        "role": "conceptual",
+        "rationale": "The formula \\mathsf{obj}(\\nu_n) uses tagged object identities and their numeric projection; the destination given.identities supplies that operation or result."
+      }
+    ]
+  }
+}

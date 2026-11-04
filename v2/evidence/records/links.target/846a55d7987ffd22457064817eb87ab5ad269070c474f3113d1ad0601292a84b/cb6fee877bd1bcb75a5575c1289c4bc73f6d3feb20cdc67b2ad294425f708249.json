@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "1b45cfc244b6d3cca7eb62663ae69d3b25b4c5c2557d875bd117775c684e2ace",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:846a55d7987ffd22457064817eb87ab5ad269070c474f3113d1ad0601292a84b",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared stuck configurations passage without searching a neighboring block for the actual definition or claim. The equation links both Finished and Step. The prose counterexample refers back to giving rather than assuming static initialization typing.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared stuck configurations",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 14144,
+      "end": 14650
+    },
+    "clarity": "Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared stuck configurations passage without searching a neighboring block for the actual definition or claim. The equation links both Finished and Step. The prose counterexample refers back to giving rather than assuming static initialization typing."
+  }
+}

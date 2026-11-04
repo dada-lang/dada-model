@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "25dd2a6181c18eaadd2baa63ee569b7b53e4363da84b4089d598aba18b94f2fb",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared expression evaluation passage without searching a neighboring block for the actual definition or claim. The Eval judgment is introduced before the clauses. Δ(C) and obj allocation link their definitions; the intermediate states and final tuple equations are locally scoped, and Give links the prior behavior table.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared expression evaluation",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 10854,
+      "end": 12587
+    },
+    "clarity": "Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared expression evaluation passage without searching a neighboring block for the actual definition or claim. The Eval judgment is introduced before the clauses. Δ(C) and obj allocation link their definitions; the intermediate states and final tuple equations are locally scoped, and Give links the prior behavior table."
+  }
+}

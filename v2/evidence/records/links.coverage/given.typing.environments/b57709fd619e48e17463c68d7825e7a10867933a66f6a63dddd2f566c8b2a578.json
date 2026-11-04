@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "69a07defdbd2c594b5543a65ea660a4f0228bc26d9832abcb44c5252a0b2254e",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:69b3d55447d920253867baf2a85e8926fb42f26962b21ba3fe0049eb1951e922",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.syntax",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.views",
+    "audit:unit:given.typing.well_formed_types",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Well-formedness and normalization link to their definitions. Slot descriptions, environment, empty marker, and retained variable domain are introduced in this compact paired grammar. The B and Gamma productions bind their symbols; 0 is explained as empty rather than a value type. dom is ordinary finite-map notation, not another language predicate.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Well-formedness and normalization link to their definitions. Slot descriptions, environment, empty marker, and retained variable domain are introduced in this compact paired grammar.",
+    "mathematics": "The B and Gamma productions bind their symbols; 0 is explained as empty rather than a value type. dom is ordinary finite-map notation, not another language predicate.",
+    "links": [
+      {
+        "occurrence": "given.typing.environments:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'well formed' supplies well-formed nominal views with nonoverlapping valid entries while explaining slot descriptions and typing environments. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.environments:2",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'normalized' supplies normalization of finite signed views while explaining slot descriptions and typing environments. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "2451f1299d4980ccf4acd5c6c4b0ac6b791e76ade7e29727adc1f608a3f7718f",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:cb3e7f137fa264d756a4ce07ced53774f9fec6337e518a0dd5f5f0e263b368b4",
+    "audit:unit:meta.syntax.heap.rendering",
+    "audit:unit:meta.syntax.heap.routing",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Diagram edges link their rendering definition before this unit specifies routing corridors, bends, dots and failure behavior. Lease junctions are already explained by that target. No mathematical symbol requires a definition link; routing cost is described in ordinary terms without an omitted formula.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Diagram edges link their rendering definition before this unit specifies routing corridors, bends, dots and failure behavior. Lease junctions are already explained by that target.",
+    "mathematics": "No mathematical symbol requires a definition link; routing cost is described in ordinary terms without an omitted formula.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.heap.routing:1",
+        "role": "conceptual",
+        "rationale": "Routing constrains the SVG edges already defined by diagram rendering."
+      }
+    ]
+  }
+}

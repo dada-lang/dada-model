@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "a0ea542e124f68cd48748b090c4454f8255e51396a2fa63403f206ad8d59a89f",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:evidence.map",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit introduces finite maps directly, with the key uniqueness condition and a separate empty-map anchor; it does not invoke another language operation. M, K, T and entry components k,v are introduced in the same sentences; the map arrow and empty-map symbol are defining occurrences.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit introduces finite maps directly, with the key uniqueness condition and a separate empty-map anchor; it does not invoke another language operation.",
+    "mathematics": "M, K, T and entry components k,v are introduced in the same sentences; the map arrow and empty-map symbol are defining occurrences.",
+    "links": []
+  }
+}

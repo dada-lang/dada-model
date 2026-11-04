@@ -256,3 +256,28 @@ steps, retaining a pre-exit realization witness after n statement steps.
 `Correspondence/UniqueSharedFrames` relates framed steps and boundaries;
 `Correspondence/SharedFunctionsFrames` gives exact correspondence with Functions.
 Functions reuses the Shared storage collector with the roots of all live frames.
+
+## Links and conceptual order
+
+Use the existing Markdown, anchor-reference roles, and MathJax `\href` links;
+do not add a parallel concept-tagging syntax. `dada-spec links [--json]` derives
+link occurrences and reading order from `SUMMARY.md` and source positions.
+Internal destinations are checked against both chapter path and anchor. Use
+`.html` paths in authored MathJax links, because MathJax does not run mdBook's
+Markdown URL rewriting.
+
+`links.coverage/UNIT`, `links.target/HASH`, and `links.forward/HASH` are generated
+review subjects for the existing `prepare` and `record` commands. Read
+`md/repo/link-audits.md` and the link-review policy in
+`md/repo/correspondence-review.md`. Examine unlinked prose and math as well as the
+extracted occurrence list. Target evidence must identify a clear landing, not
+justify a buried definition by selecting its precise span. Prefer rearranging
+forward references; retained ones require explicit source signposting and
+reasons for necessity and minimal use. Navigation classifications are reviewed,
+not blanket exceptions. Local references must follow the actual definition.
+
+Draft units and future notes also need link audits. Editorial audits of future
+notes do not assert correspondence with a formalization. Saved
+audits retain exact source/target snapshots, relevant chapters, order/position
+metadata, policy, and tool/theme inputs. Their deterministic validation runs in
+the existing Cargo evidence test without invoking an agent, network, or Lean.

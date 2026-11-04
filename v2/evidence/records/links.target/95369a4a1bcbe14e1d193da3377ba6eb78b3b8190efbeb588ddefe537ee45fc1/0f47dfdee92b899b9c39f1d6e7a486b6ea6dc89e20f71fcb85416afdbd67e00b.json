@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "dd3ede85f75226d76816b708559b860c1f9364e76313b205b7ccaa4ff59d0277",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links evaluation for pending references, class declarations, allocated identities, and index. The remaining conditions jointly define one storage invariant rather than separate unintroduced predicates. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given structural storage well-formedness passage without searching a neighboring block for the actual definition or claim. WF and its component conditions are introduced here; the numeric projection index links identities and allocation links domain membership. Pending expression references are explained with the evaluation link.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given structural storage well-formedness",
+    "definition": {
+      "path": "md/given.md",
+      "start": 18310,
+      "end": 19696
+    },
+    "clarity": "Links evaluation for pending references, class declarations, allocated identities, and index. The remaining conditions jointly define one storage invariant rather than separate unintroduced predicates. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given structural storage well-formedness passage without searching a neighboring block for the actual definition or claim. WF and its component conditions are introduced here; the numeric projection index links identities and allocation links domain membership. Pending expression references are explained with the evaluation link."
+  }
+}

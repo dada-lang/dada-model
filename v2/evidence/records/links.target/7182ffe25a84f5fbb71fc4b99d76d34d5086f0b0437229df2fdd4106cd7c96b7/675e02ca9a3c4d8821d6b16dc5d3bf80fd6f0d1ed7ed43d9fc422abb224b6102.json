@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "4492d96e19afa1ee6dd71895be25af419584693e2f3679dd6cb83d35c89dc6f8",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7182ffe25a84f5fbb71fc4b99d76d34d5086f0b0437229df2fdd4106cd7c96b7",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.environments unit has a visible identity and directly presents slot descriptions and typing environments. Well-formedness and normalization link to their definitions. Slot descriptions, environment, empty marker, and retained variable domain are introduced in this compact paired grammar. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The B and Gamma productions bind their symbols; 0 is explained as empty rather than a value type. dom is ordinary finite-map notation, not another language predicate.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "slot descriptions and typing environments",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 16093,
+      "end": 16804
+    },
+    "clarity": "The named given.typing.environments unit has a visible identity and directly presents slot descriptions and typing environments. Well-formedness and normalization link to their definitions. Slot descriptions, environment, empty marker, and retained variable domain are introduced in this compact paired grammar.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The B and Gamma productions bind their symbols; 0 is explained as empty rather than a value type. dom is ordinary finite-map notation, not another language predicate."
+  }
+}

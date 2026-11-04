@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "889f11e99139a7a7246d9845e2dcc96dc424b45945eeb626a67eeafeffd23355",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.classes",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Introduces ownership transfer and class/field names locally. The declaration grammar binds C, f, n and d; no later judgment is needed for this intent-level introduction. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Introduces ownership transfer and class/field names locally. The declaration grammar binds C, f, n and d; no later judgment is needed for this intent-level introduction.",
+    "mathematics": "The displayed d/C/f declaration grammar binds its class/field categories and arity locally; it is an introduction, not a use of a later judgment.",
+    "links": []
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "f48a3ec3712533d2aee27ecec2fd291d86a87a7f6775b8a040ff344f41e9ccd1",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7182ffe25a84f5fbb71fc4b99d76d34d5086f0b0437229df2fdd4106cd7c96b7",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:81ccfd540968c8bf6b777cea484df57e5dff4b61517968758cc9d5c6f20e3b23",
+    "audit:unit:future.path_permissions",
+    "audit:unit:future.permission_unions",
+    "audit:unit:given.typing.environments",
+    "audit:unit:shared.give",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. The example links the proposed path-dependent permission to its preceding note, move/copy behavior to the current give semantics, and known-empty variable descriptions to Given environments. Function/branch/union syntax is explicitly exploratory and locally explained.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The example links the proposed path-dependent permission to its preceding note, move/copy behavior to the current give semantics, and known-empty variable descriptions to Given environments. Function/branch/union syntax is explicitly exploratory and locally explained.",
+    "mathematics": "Code demonstrates the two possible modes without claiming a current typing derivation. P|Q and T|U are introduced as proposed unions, and the distinction between empty and no-longer-usable slots is stated rather than assuming an undefined operator.",
+    "links": [
+      {
+        "occurrence": "future.permission_unions:1",
+        "role": "conceptual",
+        "rationale": "The use 'path-dependent permission' supplies a concept, equation, or example setup needed here; md/dada/future-extensions.md#claim-future.path_permissions is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "future.permission_unions:2",
+        "role": "conceptual",
+        "rationale": "The use 'machine' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.give is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "future.permission_unions:3",
+        "role": "conceptual",
+        "rationale": "The use 'variable marker 0' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.environments is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "6fbe60682ede7dabdd5271bbe666ac44a5f443aae094bac9f1c8da4632e76404",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.example.normalization",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The Foo/Bar/Baz example supplies a concrete reason to prefer a short representative before presenting the general bottom-up normalization procedure and its empty-class exception. Moving the procedure ahead would separate the rule from its motivation; moving the example later would require that general algorithm be understood without a concrete collapse. The example already performs and explains only the finite collapses in its displayed chain, so retaining this one explicit preview is the coherent order. The three local class declarations and the fact that bar has exactly the one initialized baz field suffice to follow the Foo chain. The prose separately explains why an unknown or negative sibling blocks collapse. No general correctness, idempotence, or normal-form algorithm is used before its definition.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The Foo/Bar/Baz example supplies a concrete reason to prefer a short representative before presenting the general bottom-up normalization procedure and its empty-class exception. Moving the procedure ahead would separate the rule from its motivation; moving the example later would require that general algorithm be understood without a concrete collapse. The example already performs and explains only the finite collapses in its displayed chain, so retaining this one explicit preview is the coherent order.",
+      "signposting": "The label says normalization procedure defined next, and the next sentence restricts the example to illustrating its collapses.",
+      "signpost": {
+        "path": "md/given-typing.md",
+        "start": 8409,
+        "end": 8565
+      },
+      "minimal_use": "The three local class declarations and the fact that bar has exactly the one initialized baz field suffice to follow the Foo chain. The prose separately explains why an unknown or negative sibling blocks collapse. No general correctness, idempotence, or normal-form algorithm is used before its definition."
+    }
+  }
+}

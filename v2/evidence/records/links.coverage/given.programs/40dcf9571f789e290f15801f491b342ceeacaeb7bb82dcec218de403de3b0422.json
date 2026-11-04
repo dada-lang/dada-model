@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "9e61ededd7344e84a60714821267899f51940ce6ecb75066c55cb78eb19a31dc",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:ea88350f35acf3dbe92ab2a6eee84184c0fb823f75907318dc522380864a6084",
+    "audit:unit:given.classes",
+    "audit:unit:given.collections",
+    "audit:unit:given.programs",
+    "audit:unit:given.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links class declarations and statements, then defines the program/class-table/statement-sequence grammar. Finite-map conventions and table well-formedness now have separate targets. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links class declarations and statements, then defines the program/class-table/statement-sequence grammar. Finite-map conventions and table well-formedness now have separate targets.",
+    "mathematics": "Δ, P and Π are introduced by the local grammar; C/f/t come from linked class and statement syntax. Brackets, [] and cons are explained with this grammar.",
+    "links": [
+      {
+        "occurrence": "given.programs:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “class declarations” uses Given class declarations and their ordered field names; the target given.classes supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.programs:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “statements” uses Given place, value and statement syntax; the target given.syntax supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

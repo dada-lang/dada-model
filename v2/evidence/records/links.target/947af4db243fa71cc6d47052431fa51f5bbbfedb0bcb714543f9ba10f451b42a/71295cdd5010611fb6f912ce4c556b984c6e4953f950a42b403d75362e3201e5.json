@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "1ce5c6df0a12e2b00e88f75d23e6a8c74adb0a3da4e1f70a0827a6462314c505",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:947af4db243fa71cc6d47052431fa51f5bbbfedb0bcb714543f9ba10f451b42a",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The given allocated/live equivalence is the explicit subject of this theorem block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the Given allocated/live equivalence passage without searching a neighboring block for the actual definition or claim. Every nonlogical predicate in the theorem formula—WF, Live and Allocated—has a direct definition link.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the Given allocated/live equivalence",
+    "definition": {
+      "path": "md/given.md",
+      "start": 19836,
+      "end": 20280
+    },
+    "clarity": "The given allocated/live equivalence is the explicit subject of this theorem block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the Given allocated/live equivalence passage without searching a neighboring block for the actual definition or claim. Every nonlogical predicate in the theorem formula—WF, Live and Allocated—has a direct definition link."
+  }
+}

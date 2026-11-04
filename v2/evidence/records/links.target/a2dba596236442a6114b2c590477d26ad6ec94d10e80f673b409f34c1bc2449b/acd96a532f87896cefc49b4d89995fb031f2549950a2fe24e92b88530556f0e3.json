@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "1248012d61087a2527a6cb4792f9a3eabc22e8c8ba7483b07a4b1f4524d821be",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a2dba596236442a6114b2c590477d26ad6ec94d10e80f673b409f34c1bc2449b",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The given/shared step correspondence theorem is the explicit subject of this theorem block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the Given/Shared step correspondence theorem passage without searching a neighboring block for the actual definition or claim. E is linked in prose, and every Step formula links the correct language-specific transition definition; the arbitrary Shared successor d is locally quantified.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the Given/Shared step correspondence theorem",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 23367,
+      "end": 24219
+    },
+    "clarity": "The given/shared step correspondence theorem is the explicit subject of this theorem block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the Given/Shared step correspondence theorem passage without searching a neighboring block for the actual definition or claim. E is linked in prose, and every Step formula links the correct language-specific transition definition; the arbitrary Shared successor d is locally quantified."
+  }
+}

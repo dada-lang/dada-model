@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "bundle": "8e9d5c980501ed3338a73fc3c52046aa68293a042d53b189c976af512655eebc",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4eb4444f47c2cf800acfe57f1fe74d9c78d8e7427cc5203d9959826b200440ca",
+    "audit:target:6a677ac22a7333f883a5bbe3ea1f985b201e8e1dfa34eb7895adb06760dc2928",
+    "audit:target:90551fc1b4acbc85cd0af545697c9e6593adef6b426431e751cb7e9684fbc7b8",
+    "audit:target:de8c17107cd2bbf6e44d0bf15ada676d4d817578ead32b69effa4f7154e93041",
+    "audit:unit:given.machine",
+    "audit:unit:given.typing.configurations",
+    "audit:unit:given.typing.realization",
+    "audit:unit:given.typing.sequences",
+    "audit:unit:given.typing.well_formed_classes",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Configuration, realization, statement typing, and well-formed class tables each link directly to their definitions. The current-versus-final environment distinction is explained locally. Both conjuncts of the defining equivalence link to the respective realization and sequence-typing judgments. The outer configuration-typing judgment is being defined.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Configuration, realization, statement typing, and well-formed class tables each link directly to their definitions. The current-versus-final environment distinction is explained locally.",
+    "mathematics": "Both conjuncts of the defining equivalence link to the respective realization and sequence-typing judgments. The outer configuration-typing judgment is being defined.",
+    "links": [
+      {
+        "occurrence": "given.typing.configurations:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'configuration' supplies machine configurations and remaining statements while explaining configuration typing with a fixed final environment. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.configurations:2",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'realizes an environment' supplies storage realization of an environment and pending values while explaining configuration typing with a fixed final environment. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.configurations:3",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'statements typecheck' supplies typing finite statement sequences while explaining configuration typing with a fixed final environment. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.configurations:4",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\Sigma;\\\\Gamma\\\\models(S;[])' supplies storage realization of an environment and pending values while explaining configuration typing with a fixed final environment. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.configurations:5",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\Sigma;\\\\Gamma\\\\vdash P\\\\Rightarrow\\\\Gamma_f' supplies typing finite statement sequences while explaining configuration typing with a fixed final environment. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.configurations:6",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'well-formed' supplies well-formed typed class tables while explaining configuration typing with a fixed final environment. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

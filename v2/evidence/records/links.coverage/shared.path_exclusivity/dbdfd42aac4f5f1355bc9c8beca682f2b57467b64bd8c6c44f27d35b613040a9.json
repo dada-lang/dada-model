@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "11c865b64388556b6f478530239a3e5cbd5618ad66b778f8ae35b885c1a0b6ec",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b50fba7e62f9aaf161a6e1aaec2b60ca9f8ca33678e15facd8c24af1d87648a9",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:shared.path_exclusivity",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.well_formed",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The formula links WF and both Resolve occurrences; it states the all-unique/shared-route exclusion rather than inventing a new path judgment. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The formula links WF and both Resolve occurrences; it states the all-unique/shared-route exclusion rather than inventing a new path judgment.",
+    "mathematics": "WF and each unique/shared Resolve occurrence have definition links. The formula quantifies over both paths to the same α.",
+    "links": [
+      {
+        "occurrence": "shared.path_exclusivity:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “well-formed state” uses Shared structural storage well-formedness; the target shared.well_formed supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.path_exclusivity:2",
+        "role": "conceptual",
+        "rationale": "The formula \\mathsf{WF}_{\\Delta}(S) uses Shared structural storage well-formedness; the destination shared.well_formed supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.path_exclusivity:3",
+        "role": "conceptual",
+        "rationale": "The formula S\\vdash p\\Downarrow q:\\alpha@\\mathsf{unique} uses Shared place resolution with effective mode; the destination shared.resolution supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.path_exclusivity:4",
+        "role": "conceptual",
+        "rationale": "The formula S\\vdash p'\\Downarrow q':\\alpha@\\mathsf{shared} uses Shared place resolution with effective mode; the destination shared.resolution supplies that operation or result."
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "7a10ac89c71223b68721012f6cdae5ce00f5c081c4a0dec277760e9b8365e2cf",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e35657bf769f399f71a289ab97c3d64f55d9f44be732a34633b1c76ef237a49c",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.field unit has a visible identity and directly presents the direct-field slot description. The empty-slot description links to the environment grammar. The current-field description is the single subject being introduced. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The case split links neg, pos, and focusing. The outer field operator is its defining occurrence.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the direct-field slot description",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 21078,
+      "end": 21544
+    },
+    "clarity": "The named given.typing.field unit has a visible identity and directly presents the direct-field slot description. The empty-slot description links to the environment grammar. The current-field description is the single subject being introduced.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The case split links neg, pos, and focusing. The outer field operator is its defining occurrence."
+  }
+}

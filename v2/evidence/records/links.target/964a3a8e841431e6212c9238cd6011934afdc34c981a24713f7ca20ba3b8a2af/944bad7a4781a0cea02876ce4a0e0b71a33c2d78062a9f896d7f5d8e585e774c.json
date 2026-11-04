@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "56a9d39e24e4d3c6f70644aef76aefa5f4684c1ad8ce570da4808c6810c6cebd",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.views unit has a visible identity and directly presents signed view entries and nominal view types. Relative place links to its grammar. Positive and negative entries, unknown omissions, whole-class shorthand, and empty view are explained locally. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The a/A/T productions define the grammar. The negative-epsilon exclusion is explicit, and bare C is defined as a view spelling rather than a second constructor.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "signed view entries and nominal view types",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 2800,
+      "end": 3946
+    },
+    "clarity": "The named given.typing.views unit has a visible identity and directly presents signed view entries and nominal view types. Relative place links to its grammar. Positive and negative entries, unknown omissions, whole-class shorthand, and empty view are explained locally.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. The a/A/T productions define the grammar. The negative-epsilon exclusion is explicit, and bare C is defined as a view spelling rather than a second constructor."
+  }
+}

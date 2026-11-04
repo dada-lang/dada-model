@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "090e09116d2fa3f282852ebb26115df6229bd7b5f53c8d4d2bc5cce9db711df9",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.links.inventory",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The inventory is introduced here with its data, supported syntaxes, target resolution and book-order rules. Future notes are included explicitly. This is the defining contract for the link graph, not a use of an unintroduced semantic relation. Literal href and SUMMARY names are syntax examples. No equation or inference judgment requires a separate math link.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The inventory is introduced here with its data, supported syntaxes, target resolution and book-order rules. Future notes are included explicitly. This is the defining contract for the link graph, not a use of an unintroduced semantic relation.",
+    "mathematics": "Literal href and SUMMARY names are syntax examples. No equation or inference judgment requires a separate math link.",
+    "links": []
+  }
+}

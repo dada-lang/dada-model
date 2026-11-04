@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "50cc86618c2679aecd66ef90c3ecadd086ccd19c4c98ea9d5d5ab9c26bc09bf7",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:unit:given.example.unpack",
+    "audit:unit:given.finished",
+    "audit:unit:given.machine",
+    "audit:unit:given.patterns",
+    "audit:unit:given.unpacking",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links unpacking and completion; all class declarations and the moved/empty field scenario are present locally. No field-description typing rule is assumed ahead of the next chapter. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links unpacking and completion; all class declarations and the moved/empty field scenario are present locally. No field-description typing rule is assumed ahead of the next chapter.",
+    "mathematics": "All source class/field names are declared in the example. Its unpacking and finished claims link backwards, and empty bindings use already introduced slot semantics.",
+    "links": [
+      {
+        "occurrence": "given.example.unpack:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “Unpacking” uses Given unpacking transition semantics; the target given.unpacking supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.example.unpack:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “finished” uses Given finished configurations; the target given.finished supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

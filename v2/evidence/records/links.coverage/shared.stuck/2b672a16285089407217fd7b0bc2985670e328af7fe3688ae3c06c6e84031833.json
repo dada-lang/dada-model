@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "f86f135f63f97f60ba200e996b6f45ac82dd1259e56cdf64075fa5c48b21e25e",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "audit:target:8132c92fa5f747ccdf2fbc59a0936de31747623e06e98e9afada9d4d962dc8b4",
+    "audit:unit:shared.finished",
+    "audit:unit:shared.give",
+    "audit:unit:shared.steps",
+    "audit:unit:shared.stuck",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation.",
+    "mathematics": "The equation links both Finished and Step. The prose counterexample refers back to giving rather than assuming static initialization typing.",
+    "links": [
+      {
+        "occurrence": "shared.stuck:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “step” uses Shared statement stepping; the target shared.steps supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.stuck:2",
+        "role": "conceptual",
+        "rationale": "The formula \\mathsf{Finished}(K) uses Shared finished configurations; the destination shared.finished supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.stuck:3",
+        "role": "conceptual",
+        "rationale": "The formula \\Delta\\vdash K\\longrightarrow K' uses Shared statement stepping; the destination shared.steps supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.stuck:4",
+        "role": "conceptual",
+        "rationale": "The prose reference “giving” uses Shared giving, including move/copy/final-slot conversion; the target shared.give supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

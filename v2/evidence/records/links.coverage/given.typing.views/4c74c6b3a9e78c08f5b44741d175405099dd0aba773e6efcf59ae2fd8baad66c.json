@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "fed99f1214dad819a2c1b30dd90248a964f1481907fad5ec3e385b36a7332529",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.views",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Relative place links to its grammar. Positive and negative entries, unknown omissions, whole-class shorthand, and empty view are explained locally. The a/A/T productions define the grammar. The negative-epsilon exclusion is explicit, and bare C is defined as a view spelling rather than a second constructor.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Relative place links to its grammar. Positive and negative entries, unknown omissions, whole-class shorthand, and empty view are explained locally.",
+    "mathematics": "The a/A/T productions define the grammar. The negative-epsilon exclusion is explicit, and bare C is defined as a view spelling rather than a second constructor.",
+    "links": [
+      {
+        "occurrence": "given.typing.views:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'relative place' supplies finite relative field paths and their composition while explaining signed view entries and nominal view types. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

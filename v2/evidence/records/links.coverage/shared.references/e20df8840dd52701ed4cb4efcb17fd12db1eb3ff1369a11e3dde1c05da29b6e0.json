@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "fd4470c27468ecfd9f48e53735133f5ddfa604033884653902c7c0690865af33",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "audit:unit:given.identities",
+    "audit:unit:shared.references",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Introduces reference mode and pair representation before give uses them. Tagged object identities link back to their standalone Given definition; no object-level ownership flag is implied. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Introduces reference mode and pair representation before give uses them. Tagged object identities link back to their standalone Given definition; no object-level ownership flag is implied.",
+    "mathematics": "κ/r/s are defined by their local grammar. ObjectId and obj(n) use the tagged-number convention linked to Given, not a mode attached to the object record.",
+    "links": [
+      {
+        "occurrence": "shared.references:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “tagged natural numbers” uses tagged object identities and their numeric projection; the target given.identities supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "71bfd6382d377bb6d17a3cecc065b136b4eeef3f75e1d145741642e9a61414bb",
+  "reviewer": "Codex repo-contract reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:validate_mutual_groups",
+    "test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection",
+    "test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The scanner masks strings/comments while retaining original tokens for selection. extract_case chooses only a named constructor under its requested inductive and rejects unsupported sibling/nested command forms. validate_mutual_groups accepts only documented top-level inductive groups. The cited tests exercise neighboring cases, quoted/literal endings, supported mutual members, decoys and malformed groups, matching each claimed textual boundary without claiming elaboration.",
+  "limitations": [
+    "This is a source-level comparison of the retained authored unit, exact cited declarations/tests and policy. It is not proof of exhaustive implementation behavior, a browser rendering test or a claim that every conservative context file was read. The reviewer authored the new audit integration/tests, then performed this separate comparison pass; no independence from that implementation is claimed."
+  ],
+  "supersedes": [
+    "d4ac4e23edf525880b139a8d73eb8ff3bd1436886228275f25a20a5c09576e4b"
+  ]
+}

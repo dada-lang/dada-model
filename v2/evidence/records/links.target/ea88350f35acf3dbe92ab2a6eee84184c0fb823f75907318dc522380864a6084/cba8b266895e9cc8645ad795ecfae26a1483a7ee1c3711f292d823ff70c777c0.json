@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "f13fdf601842c775712c599773ec4447fcddc2c4f7b8156bd45a0c20750cad54",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ea88350f35acf3dbe92ab2a6eee84184c0fb823f75907318dc522380864a6084",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Introduces ownership transfer and class/field names locally. The declaration grammar binds C, f, n and d; no later judgment is needed for this intent-level introduction. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given class declarations and their ordered field names passage without searching a neighboring block for the actual definition or claim. The displayed d/C/f declaration grammar binds its class/field categories and arity locally; it is an introduction, not a use of a later judgment.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given class declarations and their ordered field names",
+    "definition": {
+      "path": "md/given.md",
+      "start": 138,
+      "end": 907
+    },
+    "clarity": "Introduces ownership transfer and class/field names locally. The declaration grammar binds C, f, n and d; no later judgment is needed for this intent-level introduction. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given class declarations and their ordered field names passage without searching a neighboring block for the actual definition or claim. The displayed d/C/f declaration grammar binds its class/field categories and arity locally; it is an introduction, not a use of a later judgment."
+  }
+}

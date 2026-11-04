@@ -18,11 +18,11 @@
   - [Writing style tenets](repo/writing-style.md)
   - [Authoring units](repo/authoring.md)
   - [Correspondence review](repo/correspondence-review.md)
+  - [Link and reading-order review](repo/link-audits.md)
   - [Extending the model in layers](repo/layer-extension.md)
   - [Specification system reference](repo/spec-system.md)
   - [Implementation contracts](repo/evidence-pilot.md)
   - [Renderer contracts](repo/renderer-contracts.md)
-  - [Future tooling work](repo/future-work.md)
 
 ---
 

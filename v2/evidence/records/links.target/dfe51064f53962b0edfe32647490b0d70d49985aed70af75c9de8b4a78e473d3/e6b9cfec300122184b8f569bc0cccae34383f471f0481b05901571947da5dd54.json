@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "57006084dddc6a0941b88347e9c109b732159d505c5e5b3fa93a8702d666f5a8",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Introduces reference mode and pair representation before give uses them. Tagged object identities link back to their standalone Given definition; no object-level ownership flag is implied. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared reference modes and reference/slot representation passage without searching a neighboring block for the actual definition or claim. κ/r/s are defined by their local grammar. ObjectId and obj(n) use the tagged-number convention linked to Given, not a mode attached to the object record.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared reference modes and reference/slot representation",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 240,
+      "end": 826
+    },
+    "clarity": "Introduces reference mode and pair representation before give uses them. Tagged object identities link back to their standalone Given definition; no object-level ownership flag is implied. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared reference modes and reference/slot representation passage without searching a neighboring block for the actual definition or claim. κ/r/s are defined by their local grammar. ObjectId and obj(n) use the tagged-number convention linked to Given, not a mode attached to the object record."
+  }
+}

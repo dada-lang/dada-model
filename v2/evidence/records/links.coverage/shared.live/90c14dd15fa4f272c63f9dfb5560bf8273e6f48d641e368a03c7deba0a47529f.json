@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "c160d857324599fd036d4d8e9fa4e0f27db69176c5b1fc800ad1b6638ee8f962",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:target:fc2b9cd2551cefd6e370454f733eeb9560ca3149a815add8716a368b41fd25af",
+    "audit:unit:shared.live",
+    "audit:unit:shared.lookup",
+    "audit:unit:shared.references",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition.",
+    "mathematics": "Both occupied-slot premises link lookup and κ is grounded by the reference link. Recursive Live defines the relation independent of mode.",
+    "links": [
+      {
+        "occurrence": "shared.live:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “references” uses Shared reference modes and reference/slot representation; the target shared.references supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.live:2",
+        "role": "conceptual",
+        "rationale": "The formula S[x] uses Shared partial slot lookup; the destination shared.lookup supplies that operation or result."
+      },
+      {
+        "occurrence": "shared.live:3",
+        "role": "conceptual",
+        "rationale": "The formula S[\\beta.f] uses Shared partial slot lookup; the destination shared.lookup supplies that operation or result."
+      }
+    ]
+  }
+}

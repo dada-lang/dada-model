@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "8f835787dc0a8a979ea778c456fad1e567a368e7525b11a4354145e54c571a44",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given allocation as object-table membership passage without searching a neighboring block for the actual definition or claim. Allocated is the predicate being defined; O and dom are identified by the local S decomposition and the linked object table.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given allocation as object-table membership",
+    "definition": {
+      "path": "md/given.md",
+      "start": 17274,
+      "end": 17475
+    },
+    "clarity": "Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given allocation as object-table membership passage without searching a neighboring block for the actual definition or claim. Allocated is the predicate being defined; O and dom are identified by the local S decomposition and the linked object table."
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "bundle": "f400602854d55801cd3db13c7da0eac67306b2e2339b25a5b4077cb0e1c01651",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.full",
+    "audit:unit:given.typing.observations",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation. The equation directly links pos, neg, class-at, and base. Quantified paths and fields are locally bound; Full is its defining occurrence.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation.",
+    "mathematics": "The equation directly links pos, neg, class-at, and base. Quantified paths and fields are locally bound; Full is its defining occurrence.",
+    "links": [
+      {
+        "occurrence": "given.typing.full:1",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{pos}' supplies known-initialized and known-empty path observations while explaining the formal fullness predicate. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.full:2",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{class}' supplies valid relative paths and their final declared class while explaining the formal fullness predicate. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.full:3",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{base}' supplies the base-class projection from a nominal view while explaining the formal fullness predicate. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.full:4",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{pos}' supplies known-initialized and known-empty path observations while explaining the formal fullness predicate. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.full:5",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{neg}' supplies known-initialized and known-empty path observations while explaining the formal fullness predicate. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

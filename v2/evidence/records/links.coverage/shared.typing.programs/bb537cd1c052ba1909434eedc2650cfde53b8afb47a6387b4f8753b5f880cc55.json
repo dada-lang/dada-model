@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "427793851b3d095089961759fb072da1e718f41b393d78810cf76fbeb7a641dc",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:79283484adee6a2142c00e38e1f1accde4d861bb79aa4ecbf735a13e187ee7c9",
+    "audit:target:985201bc93a5266f348c3a476dcf079ac55befb8aeed7289dd70aee7694c722c",
+    "audit:unit:shared.typing.programs",
+    "audit:unit:shared.typing.sequences",
+    "audit:unit:shared.typing.well_formed_classes",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links table WF and sequence typing from empty Γ; final Γ is existential and completion need not destroy its objects.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links table WF and sequence typing from empty Γ; final Γ is existential and completion need not destroy its objects.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ProgramTyped requires classes.WellFormed and some final environment for a sequence starting in the empty environment. The text allows a nonempty final environment because this fragment has no scope exit or destruction.",
+    "links": [
+      {
+        "occurrence": "shared.typing.programs:1",
+        "role": "conceptual",
+        "rationale": "The use 'well-formed typed class table' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.well_formed_classes is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.programs:2",
+        "role": "conceptual",
+        "rationale": "The use 'typechecks' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.sequences is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.programs:3",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma;\\\\varnothing\\\\vdash P\\\\Rightarrow\\\\Gamma_f' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.sequences is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "b57bae009b53f00017610575558818eccaaa09ae4012e3a30aa0f043890125bd",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:85bba34d7493853d754e20469c6b70e7fc1ff7e55767b2f552cf9f47ed2e9102",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unique/shared route exclusion theorem is the explicit subject of this theorem block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the unique/shared route exclusion theorem passage without searching a neighboring block for the actual definition or claim. WF and each unique/shared Resolve occurrence have definition links. The formula quantifies over both paths to the same α.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the unique/shared route exclusion theorem",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 19100,
+      "end": 19762
+    },
+    "clarity": "The unique/shared route exclusion theorem is the explicit subject of this theorem block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the unique/shared route exclusion theorem passage without searching a neighboring block for the actual definition or claim. WF and each unique/shared Resolve occurrence have definition links. The formula quantifies over both paths to the same α."
+  }
+}

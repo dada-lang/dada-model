@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "bundle": "873ea671feb55591ebbb6fa97f1fe92d2dfdb4ec14bfcfe2f134c0cdf1d598c6",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.forgetting",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.observations",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation. Both sides of the pos/neg inclusions link the observation definitions. The weakening relation is the subject defined by those inclusions.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation.",
+    "mathematics": "Both sides of the pos/neg inclusions link the observation definitions. The weakening relation is the subject defined by those inclusions.",
+    "links": [
+      {
+        "occurrence": "given.typing.forgetting:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'normalize' supplies normalization of finite signed views while explaining view weakening by inclusion of initialization observations. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:2",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'base class' supplies the base-class projection from a nominal view while explaining view weakening by inclusion of initialization observations. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:3",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{pos}' supplies known-initialized and known-empty path observations while explaining view weakening by inclusion of initialization observations. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:4",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{pos}' supplies known-initialized and known-empty path observations while explaining view weakening by inclusion of initialization observations. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:5",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{neg}' supplies known-initialized and known-empty path observations while explaining view weakening by inclusion of initialization observations. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:6",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{neg}' supplies known-initialized and known-empty path observations while explaining view weakening by inclusion of initialization observations. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:7",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'example declarations' supplies the Token/Pair/Box declarations and their view examples while explaining view weakening by inclusion of initialization observations. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

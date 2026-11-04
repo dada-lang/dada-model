@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "1b2e100140fcf7230d06bc0dc5dfcc5845e572f40aeb6062df55bf9fcdfcd92b",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ea88350f35acf3dbe92ab2a6eee84184c0fb823f75907318dc522380864a6084",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "audit:unit:given.classes",
+    "audit:unit:given.identities",
+    "audit:unit:given.slots",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together.",
+    "mathematics": "The s/o grammar defines empty/reference contents and object fields. α is connected to the identity definition and C to class names.",
+    "links": [
+      {
+        "occurrence": "given.slots:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “object identity” uses tagged object identities and their numeric projection; the target given.identities supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.slots:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “class name” uses Given class declarations and their ordered field names; the target given.classes supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

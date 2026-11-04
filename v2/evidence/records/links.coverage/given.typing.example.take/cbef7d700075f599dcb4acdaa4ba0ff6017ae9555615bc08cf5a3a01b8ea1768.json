@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "666ec90c34833cd9e9b926106a448ddba0aad2c1ec0c7b5801ecb92b326db6f1",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "audit:target:837551691616f7856e5628608f269668034d86818f25ff4e307500ffcff69cb3",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.example.take",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.take",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The starting Box declarations, static take, and relative-place notation each link directly. The two rows are expressly independent takes, avoiding an implied sequential dependency. The root/suffix metavariables are instantiated by the table; the only standalone formula Gamma(b)=Box states the initial environment rather than using a new operation.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The starting Box declarations, static take, and relative-place notation each link directly. The two rows are expressly independent takes, avoiding an implied sequential dependency.",
+    "mathematics": "The root/suffix metavariables are instantiated by the table; the only standalone formula Gamma(b)=Box states the initial environment rather than using a new operation.",
+    "links": [
+      {
+        "occurrence": "given.typing.example.take:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'declarations above' supplies the Token/Pair/Box declarations and their view examples while explaining the root and nested-field take examples. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.example.take:2",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'takes' supplies taking a source place and updating its root environment entry while explaining the root and nested-field take examples. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.example.take:3",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'relative place' supplies finite relative field paths and their composition while explaining the root and nested-field take examples. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

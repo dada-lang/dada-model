@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "f254428d3fe723790d4b631d462cfa2d8b874ae2c48ac3cd5fe0cf9fa1191b46",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d624ee0d5cd5657b31ab57c7b4683b005539b9d45e491bf03994c6837439d23e",
+    "audit:unit:meta.math.definition.selection",
+    "audit:unit:meta.sources.exact_selection",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Definition extraction and grammar citation kinds are defined here. The reused mutual-inductive source-selection rules link the exact earlier extraction contract. Local anchors separate body extraction, grammar selection and validation. Authored LaTeX is discussed as a representation; no equation or inference-rule symbol is relied upon here.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Definition extraction and grammar citation kinds are defined here. The reused mutual-inductive source-selection rules link the exact earlier extraction contract. Local anchors separate body extraction, grammar selection and validation.",
+    "mathematics": "Authored LaTeX is discussed as a representation; no equation or inference-rule symbol is relied upon here.",
+    "links": [
+      {
+        "occurrence": "meta.math.definition.selection:1",
+        "role": "conceptual",
+        "rationale": "Supported mutual-inductive selections use the exact extraction boundary defined earlier."
+      }
+    ]
+  }
+}

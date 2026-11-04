@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "d77c8a02a6dd11a97ceab5f50d3914cc74b03cc8685c044a3de1479614230593",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d624ee0d5cd5657b31ab57c7b4683b005539b9d45e491bf03994c6837439d23e",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The added opening directly identifies selection before its rule and mutual-group special cases. The sentence specifies what is selected and what is excluded; subsequent supported-form details elaborate that definition.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Exact source selection",
+    "definition": {
+      "path": "md/repo/evidence-pilot.md",
+      "start": 3080,
+      "end": 3213
+    },
+    "clarity": "The added opening directly identifies selection before its rule and mutual-group special cases.",
+    "independence": "The sentence specifies what is selected and what is excluded; subsequent supported-form details elaborate that definition."
+  }
+}

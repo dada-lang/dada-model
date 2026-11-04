@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "223bdd0ea841c5da855f371970e5c5d7af2a3f9513eb9d56a6a86aa8f568ae07",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d7278b2e66fc50a56ecd4f79fdc59efe6a01a529bf64229bd7c0141d1c6a7ebf",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The dedicated anchor directly precedes the restriction, separated from the proof-versus-review explanation. The full prohibited set and nesting relationship fit in one sentence with no hidden condition.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Semantic block nesting restriction",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 13973,
+      "end": 14062
+    },
+    "clarity": "The dedicated anchor directly precedes the restriction, separated from the proof-versus-review explanation.",
+    "independence": "The full prohibited set and nesting relationship fit in one sentence with no hidden condition."
+  }
+}

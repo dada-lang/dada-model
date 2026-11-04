@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "378dde5445fc4c30bd8fed7755c892f92fd6695790ecf75d5d894e3ef21bd13c",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:cb3e7f137fa264d756a4ce07ced53774f9fec6337e518a0dd5f5f0e263b368b4",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The opening directly states that stored references render as labeled SVG edges and explains their targets/junctions. The slot-definition link supplies input vocabulary; the paragraph itself supplies the rendered-edge behavior.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Diagram edges",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 21896,
+      "end": 22211
+    },
+    "clarity": "The opening directly states that stored references render as labeled SVG edges and explains their targets/junctions.",
+    "independence": "The slot-definition link supplies input vocabulary; the paragraph itself supplies the rendered-edge behavior."
+  }
+}

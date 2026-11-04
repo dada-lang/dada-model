@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "ee9d7e0065f79c26e83b192f4568e6107caf7c43867e6653373c26816ef32246",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links storage, statement sequence and empty state; configuration and its initial state are defined before Eval and Step. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared configurations and initialization passage without searching a neighboring block for the actual definition or claim. K=⟨S,P⟩ and the initial pairing are defined here; prose links identify the constituent storage, sequence and empty state.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared configurations and initialization",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 9995,
+      "end": 10366
+    },
+    "clarity": "Links storage, statement sequence and empty state; configuration and its initial state are defined before Eval and Step. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared configurations and initialization passage without searching a neighboring block for the actual definition or claim. K=⟨S,P⟩ and the initial pairing are defined here; prose links identify the constituent storage, sequence and empty state."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "744e0cb89ee688cf5c7de8a43c9cef978d343caeccb4864d87d4625becbcf3cd",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b50fba7e62f9aaf161a6e1aaec2b60ca9f8ca33678e15facd8c24af1d87648a9",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links place syntax, storage place, lookup and mode combination in prose/rules. Recursive resolution premises define this judgment; it does not mutate storage. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared place resolution with effective mode passage without searching a neighboring block for the actual definition or claim. Both lookup premises and the mode-join result carry direct links. The recursive resolution occurrence belongs to the judgment being defined.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared place resolution with effective mode",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 8762,
+      "end": 9808
+    },
+    "clarity": "Links place syntax, storage place, lookup and mode combination in prose/rules. Recursive resolution premises define this judgment; it does not mutate storage. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Shared place resolution with effective mode passage without searching a neighboring block for the actual definition or claim. Both lookup premises and the mode-join result carry direct links. The recursive resolution occurrence belongs to the judgment being defined."
+  }
+}

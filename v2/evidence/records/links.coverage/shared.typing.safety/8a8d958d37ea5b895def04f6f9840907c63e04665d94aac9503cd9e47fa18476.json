@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "753d391e9b3c7815d4918318e021fc62bc3fffcd41eeb8e3d9c913163acfa3a6",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4fbc8d894e68d4383b58ceae09ec533638f4d56e8e7e70e873de2949841887dd",
+    "audit:target:c8516104fc1674d15869cc1933d40e82e643211b67246f3c71d9b8fe0a5b28c3",
+    "audit:target:dbbdd07e0a2707183096cf819219485180c2fe4f0c682ce83ffe0a5ff7577a8f",
+    "audit:unit:shared.typing.execution",
+    "audit:unit:shared.typing.outcomes",
+    "audit:unit:shared.typing.preservation",
+    "audit:unit:shared.typing.programs",
+    "audit:unit:shared.typing.progress",
+    "audit:unit:shared.typing.safety",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links typed programs, Stuck and finite execution. Completion and its exact total count restate the earlier Finished/step model rather than adding a new semantic relation.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links typed programs, Stuck and finite execution. Completion and its exact total count restate the earlier Finished/step model rather than adding a new semantic relation.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. program_safety assumes a well-formed table, an initially typed sequence and an arbitrary finite execution. It rules out Stuck and provides an exact-count completion whose prefix plus remaining length equals original statement count. The prose makes the corresponding completion claim and retains objects at the end.",
+    "links": [
+      {
+        "occurrence": "shared.typing.safety:1",
+        "role": "conceptual",
+        "rationale": "The use 'well-typed program' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.programs is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.safety:2",
+        "role": "conceptual",
+        "rationale": "The use 'stuck configuration' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.outcomes is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.safety:3",
+        "role": "conceptual",
+        "rationale": "The use 'finite execution' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.execution is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

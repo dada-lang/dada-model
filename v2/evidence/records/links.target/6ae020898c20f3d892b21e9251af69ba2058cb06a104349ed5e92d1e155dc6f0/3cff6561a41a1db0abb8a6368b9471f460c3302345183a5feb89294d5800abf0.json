@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "d3ecbe34e023f955d09590da455544c2b9afecb36881b84b1f33af68d386666a",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6ae020898c20f3d892b21e9251af69ba2058cb06a104349ed5e92d1e155dc6f0",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inspected the exact target and surrounding chapter rather than inferring clarity from an anchor ID. Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.declared_permission",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 9796,
+      "end": 10492
+    },
+    "clarity": "Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar.",
+    "independence": "The selected passage is the destination's own subject, introduced at its start; supporting notation is linked to earlier definitions. Its landing does not require searching unrelated definitions."
+  }
+}

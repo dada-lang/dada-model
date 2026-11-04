@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "da576792fbb122a7a9c1dd2dce7ec8d035e9545f3bfa7548e29323982c24ce49",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:025eb69ae010e6afd03fc4dff2a24fcaaf19c82fd385e19f4166d9ebbe774429",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The given sole-owning-occurrence theorem is the explicit subject of this theorem block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the Given sole-owning-occurrence theorem passage without searching a neighboring block for the actual definition or claim. The prose count is of immediately occupied owner slots, with WF and allocated objects linked. No unnamed path-count equation is used.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the Given sole-owning-occurrence theorem",
+    "definition": {
+      "path": "md/given.md",
+      "start": 20406,
+      "end": 20734
+    },
+    "clarity": "The given sole-owning-occurrence theorem is the explicit subject of this theorem block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the Given sole-owning-occurrence theorem passage without searching a neighboring block for the actual definition or claim. The prose count is of immediately occupied owner slots, with WF and allocated objects linked. No unnamed path-count equation is used."
+  }
+}

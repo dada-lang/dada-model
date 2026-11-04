@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "21ce54a21079cb89384fdfc5ab4271bfc2749e8ba2b8376344e6adc61d017363",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines tagged object identities and index in the displayed representation. n is locally quantified over natural numbers; it is not an unlinked object identifier or future semantic concept. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete tagged object identities and their numeric projection passage without searching a neighboring block for the actual definition or claim. obj(n), index and the Nat domain are defined here; α and β are explicitly introduced as object identities.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "tagged object identities and their numeric projection",
+    "definition": {
+      "path": "md/given.md",
+      "start": 3585,
+      "end": 3931
+    },
+    "clarity": "Defines tagged object identities and index in the displayed representation. n is locally quantified over natural numbers; it is not an unlinked object identifier or future semantic concept. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete tagged object identities and their numeric projection passage without searching a neighboring block for the actual definition or claim. obj(n), index and the Nat domain are defined here; α and β are explicitly introduced as object identities."
+  }
+}

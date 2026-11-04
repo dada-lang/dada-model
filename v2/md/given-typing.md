@@ -1,15 +1,15 @@
 # Given: typing and soundness
 
 ```{definition} given.typing.declarations
-:lean: Unique/Views:TypedClass Unique/Views:ClassTable Unique/Views:ClassTable.erase Unique/Views:ClassTable.WellFormed
-:uses: given.classes given.programs given.patterns given.unpacking
+:lean: Unique/Views:TypedClass Unique/Views:ClassTable
+:uses: given.classes given.programs given.patterns given.unpacking given.evaluation
 
 The type system checks that each give finds a value and that each binding can
 receive its result. A move changes the source's type description as well as its
 contents.
 
 This chapter uses the unpacking extension {anchor-ref}`given.unpacking`;
-expression evaluation is unchanged.
+[expression evaluation](given.md#claim-given.evaluation) is unchanged.
 
 A *typed class table* \\(\Sigma\\) gives each field a declared class:
 
@@ -21,38 +21,64 @@ d &::= \mathsf{class}\ C\ \{f_1:C_1,\ldots,f_n:C_n\},\\
 \end{aligned}
 \\]
 
-Each class name has one declaration, field names are distinct within each
-declaration, and every field's declared class occurs in \\(\Sigma\\). Fields retain their
-constructor-argument order. Erasing field types yields the operational class
-table: if \\(\Sigma(C)=[f_1:C_1,\ldots,f_n:C_n]\\), then
-\\(\lfloor\Sigma\rfloor(C)=[f_1,\ldots,f_n]\\).
+Fields retain their constructor-argument order.
 
 Field declarations constrain the class of an object stored there. They do not
 require its slot to remain initialized after a move. All value types in this
 chapter are nominal types; ownership is unique.
 ```
 
+```{definition} given.typing.well_formed_classes
+:lean: Unique/Views:ClassTable.WellFormed
+:uses: given.typing.declarations
+
+A [typed class table](#claim-given.typing.declarations) is *well formed* when
+each class name has one declaration, field names within each declaration are
+distinct, and every field's declared class occurs in \\(\Sigma\\).
+```
+
+```{definition} given.typing.erasure
+:lean: Unique/Views:ClassTable.erase
+:uses: given.typing.declarations given.programs
+
+*Class-table erasure* removes field types to recover the
+[operational class table](given.md#claim-given.programs): if \\(\href{#claim-given.typing.declarations}{\Sigma(C)}=[f_1:C_1,\ldots,f_n:C_n]\\), then
+\\(\lfloor\Sigma\rfloor(C)=[f_1,\ldots,f_n]\\).
+```
+
 ## Types describe accessible places
 
-```{definition} given.typing.views
-:lean: Unique/Views:Path Unique/Views:classAt Unique/Views:Entry Unique/Views:ViewType Unique/Views:ViewType.whole Unique/Views:Entry.valid Unique/Views:entriesDisjoint Unique/Views:ViewType.WellFormed
+```{definition} given.typing.paths
+:lean: Unique/Views:Path
 :uses: given.typing.declarations
 
 A *relative place* \\(\rho\\) is a finite sequence of field names.
 The empty sequence \\(\epsilon\\) denotes the value itself; concatenation is
 written \\(\rho\cdot\sigma\\); \\(\rho f\\) appends the single field \\(f\\).
-A path is *valid from* \\(C\\) when its fields
-can be followed through the declarations in \\(\Sigma\\).
+
+\\[\rho ::= \epsilon \mid f\cdot\rho.\\]
+```
+
+```{definition} given.typing.class_at
+:lean: Unique/Views:classAt
+:uses: given.typing.paths given.typing.declarations
+
+A [relative path](#claim-given.typing.paths) is *valid from* \\(C\\) when its fields
+can be followed through the [declarations](#claim-given.typing.declarations) in \\(\Sigma\\).
 Write \\(\operatorname{class}_{\Sigma}(C,\rho)\\) for its final declared class;
 in particular, \\(\operatorname{class}_{\Sigma}(C,\epsilon)=C\\).
+```
+
+```{definition} given.typing.views
+:lean: Unique/Views:Entry Unique/Views:ViewType Unique/Views:ViewType.whole
+:uses: given.typing.paths given.typing.class_at
 
 A *view entry* \\(a\\), in the category \\(\mathsf{ViewEntry}\\), is a positive
-relative place or a negative nonempty relative place. A *view* \\(A\\) is a
+[relative place](#claim-given.typing.paths) or a negative nonempty relative place. A *view* \\(A\\) is a
 finite set of entries. A *type* \\(T\\) always pairs a nominal class with a view:
 
 \\[
 \begin{aligned}
-\rho &::= \epsilon \mid f\cdot\rho,\\
 a &::= \rho \mid -\rho \qquad(\text{negative entries require }\rho\ne\epsilon),\\
 A &\subseteq_{\mathrm{fin}}\mathsf{ViewEntry},\\
 T &::= C.A.
@@ -70,25 +96,36 @@ including all fields reachable from it, is initialized. It is not a separate
 form of type. By contrast, \\(C.\{\}\\) exposes the object itself but none of
 its fields. The empty path \\(\epsilon\\) and the empty set \\(\{\}\\) have
 different meanings.
+```
+
+```{definition} given.typing.base
+:lean: Unique/Views:ViewType
+:uses: given.typing.views
 
 The *base class* is \\(\operatorname{base}(C.A)=C\\).
-A type is *well formed* when its base class is declared and its view satisfies
+```
+
+```{definition} given.typing.well_formed_types
+:lean: Unique/Views:Entry.valid Unique/Views:entriesDisjoint Unique/Views:ViewType.WellFormed
+:uses: given.typing.views given.typing.base given.typing.class_at
+
+A type is *well formed* when its [base class](#claim-given.typing.base) is declared and its view satisfies
 the following condition.
 
-**Entries do not overlap.** Their paths must be valid from
+**Entries do not overlap.** Their paths must be [valid from](#claim-given.typing.class_at)
 \\(C\\), distinct, and pairwise prefix-incomparable: no entry's path is a prefix
 of another's. Thus `C.{f, -f.g}` is not a valid view. Exposing all of `f` would
 claim initialization that `-f.g` denies. To describe such a hole, first expand
 `f` into its fields.
-
-A *full view* accounts for every field recursively, including fields known to
-be empty. A *partial view* leaves some statuses unknown. The following examples
-illustrate this distinction before its formal definition.
 ```
 
 ````{example} given.typing.example.views
 :lean: Unique/ViewChecks:view_information
-:uses: given.typing.views
+:uses: given.typing.views given.typing.full
+
+A *full view* accounts for every field recursively, including fields known to
+be empty. A *partial view* leaves some statuses unknown. The [formal fullness predicate](#claim-given.typing.full) comes after this example;
+only this distinction is needed to read the table.
 
 Consider these declarations:
 
@@ -111,10 +148,10 @@ does not make the containing field empty.
 ````
 
 ```{definition} given.typing.observations
-:lean: Unique/Views:positive Unique/Views:negative Unique/Views:Pos Unique/Views:Neg Unique/Views:Full
-:uses: given.typing.views
+:lean: Unique/Views:positive Unique/Views:negative Unique/Views:Pos Unique/Views:Neg
+:uses: given.typing.views given.typing.class_at
 
-Each type determines a set of *known-initialized paths*
+Each [type](#claim-given.typing.views) determines a set of *known-initialized paths*
 \\(\operatorname{pos}_{\Sigma}(T)\\) and *known-empty paths*
 \\(\operatorname{neg}_{\Sigma}(T)\\). These sets give precise meanings to
 the view notation.
@@ -123,13 +160,18 @@ For \\(T=C.A\\):
 
 - \\(\epsilon\\) is positive: the described value is an object.
 - Every proper prefix of an entry's path is positive.
-- A positive entry's path and all its valid descendants are positive.
+- A positive entry's path and all its [valid descendants](#claim-given.typing.class_at) are positive.
 - Exactly the paths of negative entries are negative.
 
 No other path is known. In particular, a negative path does not say that its
 descendants are empty: there is no object in that slot whose fields could be
 examined.
 The shorthand \\(C=C.\{\epsilon\}\\) makes every valid path positive.
+```
+
+```{definition} given.typing.full
+:lean: Unique/Views:Full
+:uses: given.typing.observations given.typing.class_at given.typing.base
 
 A view is *full* when every direct field of every known-initialized object has
 a known status:
@@ -137,22 +179,21 @@ a known status:
 \\[
 \mathsf{Full}_{\Sigma}(T)\iff
 \begin{gathered}
-  \forall\rho\in\operatorname{pos}_{\Sigma}(T).\\
-  \forall(f:D)\in\Sigma(\operatorname{class}_{\Sigma}(\operatorname{base}(T),\rho)).\\
-  \rho f\in\operatorname{pos}_{\Sigma}(T)\cup\operatorname{neg}_{\Sigma}(T).
+  \forall\rho\in\href{#claim-given.typing.observations}{\operatorname{pos}}_{\Sigma}(T).\\
+  \forall(f:D)\in\Sigma(\href{#claim-given.typing.class_at}{\operatorname{class}}_{\Sigma}(\href{#claim-given.typing.base}{\operatorname{base}}(T),\rho)).\\
+  \rho f\in\href{#claim-given.typing.observations}{\operatorname{pos}}_{\Sigma}(T)\cup\href{#claim-given.typing.observations}{\operatorname{neg}}_{\Sigma}(T).
 \end{gathered}
 \\]
 
 A full view may contain empty slots; being full does not mean being fully
 initialized.
-
 ```
 
 ## Normalizing a view
 
 ````{example} given.typing.example.normalization
 :lean: Unique/ViewChecks:normalize_nested_whole
-:uses: given.typing.observations
+:uses: given.typing.observations given.typing.normalization given.typing.well_formed_types
 
 Several spellings can describe the same accessible fields:
 
@@ -173,7 +214,9 @@ then applies to the whole `Foo`:
 \;=\;\mathsf{Foo}.
 \\]
 
-All these spellings are well formed. Normalization chooses the last one.
+All these spellings are [well formed](#claim-given.typing.well_formed_types).
+The [normalization procedure defined next](#claim-given.typing.normalization)
+chooses the last one; this example illustrates only the collapses it performs.
 If `Bar` also declared another field, an unknown or empty sibling would prevent
 the first collapse. A deeper path remains when it describes only part of an
 intermediate object.
@@ -181,11 +224,11 @@ intermediate object.
 
 ```{definition} given.typing.normalization
 :lean: Unique/Views:Entry.dropPrefix Unique/Views:Entry.prepend Unique/Views:normalizeEntries Unique/Views:normalize Unique/Views:Normalized
-:uses: given.typing.observations given.typing.example.normalization
+:uses: given.typing.observations given.typing.example.normalization given.typing.class_at
 
 *Normalization* \\(\mathsf{N}_{\Sigma}(T)\\) replaces a completely exposed
 subtree with its shortest positive entry. Work from the deepest entries
-toward the root. If the class at \\(\rho\\) declares exactly the nonempty list
+toward the root. If the [class at](#claim-given.typing.class_at) \\(\rho\\) declares exactly the nonempty list
 of fields \\(f_1,\ldots,f_n\\), replace all their positive entries together:
 
 \\[
@@ -212,18 +255,19 @@ constructor arguments with their declared types.
 
 ```{theorem} given.typing.normalization_correct
 :lean: Unique/Normalization:normalization_correct
-:uses: given.typing.normalization given.typing.observations
+:uses: given.typing.normalization given.typing.observations given.typing.base given.typing.well_formed_classes given.typing.well_formed_types
 
-For a well-formed class table \\(\Sigma\\) and type \\(T\\), normalization preserves
-the base class, well-formedness, and every initialization fact:
+For a [well-formed class table](#claim-given.typing.well_formed_classes) \\(\Sigma\\) and
+[well-formed type](#claim-given.typing.well_formed_types) \\(T\\), [normalization](#claim-given.typing.normalization) preserves
+the [base class](#claim-given.typing.base), well-formedness, and every initialization fact:
 
 \\[
 \begin{aligned}
-\operatorname{pos}_{\Sigma}(\mathsf N_{\Sigma}(T))
-  &= \operatorname{pos}_{\Sigma}(T),\\
-\operatorname{neg}_{\Sigma}(\mathsf N_{\Sigma}(T))
-  &= \operatorname{neg}_{\Sigma}(T),\\
-\mathsf N_{\Sigma}(\mathsf N_{\Sigma}(T)) &= \mathsf N_{\Sigma}(T).
+\href{#claim-given.typing.observations}{\operatorname{pos}}_{\Sigma}(\href{#claim-given.typing.normalization}{\mathsf N}_{\Sigma}(T))
+  &= \href{#claim-given.typing.observations}{\operatorname{pos}}_{\Sigma}(T),\\
+\href{#claim-given.typing.observations}{\operatorname{neg}}_{\Sigma}(\href{#claim-given.typing.normalization}{\mathsf N}_{\Sigma}(T))
+  &= \href{#claim-given.typing.observations}{\operatorname{neg}}_{\Sigma}(T),\\
+\href{#claim-given.typing.normalization}{\mathsf N}_{\Sigma}(\href{#claim-given.typing.normalization}{\mathsf N}_{\Sigma}(T)) &= \href{#claim-given.typing.normalization}{\mathsf N}_{\Sigma}(T).
 \end{aligned}
 \\]
 
@@ -235,22 +279,22 @@ a second pass makes no further change.
 
 ```{definition} given.typing.focus
 :lean: Unique/Views:focus
-:uses: given.typing.normalization given.typing.example.views
+:uses: given.typing.normalization given.typing.example.views given.typing.base given.typing.class_at given.typing.observations given.typing.paths
 
-*Focusing* a type at an initialized relative place returns the current type of
+*Focusing* a type at an initialized [relative place](#claim-given.typing.paths) returns the current type of
 the value stored there, including any holes. Write \\(T\downarrow\rho\\);
-it is defined only when \\(\rho\in\operatorname{pos}_{\Sigma}(T)\\).
+it is defined only when \\(\rho\in\href{#claim-given.typing.observations}{\operatorname{pos}}_{\Sigma}(T)\\).
 
-Start from \\(\mathsf{N}_{\Sigma}(T)\\).
+Start from \\(\href{#claim-given.typing.normalization}{\mathsf{N}}_{\Sigma}(T)\\).
 Focusing at \\(\epsilon\\) returns that type. For a nonempty path, let
-\\(D=\operatorname{class}_{\Sigma}(\operatorname{base}(T),\rho)\\).
+\\(D=\href{#claim-given.typing.class_at}{\operatorname{class}}_{\Sigma}(\href{#claim-given.typing.base}{\operatorname{base}}(T),\rho)\\).
 
 - If a positive entry's path is a prefix of \\(\rho\\), including an entry
   at \\(\epsilon\\), the result is \\(D\\), the whole-type shorthand.
 - Otherwise, retain the entries below \\(\rho\\), remove their common prefix
   \\(\rho\\), and attach the resulting view to \\(D\\). Normalize the result.
 
-For example, under the preceding declarations:
+For example, under the [example declarations](#claim-given.typing.example.views):
 
 \\[
 \mathsf{Box}.\{-\mathsf{item.left},\mathsf{item.right}\}
@@ -264,16 +308,16 @@ This operation does not restore fields that have been moved or hidden.
 
 ```{definition} given.typing.emptying
 :lean: Unique/Views:remainingAfterMove Unique/Views:emptyPath
-:uses: given.typing.focus
+:uses: given.typing.focus given.typing.observations given.typing.normalization given.typing.example.views
 
 *Emptying* an initialized nonempty path updates its enclosing type. Write
-\\(T[-\rho]\\), where \\(\rho\in\operatorname{pos}_{\Sigma}(T)\\).
+\\(T[-\rho]\\), where \\(\rho\in\href{#claim-given.typing.observations}{\operatorname{pos}}_{\Sigma}(T)\\).
 The result records that this slot is now empty and preserves the information
 about every other branch.
 
 Compute the update as follows:
 
-1. Normalize the input type.
+1. [Normalize](#claim-given.typing.normalization) the input type.
 2. Expand any positive entry that is a strict prefix of \\(\rho\\) into its
    declared fields, including an entry at \\(\epsilon\\). Continue only along
    the finite path to \\(\rho\\).
@@ -284,7 +328,7 @@ An expansion cannot pass through an empty class, because no longer valid path
 exists there. This procedure also handles a target that is already the common
 prefix of several view entries.
 
-For the example's `Box`, moving `item.left` yields:
+For the [example's `Box`](#claim-given.typing.example.views), moving `item.left` yields:
 
 \\[
 \mathsf{Box}[-\mathsf{item.left}]
@@ -299,20 +343,21 @@ An empty or unknown target has no emptying operation.
 
 ```{definition} given.typing.forgetting
 :lean: Unique/Views:Subtype
-:uses: given.typing.normalization given.typing.example.views
+:uses: given.typing.normalization given.typing.example.views given.typing.observations given.typing.base
 
 A value can be used through a view that provides less information.
-To compare types, first normalize them. For the normalized types \\(T\\) and
-\\(U\\), write \\(T\preceq_{\Sigma}U\\) when they have the same nominal class and:
+To compare types, first [normalize](#claim-given.typing.normalization) them. For the normalized types \\(T\\) and
+\\(U\\), write \\(T\preceq_{\Sigma}U\\) when they have the same [base class](#claim-given.typing.base) and:
 
 \\[
-\operatorname{pos}_{\Sigma}(U)\subseteq\operatorname{pos}_{\Sigma}(T),
+\href{#claim-given.typing.observations}{\operatorname{pos}}_{\Sigma}(U)\subseteq\href{#claim-given.typing.observations}{\operatorname{pos}}_{\Sigma}(T),
 \qquad
-\operatorname{neg}_{\Sigma}(U)\subseteq\operatorname{neg}_{\Sigma}(T).
+\href{#claim-given.typing.observations}{\operatorname{neg}}_{\Sigma}(U)\subseteq\href{#claim-given.typing.observations}{\operatorname{neg}}_{\Sigma}(T).
 \\]
 
 This *view weakening* can forget initialization facts and access. It cannot
-invent them. For example, `Pair` can be weakened to `Pair.{left}`, but neither
+invent them. For the [example declarations](#claim-given.typing.example.views),
+`Pair` can be weakened to `Pair.{left}`, but neither
 `Pair.{left}` nor `Pair.{}` can be strengthened to `Pair`.
 Unknown does not imply empty. Compare the known paths, not just the written
 entries: the single root entry in `Pair` includes both of its fields.
@@ -324,8 +369,8 @@ ownership. Hidden fields remain part of the owned object graph.
 ## Typing expressions
 
 ```{definition} given.typing.environments
-:lean: Unique/Typing:SlotDescription Unique/Typing:Environment Unique/Typing:Admissible Unique/Typing:Environment.WellFormed Unique/Typing:Environment.lookup Unique/Typing:Environment.replace Unique/Typing:splitPlace Unique/Typing:take
-:uses: given.typing.views given.typing.emptying given.syntax
+:lean: Unique/Typing:SlotDescription Unique/Typing:Environment Unique/Typing:Admissible Unique/Typing:Environment.WellFormed Unique/Typing:Environment.lookup Unique/Typing:Environment.replace
+:uses: given.typing.views given.typing.well_formed_types given.typing.normalization given.syntax
 
 A *slot description* \\(B\\) says that a slot is empty or contains a value of
 a particular type. A *typing environment* \\(\Gamma\\) describes every allocated
@@ -339,26 +384,31 @@ B ::= 0 \mid T,
 
 Here \\(B\\) also denotes the set of slot descriptions generated by its grammar.
 The marker \\(0\\) describes an empty slot; it is not a value type.
-All types in an environment must be well formed and normalized under \\(\Sigma\\).
+All types in an environment must be [well formed](#claim-given.typing.well_formed_types) and [normalized](#claim-given.typing.normalization) under \\(\Sigma\\).
 An empty variable remains in \\(\operatorname{dom}(\Gamma)\\); its name cannot
 be reused by a fresh binding. An absent variable has no description.
+```
+
+```{definition} given.typing.take
+:lean: Unique/Typing:splitPlace Unique/Typing:take
+:uses: given.typing.environments given.typing.paths given.typing.focus given.typing.observations given.typing.emptying given.syntax
 
 To check a give, find the variable where the path starts, then follow its
 fields inside that variable's type. For `b.item.left`, the variable is `b`
-and the relative place is `item.left`. Giving `b` itself has no field suffix.
+and the [relative place](#claim-given.typing.paths) is `item.left`. Giving `b` itself has no field suffix.
 
-Thus every place expression has a unique decomposition \\(p=x.\rho\\), with
+Thus every [place expression](given.md#claim-given.syntax) has a unique decomposition \\(p=x.\rho\\), with
 \\(x.\epsilon=x\\). *Taking* a place returns its current type and updates that
-variable's description. Define \\(\mathsf{take}_{\Sigma}(\Gamma,p)=(T,\Gamma')\\)
-when \\(\Gamma(x)=U\\), \\(\rho\in\operatorname{pos}_{\Sigma}(U)\\), and:
+variable's [environment description](#claim-given.typing.environments). Define \\(\mathsf{take}_{\Sigma}(\Gamma,p)=(T,\Gamma')\\)
+when \\(\Gamma(x)=U\\), \\(\rho\in\href{#claim-given.typing.observations}{\operatorname{pos}}_{\Sigma}(U)\\), and:
 
 \\[
-T=U\downarrow\rho,
+T=U\href{#claim-given.typing.focus}{\downarrow}\rho,
 \qquad
 \Gamma'=
 \begin{cases}
 \Gamma[x\mapsto 0] & \rho=\epsilon,\\
-\Gamma[x\mapsto U[-\rho]] & \rho\ne\epsilon.
+\Gamma[x\mapsto \href{#claim-given.typing.emptying}{U[-\rho]}] & \rho\ne\epsilon.
 \end{cases}
 \\]
 
@@ -368,13 +418,13 @@ Taking an absent variable, an empty slot, or an unknown field is undefined.
 
 ```{example} given.typing.example.take
 :lean: Unique/TypingChecks:take_root_and_field
-:uses: given.typing.environments given.typing.example.views
+:uses: given.typing.environments given.typing.example.views given.typing.paths given.typing.take
 
 Suppose \\(\Gamma(b)=\mathsf{Box}\\), using the `Box`, `Pair`, and `Token`
-declarations above. The following are two separate gives from that starting
+[declarations above](#claim-given.typing.example.views). The following are two separate [takes](#claim-given.typing.take) from that starting
 environment:
 
-| Give | Root and relative place | Result type | Updated description of `b` |
+| Give | Root and [relative place](#claim-given.typing.paths) | Result type | Updated description of `b` |
 | --- | --- | --- | --- |
 | `b→` | \\(b,\epsilon\\) | `Box` | `0` |
 | `b.item.left→` | \\(b,\mathsf{item.left}\\) | `Token` | `Box.{-item.left, item.right}` |
@@ -386,9 +436,9 @@ variable's description unchanged.
 
 ```{definition} given.typing.expressions
 :lean: Unique/Typing:ExprTyped Unique/Typing:ArgsTyped
-:uses: given.typing.declarations given.typing.environments given.typing.forgetting given.evaluation
+:uses: given.typing.declarations given.typing.environments given.typing.forgetting given.evaluation given.typing.take
 
-*Expression typing* records both the value produced and the environment after
+*Expression typing* records both the value produced and the [environment](#claim-given.typing.environments) after
 its moves:
 
 \\[
@@ -398,7 +448,7 @@ its moves:
 The **Give** rule uses the current view of the source:
 
 \\[
-\frac{\mathsf{take}_{\Sigma}(\Gamma,p)=(T,\Gamma')}
+\frac{\href{#claim-given.typing.take}{\mathsf{take}}_{\Sigma}(\Gamma,p)=(T,\Gamma')}
 {\Sigma;\Gamma\vdash p\mathord{\to}:T\;\triangleright\;\Gamma'}
 \quad\text{Give}
 \\]
@@ -409,7 +459,7 @@ environment to the next argument:
 \\[
 \frac{
   \begin{gathered}
-    \Sigma(C)=[f_1:C_1,\ldots,f_n:C_n]\\
+    \href{#claim-given.typing.declarations}{\Sigma(C)}=[f_1:C_1,\ldots,f_n:C_n]\\
     \Sigma;\Gamma_{i-1}\vdash e_i:C_i\;\triangleright\;\Gamma_i
       \quad(1\leq i\leq n)
   \end{gathered}
@@ -424,12 +474,12 @@ For no arguments, the environment is unchanged. The argument count must match
 the declaration. Each argument supplies an owning value, so the new object has
 fully initialized fields.
 
-A result may expose less information:
+A result may expose [less information](#claim-given.typing.forgetting):
 
 \\[
 \frac{
   \Sigma;\Gamma\vdash e:T\;\triangleright\;\Gamma'
-  \qquad T\preceq_{\Sigma}U
+  \qquad T\href{#claim-given.typing.forgetting}{\preceq}_{\Sigma}U
 }{
   \Sigma;\Gamma\vdash e:U\;\triangleright\;\Gamma'
 }
@@ -445,12 +495,29 @@ chapter records the proposed generic-view constructor signatures.
 
 ## Typing bindings and statements
 
+```{definition} given.typing.field
+:lean: Unique/Typing:fieldDescription
+:uses: given.typing.environments given.typing.focus given.typing.observations
+
+The *direct-field description* records whether a field has the [empty-slot description](#claim-given.typing.environments) or gives its current type:
+
+\\[
+\mathsf{field}_{\Sigma}(T,f)=
+\begin{cases}
+0 & f\in\href{#claim-given.typing.observations}{\operatorname{neg}}_{\Sigma}(T),\\
+T\href{#claim-given.typing.focus}{\downarrow} f & f\in\href{#claim-given.typing.observations}{\operatorname{pos}}_{\Sigma}(T).
+\end{cases}
+\\]
+
+It is undefined if that field is unknown.
+```
+
 ```{definition} given.typing.bindings
-:lean: Unique/Typing:fieldDescription Unique/Typing:FieldBindings Unique/Typing:BindingTyped
-:uses: given.patterns given.typing.environments given.typing.focus
+:lean: Unique/Typing:FieldBindings Unique/Typing:BindingTyped
+:uses: given.patterns given.typing.environments given.typing.field given.typing.base given.typing.declarations
 
 *Binding typing*, written \\(\Sigma;\Gamma\vdash b:T\Rightarrow\Gamma'\\),
-describes where an expression's result goes. A variable pattern transfers its
+describes where an expression's result goes. A [variable pattern](given.md#claim-given.patterns) transfers its
 current type unchanged:
 
 \\[
@@ -459,25 +526,15 @@ current type unchanged:
 \quad\text{Bind}
 \\]
 
-For an unpacking pattern, define the direct-field description:
-
-\\[
-\mathsf{field}_{\Sigma}(T,f)=
-\begin{cases}
-0 & f\in\operatorname{neg}_{\Sigma}(T),\\
-T\downarrow f & f\in\operatorname{pos}_{\Sigma}(T).
-\end{cases}
-\\]
-
-It is undefined if that field is unknown. An unpacking pattern must name every
-declared field, and each field's description must be defined:
+An [unpacking pattern](given.md#claim-given.patterns) must name every
+declared field, and each [field's description](#claim-given.typing.field) must be defined:
 
 \\[
 \frac{
   \begin{gathered}
-    \operatorname{base}(T)=C
-    \qquad\Sigma(C)=[f_1:C_1,\ldots,f_n:C_n]\\
-    \mathsf{field}_{\Sigma}(T,f_i)=B_i\quad(1\leq i\leq n)\\
+    \href{#claim-given.typing.base}{\operatorname{base}}(T)=C
+    \qquad\href{#claim-given.typing.declarations}{\Sigma(C)}=[f_1:C_1,\ldots,f_n:C_n]\\
+    \href{#claim-given.typing.field}{\mathsf{field}}_{\Sigma}(T,f_i)=B_i\quad(1\leq i\leq n)\\
     x_1,\ldots,x_n\text{ are distinct}
     \qquad x_i\notin\operatorname{dom}(\Gamma)\quad(1\leq i\leq n)
   \end{gathered}
@@ -499,41 +556,52 @@ initialization status.
 ```
 
 ```{definition} given.typing.statements
-:lean: Unique/Typing:StatementTyped Unique/Typing:SequenceTyped Unique/Typing:ProgramTyped
+:lean: Unique/Typing:StatementTyped
 :uses: given.typing.expressions given.typing.bindings given.patterns
 
 *Statement typing*, written \\(\Sigma;\Gamma\vdash t\Rightarrow\Gamma'\\),
-first types the expression and then its binding pattern:
+first [types the expression](#claim-given.typing.expressions) and then
+[its binding pattern](#claim-given.typing.bindings):
 
 \\[
 \frac{
-  \Sigma;\Gamma\vdash e:T\;\triangleright\;\Gamma_1
-  \qquad \Sigma;\Gamma_1\vdash b:T\Rightarrow\Gamma_2
+  \Sigma;\Gamma\vdash e:T\;\href{#claim-given.typing.expressions}{\triangleright}\;\Gamma_1
+  \qquad \href{#claim-given.typing.bindings}{\Sigma;\Gamma_1\vdash b:T\Rightarrow\Gamma_2}
 }{
   \Sigma;\Gamma\vdash\mathsf{let}\ b=e\Rightarrow\Gamma_2
 }
 \quad\text{Let}
 \\]
+```
+
+```{definition} given.typing.sequences
+:lean: Unique/Typing:SequenceTyped
+:uses: given.typing.statements given.programs
 
 A *statement-sequence typing* \\(\Sigma;\Gamma\vdash P\Rightarrow\Gamma_f\\)
-threads these changes through the remaining code:
+threads [statement typings](#claim-given.typing.statements) through the remaining code:
 
 \\[
 \frac{}{\Sigma;\Gamma\vdash []\Rightarrow\Gamma}
 \qquad
 \frac{
-  \Sigma;\Gamma\vdash t\Rightarrow\Gamma_1
+  \href{#claim-given.typing.statements}{\Sigma;\Gamma\vdash t\Rightarrow\Gamma_1}
   \qquad\Sigma;\Gamma_1\vdash P\Rightarrow\Gamma_f
 }{
   \Sigma;\Gamma\vdash t::P\Rightarrow\Gamma_f
 }.
 \\]
+```
 
-A program is well typed when \\(\Sigma\\) is well formed and
-\\(\Sigma;\varnothing\vdash P\Rightarrow\Gamma_f\\) for some final environment
-\\(\Gamma_f\\). The final environment describes locals before the initial frame exits, so it
-need not be empty. Frame exit discards those locals and collects the heap;
-user-defined destruction is not part of this language.
+```{definition} given.typing.programs
+:lean: Unique/Typing:ProgramTyped
+:uses: given.typing.sequences given.typing.well_formed_classes
+
+A program is well typed when \\(\Sigma\\) is [well formed](#claim-given.typing.well_formed_classes) and
+\\(\href{#claim-given.typing.sequences}{\Sigma;\varnothing\vdash P\Rightarrow\Gamma_f}\\) for some final environment
+\\(\Gamma_f\\). The final environment describes locals before initial-frame exit and need not
+be empty. [Frame exit](given.md#claim-given.steps) discards those locals and collects
+the heap; user-defined destruction is not part of this language.
 ```
 
 ## A nested move followed by unpacking
@@ -542,7 +610,7 @@ user-defined destruction is not part of this language.
 :lean: Unique/TypingExecutionChecks:moves_and_unpacking
 :uses: given.typing.example.views given.typing.statements given.unpacking
 
-With the `Token`, `Pair`, and `Box` declarations above:
+With the `Token`, `Pair`, and `Box` [declarations above](#claim-given.typing.example.views):
 
 ```dada
 let b = new Box(new Pair(new Token(), new Token()));
@@ -551,7 +619,7 @@ let p = b.item→;
 let Pair → { left, right } = p→;
 ```
 
-Each statement changes the following entries; all others keep their descriptions.
+The [statement rules](#claim-given.typing.statements) change the following entries; all others keep their descriptions.
 The marker `0` means that a variable exists with an empty slot.
 
 | Statement | Updated binding | New bindings |
@@ -561,7 +629,7 @@ The marker `0` means that a variable exists with an empty slot.
 | Give `item` | `b: Box.{-item}` | `p: Pair.{-left, right}` |
 | Unpack | `p: 0` | `left: 0`, `right: Token` |
 
-The pair object is consumed; the box and both tokens remain.
+[Unpacking](given.md#claim-given.unpacking) consumes the pair object; the box and both tokens remain.
 A subsequent `left→` has no typing derivation, because `left` is empty.
 Nor can `p→` be repeated.
 ````
@@ -570,7 +638,7 @@ Nor can `p→` be repeated.
 :lean: Unique/TypingRejectionChecks:rejected_moves
 :uses: given.typing.example.views given.typing.expressions given.typing.bindings
 
-The rules distinguish failure from lack of knowledge:
+The [expression](#claim-given.typing.expressions) and [binding](#claim-given.typing.bindings) rules distinguish failure from lack of knowledge:
 
 - From `p: Pair.{-left, right}`, `p.left→` is rejected because the field is
   known empty.
@@ -583,7 +651,7 @@ The rules distinguish failure from lack of knowledge:
 - Unpacking `Pair.{right}` is rejected because it would need a description
   for the hidden `left` field.
 
-Argument order also matters:
+[Constructor argument order](#claim-given.typing.expressions) also matters:
 
 ```dada
 class Two { a: Token, b: Token }
@@ -597,30 +665,41 @@ derivation. Constructor arguments are checked in the same order as evaluation.
 
 ## Relating types to storage
 
-```{definition} given.typing.realization
-:lean: Unique/TypingRealization:readPath Unique/TypingRealization:Satisfies Unique/TypingRealization:FieldsMatchClasses Unique/TypingRealization:PendingValues Unique/TypingRealization:Realizes
-:uses: given.typing.observations given.typing.environments given.well_formed given.state given.storage_places
+```{definition} given.typing.read
+:lean: Unique/TypingRealization:readPath
+:uses: given.typing.paths given.state given.lookup
 
-A type must describe the actual slots, including holes. Define
-\\(\mathsf{read}_S(\alpha,\rho)\\) by starting at object \\(\alpha\\) and
-following the fields of \\(\rho\\). At \\(\epsilon\\), it returns \\(\alpha\\)
+*Reading a relative path*, written \\(\mathsf{read}_S(\alpha,\rho)\\), starts
+at object \\(\alpha\\) and follows the fields of the
+[relative path](#claim-given.typing.paths) \\(\rho\\). At \\(\epsilon\\), it returns \\(\alpha\\)
 if the object exists. At a nonempty path, every intermediate slot must contain
 an existing object; the final slot may contain an object identity or
-\\(\bot\\). Missing fields, missing objects, and empty intermediate slots make
-the read undefined.
+\\(\bot\\). A missing object or field encountered while following the path,
+or an empty intermediate slot, makes the read undefined. The final identity
+is not dereferenced.
+```
+
+```{definition} given.typing.satisfaction
+:lean: Unique/TypingRealization:Satisfies
+:uses: given.typing.read given.typing.base given.typing.class_at given.typing.observations given.allocated
 
 An object *satisfies* a type, written \\(\Sigma;S\models\alpha:T\\), when:
 
-- \\(O(\alpha)\\) exists and has class \\(\operatorname{base}(T)\\).
-- For every \\(\rho\in\operatorname{pos}_{\Sigma}(T)\\),
-  \\(\mathsf{read}_S(\alpha,\rho)=\beta\\) for an allocated object \\(\beta\\)
-  of class \\(\operatorname{class}_{\Sigma}(\operatorname{base}(T),\rho)\\).
-- For every \\(\rho\in\operatorname{neg}_{\Sigma}(T)\\),
-  \\(\mathsf{read}_S(\alpha,\rho)=\bot\\).
+- \\(O(\alpha)\\) exists and has class \\(\href{#claim-given.typing.base}{\operatorname{base}}(T)\\).
+- For every \\(\rho\in\href{#claim-given.typing.observations}{\operatorname{pos}}_{\Sigma}(T)\\),
+  \\(\href{#claim-given.typing.read}{\mathsf{read}}_S(\alpha,\rho)=\beta\\) for an [allocated object](given.md#claim-given.allocated) \\(\beta\\)
+  of class \\(\href{#claim-given.typing.class_at}{\operatorname{class}}_{\Sigma}(\href{#claim-given.typing.base}{\operatorname{base}}(T),\rho)\\).
+- For every \\(\rho\in\href{#claim-given.typing.observations}{\operatorname{neg}}_{\Sigma}(T)\\),
+  \\(\href{#claim-given.typing.read}{\mathsf{read}}_S(\alpha,\rho)=\bot\\).
 
 Omitted branches impose no local initialization requirement. The definition
 ranges over finite paths; recursive class declarations need no infinite
 syntactic unfolding.
+```
+
+```{definition} given.typing.realization
+:lean: Unique/TypingRealization:FieldsMatchClasses Unique/TypingRealization:PendingValues Unique/TypingRealization:Realizes
+:uses: given.typing.satisfaction given.typing.environments given.typing.erasure given.well_formed given.state given.typing.well_formed_types given.typing.well_formed_classes
 
 Expression results can temporarily own objects before binding or construction.
 Let \\(R\\) be a finite ordered list of pairs \\((\alpha:T)\\) for these
@@ -634,15 +713,36 @@ Let \\(R\\) be a finite ordered list of pairs \\((\alpha:T)\\) for these
    class in \\(\Sigma\\). This condition applies even to fields hidden by views.
 3. \\(\operatorname{dom}(\Gamma)=\operatorname{dom}(V)\\). If
    \\(\Gamma(x)=0\\), then \\(V(x)=\bot\\). If \\(\Gamma(x)=T\\), then
-   \\(V(x)=\alpha\\) and \\(\Sigma;S\models\alpha:T\\).
-4. Each \\((\alpha:T)\\) in \\(R\\) satisfies \\(\Sigma;S\models\alpha:T\\).
+   \\(V(x)=\alpha\\) and \\(\href{#claim-given.typing.satisfaction}{\Sigma;S\models\alpha:T}\\).
+4. Each \\((\alpha:T)\\) in \\(R\\) satisfies \\(\href{#claim-given.typing.satisfaction}{\Sigma;S\models\alpha:T}\\).
 
-Here \\(S=\langle O,V,\nu\rangle\\), and the operational class table is
-\\(\lfloor\Sigma\rfloor\\). Well-formed types are required throughout.
+Here \\(\Sigma\\) is a [well-formed typed class table](#claim-given.typing.well_formed_classes),
+\\(S=\langle O,V,\nu\rangle\\), and the operational class table is
+\\(\href{#claim-given.typing.erasure}{\lfloor\Sigma\rfloor}\\). Types must be [well formed](#claim-given.typing.well_formed_types) and
+[normalized](#claim-given.typing.normalization) throughout.
 Empty pending lists are written \\([]\\).
 
 This relation does not require every allocated object to satisfy its whole
 class type. That would rule out the very field moves the views describe.
+```
+
+```{definition} given.typing.execution
+:lean: Unique/Frames:Steps Unique/Frames:StepsExactly
+:uses: given.unpacking given.executions
+
+Write \\(\longrightarrow_u^{*}\\) for zero or more [extended steps](given.md#claim-given.unpacking), using the
+reflexive and transitive rules of {anchor-ref}`given.executions` with
+\\(\longrightarrow_u\\) in place of \\(\longrightarrow\\).
+Write \\(K\longrightarrow_u^k K'\\) for exactly \\(k\\) program steps, including collection and initial-frame exit.
+The local operation is the unpacking-capable relation.
+```
+
+```{definition} given.typing.stuck
+:lean: Unique/Frames:Stuck
+:uses: given.unpacking given.finished
+
+A configuration is *stuck in the extended language* when it is not [finished](given.md#claim-given.finished) and
+has no \\(\href{given.html#claim-given.unpacking}{\longrightarrow_u}\\) successor. Finishing means that the initial frame has been popped.
 ```
 
 ```{definition} given.typing.configurations
@@ -650,7 +750,7 @@ class type. That would rule out the very field moves the views describe.
 :uses: given.typing.realization given.typing.statements given.machine given.gc
 
 A live frame is *well typed with final environment* \\(\Gamma_f\\) when its
-storage realizes an environment under which its remaining statements typecheck:
+storage [realizes an environment](#claim-given.typing.realization) under which its remaining [statements typecheck](#claim-given.typing.sequences):
 
 \\[
 \Sigma\vdash\operatorname{run}(S,P):\Gamma_f
@@ -658,10 +758,10 @@ storage realizes an environment under which its remaining statements typecheck:
  \land \Sigma;\Gamma\vdash P\Rightarrow\Gamma_f.
 \\]
 
-A configuration with no frame is well typed when its heap is empty. Its counter
+A [configuration](given.md#claim-given.machine) with no frame is well typed when its heap is empty. Its counter
 may be nonzero. The final environment describes the locals **before exit**;
 it does not assert that terminal storage still contains those bindings.
-For a live frame, realization requires a well-formed class table.
+For a live frame, realization requires a [well-formed](#claim-given.typing.well_formed_classes) class table.
 
 Write \\(K\longrightarrow_u^k K'\\) for exactly \\(k\\) program steps using
 unpacking-capable local operations. Finite executions existentially quantify
@@ -673,30 +773,30 @@ The frame-pop step is included in this count.
 
 ```{lemma} given.typing.expression_soundness
 :lean: Unique/TypingSafety:expression_soundness
-:uses: given.typing.expressions given.typing.realization given.evaluation
+:uses: given.typing.expressions given.typing.realization given.evaluation given.typing.well_formed_classes given.typing.erasure
 
-Expression typing guarantees both successful evaluation and the
-description of its result. For every well-formed \\(\Sigma\\), environment
-\\(\Gamma\\), storage \\(S\\), and pending-value list \\(R\\), assume:
+[Expression typing](#claim-given.typing.expressions) guarantees both successful evaluation and the
+description of its result. For every [well-formed](#claim-given.typing.well_formed_classes) \\(\Sigma\\), environment
+\\(\Gamma\\), storage \\(S\\), and [pending-value list](#claim-given.typing.realization) \\(R\\), assume:
 
 \\[
-\Sigma;\Gamma\vdash e:T\;\triangleright\;\Gamma',
+\Sigma;\Gamma\vdash e:T\;\href{#claim-given.typing.expressions}{\triangleright}\;\Gamma',
 \qquad
-\Sigma;\Gamma\models(S;R).
+\href{#claim-given.typing.realization}{\Sigma;\Gamma\models(S;R)}.
 \\]
 
 Then an evaluation exists:
 
 \\[
 \exists S',\alpha.\;
-\lfloor\Sigma\rfloor\vdash\langle S,e\rangle
-  \Downarrow\langle S',\alpha\rangle.
+\href{#claim-given.typing.erasure}{\lfloor\Sigma\rfloor}\vdash\langle S,e\rangle
+  \href{given.html#claim-given.evaluation}{\Downarrow}\langle S',\alpha\rangle.
 \\]
 
 Moreover, **every** such evaluation satisfies:
 
 \\[
-\Sigma;\Gamma'\models(S';R\mathbin{+\!\!+}[(\alpha:T)]).
+\href{#claim-given.typing.realization}{\Sigma;\Gamma'\models(S';R\mathbin{+\!\!+}[(\alpha:T)])}.
 \\]
 
 Here \\(+\!\!+\\) appends lists. Earlier constructor arguments are included in
@@ -709,8 +809,8 @@ the typing rules' freshness checks also hold at the point of runtime binding.
 :lean: Unique/FrameSafety:ConfigurationTyped.progress
 :uses: given.typing.configurations given.typing.expression_soundness given.typing.bindings
 
-For every well-typed configuration, either execution has finished or a next
-step is possible:
+For every [well-typed configuration](#claim-given.typing.configurations), either execution has [finished](given.md#claim-given.finished) or a next
+[step](given.md#claim-given.unpacking) is possible:
 
 \\[
 \Sigma\vdash K:\Gamma_f
@@ -728,7 +828,7 @@ for an otherwise failing operation.
 :lean: Unique/FrameSafety:ConfigurationTyped.preservation
 :uses: given.typing.configurations given.typing.expression_soundness given.typing.bindings
 
-Every step from a well-typed configuration preserves its typing:
+Every [step](given.md#claim-given.unpacking) from a [well-typed configuration](#claim-given.typing.configurations) preserves its typing:
 
 \\[
 \frac{
@@ -748,25 +848,26 @@ every operational successor, including unpacking an object with empty fields.
 :lean: Unique/FrameSafety:program_safety
 :uses: given.typing.configurations given.typing.progress given.typing.preservation
 
-For a well-formed class table, a program whose statements check from the empty
-environment cannot reach a stuck configuration. Every execution prefix remains
+For a [well-formed](#claim-given.typing.well_formed_classes) class table, a program whose statements check from the empty
+environment cannot reach a [stuck configuration](#claim-given.typing.stuck). Every execution prefix remains
 well typed and can be completed.
 
 If the original program has \\(n\\) statements, every such prefix extends to
 completion after exactly \\(n+1\\) steps in total: one per statement, followed
 by one frame-pop step. A live frame's remaining work is its statement count plus
-one; a finished configuration has zero remaining work. Terminal storage has no
+one; a [finished](given.md#claim-given.finished) configuration has zero remaining work. Terminal storage has no
 locals and an empty heap; its allocation counter records the identifiers spent.
 ```
+
 
 
 ```{theorem} given.typing.observation
 :lean: Unique/FrameSafety:completion
 :uses: given.typing.configurations given.typing.realization given.typing.safety
 
-From a well-typed live frame with \\(n\\) statements, there is an observation
-state \\(S_f\\) after exactly \\(n\\) program steps. Its frame has no statements
-left, and its locals still realize the final environment. One further step pops
+From a [well-typed live frame](#claim-given.typing.configurations) with \\(n\\) statements, there is an observation
+state \\(S_f\\) after exactly \\(n\\) [program steps](#claim-given.typing.execution). Its frame has no statements
+left, and its locals still [realize the final environment](#claim-given.typing.realization). One further step pops
 that frame, leaving no roots and an empty heap with counter \\(S_f.\nu\\).
 This separates inspection of the computed bindings from program completion.
 ```

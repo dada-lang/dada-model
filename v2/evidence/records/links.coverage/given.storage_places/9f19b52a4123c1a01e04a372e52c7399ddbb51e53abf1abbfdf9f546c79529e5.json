@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "126df382b8170331b823d174f691835a77fff047090d09fc57b2322fa44df408",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:unit:given.identities",
+    "audit:unit:given.storage_places",
+    "audit:unit:given.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines q directly and links the distinction from a routed place expression. Object-number examples instantiate the preceding identity definition. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines q directly and links the distinction from a routed place expression. Object-number examples instantiate the preceding identity definition.",
+    "mathematics": "The q grammar has variable and object-field alternatives. Its x/α/f components are previously introduced name/identity categories.",
+    "links": [
+      {
+        "occurrence": "given.storage_places:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “place expression” uses Given place, value and statement syntax; the target given.syntax supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

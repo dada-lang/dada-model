@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "cade683b1b62eb10aff2953372d97ac80de9944c693cfce581785003be3baabb",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links class declarations and statements, then defines the program/class-table/statement-sequence grammar. Finite-map conventions and table well-formedness now have separate targets. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given programs, class tables and statement sequences passage without searching a neighboring block for the actual definition or claim. Δ, P and Π are introduced by the local grammar; C/f/t come from linked class and statement syntax. Brackets, [] and cons are explained with this grammar.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given programs, class tables and statement sequences",
+    "definition": {
+      "path": "md/given.md",
+      "start": 2514,
+      "end": 3224
+    },
+    "clarity": "Links class declarations and statements, then defines the program/class-table/statement-sequence grammar. Finite-map conventions and table well-formedness now have separate targets. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given programs, class tables and statement sequences passage without searching a neighboring block for the actual definition or claim. Δ, P and Π are introduced by the local grammar; C/f/t come from linked class and statement syntax. Brackets, [] and cons are explained with this grammar."
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "243e4d36872411fd442e2f640bb659556ddfa57277a40feb1b440dd94fca3d12",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:shared.evaluation",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.steps",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The sole subject is Let stepping. Links the machine and complete Eval premise; local V′ extension and freshness are explained beside the rule. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The sole subject is Let stepping. Links the machine and complete Eval premise; local V′ extension and freshness are explained beside the rule.",
+    "mathematics": "The Let premise links Eval directly. The resulting V′ extension and the absence check are local binding/freshness notation for this one transition.",
+    "links": [
+      {
+        "occurrence": "shared.steps:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “configuration” uses Shared configurations and initialization; the target shared.machine supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.steps:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “expression evaluation” uses Shared expression evaluation; the target shared.evaluation supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.steps:3",
+        "role": "conceptual",
+        "rationale": "The formula \\Delta\\vdash\\langle S,e\\rangle\\Downarrow\\langle S',r\\rangle uses Shared expression evaluation; the destination shared.evaluation supplies that operation or result."
+      }
+    ]
+  }
+}

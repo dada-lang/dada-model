@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "2dcd3320243f017f59fc0c77232a767516e93ce6a5b057ff8af49ac1299185cd",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.paths",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This unit introduces finite relative field paths, epsilon, concatenation, and append in place. It uses field names from the operational syntax without introducing another semantic predicate. The rho production is its defining grammar; every new symbol is assigned meaning in the preceding sentence.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This unit introduces finite relative field paths, epsilon, concatenation, and append in place. It uses field names from the operational syntax without introducing another semantic predicate.",
+    "mathematics": "The rho production is its defining grammar; every new symbol is assigned meaning in the preceding sentence.",
+    "links": []
+  }
+}

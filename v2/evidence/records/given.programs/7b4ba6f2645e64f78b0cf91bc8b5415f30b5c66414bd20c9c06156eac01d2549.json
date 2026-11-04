@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "e87038957e429625fefd47186b27490c355a669cdeea74247083347ada02b052",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.programs",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Classes is a list of class-name/declaration pairs; Program pairs that table with List Statement. The mathematical finite-map notation uses distinct-key class tables, and the separately defined ClassesWellFormed checks precisely that condition. Π and empty/cons P represent the same components and order. Notation and premises are supplied by the examined units given.classes, given.collections, given.syntax.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run."
+  ],
+  "supersedes": [
+    "0ab566407350928a965f245a0511e9146907eb2647569fe2eb4325e27f83b1d7"
+  ]
+}

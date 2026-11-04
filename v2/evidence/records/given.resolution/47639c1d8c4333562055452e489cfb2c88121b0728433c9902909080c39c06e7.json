@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "2971ddb0f3b052c21b88191c8db6dc97cdc7e63765b669cce6a2d5fc0eca4528",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.lookup",
+    "unit:given.programs",
+    "unit:given.resolution",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Resolve.variable requires the variable to contain some identity; Resolve.field recursively resolves its base then requires object and field membership with some identity. These match the linked lookup premises and yield the same direct storage place. No state result is carried. Notation and premises are supplied by the examined units given.classes, given.collections, given.identities, given.lookup, given.programs, given.slots, given.state, given.storage_places, given.syntax.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run."
+  ],
+  "supersedes": [
+    "ba01ea4183a40042023851f2f1a3bdc741d99e79b2a1ade5f901e3615afd7c84"
+  ]
+}

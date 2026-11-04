@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "045d4cb668ae87b57d43a85f6ea845b9b438f62a2ae7d42457b2511495667261",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e352bf1830e74f15198be0594d0061f7c9c957dfd9710c03023c40e4b5b65bf8",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The shared-box example state and transition is the explicit subject of this example block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the shared-box example state and transition passage without searching a neighboring block for the actual definition or claim. The obj0/obj1 state and slot modes are enumerated locally, using preceding identity/reference notation. The transition links give-share evaluation.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the shared-box example state and transition",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 14842,
+      "end": 15522
+    },
+    "clarity": "The shared-box example state and transition is the explicit subject of this example block. The selected passage includes its setup/premises and conclusion; incoming references cite that specific scenario or result, not a buried auxiliary definition.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete the shared-box example state and transition passage without searching a neighboring block for the actual definition or claim. The obj0/obj1 state and slot modes are enumerated locally, using preceding identity/reference notation. The transition links give-share evaluation."
+  }
+}

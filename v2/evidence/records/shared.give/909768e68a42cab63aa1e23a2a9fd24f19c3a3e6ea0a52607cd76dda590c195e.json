@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "def008befd001b182b701482d393c49f3bc61d91923219b72a7447ea33850918",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Reference.owned",
+    "lean:Shared/State:Reference.shared",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:ObjectId",
+    "lean:Shared/Syntax:Place",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.give",
+    "unit:shared.references",
+    "context:lean/Shared/State.lean"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Give.move requires unique Resolve and Take to clear the final owned reference. Give.copy requires shared Resolve and an already-shared Stored reference, with identical state. Give.promote requires shared Resolve and Promote changing the unique final reference to shared. Take/Promote preserve every other entry and object target; the three table rows and container-field explanation match these cases. Notation and premises are supplied by the examined units given.classes, given.collections, given.identities, given.programs, given.syntax, shared.references.",
+  "limitations": [
+    "This compares the authored statement/definition/example with the selected formalization. It does not independently recheck Lean proof tactics or attest to a compiler run.",
+    "Additional containing-module snapshots were consulted for referenced definitions and example setup; proof bodies beyond what establishes the statement context were not independently audited."
+  ],
+  "supersedes": [
+    "5b660b074aa785799b297f6c84e0f7ad3444c3b199231fe87075f5f2d739d1a7"
+  ]
+}

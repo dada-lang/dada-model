@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "0e6cffd5bb03c1bb94b9f193233e3227a45fe96d180fbd9ab8c123906815908f",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.types",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links permission/class grammar; defines F and typed Σ with ordered field types. Table WF and erasure are separate targets.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links permission/class grammar; defines F and typed Σ with ordered field types. Table WF and erasure are separate targets.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. FieldType pairs permission with className; toType supplies a whole nominal view. TypedClass.fields and ClassTable preserve field and class names and field order. The grammar F=pi C deliberately has no partial field-view declaration.",
+    "links": [
+      {
+        "occurrence": "shared.typing.declarations:1",
+        "role": "conceptual",
+        "rationale": "The use 'permission and a class' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.types is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

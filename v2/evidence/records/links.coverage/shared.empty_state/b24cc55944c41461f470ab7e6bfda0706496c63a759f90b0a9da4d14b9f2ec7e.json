@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "a8f2a01ac197482fce1018d2920a3cea7c820e69fbb29c1758d5e5a1c95a0643",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:shared.empty_state",
+    "audit:unit:shared.state",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Empty storage has its own formula, with no variables, no objects and zero counter. Initial-state and empty-storage links land directly here. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Empty storage has its own formula, with no variables, no objects and zero counter. Initial-state and empty-storage links land directly here.",
+    "mathematics": "The empty-state tuple and empty-map notation are explicitly defined here, independently of later machine initialization.",
+    "links": []
+  }
+}

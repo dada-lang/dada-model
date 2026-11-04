@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "7e1f645eebe708b681ec83e0806aaef69db65134e731427de3845c882a89eb4a",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8413a9827dd730e438bc0c027d5a8e0b0375cf3b64b8dc044fdc5fb8b250d751",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.focus unit has a visible identity and directly presents focusing a nominal view at an initialized relative place. Relative place and example declarations link directly; the complete case analysis defines focusing in this unit. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. Every reused mathematical operator has a direct href: pos, normalization, class-at, and base. The downarrow operation and concrete result equation are defining/example uses.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "focusing a nominal view at an initialized relative place",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 11763,
+      "end": 12946
+    },
+    "clarity": "The named given.typing.focus unit has a visible identity and directly presents focusing a nominal view at an initialized relative place. Relative place and example declarations link directly; the complete case analysis defines focusing in this unit.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. Every reused mathematical operator has a direct href: pos, normalization, class-at, and base. The downarrow operation and concrete result equation are defining/example uses."
+  }
+}

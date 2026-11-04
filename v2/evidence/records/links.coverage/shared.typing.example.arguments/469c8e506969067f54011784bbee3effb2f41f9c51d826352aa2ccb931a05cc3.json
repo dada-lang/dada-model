@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "fc8f34722bcbe3a62bb303baeb588ea9b469780ff50a7494c284f4b926c57754",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:30846f25dcc13bb8ac2e31bafade18aabeadf7be174a0cd94b2aa2882f083558",
+    "audit:unit:shared.typing.example.arguments",
+    "audit:unit:shared.typing.example.paths",
+    "audit:unit:shared.typing.expressions",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. constructor_permissions checks the entire argumentProgram execution, final t/h/a/b descriptions, and universally rejects both a given Token argument to Holder and a shared argument to Box. This supports the stated successful example and both rejection variants rather than only a helper operation.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.arguments:1",
+        "role": "conceptual",
+        "rationale": "The use 'declared above' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.example.paths is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.example.arguments:2",
+        "role": "conceptual",
+        "rationale": "The use 'constructor rule' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.expressions is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

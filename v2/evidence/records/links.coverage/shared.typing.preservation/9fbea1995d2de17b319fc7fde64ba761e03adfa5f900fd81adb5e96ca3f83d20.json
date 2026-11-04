@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "bundle": "6a14bac05d3c884ed22e88ee59d6030bc92d514341de1d11ea5e8f8bcecc9350",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e411ab3d3f4538324e304fd37a80dd02fef29ff116e7f948292a5133e615d1f",
+    "audit:target:2125be554c01949722a01b484938c16897339c8d6ac2c317a9fc821a16faeeaa",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.configurations",
+    "audit:unit:shared.typing.erasure",
+    "audit:unit:shared.typing.expression_soundness",
+    "audit:unit:shared.typing.preservation",
+    "audit:unit:shared.typing.steps",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links both configuration typings, erasure and Step. The prose distinguishes copy preserving Γ from binding extending it.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links both configuration typings, erasure and Step. The prose distinguishes copy preserving Γ from binding extending it.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ConfigurationTyped.preservation takes any typed source and any extended step and returns the same final-environment typing for the successor. This matches the quantified successor and the explanation that only the existential current environment changes.",
+    "links": [
+      {
+        "occurrence": "shared.typing.preservation:1",
+        "role": "conceptual",
+        "rationale": "The use 'step' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.steps is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.preservation:2",
+        "role": "conceptual",
+        "rationale": "The use 'well-typed configuration' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.configurations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.preservation:3",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma\\\\vdash K:\\\\Gamma_f' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.configurations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.preservation:4",
+        "role": "conceptual",
+        "rationale": "The use '\\\\lfloor\\\\Sigma\\\\rfloor' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.erasure is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.preservation:5",
+        "role": "conceptual",
+        "rationale": "The use '\\\\longrightarrow_u' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.steps is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.preservation:6",
+        "role": "conceptual",
+        "rationale": "The use \"\\\\Sigma\\\\vdash K':\\\\Gamma_f\" supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.configurations is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

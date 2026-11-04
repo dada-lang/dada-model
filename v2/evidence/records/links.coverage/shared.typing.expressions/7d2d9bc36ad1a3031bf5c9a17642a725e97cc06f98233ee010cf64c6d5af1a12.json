@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "bundle": "d563d3d1b6b57149611410d8a2e016c1fca099164da50fb0557d9bbeae396f91",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e0e30b85b0197fab44a8ae02cdee7f7f84182b2175ddfdff24c007254c4a47e",
+    "audit:target:11aed29a6b82dfc70e7df19c3fad999a9f8fa3cfb7d1b2ebf35e0b7a63f92a16",
+    "audit:target:828c2e9a592d1b90f2650b6136e24abe27a4c6886c1c3487d5a24c9e3f96fcf7",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:shared.syntax",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.giving",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.weakening",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Give/Give-share premises link give; Construct links Σ; Weaken links view weakening; type normalization is linked. Recursive expression premises are defining rules.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Give/Give-share premises link give; Construct links Σ; Weaken links view weakening; type normalization is linked. Recursive expression premises are defining rules.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ExprTyped has give, giveShare, new, and weaken constructors. The first two use the same static give update; giveShare changes only the result permission. ArgsTyped threads environments left to right and requires FieldType.toType whole arguments. The linked normalization and environment conventions account for the explicit Admissible/WellFormed premises in Lean.",
+    "links": [
+      {
+        "occurrence": "shared.typing.expressions:1",
+        "role": "conceptual",
+        "rationale": "The use 'type normalization' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.normalization is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expressions:2",
+        "role": "conceptual",
+        "rationale": "The use 'static give operation' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.giving is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expressions:3",
+        "role": "conceptual",
+        "rationale": "The use \"\\\\mathsf{give}_{\\\\Sigma}(\\\\Gamma,p)=(T,\\\\Gamma')\" supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.giving is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expressions:4",
+        "role": "conceptual",
+        "rationale": "The use \"\\\\mathsf{give}_{\\\\Sigma}(\\\\Gamma,p)=(T,\\\\Gamma')\" supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.giving is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expressions:5",
+        "role": "conceptual",
+        "rationale": "The use \"\\\\mathsf{give}_{\\\\Sigma}(\\\\Gamma,p)=(T,\\\\Gamma')\" supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.giving is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expressions:6",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma(C)' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.declarations is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expressions:7",
+        "role": "conceptual",
+        "rationale": "The use 'weaker view' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.weakening is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.expressions:8",
+        "role": "conceptual",
+        "rationale": "The use 'T\\\\preceq_{\\\\Sigma}U' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.weakening is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

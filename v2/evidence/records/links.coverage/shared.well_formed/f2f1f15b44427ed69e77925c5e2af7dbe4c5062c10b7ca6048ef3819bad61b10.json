@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "09f55dbf663a9660907eaa62f18240eb312f89617d405996a0bef229001e952a",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:01136db71db4cfa667c6e3740ce6232362099005c519039ee87981eda09ab977",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:f0800758e25ea7ee9fd903ee7d59491b9696d69585d50197192201ce0604d301",
+    "audit:unit:shared.allocated",
+    "audit:unit:shared.programs",
+    "audit:unit:shared.state",
+    "audit:unit:shared.well_formed",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness.",
+    "mathematics": "WF is the defined predicate. Its declaration and allocated-identity conditions link directly; pairwise owner-mode compatibility is written out rather than using an unexplained auxiliary relation.",
+    "links": [
+      {
+        "occurrence": "shared.well_formed:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “state” uses Shared storage and its component tables/counter; the target shared.state supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.well_formed:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “declared” uses Shared program, class-table and statement-sequence grammar; the target shared.programs supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.well_formed:3",
+        "role": "conceptual",
+        "rationale": "The prose reference “allocated identity” uses Shared allocation as object-table membership; the target shared.allocated supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

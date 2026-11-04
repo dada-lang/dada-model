@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "9a28c1fb7e3c857413a163ca9038d495963c66db590abcae758d65dc9ddbea06",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:034fca959e031c3624784f688113964c8c0e08ff896e1f66ce03e89144fbd75d",
+    "audit:unit:given.typing.expressions",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The link advertises future generic-view constructor signatures only after the current whole-class argument restriction has been completely stated. Understanding or applying the current Construct rule does not depend on that proposal. ",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "navigation",
+      "rationale": "The link advertises future generic-view constructor signatures only after the current whole-class argument restriction has been completely stated. Understanding or applying the current Construct rule does not depend on that proposal."
+    }
+  }
+}

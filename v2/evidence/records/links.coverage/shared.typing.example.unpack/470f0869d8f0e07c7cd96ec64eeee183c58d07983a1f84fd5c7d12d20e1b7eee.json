@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "305679840b06cc64e35d83c115ed300a5adbadcb1667ee1a1f06705639d7055c",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4164f3c6aaa84ad9f9044c5d5b66bde8cdcaca726535c1e894d4d1eb03e06df6",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.example.arguments",
+    "audit:unit:shared.typing.example.unpack",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. unpacking_shared_fields proves the continuation typing and six-step execution, the Holder object's removal, preserved shared item/a/b/c descriptions, and universal rejection of unpacking holder.shared. It supports consuming the unique shell while retaining shared field owners.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.unpack:1",
+        "role": "conceptual",
+        "rationale": "The use 'Holder example' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.example.arguments is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.example.unpack:2",
+        "role": "conceptual",
+        "rationale": "The use 'unpacking rule' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.bindings is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

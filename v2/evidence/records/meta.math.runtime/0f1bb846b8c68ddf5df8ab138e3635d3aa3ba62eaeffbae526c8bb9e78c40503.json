@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "d4eae29f4175d64dcfcb1f81ddeb662b3be203af53a23b252bca7a91f34de33f",
+  "reviewer": "Codex repo-contract reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:escape",
+    "rust:mdbook-dada/src/lib.rs:markdown_heading",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:protect_math",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "rust:mdbook-dada/src/lib.rs:selector_header",
+    "test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order",
+    "test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles",
+    "test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "test:mdbook-dada/tests/book.rs:unanchored_rendered_blocks_share_named_headers_and_grouped_choices",
+    "test:mdbook-dada/tests/renderer_contracts.rs:pinned_mathjax_configuration_uses_one_loader",
+    "test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent",
+    "test:mdbook-dada/tests/units.rs:meta_units_show_named_rust_implementation_and_test",
+    "test:mdbook-dada/tests/units.rs:structured_units_render_identified_headers_and_exact_lean_views",
+    "unit:meta.math.runtime",
+    "unit:meta.math.source_view",
+    "unit:meta.math.typesetting",
+    "unit:meta.syntax.anchors.identity"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The retained book.toml and theme/mathjax.js use one pinned 4.1.3 CommonHTML loader with mdBook mathjax disabled; CSS supplies pre-wrap and overflow behavior. The cited tests inspect those exact assets and emitted selectors. The prose expressly makes network/CDN and visual correctness limitations clear, so it does not overstate the asset checks.",
+  "limitations": [
+    "This is a source-level comparison of the retained authored unit, exact cited declarations/tests and policy. It is not proof of exhaustive implementation behavior, a browser rendering test or a claim that every conservative context file was read. The reviewer authored the new audit integration/tests, then performed this separate comparison pass; no independence from that implementation is claimed."
+  ],
+  "supersedes": [
+    "1026d2a64bc76180e09acde0d81dd76f466a8d3e5e26d46df06fc018c13e3261"
+  ]
+}

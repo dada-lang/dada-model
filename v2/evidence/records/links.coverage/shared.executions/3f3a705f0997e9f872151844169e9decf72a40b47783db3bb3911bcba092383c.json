@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "eb4f81891ae1ad61cf3091f9fcf3fcd8a52f867bfdab29c83f5c638f169b6703",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "audit:unit:shared.executions",
+    "audit:unit:shared.steps",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Step in prose and the transitive rule; defines finite traces with recursive occurrences kept local. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Step in prose and the transitive rule; defines finite traces with recursive occurrences kept local.",
+    "mathematics": "The Step premise links its definition; recursive starred arrows and reflexivity define the closure here.",
+    "links": [
+      {
+        "occurrence": "shared.executions:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “statement steps” uses Shared statement stepping; the target shared.steps supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.executions:2",
+        "role": "conceptual",
+        "rationale": "The formula \\Delta\\vdash K\\longrightarrow K' uses Shared statement stepping; the destination shared.steps supplies that operation or result."
+      }
+    ]
+  }
+}

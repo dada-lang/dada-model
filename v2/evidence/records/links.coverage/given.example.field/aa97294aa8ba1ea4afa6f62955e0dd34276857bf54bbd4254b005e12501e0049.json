@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "ba8bb4a0396f6c0d26a48b0acf471f09c84f2a127a655afcbee1ff6b6ecea246",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:target:88a0c68272e833cbda1fa2978a4dd8727681d82a2bef9b7df637febb6f999b8f",
+    "audit:unit:given.classes",
+    "audit:unit:given.empty_state",
+    "audit:unit:given.example.field",
+    "audit:unit:given.finished",
+    "audit:unit:given.machine",
+    "audit:unit:given.programs",
+    "audit:unit:given.state",
+    "audit:unit:given.steps",
+    "audit:unit:given.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations.",
+    "mathematics": "The Token/Box declarations bind example names; the source code uses known give syntax, and its execution/completion references link to the corresponding definitions.",
+    "links": [
+      {
+        "occurrence": "given.example.field:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “empty storage” uses empty Given storage; the target given.empty_state supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.example.field:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “steps” uses Given statement stepping; the target given.steps supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.example.field:3",
+        "role": "conceptual",
+        "rationale": "The prose reference “finished” uses Given finished configurations; the target given.finished supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

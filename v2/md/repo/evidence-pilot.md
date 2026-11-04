@@ -38,6 +38,9 @@ a new packet selects declarations and context from the newly configured root.
 :rust: mdbook-dada/src/lean.rs:select mdbook-dada/src/lean.rs:extract_declaration mdbook-dada/src/lean.rs:validate_mutual_groups mdbook-dada/src/lean.rs:extract_case mdbook-dada/src/lean.rs:scan
 :tests: mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection
 
+An *exact source selection* contains the complete declaration or constructor
+named by a citation, excluding neighboring declarations.
+
 A rule citation selects one constructor of its named inductive declaration.
 Unsupported indented sibling commands are rejected rather than treated as part
 of that declaration. A constructor from a sibling type cannot satisfy the citation.
@@ -61,7 +64,7 @@ Recording a review rechecks its inputs against current sources. A later decision
 may explicitly supersede an earlier decision for the same unit; the earlier
 record remains available. Every active decision must concern current inputs and
 conclude correspondence for that specification unit's check to pass.
-Future notes assert no correspondence and cannot be prepared or recorded for review.
+[Future notes](authoring.md#future-notes) assert no correspondence and cannot be prepared or recorded for correspondence review.
 
 An independent positive decision cannot conceal an active mismatch, inconclusive
 review, or stale decision. If a replacement becomes stale, checking fails rather
@@ -78,7 +81,7 @@ cannot receive affirmative correspondence decisions.
 
 For a review bundle, validation derives its required inputs from the current
 specification inventory. The bundle must contain the complete authored unit and
-every exact cited Lean declaration, together with required context, policy,
+every [exact cited Lean declaration](#claim-meta.sources.exact_selection), together with required context, policy,
 and tooling snapshots. Tooling snapshots include the renderer's Lean test
 fixtures and the theme’s JavaScript and CSS, so edits to those files invalidate existing reviews. A complete Lean source file does not substitute for a
 missing exact declaration selection.
@@ -101,6 +104,7 @@ in \\(T\\). Its finite list of entries contains pairs \\((k,v)\\), and no key
 occurs twice. The list records an order; the unique-key condition does not impose
 an order on the keys themselves.
 
+{anchor}`evidence.map.empty_definition`
 The empty map \\(\varnothing\\) has no entries.
 ```
 
@@ -118,8 +122,8 @@ decidable equality on keys is assumed.
 :lean: Common/FiniteMapExamples:empty_map
 :uses: evidence.map
 
-Choose natural numbers as both keys and values. The empty
-{anchor-ref}`evidence.map` has the empty entry list \\([]\\).
+Choose natural numbers as both keys and values. The
+[empty map](#claim-evidence.map.empty_definition) has the empty entry list \\([]\\).
 There is no key-value pair stored in this example.
 ```
 

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "0d7d460afbb7b75aa02a6e95626a5361dbc03c924e00a17aac01c58d7afb36c2",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f0800758e25ea7ee9fd903ee7d59491b9696d69585d50197192201ce0604d301",
+    "audit:unit:shared.programs",
+    "audit:unit:shared.well_formed_classes",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Direct target for distinct class keys and distinct fields; links the operational table instead of hiding validity in storage or syntax. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Direct target for distinct class keys and distinct fields; links the operational table instead of hiding validity in storage or syntax.",
+    "mathematics": "No separate formula is used: distinct class keys and distinct listed fields are the complete local definition.",
+    "links": [
+      {
+        "occurrence": "shared.well_formed_classes:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “class table” uses Shared program, class-table and statement-sequence grammar; the target shared.programs supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

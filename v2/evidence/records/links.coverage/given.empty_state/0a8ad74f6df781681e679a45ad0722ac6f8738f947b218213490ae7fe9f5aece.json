@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "b8e9bc6bef6b5ff138aac447823953ccff088632338d4741fa7be6ce87993cbe",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.empty_state",
+    "audit:unit:given.state",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Empty storage has its own formula and zero allocation counter. The empty-map symbol is explained beside the equation, so machine initialization no longer lands inside general storage. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Empty storage has its own formula and zero allocation counter. The empty-map symbol is explained beside the equation, so machine initialization no longer lands inside general storage.",
+    "mathematics": "S_empty is defined by its tuple equation and the empty-map symbol is explained locally. It is not a reference to a later initial-machine rule.",
+    "links": []
+  }
+}

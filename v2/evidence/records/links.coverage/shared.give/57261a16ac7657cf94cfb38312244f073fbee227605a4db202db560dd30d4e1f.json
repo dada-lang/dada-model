@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "008b7f7466bd8c36bacbf4ba159aa192027125d77db82fc0183084c8e87b9b18",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:given.syntax",
+    "audit:unit:shared.give",
+    "audit:unit:shared.references",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the unchanged place concept and the preceding reference definition. Its table itself defines move/copy/final-slot conversion; it is not an implicit forward invocation of Resolve. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the unchanged place concept and the preceding reference definition. Its table itself defines move/copy/final-slot conversion; it is not an implicit forward invocation of Resolve.",
+    "mathematics": "The table is the definition of giving behavior at this level. It uses the preceding reference modes and linked place concept; it does not invoke the later Resolve judgment.",
+    "links": [
+      {
+        "occurrence": "shared.give:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “place expression” uses Given place, value and statement syntax; the target given.syntax supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "shared.give:2",
+        "role": "conceptual",
+        "rationale": "The prose reference “reference” uses Shared reference modes and reference/slot representation; the target shared.references supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

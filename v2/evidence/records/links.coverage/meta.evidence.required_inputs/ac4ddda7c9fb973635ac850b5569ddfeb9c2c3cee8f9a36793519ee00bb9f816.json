@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "e327b1b92b08e03329bf8ee36992f5320e0022c6a67f12c8c105a56ab027b1c1",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d624ee0d5cd5657b31ab57c7b4683b005539b9d45e491bf03994c6837439d23e",
+    "audit:unit:meta.evidence.required_inputs",
+    "audit:unit:meta.sources.configuration",
+    "audit:unit:meta.sources.exact_selection",
+    "audit:unit:meta.units.closed_body",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The exact cited declaration requirement now links the opening definition of source selection. Other required input categories are listed directly, including fixture and theme snapshots and the non-oracle limitation. No mathematical rules are reused; hashes, source paths and bundle inputs are concrete tooling data described by this unit.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The exact cited declaration requirement now links the opening definition of source selection. Other required input categories are listed directly, including fixture and theme snapshots and the non-oracle limitation.",
+    "mathematics": "No mathematical rules are reused; hashes, source paths and bundle inputs are concrete tooling data described by this unit.",
+    "links": [
+      {
+        "occurrence": "meta.evidence.required_inputs:1",
+        "role": "conceptual",
+        "rationale": "Exact selection determines what source text must occur in the review bundle."
+      }
+    ]
+  }
+}

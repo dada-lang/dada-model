@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "6d25afa20789eedf00cb069df6a6c58f4e3342fcbf1494e06ae4566e64a8406e",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.emptying",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.focus",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.observations",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper. The initialized-path premise links pos. T[-rho] is the operation being defined, and the displayed Box equality uses the linked example declarations.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper.",
+    "mathematics": "The initialized-path premise links pos. T[-rho] is the operation being defined, and the displayed Box equality uses the linked example declarations.",
+    "links": [
+      {
+        "occurrence": "given.typing.emptying:1",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\operatorname{pos}' supplies known-initialized and known-empty path observations while explaining emptying a known-initialized nonempty path in a view. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.emptying:2",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'Normalize' supplies normalization of finite signed views while explaining emptying a known-initialized nonempty path in a view. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.emptying:3",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence \"example's Box\" supplies the Token/Pair/Box declarations and their view examples while explaining emptying a known-initialized nonempty path in a view. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

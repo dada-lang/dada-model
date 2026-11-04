@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "bbc090a2969c0dd8f3333b19c109efc0f571cc8b29499837ed2c48f87e0dc1aa",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c606944c55fcc1af8071d20ef9cfffd91dabf71226ad1a2eab085091751daee3",
+    "audit:unit:shared.typing.finished",
+    "audit:unit:shared.typing.machine",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Direct Finished equation and machine link; no stuck predicate shares the target.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Direct Finished equation and machine link; no stuck predicate shares the target.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Configuration.finished is code=[]; the focused equation and no-statements explanation state that definition without claiming that storage must be empty.",
+    "links": [
+      {
+        "occurrence": "shared.typing.finished:1",
+        "role": "conceptual",
+        "rationale": "The use 'configuration' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.machine is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

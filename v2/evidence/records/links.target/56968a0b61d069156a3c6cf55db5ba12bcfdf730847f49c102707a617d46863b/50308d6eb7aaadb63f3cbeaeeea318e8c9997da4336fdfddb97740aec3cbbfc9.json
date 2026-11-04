@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "bb9450e0895e1c35c03c97f08ec1b98a4a64596d2577380cd82bb2969ae54244",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:56968a0b61d069156a3c6cf55db5ba12bcfdf730847f49c102707a617d46863b",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation. The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given class-table well-formedness passage without searching a neighboring block for the actual definition or claim. There is no separate formula: the two distinctness conditions directly define the named property.",
+  "limitations": [
+    "This judges source landing clarity and semantic scope, not browser layout or theorem proof validity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Given class-table well-formedness",
+    "definition": {
+      "path": "md/given.md",
+      "start": 3337,
+      "end": 3471
+    },
+    "clarity": "The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly. The selected passage contains the named subject, its notation, and the defining alternatives/conditions together; it does not rely on a more general block heading to locate a different operation.",
+    "independence": "The surrounding chapter supplies earlier vocabulary through the visible links. This block can be read as the complete Given class-table well-formedness passage without searching a neighboring block for the actual definition or claim. There is no separate formula: the two distinctness conditions directly define the named property."
+  }
+}

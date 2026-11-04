@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "a325c9b43bcaeb2bcfd20690d9a867e9f12549a355d345a4da807fffd523490c",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.units.closed_body",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This unit defines the closed-body/preprocessing contract itself and spells out all three prohibited expansion forms. Its original-source comparison and scope limitation are explained locally; it does not depend on another undisclosed predicate. There is no mathematical equation or inference rule. Directive names and raw unit IDs are authoring syntax, described here rather than reused model notation.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This unit defines the closed-body/preprocessing contract itself and spells out all three prohibited expansion forms. Its original-source comparison and scope limitation are explained locally; it does not depend on another undisclosed predicate.",
+    "mathematics": "There is no mathematical equation or inference rule. Directive names and raw unit IDs are authoring syntax, described here rather than reused model notation.",
+    "links": []
+  }
+}

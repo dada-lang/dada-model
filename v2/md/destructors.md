@@ -8,10 +8,10 @@ This chapter records a proposed extension, not part of the formalized language.
 All examples, rules, and safety statements below are nonnormative design notes
 for review before implementation.
 
-Before a body finishes, it must account for every class value it owns. Unpacking
+Before a body finishes, it must account for every class value it owns. [Unpacking](shared-typing.md#claim-shared.typing.bindings)
 consumes a container and transfers responsibility for its fields to local
-bindings. Dropping delegates that work to the class's destructor. Moving a
-value to another local merely transfers the responsibility.
+bindings. Dropping delegates that work to the class's destructor. [Moving a
+value](shared.md#claim-shared.give) to another local merely transfers the responsibility.
 
 Start with classes that have no destructors:
 
@@ -33,7 +33,7 @@ destructors, replacing an unpack with `drop` is not permitted.
 
 Likewise, ending the body with `let other = right→;` instead of unpacking
 `right` would leave `other` responsible for that token. The obligation follows
-the value. Struct values are exempt from this requirement; their storage is
+the value. [Struct values](shared.md#claim-shared.declarations) are exempt from this requirement; their storage is
 treated as garbage collected.
 ````
 
@@ -64,14 +64,13 @@ drop w;
 ```
 
 The proposed execution moves `w` into the wrapper destructor's `self` binding.
-Unpacking consumes the wrapper container and transfers its field to `resource`.
+[Unpacking](shared-typing.md#claim-shared.typing.bindings) consumes the wrapper container and transfers its field to `resource`.
 Dropping that field invokes the resource destructor, whose unpack consumes the
-resource container. Both destructor calls then finish, and the program finishes
-with `w` empty. Nothing implicitly destroys the receiver or its fields.
+resource container. Both destructor calls then finish, and `w` has been emptied by the drop before the initial program frame exits. Nothing implicitly destroys the receiver or its fields.
 
 This chapter is a rule sketch; its definitions and examples await Lean
 formalization. It introduces the new behavior first. The explicit forward
-references to the [inherited machinery in the appendix](#appendix-inherited-shared-machinery)
+references to the [inherited machinery in the appendix](#claim-destructors.inherited)
 keep Shared's unchanged rules from obscuring that behavior. The appendix states
 which rules carry over and supplies their definitions in Shared.
 ````
@@ -82,8 +81,8 @@ which rules carry over and supplies their definitions in Shared.
 :uses: destructors.example.wrapper destructors.example.consume functions.typing
 
 Using the preceding [Functions chapter](functions.md), these examples add the
-consumption requirement to ordinary function bodies. They use the `Wrapper`
-and `Resource` declarations above. Both an
+[consumption requirement](#claim-destructors.example.consume) to ordinary function bodies. They use the `Wrapper`
+and `Resource` [declarations above](#claim-destructors.example.wrapper). Both an
 owned parameter and a locally created class value must be accounted for before
 the function returns.
 
@@ -114,7 +113,7 @@ would not make that omission legal in this explicit core. Likewise, unpacking
 `w` and leaving `resource` unconsumed would fail to account for its contents.
 
 The requirement applies to program, function, method, and destructor bodies.
-A function can also transfer ownership to its caller by returning a value;
+A function can also transfer ownership to its caller by [returning a value](functions.md#claim-functions.return);
 check its remaining locals after evaluating that return expression.
 ````
 
@@ -123,16 +122,16 @@ check its remaining locals after evaluating that return expression.
 ```{future-note} destructors.declarations
 :uses: shared.declarations shared.struct
 
-A declaration retains Shared's name, kind, and ordered fields. A `class`
+A declaration retains [Shared's name, kind, and ordered fields](shared.md#claim-shared.declarations). A `class`
 declaration may additionally contain one destructor, written `drop { body }`,
 where `body` is a sequence of statements. The destructor has no parameters or
-result; its initial local binding is `self`, a uniquely owned whole instance
+result; its initial local binding is `self`, a [uniquely owned whole instance](shared-typing.md#claim-shared.typing.types)
 of the declaring class. A `struct` or `shared struct` has no destructor body
 in this layer.
 
 Classes without destructors remain legal. Their instances must be consumed
-through explicit unpacking, possibly after being moved to another owner.
-Struct fields still have only struct types, and classes still cannot be shared.
+through [explicit unpacking](shared-typing.md#claim-shared.typing.bindings), possibly after being moved to another owner.
+[Struct fields still have only struct types](shared.md#claim-shared.struct), and classes still cannot be shared.
 The inherited declaration restrictions are collected in the
 [appendix](#claim-destructors.inherited).
 ```
@@ -141,31 +140,31 @@ The inherited declaration restrictions are collected in the
 :uses: destructors.declarations shared.typing.types shared.struct
 
 The judgment `Droppable(T)` says that an explicit drop can consume a value of
-type `T`. Types retain Shared's permissions and signed views, summarized in the
+type `T`. Types retain [Shared's permissions and signed views](shared-typing.md#claim-shared.typing.types), summarized in the
 [appendix](#claim-destructors.inherited).
 
 | Type of value | Condition for `Droppable(T)` |
 | --- | --- |
 | Struct, including shared struct | Any well-formed permission and view allowed for that nominal type. |
-| Class | Given permission, a whole declared view, and a declared destructor. |
+| Class | Given permission, a whole declared view, and a [declared destructor](#claim-destructors.declarations). |
 
-“Whole” means that view normalization exposes the entire declared value, not
+“Whole” means that [view normalization](shared-typing.md#claim-shared.typing.normalization) exposes the entire declared value, not
 merely every currently visible field. A partially moved class cannot invoke its
-destructor. An omitted field is unknown, not evidence that the field is empty.
+destructor. An omitted field is [unknown](given-typing.md#claim-given.typing.views), not evidence that the field is empty.
 ```
 
 ```{future-note} destructors.drop_typing
 :uses: destructors.droppable shared.typing.giving
 
-The new statement is `drop p`, where `p` is a place (a local followed by zero or
-more field names). An environment `Γ` maps local names to types or empty slots.
-Write `Give(Γ, p) = (T, Γ′)` for Shared's static ordinary-give operation,
+The new statement is `drop p`, where `p` is a [place](shared.md#claim-shared.syntax) (a local followed by zero or
+more field names). An [environment](shared-typing.md#claim-shared.typing.environments) `Γ` maps local names to types or empty slots.
+Write `Give(Γ, p) = (T, Γ′)` for [Shared's static ordinary-give operation](shared-typing.md#claim-shared.typing.giving),
 recalled in the [appendix](#claim-destructors.inherited).
 
 The proposed rule is:
 
 - Compute `Give(Γ, p) = (T, Γ′)`.
-- Require `Droppable(T)`.
+- [Require `Droppable(T)`](#claim-destructors.droppable).
 - Check the following statements under `Γ′`.
 
 For a class this moves the value out of its source and calls its destructor.
@@ -184,19 +183,19 @@ no-destruction behavior does not by itself decide the source-slot behavior.
 ```{future-note} destructors.finished_environment
 :uses: shared.struct destructors.drop_typing
 
-A *frame* owns a local environment and a sequence of statements still to run.
+A *[frame](functions.md#claim-functions.machine)* owns a local environment and a sequence of statements still to run.
 There is one program frame and one fresh frame per active function, method,
 or destructor call.
 Names are local to their frame; a destructor cannot access its caller's locals.
 
-An environment is *finished* when each binding is either empty or has a struct
-type. A class binding is an outstanding obligation even if its class has a
+An environment is *finished* when each binding is either empty or has a [struct
+type](shared.md#claim-shared.struct). A class binding is an outstanding obligation even if its class has a
 destructor, its view is partial, or all of its fields are empty. A frame may
 finish only when its statement sequence is exhausted and its environment is
 finished.
 
 Moving a class to another local transfers the obligation. Storing it inside a
-class transfers the obligation to that owner; unpacking transfers obligations
+class transfers the obligation to that owner; [unpacking](shared-typing.md#claim-shared.typing.bindings) transfers obligations
 to the resulting field bindings. No class can be hidden inside a struct,
 because struct fields must themselves have struct types.
 
@@ -207,16 +206,16 @@ It inserts no drops and performs no implicit unpacking.
 ```{future-note} destructors.body_typing
 :uses: destructors.declarations destructors.finished_environment destructors.drop_typing
 
-Check every declared destructor body starting with exactly `self: given C`,
+Check every [declared destructor body](#claim-destructors.declarations) starting with exactly `self: given C`,
 where `C` is its declaring class with its whole view. Its statements must type
-check and leave a finished environment. Check ordinary functions and methods using their declared parameters and
-result types from the [Functions layer](functions.md#claim-functions.typing),
+check and leave a [finished environment](#claim-destructors.finished_environment). Check ordinary functions and methods using their declared parameters and
+result types from the [Functions signatures](functions.md#claim-functions.signatures),
 requiring a finished environment after evaluation of any return expression.
 Check the top-level program from the empty environment with the same final
 condition.
 
 All declared destructor signatures are available while checking each body.
-A call checks droppability, not an inline expansion of the called body. The
+A call checks [droppability](#claim-destructors.droppable), not an inline expansion of the called body. The
 whole declaration table is accepted only when every declared body checks.
 This permits recursive destructor calls, including `drop self`.
 
@@ -228,7 +227,7 @@ identifies those rules. Assignment is not part of this layer.
 ````{future-note} destructors.example.boundaries
 :uses: destructors.body_typing destructors.droppable
 
-These proposed checks distinguish a declared destructor from explicit cleanup:
+These [proposed checks](#claim-destructors.body_typing) distinguish a declared destructor from explicit cleanup:
 
 ```dada
 class Empty {
@@ -248,10 +247,10 @@ class Again {
 This declaration checks, but dropping an `Again` instance recurses forever.
 Each call moves its receiver into the next frame; none returns.
 
-A class without a destructor cannot be explicitly dropped, but it can be
+A class [without a destructor cannot be explicitly dropped](#claim-destructors.droppable), but it can be
 unpacked. After moving a field out of a class that does have a destructor,
 dropping the remaining partial instance is also rejected. Explicit unpacking
-can consume that container when the inherited unpacking rule knows the status
+can consume that container when the [inherited unpacking rule](shared-typing.md#claim-shared.typing.bindings) knows the status
 of every direct field; its resulting class bindings still require consumption.
 ````
 
@@ -263,9 +262,9 @@ of every direct field; its resulting class bindings still require consumption.
 A configuration contains a common heap, the allocation counter, an active
 frame, and a stack of suspended caller frames, including result destinations for
 ordinary calls as in [Functions](functions.md#claim-functions.machine). This
-layer strengthens Functions' frame-exit rule: a returning body must discharge
-its class obligations, and remaining struct bindings may be discarded. Eager
-GC still runs after each transition, including popping the initial frame.
+layer strengthens [Functions' frame-exit rule](functions.md#claim-functions.execution): a returning body must discharge
+its [class obligations](#claim-destructors.finished_environment), and remaining struct bindings may be discarded. [Eager
+GC](functions.md#claim-functions.gc) still runs after each transition, including popping the initial frame.
 A runtime frame contains its
 local store and remaining statements. A local store maps names to empty slots
 or references. Heap objects, references, and allocation follow the
@@ -282,14 +281,14 @@ one, together with temporary values during expression evaluation.
 ```{future-note} destructors.execution
 :uses: destructors.machine destructors.drop_typing destructors.body_typing shared.give
 
-The proposed transition rules extend Functions' ordinary call and return
-machinery with destructor calls and stricter completion:
+The proposed transition rules extend [Functions' ordinary call and return
+machinery](functions.md#claim-functions.execution) with destructor calls and [stricter completion](#claim-destructors.finished_environment):
 
 | Transition | Action |
 | --- | --- |
-| Inherited statement | Execute a Shared binding or unpacking statement in the active frame and common heap, then advance that frame. |
-| Drop struct | Perform ordinary give from the source place, discard the resulting struct reference, and advance the active frame. No destructor runs; eager GC reclaims the object if it is no longer reachable. |
-| Call class destructor | Perform ordinary give, require a unique whole instance with a declared destructor, suspend the updated caller with its following statements, and start the destructor body in a fresh frame containing only `self` bound to that reference. |
+| Inherited statement | Execute a Shared binding or [unpacking statement](shared-typing.md#claim-shared.typing.steps) in the active frame and common heap, then advance that frame. |
+| Drop struct | Perform [ordinary give](shared.md#claim-shared.give) from the source place, discard the resulting struct reference, and advance the active frame. No destructor runs; [eager GC](functions.md#claim-functions.gc) reclaims the object if it is no longer reachable. |
+| Call class destructor | Perform ordinary give, require a unique whole instance with a [declared destructor](#claim-destructors.declarations), suspend the updated caller with its following statements, and start the destructor body in a fresh frame containing only `self` bound to that reference. |
 | Return | Evaluate any ordinary function or method result as in Functions, require no initialized class locals remain, discard the remaining struct locals, and resume the caller with its result if any. A destructor returns no value. |
 | Finish program | When the program frame has no statements and no initialized class locals, discard its remaining locals and enter a terminal configuration. |
 
@@ -310,20 +309,20 @@ exclude such configurations.
 ```{future-note} destructors.heap_obligations
 :uses: destructors.machine destructors.execution shared.well_formed shared.liveness
 
-The proposed heap invariant retains Shared's structural and kind restrictions
-with roots drawn from all live frames. Before collection, every remaining
+The proposed heap invariant retains [Shared's structural and kind restrictions](shared.md#claim-shared.well_formed)
+with roots drawn from all [live frames](#claim-destructors.machine). Before collection, every remaining
 class object must be reachable from a frame or temporary evaluation value;
-class obligations cannot be discharged by making an object unreachable.
-Struct objects may become unreachable during a raw transition. Eager GC
+[class obligations](#claim-destructors.finished_environment) cannot be discharged by making an object unreachable.
+Struct objects may become unreachable during a raw transition. [Eager GC](functions.md#claim-functions.gc)
 removes them before the next machine configuration.
 
-The ownership condition still excludes simultaneous unique and shared paths
+The ownership condition still excludes [simultaneous unique and shared paths](shared.md#claim-shared.path_exclusivity)
 to an object. Class references remain unique, and struct objects cannot contain
 class references. After the initial frame is popped, collection leaves the
 terminal heap empty. An explicit unpack removes its class container;
 a destructor call alone does not discharge that object's obligation.
 
-The exact realization relation connecting signed views, all stack frames,
+The exact realization relation connecting [signed views](shared-typing.md#claim-shared.typing.types), all stack frames,
 and temporary roots remains to be formalized. In particular, hiding a field
 in a view must not erase a runtime class obligation.
 ```
@@ -331,10 +330,10 @@ in a view must not erase a runtime class obligation.
 ```{future-note} destructors.safety
 :uses: destructors.heap_obligations destructors.body_typing destructors.execution
 
-Target safety statement: starting from a well-typed program and a well-typed
-declaration table, every reachable configuration satisfies the heap invariant
+Target safety statement: starting from a [well-typed program](#claim-destructors.body_typing) and a well-typed
+declaration table, every reachable configuration satisfies the [heap invariant](#claim-destructors.heap_obligations)
 and has a compatible typing of its frames. Each such configuration is terminal
-or can take a step. Every step preserves these properties. Terminal
+or can [take a step](#claim-destructors.execution). Every step preserves these properties. Terminal
 configurations contain no class objects.
 
 This target allows infinite execution. There is no completion bound in terms
@@ -347,18 +346,18 @@ results of this sketch.
 :uses: destructors.body_typing destructors.execution shared.typing.safety
 
 The intended correspondence with Shared preserves and reflects execution of
-its binding and unpacking statements in a single frame, up to the new frame
-completion check. Expressions, ordinary give, allocation, and unpacking retain
+its [binding and unpacking statements](shared-typing.md#claim-shared.typing.steps) in a single frame, up to the new frame
+[completion check](#claim-destructors.finished_environment). Expressions, ordinary give, allocation, and unpacking retain
 their previous behavior.
 
-Ordinary function and method calls retain the preceding Functions behavior
-except at frame exit: bodies must now satisfy the consumption condition before
+Ordinary function and method calls retain the preceding [Functions behavior](functions.md#claim-functions.execution)
+except at frame exit: bodies must now satisfy the [consumption condition](#claim-destructors.finished_environment) before
 the frame is popped and collection runs. Thus Functions programs also need a separate
 completion-condition qualification when relating the two layers.
 
-The new typing boundary is intentionally stronger. A Shared program may finish
-with a class local still initialized; the same program is rejected here.
-Consequently, preservation of all Shared program typings and completions is
+The new typing boundary is intentionally stronger. A Shared program may exit its initial frame without explicitly consuming
+an initialized class local; the same program is rejected here.
+Consequently, preservation of all [Shared program typings](shared-typing.md#claim-shared.typing.programs) and completions is
 not a proposed extension theorem. The correspondence should isolate unchanged
 statement behavior and state separately the extra consumption condition needed
 for program completion.
@@ -374,7 +373,7 @@ implicitly by these rules.
 
 The spelling `self → { resource }` could eventually abbreviate
 `let Wrapper → { resource } = self→;`, with the nominal type inferred.
-The initial sketch uses the explicit pattern.
+The initial sketch uses the [explicit pattern](shared-typing.md#claim-shared.typing.patterns).
 
 After borrows are introduced, reconsider whether structs should support a
 user-defined drop body receiving a shared borrow of `self`. This is a tentative
@@ -387,7 +386,7 @@ idea, not part of the proposed destructor layer.
 :uses: shared.declarations shared.struct shared.syntax shared.state shared.give shared.typing.types shared.typing.giving shared.typing.expressions shared.typing.patterns shared.typing.statements
 
 The preceding rules use the following Shared machinery unchanged, except for
-imposing the completion condition defined above; frames already exist in Shared.
+imposing the [completion condition](#claim-destructors.finished_environment) defined above; frames already exist in Shared.
 These links identify the full inherited definitions; this summary fixes their
 role in the sketch.
 

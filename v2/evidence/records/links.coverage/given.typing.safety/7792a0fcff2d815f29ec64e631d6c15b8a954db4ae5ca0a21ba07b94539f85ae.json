@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "bundle": "145480788434994b6e3a1bca52991132fc27ce47f52492042bb4d0ee78f8c6ff",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:1351e1c6cc8ff51db610855b1d6e4c1572ca7e99bf1cc523d1aba6d737c4b45f",
+    "audit:target:2eb211ed1af6e33db9da6c78ac0c0d04580e44a1e68ee2ae9c068c83be977c96",
+    "audit:target:4eb4444f47c2cf800acfe57f1fe74d9c78d8e7427cc5203d9959826b200440ca",
+    "audit:target:57daa4bbb00f516581417950097fd38b2c7cf06564570a82daa059b2701ea541",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:target:88a0c68272e833cbda1fa2978a4dd8727681d82a2bef9b7df637febb6f999b8f",
+    "audit:target:90551fc1b4acbc85cd0af545697c9e6593adef6b426431e751cb7e9684fbc7b8",
+    "audit:target:ebdeea3b59a8faa30c8f509e50a54e57e87ac3a935955695b920e1672ca8ac11",
+    "audit:unit:given.empty_state",
+    "audit:unit:given.finished",
+    "audit:unit:given.state",
+    "audit:unit:given.typing.configurations",
+    "audit:unit:given.typing.erasure",
+    "audit:unit:given.typing.execution",
+    "audit:unit:given.typing.preservation",
+    "audit:unit:given.typing.programs",
+    "audit:unit:given.typing.progress",
+    "audit:unit:given.typing.safety",
+    "audit:unit:given.typing.sequences",
+    "audit:unit:given.typing.statements",
+    "audit:unit:given.typing.stuck",
+    "audit:unit:given.typing.well_formed_classes",
+    "audit:unit:given.unpacking",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Program typing, stuckness, class-table well-formedness, finishedness, and next steps link directly. The exact statement-count argument is explained locally. The hypothesis links sequence typing, erasure, empty storage, and extended execution closure. The remaining variables are quantified by the theorem statement.",
+  "limitations": [
+    "Coverage is a reasoned reading of this exact source, not a claim that the extractor can discover every unlinked concept."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Program typing, stuckness, class-table well-formedness, finishedness, and next steps link directly. The exact statement-count argument is explained locally.",
+    "mathematics": "The hypothesis links sequence typing, erasure, empty storage, and extended execution closure. The remaining variables are quantified by the theorem statement.",
+    "links": [
+      {
+        "occurrence": "given.typing.safety:1",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'well-typed program' supplies whole-program typing from the empty environment while explaining no-stuckness and exact counted completion of a typed program. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.safety:2",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'stuck configuration' supplies stuckness in the extended unpacking language while explaining no-stuckness and exact counted completion of a typed program. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.safety:3",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'well-formed' supplies well-formed typed class tables while explaining no-stuckness and exact counted completion of a typed program. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.safety:4",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\Sigma;\\\\varnothing\\\\vdash P\\\\Rightarrow\\\\Gamma_f' supplies typing finite statement sequences while explaining no-stuckness and exact counted completion of a typed program. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.safety:5",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\lfloor\\\\Sigma\\\\rfloor' supplies erasing static field types from a class table while explaining no-stuckness and exact counted completion of a typed program. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.safety:6",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence 'S_{\\\\emptyset}' supplies the empty initial storage state while explaining no-stuckness and exact counted completion of a typed program. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.safety:7",
+        "role": "conceptual",
+        "rationale": "The math_jax occurrence '\\\\longrightarrow_u^{*}' supplies extended execution closure and exact step counts while explaining no-stuckness and exact counted completion of a typed program. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.safety:8",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'finished' supplies finished configurations while explaining no-stuckness and exact counted completion of a typed program. It is a prerequisite or concrete example context, not chapter navigation."
+      },
+      {
+        "occurrence": "given.typing.safety:9",
+        "role": "conceptual",
+        "rationale": "The markdown occurrence 'next step' supplies the extended transition relation including unpacking while explaining no-stuckness and exact counted completion of a typed program. It is a prerequisite or concrete example context, not chapter navigation."
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "5b221df99b0595e70578134a1bcf664abba8a85bc8b195928b22bb060e3fe6c9",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:10c1f88291dcba5073f56e237308508dc39bc72af450fc04d5d24aef2a179522",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The chapter opens by naming the reader-facing goal and the source/target review duties, before its commands and detailed definitions. This is an overview link to the workflow, not a claim that a later formula is introduced at the chapter header. The opening paragraph explains source extraction versus reviewer judgment and identifies both missing links and destination subjects.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Link audit workflow",
+    "definition": {
+      "path": "md/repo/link-audits.md",
+      "start": 37,
+      "end": 274
+    },
+    "clarity": "The chapter opens by naming the reader-facing goal and the source/target review duties, before its commands and detailed definitions. This is an overview link to the workflow, not a claim that a later formula is introduced at the chapter header.",
+    "independence": "The opening paragraph explains source extraction versus reviewer judgment and identifies both missing links and destination subjects."
+  }
+}

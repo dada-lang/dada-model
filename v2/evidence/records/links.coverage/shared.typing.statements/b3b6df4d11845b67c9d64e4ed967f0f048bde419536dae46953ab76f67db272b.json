@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "49b174c2eab1c8ed47b0db668ab9933b9ced4904d7dbf1c221a12c244184ec4c",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:given.typing.statements",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.statements",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links both expression and binding typing in prose and the rule premises; Let defines statement typing.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links both expression and binding typing in prose and the rule premises; Let defines statement typing.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. StatementTyped.letValue composes ExprTyped before/middle with BindingTyped middle/after, exactly the two premises and final environment of the displayed Let rule.",
+    "links": [
+      {
+        "occurrence": "shared.typing.statements:1",
+        "role": "conceptual",
+        "rationale": "The use 'expression typing' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.expressions is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.statements:2",
+        "role": "conceptual",
+        "rationale": "The use 'binding typing' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.bindings is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.statements:3",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma;\\\\Gamma\\\\vdash e:T\\\\;\\\\triangleright\\\\;\\\\Gamma_1' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.expressions is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.statements:4",
+        "role": "conceptual",
+        "rationale": "The use '\\\\Sigma;\\\\Gamma_1\\\\vdash b:T\\\\Rightarrow\\\\Gamma_2' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.bindings is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

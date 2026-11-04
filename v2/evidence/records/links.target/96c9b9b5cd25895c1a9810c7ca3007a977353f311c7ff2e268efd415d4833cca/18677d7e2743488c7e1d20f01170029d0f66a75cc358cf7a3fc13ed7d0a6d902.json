@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "9d64222d690d4cf5fc8822370dcae3323e25c42999354039e3f24c2b347075af",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:96c9b9b5cd25895c1a9810c7ca3007a977353f311c7ff2e268efd415d4833cca",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inspected the exact target and surrounding chapter rather than inferring clarity from an anchor ID. The direct equation extracts C independent of permission/view and links normalized form.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.base",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 4148,
+      "end": 4366
+    },
+    "clarity": "The direct equation extracts C independent of permission/view and links normalized form.",
+    "independence": "The selected passage is the destination's own subject, introduced at its start; supporting notation is linked to earlier definitions. Its landing does not require searching unrelated definitions."
+  }
+}

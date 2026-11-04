@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "7b9a517b17ce71c285f7b6d64cb655789c8ea8dc50e905b99c15f9d68099e0fc",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:b50fba7e62f9aaf161a6e1aaec2b60ca9f8ca33678e15facd8c24af1d87648a9",
+    "audit:unit:given.typing.paths",
+    "audit:unit:shared.references",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.typing.read",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links relative paths and runtime resolution; the standalone read defines mode accumulation and failure. Empty-path success explicitly requires the root object to exist.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links relative paths and runtime resolution; the standalone read defines mode accumulation and failure. Empty-path success explicitly requires the root object to exist.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. readPath checks that the root object exists, returns the effective root reference at epsilon, and traverses intermediate occupied slots; enter joins the carried mode with each stored reference mode. A final slot may be empty. The prose describes this read rather than prescribing one type per object.",
+    "links": [
+      {
+        "occurrence": "shared.typing.read:1",
+        "role": "conceptual",
+        "rationale": "The use 'relative path' supplies a concept, equation, or example setup needed here; md/given-typing.md#claim-given.typing.paths is the reviewed introducing destination. This is not optional navigation."
+      },
+      {
+        "occurrence": "shared.typing.read:2",
+        "role": "conceptual",
+        "rationale": "The use 'shared.resolution' supplies a concept, equation, or example setup needed here; md/shared.md#claim-shared.resolution is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

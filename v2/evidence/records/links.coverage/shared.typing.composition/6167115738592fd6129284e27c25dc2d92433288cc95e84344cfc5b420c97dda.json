@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "210f82d180f13387e7b0dddceec573357d2750eca4615f90eb82c193385bda1d",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:unit:shared.typing.composition",
+    "audit:unit:shared.typing.types",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Read the entire source body, the exact extracted link occurrences and resolved destinations, and the required context. Links permission grammar; the unique table defines juxtaposition of outer and inner permissions.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links permission grammar; the unique table defines juxtaposition of outer and inner permissions.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.comp returns given only for the pair given/given and shared in the other three cases, exactly the four table cells. Both operands are permissions, not object classifications.",
+    "links": [
+      {
+        "occurrence": "shared.typing.composition:1",
+        "role": "conceptual",
+        "rationale": "The use 'permission' supplies a concept, equation, or example setup needed here; md/shared-typing.md#claim-shared.typing.types is the reviewed introducing destination. This is not optional navigation."
+      }
+    ]
+  }
+}

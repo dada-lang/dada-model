@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "f32703178ef1f54447b8cf940dd1c07541cddde280137946ed61b876c507b116",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:56e88d29eb95c2d92fc038aa82ddca6d06f063d06b43e1307ce35878c60572ed",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:unit:given.allocated",
+    "audit:unit:given.live",
+    "audit:unit:given.liveness",
+    "audit:unit:given.well_formed",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence.",
+    "mathematics": "Every nonlogical predicate in the theorem formula—WF, Live and Allocated—has a direct definition link.",
+    "links": [
+      {
+        "occurrence": "given.liveness:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “well-formed state” uses Given structural storage well-formedness; the target given.well_formed supplies the needed meaning, rather than optional navigation."
+      },
+      {
+        "occurrence": "given.liveness:2",
+        "role": "conceptual",
+        "rationale": "The formula \\mathsf{WF}_{\\Delta}(S) uses Given structural storage well-formedness; the destination given.well_formed supplies that operation or result."
+      },
+      {
+        "occurrence": "given.liveness:3",
+        "role": "conceptual",
+        "rationale": "The formula \\mathsf{Live}_S(\\alpha) uses Given liveness through owning edges; the destination given.live supplies that operation or result."
+      },
+      {
+        "occurrence": "given.liveness:4",
+        "role": "conceptual",
+        "rationale": "The formula \\mathsf{Allocated}_S(\\alpha) uses Given allocation as object-table membership; the destination given.allocated supplies that operation or result."
+      }
+    ]
+  }
+}

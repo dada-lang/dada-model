@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "02a44fb8868c0f7c6a0938d18dcf4235ca0cbfce79ac34519afa67a9cb2d1b7d",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4a21645966bc500800b0d38fd94ff68e58ed55da0e2ed756db07501884925d89",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The opening paragraph directly distinguishes raw-TeX and Markdown bodies and supplies their delimiters. The reader can determine the required notation without opening implementation details; subsequent escaping/runtime limits qualify it.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Authored mathematics delimiters",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 6103,
+      "end": 6403
+    },
+    "clarity": "The opening paragraph directly distinguishes raw-TeX and Markdown bodies and supplies their delimiters.",
+    "independence": "The reader can determine the required notation without opening implementation details; subsequent escaping/runtime limits qualify it."
+  }
+}

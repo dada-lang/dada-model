@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "0f1741e5f3a03cb294e2bf821aa90d31249e68475f1633f753e17a28049b8182",
+  "reviewer": "Codex /root/link_inventory: Given typing source and link review",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a65eb6e25dc5992af74682e3ee7637608f951cbca91ff863784472c2c21591a9",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named given.typing.expressions unit has a visible identity and directly presents expression typing: Give, Construct, and Weaken. Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule. The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. Give links static take, Construct links Sigma(C), and Weaken links the subtype relation. The expression-typing judgments in conclusions and recursive premises are defined in this unit.",
+  "limitations": [],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "expression typing: Give, Construct, and Weaken",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 19159,
+      "end": 20885
+    },
+    "clarity": "The named given.typing.expressions unit has a visible identity and directly presents expression typing: Give, Construct, and Weaken. Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule.",
+    "independence": "The selected passage includes the defining notation or complete rule/algorithm for this subject; its explanation and examples develop that subject. The surrounding chapter separates its prerequisite definitions into their own linked units. Give links static take, Construct links Sigma(C), and Weaken links the subtype relation. The expression-typing judgments in conclusions and recursive premises are defined in this unit."
+  }
+}

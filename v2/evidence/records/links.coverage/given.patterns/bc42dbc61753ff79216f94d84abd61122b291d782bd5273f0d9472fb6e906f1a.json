@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "5f7735357a0a9e4dd66bab314af922716b698898469f338c0be30f20d2f06291",
+  "reviewer": "Codex /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:unit:given.classes",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.patterns",
+    "audit:unit:given.syntax",
+    "policy:md/repo/correspondence-review.md",
+    "context:link-chapter:md/given.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines the binding-pattern extension locally and links unchanged expression evaluation. Removed the unnecessary forward announcement of the later preservation theorem. Compared prose, inline mathematics, displayed rules and extracted destinations against the retained chapter order. All extracted occurrences in this unit are conceptual backward references; local introductions and bound metavariables do not need self-links.",
+  "limitations": [
+    "Coverage is an editorial judgment about the read unit; the extractor and syntactic validation cannot establish that every semantic reference was recognized."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines the binding-pattern extension locally and links unchanged expression evaluation. Removed the unnecessary forward announcement of the later preservation theorem.",
+    "mathematics": "b/t/P are the locally defined syntax extension; e remains the linked original value evaluation. Ellipses in the illustrative form do not act as an omission pattern.",
+    "links": [
+      {
+        "occurrence": "given.patterns:1",
+        "role": "conceptual",
+        "rationale": "The prose reference “expression evaluation” uses Given expression evaluation; the target given.evaluation supplies the needed meaning, rather than optional navigation."
+      }
+    ]
+  }
+}

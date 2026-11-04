@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "ed232b8ae98aea051149acd6503c1d4d2af45d76f182f5d83f97e7d334fc5ddf",
+  "reviewer": "Codex /root Shared typing review; independent language-link pass by /root/book_link_audit",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2e73a816de64641201d0a60f2df58d7490dcf3352f6e52f13591043ab00ec548",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inspected the exact target and surrounding chapter rather than inferring clarity from an anchor ID. Links declared field types, permission composition, Given focus, nominal grammar/table, pos and normalization. The equation’s two focus operations have distinct current/Given meanings made explicit.",
+  "limitations": [
+    "Editorial semantic judgment retained for independent review; syntactic validation alone cannot establish completeness or clarity."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.focus",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 10830,
+      "end": 12037
+    },
+    "clarity": "Links declared field types, permission composition, Given focus, nominal grammar/table, pos and normalization. The equation’s two focus operations have distinct current/Given meanings made explicit.",
+    "independence": "The selected passage is the destination's own subject, introduced at its start; supporting notation is linked to earlier definitions. Its landing does not require searching unrelated definitions."
+  }
+}

@@ -1,5 +1,6 @@
 //! Syntactic evidence validation. This module never invokes an agent or proof checker.
 use crate::inventory::{hash, Input, Inventory, SCHEMA};
+use crate::link_audit::{self, AuditInventory};
 use crate::units::UnitKind;
 use annotate_snippets::{AnnotationKind, Group, Level, Renderer, Snippet};
 use anyhow::{ensure, Context, Result};
@@ -22,10 +23,12 @@ pub struct ReviewBundle {
 
 impl ReviewBundle {
     pub fn prepare(inventory: &Inventory, unit: &str, extra: &[String]) -> Result<Self> {
-        ensure!(
-            inventory.unit(unit)?.kind != UnitKind::FutureNote,
-            "future notes have no formalization to review"
-        );
+        if !link_audit::is_subject(unit) {
+            ensure!(
+                inventory.unit(unit)?.kind != UnitKind::FutureNote,
+                "future notes have no formalization to review"
+            );
+        }
         let mut inputs = inventory.inputs(unit)?;
         for path in extra {
             inputs.push(inventory.extra_input(path)?);
@@ -105,6 +108,10 @@ pub struct ReviewRecord {
     pub limitations: Vec<String>,
     #[serde(default)]
     pub supersedes: Vec<String>,
+    /// Omitted for historical correspondence records so their content hashes
+    /// remain unchanged. Audit subjects require the corresponding assessment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audit: Option<link_audit::Assessment>,
 }
 
 impl ReviewRecord {
@@ -212,6 +219,7 @@ pub fn validate_review(bundle: &ReviewBundle, review: &ReviewRecord) -> Vec<Stri
     if supersedes.len() != review.supersedes.len() {
         errors.push("duplicate superseded review".into());
     }
+    errors.extend(link_audit::validate_review(bundle, review));
     errors
 }
 
@@ -290,10 +298,12 @@ pub fn record(
 ) -> Result<PathBuf> {
     let current = Inventory::load(&inventory.root)?;
     let inventory = &current;
-    ensure!(
-        inventory.unit(&bundle.unit)?.kind != UnitKind::FutureNote,
-        "cannot record correspondence for a future note: it has no formalization"
-    );
+    if !link_audit::is_subject(&bundle.unit) {
+        ensure!(
+            inventory.unit(&bundle.unit)?.kind != UnitKind::FutureNote,
+            "cannot record correspondence for a future note: it has no formalization"
+        );
+    }
     let mut errors = validate_bundle(inventory, bundle)?;
     errors.extend(validate_review(bundle, review));
     ensure!(
@@ -302,7 +312,7 @@ pub fn record(
         errors.join("; ")
     );
     ensure!(
-        !inventory.unit(&bundle.unit)?.draft,
+        link_audit::is_subject(&bundle.unit) || !inventory.unit(&bundle.unit)?.draft,
         "cannot record review for draft unit {}: complete its formalization and matching citations, remove :status: draft, then prepare and review a new bundle",
         bundle.unit
     );
@@ -374,6 +384,7 @@ impl Report {
 
     pub fn render(&self, inventory: &Inventory) -> String {
         let mut result = String::new();
+        let audits = AuditInventory::build(inventory).ok();
         for issue in &self.issues {
             let mut group = Group::with_title(Level::ERROR.primary_title(&issue.message));
             if let Some(unit) = issue.unit.as_ref().and_then(|id| inventory.units.get(id)) {
@@ -393,6 +404,24 @@ impl Report {
                                 .label("evidence required for this unit"),
                         ),
                 );
+            } else if let Some(location) = issue
+                .unit
+                .as_ref()
+                .and_then(|id| audits.as_ref()?.manifests.get(id))
+                .map(|manifest| manifest.location())
+            {
+                if let Some(source) = inventory.sources.get(&location.path) {
+                    group = group.element(
+                        Snippet::source(source)
+                            .path(&location.path)
+                            .fold(true)
+                            .annotation(
+                                AnnotationKind::Primary
+                                    .span(location.range.clone())
+                                    .label("link audit required here"),
+                            ),
+                    );
+                }
             }
             let mut groups = vec![group];
             for detail in issue.details.iter().take(8) {
@@ -449,6 +478,21 @@ fn json_files(root: &Path, directory: &Path) -> Result<Vec<PathBuf>> {
     Ok(files)
 }
 
+fn json_tree(root: &Path, directory: &Path) -> Result<Vec<PathBuf>> {
+    let mut files = json_files(root, directory)?;
+    if directory.exists() {
+        for entry in fs::read_dir(directory)? {
+            let path = entry?.path();
+            // json_files has already rejected symbolic links in this directory.
+            if path.is_dir() {
+                files.extend(json_tree(root, &path)?);
+            }
+        }
+    }
+    files.sort();
+    Ok(files)
+}
+
 /// Check all required units, including record presence, minimum inputs and freshness.
 /// Neither the review's conclusion nor a passing result establishes a Lean proof.
 pub fn check(inventory: &Inventory) -> Result<Report> {
@@ -489,10 +533,74 @@ pub fn check(inventory: &Inventory) -> Result<Report> {
             }),
         }
     }
-    for id in &inventory.required {
+    let audits = AuditInventory::build(inventory)?;
+    // Parse every saved decision, including retired subjects. Removing a link or
+    // unit retires its obligation, not the integrity checks on its history.
+    let mut all_records: BTreeMap<String, BTreeMap<String, ReviewRecord>> = BTreeMap::new();
+    let records_root = inventory.root.join("evidence/records");
+    for path in json_tree(&inventory.root, &records_root)? {
+        let parsed = (|| -> Result<(String, String, ReviewRecord)> {
+            let review: ReviewRecord = read_json(&path)?;
+            let digest = review.digest()?;
+            ensure!(
+                path.file_stem().and_then(|name| name.to_str()) == Some(&digest),
+                "record filename does not match contents"
+            );
+            let bundle = bundles
+                .get(&review.bundle)
+                .context("record's bundle is missing or malformed")?;
+            ensure!(
+                path == records_root
+                    .join(&bundle.unit)
+                    .join(format!("{digest}.json")),
+                "record filed under wrong subject"
+            );
+            let errors = validate_review(bundle, &review);
+            ensure!(errors.is_empty(), "invalid review: {}", errors.join("; "));
+            Ok((bundle.unit.clone(), digest, review))
+        })();
+        match parsed {
+            Ok((subject, digest, review)) => {
+                all_records
+                    .entry(subject)
+                    .or_default()
+                    .insert(digest, review);
+            }
+            Err(error) => report.issues.push(Issue {
+                unit: None,
+                message: "malformed stored review".into(),
+                details: vec![format!("{}: {error:#}", path.display())],
+            }),
+        }
+    }
+    for (id, records) in &all_records {
+        for review in records.values() {
+            for previous in &review.supersedes {
+                if !records.contains_key(previous) {
+                    report.issues.push(Issue {
+                        unit: Some(id.clone()),
+                        message: "review supersedes absent or unrelated evidence".into(),
+                        details: vec![previous.clone()],
+                    });
+                }
+            }
+        }
+    }
+    let required_subjects: BTreeSet<_> = inventory
+        .required
+        .iter()
+        .chain(audits.manifests.keys())
+        .cloned()
+        .collect();
+    let mut current_active = BTreeMap::new();
+    for id in &required_subjects {
         // Derive inputs even for drafts: malformed
         // citations never disappear because a formalization is unfinished.
-        let required = match inventory.inputs(id) {
+        let required = match if link_audit::is_subject(id) {
+            audits.inputs(inventory, id)
+        } else {
+            inventory.inputs(id)
+        } {
             Ok(inputs) => inputs,
             Err(error) => {
                 report.issues.push(Issue {
@@ -508,7 +616,11 @@ pub fn check(inventory: &Inventory) -> Result<Report> {
                 continue;
             }
         };
-        if inventory.unit(id)?.kind == UnitKind::FutureNote {
+        if inventory
+            .units
+            .get(id)
+            .is_some_and(|unit| unit.kind == UnitKind::FutureNote)
+        {
             report.statuses.push(UnitStatus {
                 unit: id.clone(),
                 evidence: "future note",
@@ -516,7 +628,7 @@ pub fn check(inventory: &Inventory) -> Result<Report> {
             });
             continue;
         }
-        if inventory.unit(id)?.draft {
+        if inventory.units.get(id).is_some_and(|unit| unit.draft) {
             report.statuses.push(UnitStatus {
                 unit: id.clone(),
                 evidence: "draft",
@@ -544,50 +656,12 @@ pub fn check(inventory: &Inventory) -> Result<Report> {
                 stale.extend(errors);
             }
         }
-        let mut records = BTreeMap::new();
-        for path in json_files(
-            &inventory.root,
-            &inventory.root.join("evidence/records").join(id),
-        )? {
-            let parsed = (|| -> Result<ReviewRecord> {
-                let review: ReviewRecord = read_json(&path)?;
-                ensure!(
-                    path.file_stem().and_then(|name| name.to_str()) == Some(&review.digest()?),
-                    "record filename does not match contents"
-                );
-                let bundle = bundles
-                    .get(&review.bundle)
-                    .context("record's bundle is missing or malformed")?;
-                ensure!(&bundle.unit == id, "record filed under wrong unit");
-                let errors = validate_review(bundle, &review);
-                ensure!(errors.is_empty(), "invalid review: {}", errors.join("; "));
-                Ok(review)
-            })();
-            match parsed {
-                Ok(review) => {
-                    records.insert(review.digest()?, review);
-                }
-                Err(error) => report.issues.push(Issue {
-                    unit: Some(id.clone()),
-                    message: "malformed correspondence review".into(),
-                    details: vec![format!("{error:#}")],
-                }),
-            }
-        }
-        let mut superseded = BTreeSet::new();
-        for review in records.values() {
-            for previous in &review.supersedes {
-                if records.contains_key(previous) {
-                    superseded.insert(previous.clone());
-                } else {
-                    report.issues.push(Issue {
-                        unit: Some(id.clone()),
-                        message: "review supersedes absent or unrelated evidence".into(),
-                        details: vec![previous.clone()],
-                    });
-                }
-            }
-        }
+        let empty_records = BTreeMap::new();
+        let records = all_records.get(id).unwrap_or(&empty_records);
+        let superseded: BTreeSet<_> = records
+            .values()
+            .flat_map(|review| review.supersedes.iter().cloned())
+            .collect();
         let stale_active = records.iter().any(|(digest, review)| {
             !superseded.contains(digest) && !current.contains(&review.bundle)
         });
@@ -598,6 +672,19 @@ pub fn check(inventory: &Inventory) -> Result<Report> {
             })
             .map(|(_, review)| review)
             .collect();
+        // Cross-review order decisions may rely only on an entirely current,
+        // positive subject; a conflicting or stale active record blocks it.
+        if !stale_active
+            && !active.is_empty()
+            && active
+                .iter()
+                .all(|review| review.conclusion == Conclusion::Corresponds)
+        {
+            current_active.insert(
+                id.clone(),
+                active.iter().map(|review| (*review).clone()).collect(),
+            );
+        }
         let evidence = if stale_active {
             "stale"
         } else if !current.is_empty() {
@@ -646,6 +733,13 @@ pub fn check(inventory: &Inventory) -> Result<Report> {
                 details,
             });
         }
+    }
+    for (unit, message) in link_audit::cross_validate(&audits, &current_active) {
+        report.issues.push(Issue {
+            unit: Some(unit),
+            message,
+            details: Vec::new(),
+        });
     }
     Ok(report)
 }

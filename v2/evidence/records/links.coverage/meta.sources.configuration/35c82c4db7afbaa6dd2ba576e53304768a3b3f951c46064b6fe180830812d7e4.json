@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "6a7487f2407191b1f8e4aa636095cb07ce416acfcb2bf66c976b48aa77cb4603",
+  "reviewer": "Codex repo-link reviewer",
+  "provenance": "Codex subagent review of immutable prepared inputs; findings checked against source, separate from deterministic validation.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.sources.configuration",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The book/Lean source-root policy is the defining subject; book.toml, runtime overrides and project containment are all stated locally. No other custom operation is invoked. No mathematics occurs. Source-root paths and file extensions are literal tool syntax, not undeclared semantic variables.",
+  "limitations": [
+    "Editorial inspection of retained prose, math, exact link inventory, source/target context and policy. This is not a proof that no conceivable explanatory link is missing, and the reviewer also implemented the audit validator; no independent-author status is claimed."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The book/Lean source-root policy is the defining subject; book.toml, runtime overrides and project containment are all stated locally. No other custom operation is invoked.",
+    "mathematics": "No mathematics occurs. Source-root paths and file extensions are literal tool syntax, not undeclared semantic variables.",
+    "links": []
+  }
+}
