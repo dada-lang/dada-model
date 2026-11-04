@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "a506ba6eafe89780db668bcbcef71670b8823d9ddf64dfa5b73c2136155cf196",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2ad9184ea8f87bf25aa062eee2e8605a4933189e40f6aa461d5c7a04418b8674",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions. The selected defining body includes its local setup, conditions and direct prerequisite links. Code notation C → { fields } and struct(T) are accompanied by their definition links; n-step completion is described in prose and not reused as a theorem here.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d5f1089003f8e6947aad7349276b7bb9885c8dec88a54f4d453915065233cbcc"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "inherited",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 25708,
+      "end": 28045
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. Code notation C → { fields } and struct(T) are accompanied by their definition links; n-step completion is described in prose and not reused as a theorem here."
+  }
+}

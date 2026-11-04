@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "b8daa2bc08048bc386fa9b26767a2475bae2280e0e8e8ae00d4f8e32385f162c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.syntax against lean:Unique/Syntax:VariableId, lean:Unique/Syntax:Place, lean:Unique/Syntax:Value, lean:Unique/Syntax:Statement. Place has variable/field constructors; Value has only give/new, with recursive argument lists; Statement contains a destination and value. These match the grammars and distinguish place syntax from value production. Freshness is an operational condition, not encoded in String variable names. Notation and judgment context was checked in unit:given.classes. Opening-example re-review: the exact earlier authored unit and selected declarations/tests are unchanged from the last reviewed packet. The added OpeningChecks examples leave all language rules, earlier tests and theorem statements unchanged; the newly cited example propositions were reviewed separately. This is a differential author review, not an independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "3406ee3f19871cc5537d45bc24d0da74620b7d5dbd9a0bdd0f365aa9841d132a"
+  ]
+}

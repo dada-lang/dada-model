@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "3ebef2c368b20a228d540de6c4608c8783b5472eef865227cbace453da77d4c7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a5c71aae5d779970f59da90b8b016cb2144890c06151d49ddcdd5a1f53c7ca45",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target. The selected defining body includes its local setup, conditions and direct prerequisite links. No new equations. Heap, allocation counter, active/suspended frames and roots are introduced in the paragraph before use.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b20e054b5c672ca9d4cf17c9cabb880d4a9cce695d6d16319f4fe70dfe7862c6"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "machine",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 16274,
+      "end": 17496
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. No new equations. Heap, allocation counter, active/suspended frames and roots are introduced in the paragraph before use."
+  }
+}

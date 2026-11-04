@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "d77db7a597d7a0b796b508b1319db75a905469fb096130c9252e3b587dd6dbef",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2ad9184ea8f87bf25aa062eee2e8605a4933189e40f6aa461d5c7a04418b8674",
+    "audit:unit:destructors.drop_typing",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Reviewed source/destination order and the classified occurrence: {\"kind\": \"navigation\", \"rationale\": \"Optional appendix/chapter navigation: the source directly defines the example or links its needed concepts; this link only gathers further reading.\"}",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "9f92832f7473bf800fcedd3e483c3ee5894cfe563e01425dd2e36720005591ff"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "navigation",
+      "rationale": "Optional appendix/chapter navigation: the source directly defines the example or links its needed concepts; this link only gathers further reading."
+    }
+  }
+}

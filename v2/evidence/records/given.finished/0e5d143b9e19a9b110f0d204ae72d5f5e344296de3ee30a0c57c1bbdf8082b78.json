@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "ffba03625a1e8e2c7877ad40e1e496dff82f14d004b8b3270e385c9c2d6d2104",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/Frames:Configuration",
+    "lean:Unique/Frames:Configuration.finished",
+    "lean:Unique/Frames:Configuration.initial",
+    "lean:Unique/Frames:Configuration.running",
+    "lean:Unique/Frames:Configuration.state",
+    "lean:Unique/Frames:Frame",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.finished",
+    "unit:given.identities",
+    "unit:given.machine",
+    "unit:given.programs",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Framed.Configuration.finished is frame = none. The equation and explanation distinguish absent initial frame from a live frame with empty code. Framed.Step.exit removes the latter and collection leaves no rooted heap, as the linked machine/step definitions specify. Opening-example re-review: the exact earlier authored unit and selected declarations/tests are unchanged from the last reviewed packet. The added OpeningChecks examples leave all language rules, earlier tests and theorem statements unchanged; the newly cited example propositions were reviewed separately. This is a differential author review, not an independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "ecec08ff6f4d4357668956c94afe5ae653bac5acaa5990df613970d18455b50c"
+  ]
+}

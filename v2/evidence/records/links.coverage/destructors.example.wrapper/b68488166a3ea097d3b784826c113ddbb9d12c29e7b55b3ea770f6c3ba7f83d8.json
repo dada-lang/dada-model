@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "a1d38716f307ab6ca7d07f6c1724b455fa6a643e1d23d65e41699dec48deadf5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2ad9184ea8f87bf25aa062eee2e8605a4933189e40f6aa461d5c7a04418b8674",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:destructors.example.wrapper",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The local declarations define both destructor bodies and their nested consumption behavior; unpacking links to Shared. The appendix is optional navigation because the example describes its own behavior and has the direct prerequisite link. No formal equations. self, resource and w are bound by the displayed declaration and statements; no borrowed permission notation is used.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "42786bff5b98800881e62d4ff3fbea6acb9eadc5d852fb4cbbf9189d356b7e77"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The local declarations define both destructor bodies and their nested consumption behavior; unpacking links to Shared. The appendix is optional navigation because the example describes its own behavior and has the direct prerequisite link.",
+    "mathematics": "No formal equations. self, resource and w are bound by the displayed declaration and statements; no borrowed permission notation is used.",
+    "links": [
+      {
+        "occurrence": "destructors.example.wrapper:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Unpacking' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.bindings. The local declarations define both destructor bodies and their nested consumption behavior; unpacking links to Shared. The appendix is optional navigation because the example describes its own behavior and has the direct prerequisite link."
+      },
+      {
+        "occurrence": "destructors.example.wrapper:2",
+        "role": "navigation",
+        "rationale": "Optional appendix/chapter navigation: the source directly defines the example or links its needed concepts; this link only gathers further reading."
+      }
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "5d958d8dddd237f8ff65fa7746e91744b292ac4784f3ca6a6fd4fc076ce3257d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:destructors.drop_typing",
+    "audit:unit:destructors.finished_environment",
+    "audit:unit:shared.struct",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Finished environment is now the opening definition, avoiding a buried target after frame commentary. Struct types, frames and unpacking link directly to prior definitions. No display mathematics; environment, initialized binding and struct predicate are explained/linked, and runtime completion is described without introducing unchecked type assertions.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c3a8d67830f5188f2158c7a28ddbc8d3d3ac9f57f48324e39479504b9175b846"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Finished environment is now the opening definition, avoiding a buried target after frame commentary. Struct types, frames and unpacking link directly to prior definitions.",
+    "mathematics": "No display mathematics; environment, initialized binding and struct predicate are explained/linked, and runtime completion is described without introducing unchecked type assertions.",
+    "links": [
+      {
+        "occurrence": "destructors.finished_environment:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'structtype' supplies the definition or concrete example setup used here, at shared.md#claim-shared.struct. Finished environment is now the opening definition, avoiding a buried target after frame commentary. Struct types, frames and unpacking link directly to prior definitions."
+      },
+      {
+        "occurrence": "destructors.finished_environment:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'frame' supplies the definition or concrete example setup used here, at functions.md#claim-functions.machine. Finished environment is now the opening definition, avoiding a buried target after frame commentary. Struct types, frames and unpacking link directly to prior definitions."
+      },
+      {
+        "occurrence": "destructors.finished_environment:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'unpacking' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.bindings. Finished environment is now the opening definition, avoiding a buried target after frame commentary. Struct types, frames and unpacking link directly to prior definitions."
+      }
+    ]
+  }
+}

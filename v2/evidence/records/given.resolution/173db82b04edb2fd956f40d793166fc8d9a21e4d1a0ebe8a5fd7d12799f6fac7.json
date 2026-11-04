@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "afa7ebb6e22f4616985993f5c8540db879ade03af6b2ee35f3fdc4a99f8a8a4d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.lookup",
+    "unit:given.programs",
+    "unit:given.resolution",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.resolution against lean:Unique/Step:Resolve. Resolve.variable requires an occupied variable; Resolve.field recursively resolves its base then requires the selected object and occupied field. These are the two displayed rules over the storage places introduced by given.storage_places; no state update occurs during resolution. Notation and judgment context was checked in unit:given.storage_places. Opening-example re-review: the exact earlier authored unit and selected declarations/tests are unchanged from the last reviewed packet. The added OpeningChecks examples leave all language rules, earlier tests and theorem statements unchanged; the newly cited example propositions were reviewed separately. This is a differential author review, not an independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "2a972e9140a46b3437d5a8f69e40120d5f13f3490e7775a9eea6499f6db53f04"
+  ]
+}

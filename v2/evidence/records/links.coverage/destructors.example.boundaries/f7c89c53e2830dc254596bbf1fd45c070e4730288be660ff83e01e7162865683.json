@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "a79eea0c33a634510f4b927571e035838a7ced70b8f4c81120ed64c1e66e9599",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f04e04e63ee3dc0d3ff261b4a37a5a43d1bf2fa1799e9cf11fd813ea8a5351fd",
+    "audit:unit:destructors.example.boundaries",
+    "audit:unit:destructors.example.consume",
+    "audit:unit:destructors.example.wrapper",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The moved example introduces the empty and recursive bodies directly and links backward to Token for the no-destructor case. References to later body-typing and droppability rules were removed because the example explains the behavior before those definitions. Resource and Again are local alternative declarations; self is the implicit receiver introduced in the earlier destructor example. No later judgment notation is needed.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "5971e220e606fb56c248b008f58fe80b0eb315397d7bbb037b314a87385f2e4a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The moved example introduces the empty and recursive bodies directly and links backward to Token for the no-destructor case. References to later body-typing and droppability rules were removed because the example explains the behavior before those definitions.",
+    "mathematics": "Resource and Again are local alternative declarations; self is the implicit receiver introduced in the earlier destructor example. No later judgment notation is needed.",
+    "links": [
+      {
+        "occurrence": "destructors.example.boundaries:1",
+        "role": "conceptual",
+        "rationale": "'Token example' refers to #claim-destructors.example.consume for the definition or concrete setup used in this example. The moved example introduces the empty and recursive bodies directly and links backward to Token for the no-destructor case. References to later body-typing and droppability rules were removed because the example explains the behavior before those definitions."
+      }
+    ]
+  }
+}

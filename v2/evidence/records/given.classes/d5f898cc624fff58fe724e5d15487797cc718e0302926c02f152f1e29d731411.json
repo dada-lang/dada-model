@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "bundle": "4e8e75bd237b1a552dca781803f92a17eaae5dbecd1249517d1db4fe87292b77",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.classes against lean:Unique/Syntax:ClassName, lean:Unique/Syntax:FieldName, lean:Unique/Syntax:Class. ClassName and FieldName are String abbreviations and Class retains an ordered List FieldName. Distinct fields are a well-formed-table convention established in given.programs, rather than a claim that the raw Class constructor enforces it. Empty lists give the zero-field case. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Opening-example re-review: the exact earlier authored unit and selected declarations/tests are unchanged from the last reviewed packet. The added OpeningChecks examples leave all language rules, earlier tests and theorem statements unchanged; the newly cited example propositions were reviewed separately. This is a differential author review, not an independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "6b8c3e28a4cf47ff3353576157f96095d5ee597c764cf10c334438afcee07d2e"
+  ]
+}

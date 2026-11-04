@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "45cd4d7e97af3600f06c12d17d9c50981d85fa247d7fd3a38e8dff2c48d45d86",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e8e49e649e1c933223b9ce0a289c333cc028e86a574822003a382c3180e7bfab",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing names the struct-drop example and immediately supplies the Point and SharedPoint declarations and drop operations. The later Parcel example points here for this concrete setup, not for a general nominal-type judgment. The example defines its class names and locals and links the earlier struct, give and GC definitions. It explains each resulting source slot explicitly.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Unique and shared struct drop example, including the SharedPoint declaration",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 5608,
+      "end": 6368
+    },
+    "clarity": "The landing names the struct-drop example and immediately supplies the Point and SharedPoint declarations and drop operations. The later Parcel example points here for this concrete setup, not for a general nominal-type judgment.",
+    "independence": "The example defines its class names and locals and links the earlier struct, give and GC definitions. It explains each resulting source slot explicitly."
+  }
+}

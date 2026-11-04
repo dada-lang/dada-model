@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "6a9c5cce28c05cfd2b715f0e7451b344d81731c180478ad31d5c7653a2ddfdaf",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:destructors.example.struct_drop",
+    "audit:unit:functions.gc",
+    "audit:unit:shared.give",
+    "audit:unit:shared.struct",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the nominal struct predicate, ordinary give and eager GC. Point and SharedPoint are declared in the example. The unique/shared source effects and permitted completion with s alive are stated directly. All local names are bound in the code; no mathematical symbols or implicit destructor judgment is used.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the nominal struct predicate, ordinary give and eager GC. Point and SharedPoint are declared in the example. The unique/shared source effects and permitted completion with s alive are stated directly.",
+    "mathematics": "All local names are bound in the code; no mathematical symbols or implicit destructor judgment is used.",
+    "links": [
+      {
+        "occurrence": "destructors.example.struct_drop:1",
+        "role": "conceptual",
+        "rationale": "'Structs' refers to shared.md#claim-shared.struct for the definition or concrete setup used in this example. Links the nominal struct predicate, ordinary give and eager GC. Point and SharedPoint are declared in the example. The unique/shared source effects and permitted completion with s alive are stated directly."
+      },
+      {
+        "occurrence": "destructors.example.struct_drop:2",
+        "role": "conceptual",
+        "rationale": "'ordinary give' refers to shared.md#claim-shared.give for the definition or concrete setup used in this example. Links the nominal struct predicate, ordinary give and eager GC. Point and SharedPoint are declared in the example. The unique/shared source effects and permitted completion with s alive are stated directly."
+      },
+      {
+        "occurrence": "destructors.example.struct_drop:3",
+        "role": "conceptual",
+        "rationale": "'GC' refers to functions.md#claim-functions.gc for the definition or concrete setup used in this example. Links the nominal struct predicate, ordinary give and eager GC. Point and SharedPoint are declared in the example. The unique/shared source effects and permitted completion with s alive are stated directly."
+      }
+    ]
+  }
+}

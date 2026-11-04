@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "f54c16ab528d232445f4b188997c1aac6d9c7ec8e018df14c3b109081a7fed99",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Finished environment is now the opening definition, avoiding a buried target after frame commentary. Struct types, frames and unpacking link directly to prior definitions. The selected defining body includes its local setup, conditions and direct prerequisite links. No display mathematics; environment, initialized binding and struct predicate are explained/linked, and runtime completion is described without introducing unchecked type assertions.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "7dcde08598114194ea0f3363fab93ec3e961a156e6085453c062ed029d31424d"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "finished environment",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 13426,
+      "end": 14537
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Finished environment is now the opening definition, avoiding a buried target after frame commentary. Struct types, frames and unpacking link directly to prior definitions.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. No display mathematics; environment, initialized binding and struct predicate are explained/linked, and runtime completion is described without introducing unchecked type assertions."
+  }
+}

@@ -75,7 +75,7 @@ which rules carry over and supplies their definitions in Shared.
 ## Parameters and locals in a function
 
 ````{example} destructors.function_example
-:lean: Destructors/ChapterChecks:function_bodies
+:lean: Destructors/OpeningChecks:function_call
 :uses: destructors.example.wrapper destructors.example.consume functions.typing
 
 Using the preceding [Functions chapter](functions.md), these examples add the
@@ -105,6 +105,13 @@ fn finish(w: → Wrapper) {
 }
 ```
 
+Either version can be called with an owned wrapper:
+
+```dada
+let w = new Wrapper(new Resource());
+finish(w→);
+```
+
 These are alternative bodies. In either version, omitting the consumption of
 `extra` would leave an owned class value at return. Merely having a destructor
 would not make that omission legal in this explicit core. Likewise, unpacking
@@ -115,6 +122,143 @@ A function can also transfer ownership to its caller by [returning a value](func
 check its remaining locals after evaluating that return expression.
 ````
 
+## Returning transfers the obligation to the caller
+
+````{example} destructors.example.return
+:lean: Destructors/OpeningChecks:ownership_return
+:uses: destructors.example.wrapper functions.return
+
+A function can [return an owned value](functions.md#claim-functions.return)
+instead of destroying it. Using the [Resource destructor above](#claim-destructors.example.wrapper):
+
+```dada
+fn identity(token: → Resource) → Resource {
+    return token→;
+}
+
+let original = new Resource();
+let returned = identity(original→);
+drop returned;
+```
+
+The call empties `original`. Returning empties the callee's `token` binding,
+so the function can finish even though the resource is still alive. The caller
+now owns it through `returned`; the final drop consumes it. Omitting that drop
+would leave the caller with an outstanding class value. Returning transfers
+responsibility; it does not invoke the destructor.
+````
+
+## Dropping unique and shared structs
+
+````{example} destructors.example.struct_drop
+:lean: Destructors/OpeningChecks:struct_program
+:uses: shared.struct shared.give functions.gc
+
+[Structs](shared.md#claim-shared.struct) do not run destructor code in this layer.
+An explicit drop uses [ordinary give](shared.md#claim-shared.give) and discards
+the resulting reference:
+
+```dada
+struct Point {}
+shared struct SharedPoint {}
+
+let p = new Point();
+let s = new SharedPoint();
+drop p;
+drop s;
+```
+
+`p` starts uniquely owned. Dropping it empties its binding, so a subsequent
+`p→` would be rejected. `s` starts shared; dropping it copies and discards a
+reference, leaving `s` initialized. A subsequent `s→` is still allowed.
+Neither drop removes the local binding or calls user code.
+
+The program may finish with `s` still initialized. Struct locals need no explicit
+consumption, and [GC](functions.md#claim-functions.gc) handles their storage.
+````
+
+## A class destructor can leave struct locals
+
+````{example} destructors.example.struct_field
+:lean: Destructors/OpeningChecks:struct_field
+:uses: destructors.example.struct_drop shared.typing.bindings
+
+The distinction between classes and structs also matters inside a destructor.
+Using the [SharedPoint declaration above](#claim-destructors.example.struct_drop):
+
+```dada
+class Parcel {
+    point: shared SharedPoint
+
+    drop {
+        let Parcel → { point } = self→;
+    }
+}
+```
+
+[Unpacking](shared-typing.md#claim-shared.typing.bindings) consumes the class
+container and transfers its field into the local `point`. The destructor may
+then finish with `point` still initialized because it is a struct value. It
+needs no `drop point`. This is different from the [Wrapper destructor](#claim-destructors.example.wrapper),
+whose unpacked `resource` is a class and must be consumed.
+````
+
+## Unpacking after moving a field
+
+````{example} destructors.example.partial
+:lean: Destructors/OpeningChecks:partial_cleanup
+:uses: destructors.example.wrapper shared.typing.bindings shared.typing.types
+
+A destructor receives a whole instance. Moving out a field of the
+[Wrapper above](#claim-destructors.example.wrapper) leaves a
+[partial value](shared-typing.md#claim-shared.typing.types), so its destructor
+can no longer be called. Explicit unpacking can still consume the container:
+
+```dada
+fn consume(w: → Wrapper) {
+    let taken = w.resource→;
+    // drop w;  // rejected: resource has been moved out
+    let Wrapper → { resource } = w→;
+    drop taken;
+}
+```
+
+The move transfers the resource to `taken` and records an empty field in `w`.
+The [unpacking rule](shared-typing.md#claim-shared.typing.bindings) transfers
+that empty field into an empty `resource` binding; it does not recreate a value.
+Dropping `taken` consumes the resource itself. All three locals are empty when
+the function finishes.
+````
+
+## Empty and recursive destructor bodies
+
+````{example} destructors.example.boundaries
+:lean: Destructors/ChapterChecks:boundaries
+:uses: destructors.example.consume destructors.example.wrapper
+
+A destructor must itself account for its receiver. Compare these two bodies:
+
+```dada
+class Resource {
+    drop { }
+}
+```
+
+This alternative destructor fails: the body leaves `self` initialized. Even a fieldless
+class must unpack its receiver or transfer it to another consuming operation.
+
+```dada
+class Again {
+    drop { drop self; }
+}
+```
+
+This declaration checks, but dropping an `Again` instance recurses forever.
+Each call moves its receiver into the next frame; none returns.
+
+As with the [Token example](#claim-destructors.example.consume), a class without a destructor cannot be explicitly dropped, but it can be
+unpacked.
+````
 ## Declarations and dropping
 
 ```{definition} destructors.declarations
@@ -236,36 +380,6 @@ unpacking otherwise apply; the [appendix](#claim-destructors.inherited)
 identifies those rules. Assignment is not part of this layer.
 ```
 
-````{example} destructors.example.boundaries
-:lean: Destructors/ChapterChecks:boundaries
-:uses: destructors.body_typing destructors.droppable
-
-These [checks](#claim-destructors.body_typing) distinguish a declared destructor from explicit cleanup:
-
-```dada
-class Resource {
-    drop { }
-}
-```
-
-This alternative destructor fails: the body leaves `self` initialized. Even a fieldless
-class must unpack its receiver or transfer it to another consuming operation.
-
-```dada
-class Again {
-    drop { drop self; }
-}
-```
-
-This declaration checks, but dropping an `Again` instance recurses forever.
-Each call moves its receiver into the next frame; none returns.
-
-A class [without a destructor cannot be explicitly dropped](#claim-destructors.droppable), but it can be
-unpacked. After moving a field out of a class that does have a destructor,
-dropping the remaining partial instance is also rejected. Explicit unpacking
-can consume that container when the [inherited unpacking rule](shared-typing.md#claim-shared.typing.bindings) knows the status
-of every direct field; its resulting class bindings still require consumption.
-````
 
 ## Calling and returning
 

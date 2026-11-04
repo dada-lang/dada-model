@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "fbd9fc4b47c13ce5171f514e72cc70a3e748a453533378e3b9059eabaa0e6ae3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:destructors.example.consume",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The consumption obligation is introduced directly by the opening paragraph and the complete Pair example. Unpacking, moving and struct kinds link to their earlier definitions. Token/Pair are local declarations, not unlinked external concepts. No display equations. Surface code defines its own class, field and local names; → uses the linked give operation.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b114e110437e129dc7c6ab2736a2a6db66716b6dbeba1c633a1d489e120bf174"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The consumption obligation is introduced directly by the opening paragraph and the complete Pair example. Unpacking, moving and struct kinds link to their earlier definitions. Token/Pair are local declarations, not unlinked external concepts.",
+    "mathematics": "No display equations. Surface code defines its own class, field and local names; → uses the linked give operation.",
+    "links": [
+      {
+        "occurrence": "destructors.example.consume:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Unpacking' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.bindings. The consumption obligation is introduced directly by the opening paragraph and the complete Pair example. Unpacking, moving and struct kinds link to their earlier definitions. Token/Pair are local declarations, not unlinked external concepts."
+      },
+      {
+        "occurrence": "destructors.example.consume:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Moving avalue' supplies the definition or concrete example setup used here, at shared.md#claim-shared.give. The consumption obligation is introduced directly by the opening paragraph and the complete Pair example. Unpacking, moving and struct kinds link to their earlier definitions. Token/Pair are local declarations, not unlinked external concepts."
+      },
+      {
+        "occurrence": "destructors.example.consume:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Struct values' supplies the definition or concrete example setup used here, at shared.md#claim-shared.declarations. The consumption obligation is introduced directly by the opening paragraph and the complete Pair example. Unpacking, moving and struct kinds link to their earlier definitions. Token/Pair are local declarations, not unlinked external concepts."
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "e31e3fff993e49b89a719ea748478f9da5e3b61801d340873973bc62b834a2d7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/State:Updated",
+    "lean:Unique/Step:Eval",
+    "lean:Unique/Step:EvalArgs",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Step:State.allocate",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.evaluation",
+    "unit:given.identities",
+    "unit:given.lookup",
+    "unit:given.programs",
+    "unit:given.resolution",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax",
+    "unit:given.update"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.evaluation against lean:Unique/Step:Eval, lean:Unique/Step:EvalArgs, lean:Unique/Step:State.allocate. Eval.give resolves and takes an owner, while Eval.new threads EvalArgs left to right, checks arity and fresh nextId, then zips results with declared fields and increments the counter. The empty-argument constructor is covered by EvalArgs.nil. No recovery state is exposed for a failed argument, and a repeated unique give loses its source on the first argument. Notation and judgment context was checked in unit:given.classes, unit:given.syntax, unit:given.programs, unit:given.state, unit:given.storage_places, unit:given.resolution. Opening-example re-review: the exact earlier authored unit and selected declarations/tests are unchanged from the last reviewed packet. The added OpeningChecks examples leave all language rules, earlier tests and theorem statements unchanged; the newly cited example propositions were reviewed separately. This is a differential author review, not an independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "bddedfd54415f3e81c641a5e22d658cecdd8d178b239bce6eff29e3af1564886"
+  ]
+}

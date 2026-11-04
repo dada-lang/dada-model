@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "9ff960fd8ed3824f2f100a53dd265c1efd950169e2678744ea37448febac5785",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3e4d50612007d6c6a5604a2b81222e88270e78922e73195442049d92573c2bda",
+    "audit:target:8c93add9c0c83a776892d18710675ad1a169196ba74e7618d4b2ef28a872c904",
+    "audit:unit:destructors.example.return",
+    "audit:unit:destructors.example.wrapper",
+    "audit:unit:functions.return",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The code introduces identity, original and returned and links the actual Resource declaration and earlier return operation. The prose explains caller versus callee obligations locally, so no forward reference to a later typing judgment is needed. → Resource and token→ use the already introduced signature and give forms. No new mathematical notation appears.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The code introduces identity, original and returned and links the actual Resource declaration and earlier return operation. The prose explains caller versus callee obligations locally, so no forward reference to a later typing judgment is needed.",
+    "mathematics": "→ Resource and token→ use the already introduced signature and give forms. No new mathematical notation appears.",
+    "links": [
+      {
+        "occurrence": "destructors.example.return:1",
+        "role": "conceptual",
+        "rationale": "'return an owned value' refers to functions.md#claim-functions.return for the definition or concrete setup used in this example. The code introduces identity, original and returned and links the actual Resource declaration and earlier return operation. The prose explains caller versus callee obligations locally, so no forward reference to a later typing judgment is needed."
+      },
+      {
+        "occurrence": "destructors.example.return:2",
+        "role": "conceptual",
+        "rationale": "'Resource destructor above' refers to #claim-destructors.example.wrapper for the definition or concrete setup used in this example. The code introduces identity, original and returned and links the actual Resource declaration and earlier return operation. The prose explains caller versus callee obligations locally, so no forward reference to a later typing judgment is needed."
+      }
+    ]
+  }
+}

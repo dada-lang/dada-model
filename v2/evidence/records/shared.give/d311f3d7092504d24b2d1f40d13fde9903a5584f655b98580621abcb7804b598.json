@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "356e0d83e2ef20ae35e3d937aa6bb22f2afab472f7560c2f8efeeee76967ae1d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Reference.owned",
+    "lean:Shared/State:Reference.shared",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:ObjectId",
+    "lean:Shared/Syntax:Place",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.give",
+    "unit:shared.references"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Resolve carries the effective access mode of a place. Take empties a uniquely owned selected slot. Promote replaces just a unique final stored reference by a shared one. Give.move requires unique route access; Give.copy uses an already-shared final reference without mutation; Give.promote handles a unique final reference reached through shared access. All three preserve the object identity. These are precisely the behavior table and its source-slot effects; reference modes are introduced by the preceding linked unit. Opening-example re-review: the exact earlier authored unit and selected declarations/tests are unchanged from the last reviewed packet. The added OpeningChecks examples leave all language rules, earlier tests and theorem statements unchanged; the newly cited example propositions were reviewed separately. This is a differential author review, not an independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "86ef5c034f3c2df1dc1f8120de6755a054884b4cc9d3f76d6b9c55138f73802d"
+  ]
+}

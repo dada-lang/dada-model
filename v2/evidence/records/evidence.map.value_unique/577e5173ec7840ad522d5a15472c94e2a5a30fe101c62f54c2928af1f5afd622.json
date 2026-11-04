@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "bundle": "3f52ea8e6db66c3d0f210b35e7e266c7e1c063cd3f64cec6abf37c5c87b9b548",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMap:FiniteMap.value_unique",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.value_unique"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:evidence.map.value_unique against lean:Common/FiniteMap:FiniteMap.value_unique. The theorem universally quantifies key and value types and both membership witnesses in one FiniteMap, concluding equality of values. Its signature has no ordering or decidable-equality assumptions; the unique-key invariant from evidence.map supplies the intended restriction. Notation and judgment context was checked in unit:evidence.map. Opening-example re-review: the exact earlier authored unit and selected declarations/tests are unchanged from the last reviewed packet. The added OpeningChecks examples leave all language rules, earlier tests and theorem statements unchanged; the newly cited example propositions were reviewed separately. This is a differential author review, not an independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "382bd501e33dc5345d5c9fd319f172a214b88faeebc61d2ca6d0980452d4f1be"
+  ]
+}

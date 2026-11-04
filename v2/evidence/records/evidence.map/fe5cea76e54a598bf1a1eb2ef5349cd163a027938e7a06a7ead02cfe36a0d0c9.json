@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "bundle": "be4cb423b9b3cb68a9e92d021f849ea4d8af6637804eb1a591e7900b3ef2a3ba",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:evidence.map against lean:Common/FiniteMap:FiniteMap, lean:Common/FiniteMap:FiniteMap.empty. FiniteMap stores a finite list of key/value pairs with Nodup on projected keys, exactly the ordered representation and uniqueness condition described. FiniteMap.empty supplies the empty list without requiring an ordering or DecidableEq. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Opening-example re-review: the exact earlier authored unit and selected declarations/tests are unchanged from the last reviewed packet. The added OpeningChecks examples leave all language rules, earlier tests and theorem statements unchanged; the newly cited example propositions were reviewed separately. This is a differential author review, not an independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "47baeaf544266299d0a89edd4ccb4f259c13bf12b771af28a210a4d39f461fc3"
+  ]
+}

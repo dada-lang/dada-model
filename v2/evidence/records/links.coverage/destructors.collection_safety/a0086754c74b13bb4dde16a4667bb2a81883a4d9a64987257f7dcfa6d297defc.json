@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "fcd8d419b10f238928a50c76045bfde30ef925a91cd68c4823d9f8be3739b058",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2948fd23e337d523facb0a0bd8446f0c73151a1b3773cee11a0866dd45cc1d0a",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:target:c8cc0b8b6abef8a10509119d2140141701f58f8925ed109a7a9eb157fbf76014",
+    "audit:unit:destructors.collection_safety",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.heap_obligations",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes. No equations; the statement identifies raw and collected states in prose and gives the typed-source assumption.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "e7bff37c77c9dc9711195acffc9e7a054e4d80e5d37ca9f9376f79a8ac965bc9"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes.",
+    "mathematics": "No equations; the statement identifies raw and collected states in prose and gives the typed-source assumption.",
+    "links": [
+      {
+        "occurrence": "destructors.collection_safety:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'raw transition' supplies the definition or concrete example setup used here, at #claim-destructors.execution. Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes."
+      },
+      {
+        "occurrence": "destructors.collection_safety:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'typed configuration' supplies the definition or concrete example setup used here, at #claim-destructors.heap_obligations. Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes."
+      },
+      {
+        "occurrence": "destructors.collection_safety:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'struct fields have struct types' supplies the definition or concrete example setup used here, at shared.md#claim-shared.struct. Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes."
+      }
+    ]
+  }
+}

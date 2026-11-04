@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "c956bfb0e72708595811b0bbb08ce3f923119db223bf0222ae5e05dc62f84d22",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3e4d50612007d6c6a5604a2b81222e88270e78922e73195442049d92573c2bda",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. The local declarations define both destructor bodies and their nested consumption behavior; unpacking links to Shared. The appendix is optional navigation because the example describes its own behavior and has the direct prerequisite link. The selected defining body includes its local setup, conditions and direct prerequisite links. No formal equations. self, resource and w are bound by the displayed declaration and statements; no borrowed permission notation is used.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "6f949fe444db5df10bb6a6672dde242b51949b56a1010fd30af69437eae65083"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "example.wrapper",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 1580,
+      "end": 2846
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. The local declarations define both destructor bodies and their nested consumption behavior; unpacking links to Shared. The appendix is optional navigation because the example describes its own behavior and has the direct prerequisite link.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. No formal equations. self, resource and w are bound by the displayed declaration and statements; no borrowed permission notation is used."
+  }
+}

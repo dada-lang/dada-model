@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "2dfe06360c72562345379a40228f40305c3e4b634b5c6113b4513781acb2791a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c8cc0b8b6abef8a10509119d2140141701f58f8925ed109a7a9eb157fbf76014",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation. The selected defining body includes its local setup, conditions and direct prerequisite links. H and H′ are named as heaps in the defining sentence for RetainsClasses. Root multiplicity and typed pending values are explained with the realization link, without hidden equations.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "699238a45d2fe2d965a4d59baa8acb9989c029488cd48a9d6370bdd2d603c9d3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "heap obligations",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 20152,
+      "end": 21662
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. H and H′ are named as heaps in the defining sentence for RetainsClasses. Root multiplicity and typed pending values are explained with the realization link, without hidden equations."
+  }
+}

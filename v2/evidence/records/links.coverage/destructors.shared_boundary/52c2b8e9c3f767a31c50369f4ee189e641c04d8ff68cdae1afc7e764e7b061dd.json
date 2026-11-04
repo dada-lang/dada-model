@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "903db08d506797ccc991f3fb20d488f246f924312b01fb17af023c0d332bfa3f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:8c93add9c0c83a776892d18710675ad1a169196ba74e7618d4b2ef28a872c904",
+    "audit:unit:destructors.body_typing",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.shared_boundary",
+    "audit:unit:shared.typing.safety",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines the componentwise Functions embedding and exit condition in prose, links result evaluation and frame completion, and states the qualified step equivalence. It explicitly excludes unconditional preservation of old typings. The exit condition quantifies over all possible result evaluations; no displayed symbols or undeclared environments are introduced.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "e7c5f3f4500365eb2f57ae026a7a411c87184a7115a785bc6f7260533ccb8385"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines the componentwise Functions embedding and exit condition in prose, links result evaluation and frame completion, and states the qualified step equivalence. It explicitly excludes unconditional preservation of old typings.",
+    "mathematics": "The exit condition quantifies over all possible result evaluations; no displayed symbols or undeclared environments are introduced.",
+    "links": [
+      {
+        "occurrence": "destructors.shared_boundary:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'result evaluation' supplies the definition or concrete example setup used here, at functions.md#claim-functions.return. Defines the componentwise Functions embedding and exit condition in prose, links result evaluation and frame completion, and states the qualified step equivalence. It explicitly excludes unconditional preservation of old typings."
+      },
+      {
+        "occurrence": "destructors.shared_boundary:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'frame completion' supplies the definition or concrete example setup used here, at #claim-destructors.finished_environment. Defines the componentwise Functions embedding and exit condition in prose, links result evaluation and frame completion, and states the qualified step equivalence. It explicitly excludes unconditional preservation of old typings."
+      }
+    ]
+  }
+}

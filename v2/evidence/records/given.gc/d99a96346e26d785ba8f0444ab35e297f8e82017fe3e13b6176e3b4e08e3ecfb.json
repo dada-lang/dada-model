@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "ce3fe316f25317d0d421ad75caa91a094b74da1bb369d34847fcdd61450101ad",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/Frames:Configuration",
+    "lean:Unique/Frames:Configuration.collect",
+    "lean:Unique/Frames:Configuration.initial",
+    "lean:Unique/Frames:Configuration.running",
+    "lean:Unique/Frames:Configuration.state",
+    "lean:Unique/Frames:Frame",
+    "lean:Unique/Frames:State.collect",
+    "lean:Unique/State:Live",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.gc",
+    "unit:given.identities",
+    "unit:given.machine",
+    "unit:given.programs",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Live is inductively rooted at initialized local slots and closed through initialized fields of reached objects. State.collect filters existing entries by Live and Configuration.collect uses projected active locals or []. It changes only objects, preserving frame, counter and surviving entries. With no locals Live.has_variable excludes every live object, establishing empty-heap collection. The unit explicitly states whole-statement boundaries and noncomputability; these boundaries are specified by the following Step unit. Opening-example re-review: the exact earlier authored unit and selected declarations/tests are unchanged from the last reviewed packet. The added OpeningChecks examples leave all language rules, earlier tests and theorem statements unchanged; the newly cited example propositions were reviewed separately. This is a differential author review, not an independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "566869632b6d9fa9afd565a6cda8dec09706c1e4a16709f23ae957fbd4c25ec9"
+  ]
+}

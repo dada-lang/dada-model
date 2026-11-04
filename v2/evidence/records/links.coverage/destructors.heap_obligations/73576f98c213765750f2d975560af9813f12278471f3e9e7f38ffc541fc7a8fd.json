@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "bundle": "eec8bf089824a1bac9717a9ce8de45c0ff2ab1f6144c0ba01a5aa4cf5340f4c7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Opening-example author review. Read the added concrete programs and exact Lean example propositions, including ownership return and caller cleanup, unique/shared struct effects, a shared struct field left by a class destructor, partial-instance unpacking, and an ordinary call consuming both a parameter and local. Moved the existing empty/recursive cases before the formal rules and replaced their forward rule references with concrete earlier context. Compared unchanged required inputs byte-for-byte with the prior reviewed packets; those earlier judgments are retained by differential review, not claimed as independent new readings. Reviewed changed chapter link coverage, target landings and navigation references. No subagents were used; full-source snapshots are freshness inputs rather than proof-tactic audit claims",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:85bba34d7493853d754e20469c6b70e7fc1ff7e55767b2f552cf9f47ed2e9102",
+    "audit:target:a5c71aae5d779970f59da90b8b016cb2144890c06151d49ddcdd5a1f53c7ca45",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.heap_obligations",
+    "audit:unit:destructors.machine",
+    "audit:unit:shared.liveness",
+    "audit:unit:shared.well_formed",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation. H and H′ are named as heaps in the defining sentence for RetainsClasses. Root multiplicity and typed pending values are explained with the realization link, without hidden equations.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "8b4e408bc8744447486e03d59fb21669cb350f3cf3fa9c6621fe0fdce96f5d26"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation.",
+    "mathematics": "H and H′ are named as heaps in the defining sentence for RetainsClasses. Root multiplicity and typed pending values are explained with the realization link, without hidden equations.",
+    "links": [
+      {
+        "occurrence": "destructors.heap_obligations:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'live frames' supplies the definition or concrete example setup used here, at #claim-destructors.machine. The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation."
+      },
+      {
+        "occurrence": "destructors.heap_obligations:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'finished environment' supplies the definition or concrete example setup used here, at #claim-destructors.finished_environment. The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation."
+      },
+      {
+        "occurrence": "destructors.heap_obligations:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Shared's realization' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.realization. The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation."
+      },
+      {
+        "occurrence": "destructors.heap_obligations:4",
+        "role": "conceptual",
+        "rationale": "The occurrence 'simultaneous unique and shared paths' supplies the definition or concrete example setup used here, at shared.md#claim-shared.path_exclusivity. The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation."
+      },
+      {
+        "occurrence": "destructors.heap_obligations:5",
+        "role": "conceptual",
+        "rationale": "The occurrence 'view' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.types. The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation."
+      }
+    ]
+  }
+}
