@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "fba686af9df97099ed1d0aea7c47b1b3dd7ddb44b01ee56d1c43a09ebca1624f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1351e1c6cc8ff51db610855b1d6e4c1572ca7e99bf1cc523d1aba6d737c4b45f",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.execution directly introduces extended execution closure and exact step counts. The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation. The star and k superscripts are the defining occurrences. The underlying extended step relation is linked in the sentence introducing them. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d55b2d3e350bd28c0bba74ffac0f87b589f6ac9b98653af7942bced25d70bfe2"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "extended execution closure and exact step counts",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 31342,
+      "end": 31752
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.execution directly introduces extended execution closure and exact step counts. The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation.",
+    "independence": "The star and k superscripts are the defining occurrences. The underlying extended step relation is linked in the sentence introducing them. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

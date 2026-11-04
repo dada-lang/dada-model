@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "e5da0c50dc6748f5cb59029331eadc93e83a9a02f4a98db87b1ed6b022672498",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.sources.exact_selection",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The first paragraph now defines exact source selection; subsequent paragraphs explain rule and mutual-group special cases directly. This unit is the introduction of the extraction boundary, so no self-link is needed. There are no formulas. Constructor names, quoted identifiers and mutual are source-language syntax whose treatment is explained here.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "504d15d3fc425d57a40fac2d94865a835af4db1379c8654d680812ec41a8ea96"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The first paragraph now defines exact source selection; subsequent paragraphs explain rule and mutual-group special cases directly. This unit is the introduction of the extraction boundary, so no self-link is needed.",
+    "mathematics": "There are no formulas. Constructor names, quoted identifiers and mutual are source-language syntax whose treatment is explained here.",
+    "links": []
+  }
+}

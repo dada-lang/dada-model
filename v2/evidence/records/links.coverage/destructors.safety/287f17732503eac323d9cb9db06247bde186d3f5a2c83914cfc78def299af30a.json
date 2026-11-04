@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "1f03e744b56315911445c5f476e155488dc54c4f6cabf0f6bbfb7aba6d7a3e03",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2948fd23e337d523facb0a0bd8446f0c73151a1b3773cee11a0866dd45cc1d0a",
+    "audit:target:c8cc0b8b6abef8a10509119d2140141701f58f8925ed109a7a9eb157fbf76014",
+    "audit:target:eeeaf9fbda37ca8ff670f396e78c8668da960396eb7978c2ccea392e172cde77",
+    "audit:unit:destructors.body_typing",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.heap_obligations",
+    "audit:unit:destructors.safety",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links program typing, configuration typing and step execution. The finite-prefix quantifier and no-termination limitation are explicit. No new judgment notation; all named semantic objects have preceding definitions and links.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "f20c33f81f3fb31aee67fef0e00b071489a1734e375d4f7c8c74d7ea86104f3a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links program typing, configuration typing and step execution. The finite-prefix quantifier and no-termination limitation are explicit.",
+    "mathematics": "No new judgment notation; all named semantic objects have preceding definitions and links.",
+    "links": [
+      {
+        "occurrence": "destructors.safety:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'well-typed program' supplies the definition or concrete example setup used here, at #claim-destructors.body_typing. Links program typing, configuration typing and step execution. The finite-prefix quantifier and no-termination limitation are explicit."
+      },
+      {
+        "occurrence": "destructors.safety:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'typed configuration' supplies the definition or concrete example setup used here, at #claim-destructors.heap_obligations. Links program typing, configuration typing and step execution. The finite-prefix quantifier and no-termination limitation are explicit."
+      },
+      {
+        "occurrence": "destructors.safety:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'take a step' supplies the definition or concrete example setup used here, at #claim-destructors.execution. Links program typing, configuration typing and step execution. The finite-prefix quantifier and no-termination limitation are explicit."
+      }
+    ]
+  }
+}

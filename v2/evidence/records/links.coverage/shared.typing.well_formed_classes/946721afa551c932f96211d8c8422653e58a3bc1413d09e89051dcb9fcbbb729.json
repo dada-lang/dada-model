@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "8ebe6772a2509bc5a477d072a9d6af6ed0f98e9693e10457b36b7d62f63c1d96",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:11aed29a6b82dfc70e7df19c3fad999a9f8fa3cfb7d1b2ebf35e0b7a63f92a16",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:shared.struct",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.well_formed_classes",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The shared.typing.well_formed_classes unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types. The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "357a69f62d8d09e39c982712079ab05948d9f08e27e2d83a6e542d5265c9e560"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The shared.typing.well_formed_classes unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types.",
+    "mathematics": "The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions.",
+    "links": [
+      {
+        "occurrence": "shared.typing.well_formed_classes:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'typed class table' refers to md/shared-typing.md#claim-shared.typing.declarations for the concept or example setup used by this unit. The shared.typing.well_formed_classes unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.well_formed_classes:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'struct(F)' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. The shared.typing.well_formed_classes unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      }
+    ]
+  }
+}

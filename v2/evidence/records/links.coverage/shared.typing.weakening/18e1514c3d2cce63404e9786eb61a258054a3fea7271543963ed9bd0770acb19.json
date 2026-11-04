@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "bundle": "32a1773e521af405adc4dcdd33d2487bac26e3ed7a79a1e2dd822a25a03b6fb6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7ca3252c424052cffbaaf2fb3da6b66220637dbf063c6038d7142db073228302",
+    "audit:target:9706361cb1416b8b1c72f68388e43e6c094bdc6596edd42a0dfa82b82f58194d",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:given.typing.forgetting",
+    "audit:unit:shared.evaluation",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.observations",
+    "audit:unit:shared.typing.weakening",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Subtype requires equal permissions and the Given nominal subtype relation. For normalized types that relation is equal base class plus inclusion of the target's positive and negative observations in the source. Thus weakening cannot silently convert given into shared.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "ffdf0592b7e117799fc9fdecf47157aa01ac32960029f90b7080bd0719575d92"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Subtype requires equal permissions and the Given nominal subtype relation. For normalized types that relation is equal base class plus inclusion of the target's positive and negative observations in the source. Thus weakening cannot silently convert given into shared.",
+    "links": [
+      {
+        "occurrence": "shared.typing.weakening:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Given' refers to md/given-typing.md#claim-given.typing.forgetting for the concept or example setup used by this unit. Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion."
+      },
+      {
+        "occurrence": "shared.typing.weakening:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalized types' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion."
+      },
+      {
+        "occurrence": "shared.typing.weakening:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}_{\\\\Sigma}(U)' refers to md/shared-typing.md#claim-shared.typing.observations for the concept or example setup used by this unit. Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion."
+      },
+      {
+        "occurrence": "shared.typing.weakening:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}_{\\\\Sigma}(T)' refers to md/shared-typing.md#claim-shared.typing.observations for the concept or example setup used by this unit. Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion."
+      },
+      {
+        "occurrence": "shared.typing.weakening:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}_{\\\\Sigma}(U)' refers to md/shared-typing.md#claim-shared.typing.observations for the concept or example setup used by this unit. Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion."
+      },
+      {
+        "occurrence": "shared.typing.weakening:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}_{\\\\Sigma}(T)' refers to md/shared-typing.md#claim-shared.typing.observations for the concept or example setup used by this unit. Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion."
+      },
+      {
+        "occurrence": "shared.typing.weakening:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'give-share operation' refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion."
+      }
+    ]
+  }
+}

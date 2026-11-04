@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "bundle": "5c70571d0458208a1d6f7b1c688239987a0111db9db53885b7cf3dc25f08f2b8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:69b3d55447d920253867baf2a85e8926fb42f26962b21ba3fe0049eb1951e922",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:90551fc1b4acbc85cd0af545697c9e6593adef6b426431e751cb7e9684fbc7b8",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.normalization_correct",
+    "audit:unit:given.typing.observations",
+    "audit:unit:given.typing.well_formed_classes",
+    "audit:unit:given.typing.well_formed_types",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Both well-formedness premises, normalization, and base projection have direct links. Every pos/neg/N occurrence in the equations links to its introducing definition. The theorem adds preservation and idempotence rather than an unexplained auxiliary relation.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "302b6c01a0cb6ce908eae1cf8939b98d1dc21ab12d877356f49c4bdb993e9903"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Both well-formedness premises, normalization, and base projection have direct links.",
+    "mathematics": "Every pos/neg/N occurrence in the equations links to its introducing definition. The theorem adds preservation and idempotence rather than an unexplained auxiliary relation.",
+    "links": [
+      {
+        "occurrence": "given.typing.normalization_correct:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed class table' refers to md/given-typing.md#claim-given.typing.well_formed_classes for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      },
+      {
+        "occurrence": "given.typing.normalization_correct:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed type' refers to md/given-typing.md#claim-given.typing.well_formed_types for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      },
+      {
+        "occurrence": "given.typing.normalization_correct:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalization' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      },
+      {
+        "occurrence": "given.typing.normalization_correct:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'base class' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      },
+      {
+        "occurrence": "given.typing.normalization_correct:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      },
+      {
+        "occurrence": "given.typing.normalization_correct:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf N' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      },
+      {
+        "occurrence": "given.typing.normalization_correct:7",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      },
+      {
+        "occurrence": "given.typing.normalization_correct:8",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      },
+      {
+        "occurrence": "given.typing.normalization_correct:9",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf N' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      },
+      {
+        "occurrence": "given.typing.normalization_correct:10",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      },
+      {
+        "occurrence": "given.typing.normalization_correct:11",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf N' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      },
+      {
+        "occurrence": "given.typing.normalization_correct:12",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf N' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      },
+      {
+        "occurrence": "given.typing.normalization_correct:13",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf N' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Both well-formedness premises, normalization, and base projection have direct links."
+      }
+    ]
+  }
+}

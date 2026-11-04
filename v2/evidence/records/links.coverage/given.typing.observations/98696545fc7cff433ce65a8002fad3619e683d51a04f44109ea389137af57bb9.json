@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "a76d9277bf71f5b1f6cd4d614cf8220d428890f53a7682c51b2b298a2c8c52c9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.observations",
+    "audit:unit:given.typing.views",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The type and valid-descendant concepts link directly. The four bullets define positive/negative observations and explain the negative-slot boundary. pos and neg are introduced as the two observations of one view; epsilon, entries, and prefix relations are the view grammar components explained in the bullets.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b266f31c9629290bad822b7291ba92e5ac11feb1793acbbd6297be7bb19536da"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The type and valid-descendant concepts link directly. The four bullets define positive/negative observations and explain the negative-slot boundary.",
+    "mathematics": "pos and neg are introduced as the two observations of one view; epsilon, entries, and prefix relations are the view grammar components explained in the bullets.",
+    "links": [
+      {
+        "occurrence": "given.typing.observations:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'type' refers to md/given-typing.md#claim-given.typing.views for the concept or example setup used by this unit. The type and valid-descendant concepts link directly. The four bullets define positive/negative observations and explain the negative-slot boundary."
+      },
+      {
+        "occurrence": "given.typing.observations:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'valid descendants' refers to md/given-typing.md#claim-given.typing.class_at for the concept or example setup used by this unit. The type and valid-descendant concepts link directly. The four bullets define positive/negative observations and explain the negative-slot boundary."
+      }
+    ]
+  }
+}

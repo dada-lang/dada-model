@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "778e7c80fbff734e8bb64fe0e42781ef3b738ef8b1e298258b73e34c76c68616",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4ba614a624608047955c9ae8f552242a0a12fdc9b4cec2848e20eb9b3287e39c",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.composition directly introduces shared.typing.composition. Links permission grammar; the unique table defines juxtaposition of outer and inner permissions. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.comp returns given only for the pair given/given and shared in the other three cases, exactly the four table cells. Both operands are permissions, not object classifications. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "94d1eff7301a442494c8cfb2b041b98da1053615a36af6d159b821c6494e5b01"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.composition",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 2309,
+      "end": 2618
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.composition directly introduces shared.typing.composition. Links permission grammar; the unique table defines juxtaposition of outer and inner permissions.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.comp returns given only for the pair given/given and shared in the other three cases, exactly the four table cells. Both operands are permissions, not object classifications. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "c4478ad07bbb14e7bb8b9dc8e6de4e22ab83da914d19a6f444d29ed6cba1b399",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.units.closed_body",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This unit defines the closed-body/preprocessing contract itself and spells out all three prohibited expansion forms. Its original-source comparison and scope limitation are explained locally; it does not depend on another undisclosed predicate. There is no mathematical equation or inference rule. Directive names and raw unit IDs are authoring syntax, described here rather than reused model notation.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "463e416f61717406ec77ad75aadae4828c41d49248db32ed4fae344c6d01bcb4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This unit defines the closed-body/preprocessing contract itself and spells out all three prohibited expansion forms. Its original-source comparison and scope limitation are explained locally; it does not depend on another undisclosed predicate.",
+    "mathematics": "There is no mathematical equation or inference rule. Directive names and raw unit IDs are authoring syntax, described here rather than reused model notation.",
+    "links": []
+  }
+}

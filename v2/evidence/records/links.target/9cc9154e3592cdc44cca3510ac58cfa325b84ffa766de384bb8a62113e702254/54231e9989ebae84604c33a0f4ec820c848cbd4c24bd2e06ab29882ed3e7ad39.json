@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "1ffa64088129ac19872c412ddab9c2f6c12767fb1c3bf3bcdb6265e3e3f975f9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:9cc9154e3592cdc44cca3510ac58cfa325b84ffa766de384bb8a62113e702254",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.gc directly introduces Reachability  starts at an initialized slot of the [live frame](#claim-shared.machine) and follows [initialized object fields](#claim-shared.objects). Write \\\\(. Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop. S_K, D and the filtered heap are scoped in the text; gc retains the counter/frame and surviving object data. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "83fcc60fcb8685cb1a6a7ba7eb004277326988b87571a948e8c10bfb3e457c53"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Reachability  starts at an initialized slot of the [live frame](#claim-shared.machine) and follows [initialized object fields](#claim-shared.objects). Write \\\\(",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 14220,
+      "end": 15191
+    },
+    "clarity": "The landing md/shared.md#claim-shared.gc directly introduces Reachability  starts at an initialized slot of the [live frame](#claim-shared.machine) and follows [initialized object fields](#claim-shared.objects). Write \\\\(. Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop.",
+    "independence": "S_K, D and the filtered heap are scoped in the text; gc retains the counter/frame and surviving object data. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

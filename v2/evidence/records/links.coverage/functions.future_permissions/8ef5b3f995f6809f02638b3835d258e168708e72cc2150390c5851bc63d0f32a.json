@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "ff11ba9cf35214e91aa6f74f674f2c494f75088b438ee87f9bfb2aaff12e7114",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:unit:functions.future_permissions",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the current owned permission grammar and explicitly marks leased/generic defaults as intended extensions. P and place lists are introduced as proposed permissions; readable(P) is explicitly a candidate rather than a current predicate requiring a definition.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "f092a6bcf8fb77d77c4b8e52a0663741a9bce00493daab35f823e4e251dc2cce"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the current owned permission grammar and explicitly marks leased/generic defaults as intended extensions.",
+    "mathematics": "P and place lists are introduced as proposed permissions; readable(P) is explicitly a candidate rather than a current predicate requiring a definition.",
+    "links": [
+      {
+        "occurrence": "functions.future_permissions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'owned permissions' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links the current owned permission grammar and explicitly marks leased/generic defaults as intended extensions."
+      }
+    ]
+  }
+}

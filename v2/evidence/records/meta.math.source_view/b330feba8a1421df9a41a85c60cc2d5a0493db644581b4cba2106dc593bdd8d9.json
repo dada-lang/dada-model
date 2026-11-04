@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "b105ecf594b2b62dd47e09278d1ce602fdbda11c2636f8cd165b8c329ac67181",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:markdown_heading",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "rust:mdbook-dada/src/lib.rs:selector_header",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "test:mdbook-dada/tests/book.rs:unanchored_rendered_blocks_share_named_headers_and_grouped_choices",
+    "test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent",
+    "test:mdbook-dada/tests/units.rs:meta_units_show_named_rust_implementation_and_test",
+    "test:mdbook-dada/tests/units.rs:structured_units_render_identified_headers_and_exact_lean_views",
+    "unit:meta.math.source_view",
+    "unit:meta.syntax.anchors.identity"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.source_view against rust:mdbook-dada/src/lib.rs:selector_header, rust:mdbook-dada/src/lib.rs:markdown_heading, rust:mdbook-dada/src/lib.rs:render_unit, rust:mdbook-dada/src/lib.rs:render, test:mdbook-dada/tests/book.rs:leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup, test:mdbook-dada/tests/book.rs:nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body, test:mdbook-dada/tests/book.rs:unanchored_rendered_blocks_share_named_headers_and_grouped_choices, test:mdbook-dada/tests/units.rs:structured_units_render_identified_headers_and_exact_lean_views, test:mdbook-dada/tests/units.rs:meta_units_show_named_rust_implementation_and_test, test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent. selector_header uses an identified left heading and shared-group Rendered/alternate radio controls with Rendered checked; render_unit emits exact cited source selections and draft badges. markdown_heading moves only leading defining roles. Tests verify IDs appear once, later anchors stay in bodies, nested controls have distinct names and CSS direct-child selectors isolate panes. CSS inspection is not claimed as browser execution. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "ce0c7c41d61b949a5d08b96210941833a7b8586ab1cd668774f3dd1c89c8ee1c"
+  ]
+}

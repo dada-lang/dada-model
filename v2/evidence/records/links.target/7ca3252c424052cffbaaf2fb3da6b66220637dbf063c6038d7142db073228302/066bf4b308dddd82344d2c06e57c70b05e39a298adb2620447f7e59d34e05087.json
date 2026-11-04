@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "ea84c33b1e40e6932c24d6274190defc37bab4692fcf99fa31147d9b8aa14dd6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7ca3252c424052cffbaaf2fb3da6b66220637dbf063c6038d7142db073228302",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.observations directly introduces shared.typing.observations. Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Pos delegates to Unique.Typing.Pos on the nominal table/view; Neg delegates to the nominal view's negative-entry predicate. Both ignore the outer permission, as the two displayed equalities claim; initialized subtrees still include permission-bearing fields. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "72c6bd9f85d4b092a5636a59580df0f130a0968fe1328bb204c89132c35a3175"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.observations",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 8968,
+      "end": 9914
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.observations directly introduces shared.typing.observations. Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Pos delegates to Unique.Typing.Pos on the nominal table/view; Neg delegates to the nominal view's negative-entry predicate. Both ignore the outer permission, as the two displayed equalities claim; initialized subtrees still include permission-bearing fields. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

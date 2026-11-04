@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "0d721676240b57894ef911210df020f22c1d94c9aea8c5a76db2e292fcf3d794",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a395ec3d77295857a26e9571e271df4e3a3c5c6ae23ac869fc9fd981731e6507",
+    "audit:unit:given.allocated",
+    "audit:unit:given.state",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table. Allocated is the predicate being defined; O and dom are identified by the local S decomposition and the linked object table.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "eed44b6a49a4cb8d051ce2985d22b707823488ec79c6fa2c3760a6b867a2f235"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table.",
+    "mathematics": "Allocated is the predicate being defined; O and dom are identified by the local S decomposition and the linked object table.",
+    "links": [
+      {
+        "occurrence": "given.allocated:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'object table' refers to md/given.md#claim-given.state for the concept or example setup used by this unit. Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table."
+      }
+    ]
+  }
+}

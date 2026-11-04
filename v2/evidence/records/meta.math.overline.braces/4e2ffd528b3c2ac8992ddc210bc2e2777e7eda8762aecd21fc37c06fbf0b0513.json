@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "63d0334ad0e0e7694c819b0d2a479804839fe1af5c23b51e6fbc5d694524c084",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lint.rs:check_latex",
+    "test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions",
+    "test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex",
+    "test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf",
+    "test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed",
+    "test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space",
+    "unit:meta.math.overline.braces"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.overline.braces against rust:mdbook-dada/src/lint.rs:check_latex, test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space, test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed, test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf, test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex, test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions. check_latex uses a raw-source regex for the exact control word, requiring an immediately preceding brace and literal ASCII space after it. Tests distinguish tabs/newlines/nonbreaking spaces and longer names, verify Unicode/CRLF line counts, apply the lint in nested book chapters/literal samples and scan all md files recursively. The prose correctly limits this to adjacency rather than TeX parsing. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "891edf11890b1f525742b6e08ae5340145bf535683ae23dbb559d214996a7401"
+  ]
+}

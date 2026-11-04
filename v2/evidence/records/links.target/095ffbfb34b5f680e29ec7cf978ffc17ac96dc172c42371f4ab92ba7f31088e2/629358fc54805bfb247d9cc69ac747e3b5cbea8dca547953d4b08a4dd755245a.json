@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "efce5f1de2f53b48ff9b1594316a4c227ecfc3277537d6155bffc21e6d92e8e0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.unpacking directly introduces Given unpacking transition semantics. Links Eval, original Let, extended pattern syntax and the class table. The removal/map-extension equations are local adjuncts defining Unpack, not unexplained global operators. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation. Eval and Δ(C) in the rule are linked. Removal of the container and adding the enumerated field slots are given by local equations and freshness/order adjuncts. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d9bdc0fccfdba51bf0606c0b9fd09d1776a525d697f258bd9876327656de3b21"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given unpacking transition semantics",
+    "definition": {
+      "path": "md/given.md",
+      "start": 25864,
+      "end": 27808
+    },
+    "clarity": "The landing md/given.md#claim-given.unpacking directly introduces Given unpacking transition semantics. Links Eval, original Let, extended pattern syntax and the class table. The removal/map-extension equations are local adjuncts defining Unpack, not unexplained global operators. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation.",
+    "independence": "Eval and Δ(C) in the rule are linked. Removal of the container and adding the enumerated field slots are given by local equations and freshness/order adjuncts. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

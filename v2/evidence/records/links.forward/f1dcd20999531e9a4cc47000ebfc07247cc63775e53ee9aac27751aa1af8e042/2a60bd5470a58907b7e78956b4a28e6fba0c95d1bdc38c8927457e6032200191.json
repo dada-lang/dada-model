@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "5d0c546ec29eec6c12c030d65621bf8a54069463e855ae55748aba618cff3aa2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:unit:functions.example.stack_safety",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Reviewed source/destination order and the classified occurrence: {\"kind\": \"forward\", \"necessity\": \"The nested call already has a complete earlier operational example. This short safety preview identifies the new issue—an undelivered caller result—before introducing the continuation invariant. Moving the full invariant earlier would require introducing typed roots/continuation environments before stating the problem they solve; moving this paragraph later would remove that motivation. Splitting it would either duplicate the nested example or leave its promised-result issue unmotivated.\", \"signposting\": \"The selected source passage explicitly identifies the following definition and limits the current preview: The following [stack-typing definition](#claim-functions.stack_typing) explains what being well typed means for a suspended\\ncaller whose result has not arrived yet.\", \"signpost\": {\"path\": \"md/functions.md\", \"start\": 30518, \"end\": 30682}, \"minimal_use\": \"Only the finite-prefix conclusion (the whole stack stays typed and cannot get stuck) and the need to account for a suspended caller are previewed. The paragraph does not use the later judgment to derive another result; its component definitions follow immediately after the typed-root introduction.\"}",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "7ffc8e4058bfb0213790753db54bbeda59abe4b701d0633e2c71ad4d2926a68c"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The nested call already has a complete earlier operational example. This short safety preview identifies the new issue—an undelivered caller result—before introducing the continuation invariant. Moving the full invariant earlier would require introducing typed roots/continuation environments before stating the problem they solve; moving this paragraph later would remove that motivation. Splitting it would either duplicate the nested example or leave its promised-result issue unmotivated.",
+      "signposting": "The selected source passage explicitly identifies the following definition and limits the current preview: The following [stack-typing definition](#claim-functions.stack_typing) explains what being well typed means for a suspended\ncaller whose result has not arrived yet.",
+      "signpost": {
+        "path": "md/functions.md",
+        "start": 30518,
+        "end": 30682
+      },
+      "minimal_use": "Only the finite-prefix conclusion (the whole stack stays typed and cannot get stuck) and the need to account for a suspended caller are previewed. The paragraph does not use the later judgment to derive another result; its component definitions follow immediately after the typed-root introduction."
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "a6298a6b01a70b5be01a2a0f6fb619d0c04a60fda749fa4a42359f42ca16925a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:ea88350f35acf3dbe92ab2a6eee84184c0fb823f75907318dc522380864a6084",
+    "audit:unit:given.classes",
+    "audit:unit:given.collections",
+    "audit:unit:given.programs",
+    "audit:unit:given.syntax",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links class declarations and statements, then defines the program/class-table/statement-sequence grammar. Finite-map conventions and table well-formedness now have separate targets. Δ, P and Π are introduced by the local grammar; C/f/t come from linked class and statement syntax. Brackets, [] and cons are explained with this grammar.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "8f6cf3c9fc457044d4b4fd4851d38f2dd8a0c7313ddc83f1670d2670987bf3ea"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links class declarations and statements, then defines the program/class-table/statement-sequence grammar. Finite-map conventions and table well-formedness now have separate targets.",
+    "mathematics": "Δ, P and Π are introduced by the local grammar; C/f/t come from linked class and statement syntax. Brackets, [] and cons are explained with this grammar.",
+    "links": [
+      {
+        "occurrence": "given.programs:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class declarations' refers to md/given.md#claim-given.classes for the concept or example setup used by this unit. Links class declarations and statements, then defines the program/class-table/statement-sequence grammar. Finite-map conventions and table well-formedness now have separate targets."
+      },
+      {
+        "occurrence": "given.programs:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statements' refers to md/given.md#claim-given.syntax for the concept or example setup used by this unit. Links class declarations and statements, then defines the program/class-table/statement-sequence grammar. Finite-map conventions and table well-formedness now have separate targets."
+      }
+    ]
+  }
+}

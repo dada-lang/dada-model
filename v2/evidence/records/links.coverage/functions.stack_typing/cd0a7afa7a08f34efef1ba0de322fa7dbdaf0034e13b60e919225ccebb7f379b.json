@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "bundle": "2a4decb6b21706af31b3ed3b2a36ce65d8a26ab2f5dcefaa99e849d79f5c64ea",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5b191b4ae73004553b8e41cc5f545f7c147cba689bcb49ef7849cef20bd54b19",
+    "audit:target:5b6edfc4552c30336364dae954c14a37455bd57d299ebed99a5460518636b203",
+    "audit:target:79283484adee6a2142c00e38e1f1accde4d861bb79aa4ecbf735a13e187ee7c9",
+    "audit:target:7dc073f30dfdeb7c8e9599d8a935c9ddd6bc39f688b2ff9fd1a3dd55453c75d7",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:unit:functions.bodies",
+    "audit:unit:functions.environments",
+    "audit:unit:functions.frame_slots",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.stack_typing",
+    "audit:unit:shared.typing.realization",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer. The ok judgment is introduced here; BodyFrom/ContinuationTyped/StackShape are explained as its components, not prerequisites assumed from a later proof.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "0be0da3e65bdac7be5187298ee28bdb5bd67e39c23624c65cd86e2155eabd8d8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer.",
+    "mathematics": "The ok judgment is introduced here; BodyFrom/ContinuationTyped/StackShape are explained as its components, not prerequisites assumed from a later proof.",
+    "links": [
+      {
+        "occurrence": "functions.stack_typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal' refers to md/shared-typing.md#claim-shared.typing.well_formed_classes for the concept or example setup used by this unit. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer."
+      },
+      {
+        "occurrence": "functions.stack_typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'callable tables must check' refers to md/functions.md#claim-functions.declaration_typing for the concept or example setup used by this unit. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer."
+      },
+      {
+        "occurrence": "functions.stack_typing:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'environment' refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer."
+      },
+      {
+        "occurrence": "functions.stack_typing:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'delivery typing judgment' refers to md/functions.md#claim-functions.destination_typing for the concept or example setup used by this unit. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer."
+      },
+      {
+        "occurrence": "functions.stack_typing:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared realization' refers to md/shared-typing.md#claim-shared.typing.realization for the concept or example setup used by this unit. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer."
+      },
+      {
+        "occurrence": "functions.stack_typing:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'typed roots' refers to md/functions.md#claim-functions.frame_slots for the concept or example setup used by this unit. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer."
+      }
+    ]
+  }
+}

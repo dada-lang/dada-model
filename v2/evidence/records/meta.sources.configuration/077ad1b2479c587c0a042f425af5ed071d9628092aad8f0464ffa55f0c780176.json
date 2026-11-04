@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "2e90713919da55842669dfb307d1d6a46bb3cb4f3e02351bcf626d6b955fcb2a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::check_context",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::load",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::markdown_root",
+    "rust:mdbook-dada/src/inventory.rs:Inventory::inputs",
+    "rust:mdbook-dada/src/lib.rs:process_configured",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_lean_root_is_shared_by_rendering_and_evidence",
+    "unit:meta.sources.configuration"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.sources.configuration against rust:mdbook-dada/src/configuration.rs:SourceConfiguration::load, rust:mdbook-dada/src/configuration.rs:SourceConfiguration::lean_root, rust:mdbook-dada/src/configuration.rs:SourceConfiguration::markdown_root, rust:mdbook-dada/src/configuration.rs:SourceConfiguration::check_context, rust:mdbook-dada/src/lib.rs:process_configured, rust:mdbook-dada/src/inventory.rs:Inventory::inputs, test:mdbook-dada/tests/evidence_validation.rs:configured_lean_root_is_shared_by_rendering_and_evidence. SourceConfiguration loads book.toml and resolves both source roots through project containment; check_context rejects differing runtime overrides and process_configured uses those roots. Inventory includes book.toml. The test moves Lean sources under formal/model, verifies both renderer and bundle select the changed declaration, rejects an override and keeps Rust selection rooted at the project. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "acf752ef98abffb50597965b36ad81873fe28649e68547dff2f2c80a792fcb46"
+  ]
+}

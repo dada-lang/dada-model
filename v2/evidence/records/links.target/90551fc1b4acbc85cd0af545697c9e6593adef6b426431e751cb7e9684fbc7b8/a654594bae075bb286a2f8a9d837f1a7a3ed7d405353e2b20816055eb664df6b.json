@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "44c5a3b0e3be9b17c02ef49ccab43407d40c1dc5f761e2c4c0b4ad71163c9a38",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:90551fc1b4acbc85cd0af545697c9e6593adef6b426431e751cb7e9684fbc7b8",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.well_formed_classes directly introduces well-formed typed class tables. The typed-class-table link identifies the exact object constrained by the three conditions. There is no separate displayed equation or undefined operator: Sigma names the linked table. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "1ea1dae45f6789af2df9d99578085819de5eebbd9de5e57cb8cb8b680fe41954"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "well-formed typed class tables",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 1182,
+      "end": 1403
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.well_formed_classes directly introduces well-formed typed class tables. The typed-class-table link identifies the exact object constrained by the three conditions.",
+    "independence": "There is no separate displayed equation or undefined operator: Sigma names the linked table. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

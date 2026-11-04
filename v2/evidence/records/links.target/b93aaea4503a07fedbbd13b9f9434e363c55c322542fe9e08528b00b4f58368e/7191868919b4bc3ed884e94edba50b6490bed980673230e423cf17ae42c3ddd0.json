@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "1a83f5a8ab3c5083b325da59621fe21e5dbff58ee592fb182be98533a6598c96",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces raw transitions and collected public steps. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery. The linked judgments account for every raw-rule premise; H,V,n and evaluated variants are scoped immediately before the rules, B_r is defined there, and raw/public step symbols are the local definitions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "fee277137afa06de1e5fd0474175450881c314233dcf5286b4d8b9b6b0afb969"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "raw transitions and collected public steps",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 20207,
+      "end": 23255
+    },
+    "clarity": "The named landing directly introduces raw transitions and collected public steps. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery.",
+    "independence": "The linked judgments account for every raw-rule premise; H,V,n and evaluated variants are scoped immediately before the rules, B_r is defined there, and raw/public step symbols are the local definitions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

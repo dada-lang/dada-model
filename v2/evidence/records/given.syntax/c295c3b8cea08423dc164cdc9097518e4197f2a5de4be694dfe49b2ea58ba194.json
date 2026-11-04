@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "17873820c20e59ee1147ffbfa993520996c579a04edcc11db0f5a4657d0844bd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.syntax against lean:Unique/Syntax:VariableId, lean:Unique/Syntax:Place, lean:Unique/Syntax:Value, lean:Unique/Syntax:Statement. Place has variable/field constructors; Value has only give/new, with recursive argument lists; Statement contains a destination and value. These match the grammars and distinguish place syntax from value production. Freshness is an operational condition, not encoded in String variable names. Notation and judgment context was checked in unit:given.classes. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "21d5c5de066e2e40376efc5d524c743b96001a3494ef910ea12d008e1237ef01"
+  ]
+}

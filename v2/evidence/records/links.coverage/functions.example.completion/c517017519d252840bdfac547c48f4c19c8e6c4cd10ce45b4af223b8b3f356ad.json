@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "bundle": "96a741eb4a768071508fbea68c08f0c25c9d4111dad8be4cbd989a6412faa9df",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:618a1876c5e0f6e3d1a2e97b63b37ddf0cf4e48511e0f1a25626a9ec0ece535f",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:functions.bodies",
+    "audit:unit:functions.example.completion",
+    "audit:unit:functions.return",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally. The code demonstrates permissive final locals in this layer, and distinguishes full execution of leave from body typing of consume.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "ed8a4468dc2d7f99f6c8cc2c4fa1c703b842efd6b73db838132d159cc46598ee"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally.",
+    "mathematics": "The code demonstrates permissive final locals in this layer, and distinguishes full execution of leave from body typing of consume.",
+    "links": [
+      {
+        "occurrence": "functions.example.completion:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'accepts a function' refers to md/functions.md#claim-functions.bodies for the concept or example setup used by this unit. Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally."
+      },
+      {
+        "occurrence": "functions.example.completion:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'pops its frame' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally."
+      },
+      {
+        "occurrence": "functions.example.completion:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'eager GC' refers to md/functions.md#claim-functions.gc for the concept or example setup used by this unit. Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally."
+      },
+      {
+        "occurrence": "functions.example.completion:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Explicit unpacking' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally."
+      }
+    ]
+  }
+}

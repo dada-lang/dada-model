@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "6a14a2502adcd33bbf8ebd3c170025f82172431b4934e201f132ac1a3c9be972",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.typesetting",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This is the defining contract for authored math delimiters and preservation. The distinction between raw-TeX and Markdown bodies, escaped output and browser typesetting is stated locally. Delimiter samples and grammar rendering are syntax examples, not equations relying on model concepts. No mathematical reference needs an external definition.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "e3b31cf80a5d4a1d783585eb59c25d25a086c06de81a83e1bc8bb33ecf67ed45"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This is the defining contract for authored math delimiters and preservation. The distinction between raw-TeX and Markdown bodies, escaped output and browser typesetting is stated locally.",
+    "mathematics": "Delimiter samples and grammar rendering are syntax examples, not equations relying on model concepts. No mathematical reference needs an external definition.",
+    "links": []
+  }
+}

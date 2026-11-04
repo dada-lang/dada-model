@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "94758479bcf6bdc3bca87c9ab9cd6402503c2974e25a073ec0c730a52c9f25bd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:88a0c68272e833cbda1fa2978a4dd8727681d82a2bef9b7df637febb6f999b8f",
+    "audit:unit:given.classes",
+    "audit:unit:given.example.token",
+    "audit:unit:given.machine",
+    "audit:unit:given.programs",
+    "audit:unit:given.steps",
+    "audit:unit:given.syntax",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The complete Token program is local; empty storage, step, and Finished each link backwards. The example does not refer to later liveness theorems. The source program is local and uses previously introduced syntax. No additional equation or external predicate is assumed beyond the linked step/finished concepts.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d2dc42ac6f73506b0693eb1f8d219b54c3240752f6c043f6fecfe82ef1beda3f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The complete Token program is local; empty storage, step, and Finished each link backwards. The example does not refer to later liveness theorems.",
+    "mathematics": "The source program is local and uses previously introduced syntax. No additional equation or external predicate is assumed beyond the linked step/finished concepts.",
+    "links": [
+      {
+        "occurrence": "given.example.token:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty storage' refers to md/given.md#claim-given.empty_state for the concept or example setup used by this unit. The complete Token program is local; empty storage, step, and Finished each link backwards. The example does not refer to later liveness theorems."
+      },
+      {
+        "occurrence": "given.example.token:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. The complete Token program is local; empty storage, step, and Finished each link backwards. The example does not refer to later liveness theorems."
+      }
+    ]
+  }
+}

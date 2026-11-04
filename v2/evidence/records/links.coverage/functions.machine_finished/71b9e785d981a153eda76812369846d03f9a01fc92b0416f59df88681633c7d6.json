@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "9c24425379002b3c108bc61940589a5feb8bcb33844a900f2bddd2b8ccbb4802",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.machine_finished",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The configuration link supplies the frame stack; this unit directly defines completion as empty stack. No hidden predicate or storage retention claim. Empty code is explicitly distinguished from an absent frame.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "2dc8b4adf9f78f3212e76e74f51e9b9e0ac0693c5ae949617e4f05c999b82887"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The configuration link supplies the frame stack; this unit directly defines completion as empty stack.",
+    "mathematics": "No hidden predicate or storage retention claim. Empty code is explicitly distinguished from an absent frame.",
+    "links": [
+      {
+        "occurrence": "functions.machine_finished:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. The configuration link supplies the frame stack; this unit directly defines completion as empty stack."
+      }
+    ]
+  }
+}

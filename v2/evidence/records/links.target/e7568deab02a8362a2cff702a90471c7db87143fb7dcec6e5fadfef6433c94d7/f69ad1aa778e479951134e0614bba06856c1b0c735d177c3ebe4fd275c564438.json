@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "e421f12ae9e3d8ab37f7a7e4c5e806992de77847403ce4a6aaebc60e6ed10245",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e7568deab02a8362a2cff702a90471c7db87143fb7dcec6e5fadfef6433c94d7",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.update directly introduces Given replacement of an existing slot. The unit only defines the slot replacement operation; its defined-slot premise links to lookup. No auxiliary judgment is buried in this target. S[q←s] is introduced here and its lookup prerequisite is linked. It has no hidden auxiliary predicate or notation for deleting a slot. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "632fdc079274bbaaf9588464187f5f70d12edd0c18a84c8eba4c0d76112e1c89"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given replacement of an existing slot",
+    "definition": {
+      "path": "md/given.md",
+      "start": 6751,
+      "end": 7011
+    },
+    "clarity": "The landing md/given.md#claim-given.update directly introduces Given replacement of an existing slot. The unit only defines the slot replacement operation; its defined-slot premise links to lookup. No auxiliary judgment is buried in this target.",
+    "independence": "S[q←s] is introduced here and its lookup prerequisite is linked. It has no hidden auxiliary predicate or notation for deleting a slot. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

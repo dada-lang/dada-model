@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "5fe98583313b89cf4890c199b5cc633749f49ec079bb03b2e25a8a790d5982f4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6b62588dc91e02fb002f06c49a255ee88f8214c8d7ccbfa6ccf50802d1e5930a",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.collections directly introduces finite partial-map and finite-list notation. Finite-map and finite-list notation now has its own direct unit before programs. A and B are explicitly the domain/codomain; the named FiniteMap structure supplies finite entries with distinct keys. The two inline constructors A↛B and List(A) are the defined notation. A and B are locally identified domains rather than unlinked operations. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "8baa9ae17e9eeaadea24c4a182c6a35ae61c6046ccb400fb765fdfbb44f98cca"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "finite partial-map and finite-list notation",
+    "definition": {
+      "path": "md/given.md",
+      "start": 2196,
+      "end": 2373
+    },
+    "clarity": "The landing md/given.md#claim-given.collections directly introduces finite partial-map and finite-list notation. Finite-map and finite-list notation now has its own direct unit before programs. A and B are explicitly the domain/codomain; the named FiniteMap structure supplies finite entries with distinct keys.",
+    "independence": "The two inline constructors A↛B and List(A) are the defined notation. A and B are locally identified domains rather than unlinked operations. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

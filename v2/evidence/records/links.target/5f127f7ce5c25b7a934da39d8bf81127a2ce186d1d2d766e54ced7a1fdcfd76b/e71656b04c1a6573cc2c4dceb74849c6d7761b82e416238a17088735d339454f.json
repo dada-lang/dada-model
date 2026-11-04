@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "4503f143918241f16615a324ae3e8b1ba6929818be3b57671be405f612583e0d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Defines class-only optional destructor bodies, receiver and dedicated core name namespace; Shared declarations, whole types, explicit unpacking and struct field restrictions have direct links. The appendix only gathers these definitions. The selected defining body includes its local setup, conditions and direct prerequisite links. The code spellings drop { body }, →self and drop(C) are locally introduced; no mathematical premise is left undefined.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c8742a72cd0d2c20a77abb309baf86e755754d6221c33e34b7102b844b2e04f5"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "declarations",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 4735,
+      "end": 5924
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Defines class-only optional destructor bodies, receiver and dedicated core name namespace; Shared declarations, whole types, explicit unpacking and struct field restrictions have direct links. The appendix only gathers these definitions.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. The code spellings drop { body }, →self and drop(C) are locally introduced; no mathematical premise is left undefined."
+  }
+}

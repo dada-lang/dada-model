@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "4f14382d7b6c285c09843ba04a0e2cbaae60eb7c8d795da275910578a720c8a2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:828c2e9a592d1b90f2650b6136e24abe27a4c6886c1c3487d5a24c9e3f96fcf7",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.giving directly introduces shared.typing.giving. Links environment, place syntax, relative path, pos, focus, perm and emptying. All three Γ′ cases use explicit linked operators; the source-retained shared case is not an unmentioned dynamic choice. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. give splits the source place into a root and suffix, requires an inhabited variable and successful focus, then has exactly the three displayed branches: preserve the environment for shared, empty the root for given/epsilon, or apply emptyPath for a given field. It depends only on the static descriptions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "05dfb071208a3cfe3c7c27f78ea6ec987da5c0f7dbf8cb5b59a1f41247bae43b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.giving",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 15168,
+      "end": 16675
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.giving directly introduces shared.typing.giving. Links environment, place syntax, relative path, pos, focus, perm and emptying. All three Γ′ cases use explicit linked operators; the source-retained shared case is not an unmentioned dynamic choice.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. give splits the source place into a root and suffix, requires an inhabited variable and successful focus, then has exactly the three displayed branches: preserve the environment for shared, empty the root for given/epsilon, or apply emptyPath for a given field. It depends only on the static descriptions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

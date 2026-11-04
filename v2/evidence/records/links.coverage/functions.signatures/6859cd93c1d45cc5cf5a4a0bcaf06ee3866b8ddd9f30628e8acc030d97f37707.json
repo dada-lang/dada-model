@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "7e3b7960c0a87234df0912fbd335f83efb4a1e2ae3bc0dc6ec1281b6d6fad957",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7a4e714d94614dfcf82ae12cf39b0fc48783107cffa0afff778a59a28df6719d",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:unit:functions.signatures",
+    "audit:unit:shared.struct",
+    "audit:unit:shared.typing.types",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions. a,f,m,C,Q,T,P,R,sigma have domains in the adjacent grammar/explanation. No default or generic permission is silently imported.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "766e1cd9605d51537bee614140642f1e9b006c77c6cad3a9189e342e25978e1a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions.",
+    "mathematics": "a,f,m,C,Q,T,P,R,sigma have domains in the adjacent grammar/explanation. No default or generic permission is silently imported.",
+    "links": [
+      {
+        "occurrence": "functions.signatures:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'whole nominal type' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions."
+      },
+      {
+        "occurrence": "functions.signatures:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'admissible parameterand result types' refers to md/shared-typing.md#claim-shared.typing.well_formed_types for the concept or example setup used by this unit. Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions."
+      }
+    ]
+  }
+}

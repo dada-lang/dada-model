@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "bundle": "d70f69b7d429467d6097b764b426e9eacc9667ef8f7c242cc425ae54f9c70197",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e411ab3d3f4538324e304fd37a80dd02fef29ff116e7f948292a5133e615d1f",
+    "audit:target:2125be554c01949722a01b484938c16897339c8d6ac2c317a9fc821a16faeeaa",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.configurations",
+    "audit:unit:shared.typing.erasure",
+    "audit:unit:shared.typing.expression_soundness",
+    "audit:unit:shared.typing.preservation",
+    "audit:unit:shared.typing.steps",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links both configuration typings, erasure and Step. The prose distinguishes copy preserving Γ from binding extending it. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ConfigurationTyped.preservation takes any typed source and any extended step and returns the same final-environment typing for the successor. This matches the quantified successor and the explanation that only the existential current environment changes.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "bcbb4315907749c7a61155a58dee585b6d5bdff4c450c85280ff5fdb9ca87c81"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links both configuration typings, erasure and Step. The prose distinguishes copy preserving Γ from binding extending it.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ConfigurationTyped.preservation takes any typed source and any extended step and returns the same final-environment typing for the successor. This matches the quantified successor and the explanation that only the existential current environment changes.",
+    "links": [
+      {
+        "occurrence": "shared.typing.preservation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/shared-typing.md#claim-shared.typing.steps for the concept or example setup used by this unit. Links both configuration typings, erasure and Step. The prose distinguishes copy preserving Γ from binding extending it."
+      },
+      {
+        "occurrence": "shared.typing.preservation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed configuration' refers to md/shared-typing.md#claim-shared.typing.configurations for the concept or example setup used by this unit. Links both configuration typings, erasure and Step. The prose distinguishes copy preserving Γ from binding extending it."
+      },
+      {
+        "occurrence": "shared.typing.preservation:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma\\\\vdash K:\\\\Gamma_f' refers to md/shared-typing.md#claim-shared.typing.configurations for the concept or example setup used by this unit. Links both configuration typings, erasure and Step. The prose distinguishes copy preserving Γ from binding extending it."
+      },
+      {
+        "occurrence": "shared.typing.preservation:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\lfloor\\\\Sigma\\\\rfloor' refers to md/shared-typing.md#claim-shared.typing.erasure for the concept or example setup used by this unit. Links both configuration typings, erasure and Step. The prose distinguishes copy preserving Γ from binding extending it."
+      },
+      {
+        "occurrence": "shared.typing.preservation:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\longrightarrow_u' refers to md/shared-typing.md#claim-shared.typing.steps for the concept or example setup used by this unit. Links both configuration typings, erasure and Step. The prose distinguishes copy preserving Γ from binding extending it."
+      },
+      {
+        "occurrence": "shared.typing.preservation:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Sigma\\\\vdash K':\\\\Gamma_f\" refers to md/shared-typing.md#claim-shared.typing.configurations for the concept or example setup used by this unit. Links both configuration typings, erasure and Step. The prose distinguishes copy preserving Γ from binding extending it."
+      }
+    ]
+  }
+}

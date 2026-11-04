@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "3d125130324b8974844011ca50104de585ec7154f0ea768e271076c671468fc2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:cb3e7f137fa264d756a4ce07ced53774f9fec6337e518a0dd5f5f0e263b368b4",
+    "audit:unit:meta.syntax.heap.rendering",
+    "audit:unit:meta.syntax.heap.routing",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Diagram edges link their rendering definition before this unit specifies routing corridors, bends, dots and failure behavior. Lease junctions are already explained by that target. No mathematical symbol requires a definition link; routing cost is described in ordinary terms without an omitted formula.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "8b84c2c2eef9a592e802be810c634e1cfd2ea3bfaa5889f08852b0111afd8b17"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Diagram edges link their rendering definition before this unit specifies routing corridors, bends, dots and failure behavior. Lease junctions are already explained by that target.",
+    "mathematics": "No mathematical symbol requires a definition link; routing cost is described in ordinary terms without an omitted formula.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.heap.routing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Diagram edges' refers to md/repo/renderer-contracts.md#claim-meta.syntax.heap.rendering for the concept or example setup used by this unit. Diagram edges link their rendering definition before this unit specifies routing corridors, bends, dots and failure behavior. Lease junctions are already explained by that target."
+      }
+    ]
+  }
+}

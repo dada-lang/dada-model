@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "b7e5db2ef85de0be4ecf3d2023c84cba0f3b38a932b88aa3a691ed2d64fa467c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:unit:functions.example.methods",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained. The example uses concrete signatures and calls, not an unstated dispatch or overloading relation.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3a110973a80e8827d533ffea58136a16189338e3f0572045e4f4de9fb60a98e6"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained.",
+    "mathematics": "The example uses concrete signatures and calls, not an unstated dispatch or overloading relation.",
+    "links": [
+      {
+        "occurrence": "functions.example.methods:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal declaration' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained."
+      },
+      {
+        "occurrence": "functions.example.methods:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'give operation' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained."
+      }
+    ]
+  }
+}

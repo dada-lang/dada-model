@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "b770be00cd308b719a1ab5b46d7d250e8561716458ad2ede37f52984d4b4c5b6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:594ea809f0d04ba629b1de28589abf9e58c62a74c0f0c2c381cc09175e201d33",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.heap.constructors directly introduces Diagram node constructors. The diagram vocabulary is introduced here: graph facts, nodes and slots each have clear named passages. Aliases, initial empty slots and the boundary from language semantics are stated locally. No language formula is used. α or edge-style examples elsewhere are diagram identifiers, while this unit defines the available fact constructors. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c35315d151fb5424bcb20fda0ebbb3d1bfb28fcdd7a7ae3da1c1f4af92dee4f2"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Diagram node constructors",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 19153,
+      "end": 19487
+    },
+    "clarity": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.heap.constructors directly introduces Diagram node constructors. The diagram vocabulary is introduced here: graph facts, nodes and slots each have clear named passages. Aliases, initial empty slots and the boundary from language semantics are stated locally.",
+    "independence": "No language formula is used. α or edge-style examples elsewhere are diagram identifiers, while this unit defines the available fact constructors. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

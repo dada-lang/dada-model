@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "bundle": "d7b1899d71836a24a9c3933b3e70d213a829d852ee0dc8d7578d4cca254cb3ed",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.collections"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Common/FiniteMap.FiniteMap consists of a finite List of key/value entries with a Nodup key proof. This supplies finite partial-map notation; List is the same finite ordered-sequence constructor used in that definition. This unit specifies notation, not a new operational representation invariant. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "0ffe1d2668070d022f4662ab7805e0446279ee59dc2fb7944601ba362530885b"
+  ]
+}

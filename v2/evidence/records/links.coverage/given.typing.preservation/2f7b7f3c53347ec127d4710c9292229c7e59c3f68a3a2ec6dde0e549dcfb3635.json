@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "91e4581041749867d2ab2688a81df06c3fa2758512dc254157b22eb792298548",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:9152f90a41f757fc02cb545765b11e8fad2e3801166666165f01b88d1a383bb0",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.configurations",
+    "audit:unit:given.typing.expression_soundness",
+    "audit:unit:given.typing.preservation",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Extended steps and typed configurations link directly. The prose identifies the fixed final environment and arbitrary successor quantification. Configuration-typing judgments, erasure, and the extended step arrow are directly linked in the rule.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4bf959377416a8acec44e100c777b03c541142536e9003ed30142fad5ab4f9f0"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Extended steps and typed configurations link directly. The prose identifies the fixed final environment and arbitrary successor quantification.",
+    "mathematics": "Configuration-typing judgments, erasure, and the extended step arrow are directly linked in the rule.",
+    "links": [
+      {
+        "occurrence": "given.typing.preservation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. Extended steps and typed configurations link directly. The prose identifies the fixed final environment and arbitrary successor quantification."
+      },
+      {
+        "occurrence": "given.typing.preservation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed configuration' refers to md/given-typing.md#claim-given.typing.configurations for the concept or example setup used by this unit. Extended steps and typed configurations link directly. The prose identifies the fixed final environment and arbitrary successor quantification."
+      }
+    ]
+  }
+}

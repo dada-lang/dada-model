@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "bundle": "c2fc541727c39c716e7bfb7f558f20c844bad6d8fa4061ac5ed14fda69997b11",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:aa210780e33166914e582e1f2aa597e7876855cb4a8137adc65a043a6c43be2f",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:given.typing.observations",
+    "audit:unit:shared.typing.nominal_table",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.observations",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Pos delegates to Unique.Typing.Pos on the nominal table/view; Neg delegates to the nominal view's negative-entry predicate. Both ignore the outer permission, as the two displayed equalities claim; initialized subtrees still include permission-bearing fields.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4479350842b500adec14106e701943a88e3a72213c896a09d76e6f8b326e4e62"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Pos delegates to Unique.Typing.Pos on the nominal table/view; Neg delegates to the nominal view's negative-entry predicate. Both ignore the outer permission, as the two displayed equalities claim; initialized subtrees still include permission-bearing fields.",
+    "links": [
+      {
+        "occurrence": "shared.typing.observations:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalized' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types."
+      },
+      {
+        "occurrence": "shared.typing.observations:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's observations\" refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types."
+      },
+      {
+        "occurrence": "shared.typing.observations:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal class table' refers to md/shared-typing.md#claim-shared.typing.nominal_table for the concept or example setup used by this unit. Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types."
+      },
+      {
+        "occurrence": "shared.typing.observations:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types."
+      },
+      {
+        "occurrence": "shared.typing.observations:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma_{\\\\mathrm{nom}}' refers to md/shared-typing.md#claim-shared.typing.nominal_table for the concept or example setup used by this unit. Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types."
+      },
+      {
+        "occurrence": "shared.typing.observations:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types."
+      },
+      {
+        "occurrence": "shared.typing.observations:7",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma_{\\\\mathrm{nom}}' refers to md/shared-typing.md#claim-shared.typing.nominal_table for the concept or example setup used by this unit. Links normalized types, Given observations and nominal-table projection in prose/math. Defines only pos/neg for Shared types."
+      }
+    ]
+  }
+}

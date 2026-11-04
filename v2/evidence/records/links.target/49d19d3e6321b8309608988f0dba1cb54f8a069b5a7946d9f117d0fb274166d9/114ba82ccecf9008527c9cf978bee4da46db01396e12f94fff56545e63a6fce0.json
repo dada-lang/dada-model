@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "d6e2ae7e72f7816d0406638ec7112a0b85f865369d716f795c9b971af983c267",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:49d19d3e6321b8309608988f0dba1cb54f8a069b5a7946d9f117d0fb274166d9",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.lookup directly introduces Given partial slot lookup. The storage-place link is direct and both variable and field lookup equations are here. Undefined lookup versus a defined empty slot is explained without invoking stuckness ahead of its definition. Both displayed equations define S[q]. The partialness side conditions and S=⟨O,V,ν⟩ decomposition are stated locally, with q linked to its grammar. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "71c5d33b1e8c0a52ae5377b76885e0def87aec273fad5586c20dd097d97fc3f9"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given partial slot lookup",
+    "definition": {
+      "path": "md/given.md",
+      "start": 6092,
+      "end": 6655
+    },
+    "clarity": "The landing md/given.md#claim-given.lookup directly introduces Given partial slot lookup. The storage-place link is direct and both variable and field lookup equations are here. Undefined lookup versus a defined empty slot is explained without invoking stuckness ahead of its definition.",
+    "independence": "Both displayed equations define S[q]. The partialness side conditions and S=⟨O,V,ν⟩ decomposition are stated locally, with q linked to its grammar. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

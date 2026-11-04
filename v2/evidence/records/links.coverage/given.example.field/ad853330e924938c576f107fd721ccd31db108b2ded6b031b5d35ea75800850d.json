@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "4b64412802745115223ae5a62a8bd7d6e44f9123d7984d8b5eb1086067f0cc1e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:88a0c68272e833cbda1fa2978a4dd8727681d82a2bef9b7df637febb6f999b8f",
+    "audit:unit:given.classes",
+    "audit:unit:given.example.field",
+    "audit:unit:given.machine",
+    "audit:unit:given.programs",
+    "audit:unit:given.steps",
+    "audit:unit:given.syntax",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations. The Token/Box declarations bind example names; the source code uses known give syntax, and its execution/completion references link to the corresponding definitions.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "206212dccf86ae30354316c23ecd6433b3ddeb4d07257704b58be4d38d9e681c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations.",
+    "mathematics": "The Token/Box declarations bind example names; the source code uses known give syntax, and its execution/completion references link to the corresponding definitions.",
+    "links": [
+      {
+        "occurrence": "given.example.field:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty storage' refers to md/given.md#claim-given.empty_state for the concept or example setup used by this unit. The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations."
+      },
+      {
+        "occurrence": "given.example.field:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'steps' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations."
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "5fc7becf9ea01adb1bfdc335e34810290fde8be6ebb538fb56ce50bfa0e4795f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:56968a0b61d069156a3c6cf55db5ba12bcfdf730847f49c102707a617d46863b",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.well_formed_classes directly introduces Given class-table well-formedness. The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly. There is no separate formula: the two distinctness conditions directly define the named property. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d96d7d0f73655749977f8d2ceceea56f266945ca9a6e6beb0b51964fee7b1344"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given class-table well-formedness",
+    "definition": {
+      "path": "md/given.md",
+      "start": 3337,
+      "end": 3471
+    },
+    "clarity": "The landing md/given.md#claim-given.well_formed_classes directly introduces Given class-table well-formedness. The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly.",
+    "independence": "There is no separate formula: the two distinctness conditions directly define the named property. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

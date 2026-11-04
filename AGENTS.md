@@ -76,9 +76,14 @@ uses frame-local typed stores and Shared realization with all frame roots pendin
 it does not assume termination. `Shared/TypingBindingPending` and
 `Shared/TypingCollection` supply binding with additional roots and root-discard
 collection lemmas.
-`v2/md/destructors.md` is a nonnormative future-design sketch of explicit destruction, frame
-completion obligations, and stack execution, with inherited Shared machinery
-in a chapter appendix. It has no Lean formalization yet.
+`v2/md/destructors.md` formalizes explicit destruction, frame completion
+obligations, and stack execution in `v2/lean/Destructors/`, with inherited Shared
+machinery in a chapter appendix. Class destructors are optional and take one
+whole given receiver. Struct drops give and discard without running user code.
+Progress, preservation, finite-prefix safety, empty completion, and class-object
+retention by GC are proved. The Functions-fragment correspondence records the
+stronger frame-exit condition. Assignment and implicit drop insertion remain
+deferred.
 `v2/md/cflow.md` remains an editorial placeholder.
 The existing chapter paths remain unchanged. `v2/md/given-typing.md` contains
 strictly covered units for signed views, typing rules, and storage realization,

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "1431bc9bd2c2d0f6e9560f403b29217272ed52a1a78af76b8e3e27ac8118f0e8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cce19ef6a71eb7d3cab3d2e2c78a524748e4bdf086d09a170c945dcbe7dcef9",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.full",
+    "audit:unit:given.typing.views",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses. The table contains literal view notation, not an unlinked equation or inference judgment. Full versus partial is explained before the table and formally linked.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "81e7a050d126b94fb11471067d7fe50dfe4a1cf7e4970f33edcecd41f20e05b2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses.",
+    "mathematics": "The table contains literal view notation, not an unlinked equation or inference judgment. Full versus partial is explained before the table and formally linked.",
+    "links": [
+      {
+        "occurrence": "given.typing.example.views:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'formal fullness predicate' refers to md/given-typing.md#claim-given.typing.full for the concept or example setup used by this unit. The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses."
+      }
+    ]
+  }
+}

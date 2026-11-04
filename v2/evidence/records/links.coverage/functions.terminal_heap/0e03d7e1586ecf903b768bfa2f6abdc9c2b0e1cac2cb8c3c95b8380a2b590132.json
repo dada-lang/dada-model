@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "57c7c060b87a6634b86385cd73dc3f4dad122cb0869ea5ced68e24b7a1c4d7b7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2f4fae6642af15eee453aa7a85b451f092126af505d334ad49884a5cd4d2688a",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.gc",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.terminal_heap",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links public steps, finished stack and collection. Distinguishes step targets from arbitrary malformed terminal records. The heap-empty consequence and retained counter are stated explicitly; no reachability theorem is silently generalized.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "87c0eff611cfa6080905550b8d70e5f131e003674897d47839dc97eb8e8cd0f2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links public steps, finished stack and collection. Distinguishes step targets from arbitrary malformed terminal records.",
+    "mathematics": "The heap-empty consequence and retained counter are stated explicitly; no reachability theorem is silently generalized.",
+    "links": [
+      {
+        "occurrence": "functions.terminal_heap:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'machine step' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links public steps, finished stack and collection. Distinguishes step targets from arbitrary malformed terminal records."
+      },
+      {
+        "occurrence": "functions.terminal_heap:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished configuration' refers to md/functions.md#claim-functions.machine_finished for the concept or example setup used by this unit. Links public steps, finished stack and collection. Distinguishes step targets from arbitrary malformed terminal records."
+      },
+      {
+        "occurrence": "functions.terminal_heap:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'collected' refers to md/functions.md#claim-functions.gc for the concept or example setup used by this unit. Links public steps, finished stack and collection. Distinguishes step targets from arbitrary malformed terminal records."
+      }
+    ]
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "bundle": "472593340e565c48ca47f486c21a8f61958c2f71a17fd7304b48cfda1ea2c1a2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0cdbf42c41e7e944b7cfdecf7bb762ce6c2d75970d563b592d053b10c0002f94",
+    "audit:target:2ad9184ea8f87bf25aa062eee2e8605a4933189e40f6aa461d5c7a04418b8674",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:target:828c2e9a592d1b90f2650b6136e24abe27a4c6886c1c3487d5a24c9e3f96fcf7",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "audit:unit:destructors.drop_typing",
+    "audit:unit:destructors.droppable",
+    "audit:unit:shared.typing.giving",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary. Γ, p, T and Γ′ are introduced immediately with the static Give operation. The numbered conditions use the linked Droppable definition; no separate inference-rule metavariables are assumed.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "96ebf8a3354a76597804c1ec0e91e1b3680464be49dd6302849df93a8d232198"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary.",
+    "mathematics": "Γ, p, T and Γ′ are introduced immediately with the static Give operation. The numbered conditions use the linked Droppable definition; no separate inference-rule metavariables are assumed.",
+    "links": [
+      {
+        "occurrence": "destructors.drop_typing:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'place' supplies the definition or concrete example setup used here, at shared.md#claim-shared.syntax. Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary."
+      },
+      {
+        "occurrence": "destructors.drop_typing:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'environment' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.environments. Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary."
+      },
+      {
+        "occurrence": "destructors.drop_typing:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Shared's static ordinary-give operation' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.giving. Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary."
+      },
+      {
+        "occurrence": "destructors.drop_typing:4",
+        "role": "navigation",
+        "rationale": "Optional appendix/chapter navigation: the source directly defines the example or links its needed concepts; this link only gathers further reading."
+      },
+      {
+        "occurrence": "destructors.drop_typing:5",
+        "role": "conceptual",
+        "rationale": "The occurrence 'destructor name' supplies the definition or concrete example setup used here, at #claim-destructors.declarations. Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary."
+      },
+      {
+        "occurrence": "destructors.drop_typing:6",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Require Droppable(T)' supplies the definition or concrete example setup used here, at #claim-destructors.droppable. Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary."
+      }
+    ]
+  }
+}

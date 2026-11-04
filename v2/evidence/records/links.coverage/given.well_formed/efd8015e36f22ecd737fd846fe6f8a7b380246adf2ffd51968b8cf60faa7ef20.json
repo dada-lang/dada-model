@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "bundle": "756861b24e89b569099fa46f5ac56ea203df8bd9e5ef6a7d313206ca7f115858",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "audit:unit:given.allocated",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.identities",
+    "audit:unit:given.programs",
+    "audit:unit:given.state",
+    "audit:unit:given.well_formed",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links evaluation for pending references, class declarations, allocated identities, and index. The remaining conditions jointly define one storage invariant rather than separate unintroduced predicates. WF and its component conditions are introduced here; the numeric projection index links identities and allocation links domain membership. Pending expression references are explained with the evaluation link.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b2b0125c7a90b4cb8ea2c2a19b01410b0d81268264118b2bbf93c62667c83ee3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links evaluation for pending references, class declarations, allocated identities, and index. The remaining conditions jointly define one storage invariant rather than separate unintroduced predicates.",
+    "mathematics": "WF and its component conditions are introduced here; the numeric projection index links identities and allocation links domain membership. Pending expression references are explained with the evaluation link.",
+    "links": [
+      {
+        "occurrence": "given.well_formed:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression evaluation' refers to md/given.md#claim-given.evaluation for the concept or example setup used by this unit. Links evaluation for pending references, class declarations, allocated identities, and index. The remaining conditions jointly define one storage invariant rather than separate unintroduced predicates."
+      },
+      {
+        "occurrence": "given.well_formed:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declared' refers to md/given.md#claim-given.programs for the concept or example setup used by this unit. Links evaluation for pending references, class declarations, allocated identities, and index. The remaining conditions jointly define one storage invariant rather than separate unintroduced predicates."
+      },
+      {
+        "occurrence": "given.well_formed:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'allocated identity' refers to md/given.md#claim-given.allocated for the concept or example setup used by this unit. Links evaluation for pending references, class declarations, allocated identities, and index. The remaining conditions jointly define one storage invariant rather than separate unintroduced predicates."
+      },
+      {
+        "occurrence": "given.well_formed:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{index}(\\\\alpha)' refers to md/given.md#claim-given.identities for the concept or example setup used by this unit. Links evaluation for pending references, class declarations, allocated identities, and index. The remaining conditions jointly define one storage invariant rather than separate unintroduced predicates."
+      }
+    ]
+  }
+}

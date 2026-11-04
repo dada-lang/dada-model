@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "bundle": "11ab045e38b39a7f30211aedeaa9ab5c074b2cfba9cb930c7a43dd28249d832c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:target:d6c2319422bc09f8bd5db42388b5e094818d235328c57f2f2ed44355c8fd76d1",
+    "audit:unit:given.patterns",
+    "audit:unit:given.typing.views",
+    "audit:unit:shared.example.copy_field",
+    "audit:unit:shared.give",
+    "audit:unit:shared.typing.example.copy",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links operational give, Given views and patterns. The upcoming permission grammar is explicitly signposted, with only the move/copy distinction required for this introductory table. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. copying_through_shared proves the four-statement typed execution and final b/s/u/v descriptions. It separately exhibits the first field give changing the stored owned reference to shared and the second give copying without a storage change. The prose attributes modes to references and does not claim the object itself is promoted.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3f344c5a1425f00adb8538b58085dbd7053989c3086c22b2b3ef7cbec8b4a9b5"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links operational give, Given views and patterns. The upcoming permission grammar is explicitly signposted, with only the move/copy distinction required for this introductory table.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. copying_through_shared proves the four-statement typed execution and final b/s/u/v descriptions. It separately exhibits the first field give changing the stored owned reference to shared and the second give copying without a storage change. The prose attributes modes to references and does not claim the object itself is promoted.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.copy:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'moves or copies' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links operational give, Given views and patterns. The upcoming permission grammar is explicitly signposted, with only the move/copy distinction required for this introductory table."
+      },
+      {
+        "occurrence": "shared.typing.example.copy:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's types and views\" refers to md/given-typing.md#claim-given.typing.views for the concept or example setup used by this unit. Links operational give, Given views and patterns. The upcoming permission grammar is explicitly signposted, with only the move/copy distinction required for this introductory table."
+      },
+      {
+        "occurrence": "shared.typing.example.copy:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's unpacking patterns\" refers to md/given.md#claim-given.patterns for the concept or example setup used by this unit. Links operational give, Given views and patterns. The upcoming permission grammar is explicitly signposted, with only the move/copy distinction required for this introductory table."
+      }
+    ]
+  }
+}

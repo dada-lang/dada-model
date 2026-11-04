@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "bundle": "0cc64f3181cb4f64d411bf97594f057f440c12df94f112f28485da424ca3b992",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.forgetting",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.observations",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation. Both sides of the pos/neg inclusions link the observation definitions. The weakening relation is the subject defined by those inclusions.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "f9cb9a5aafdf1e9c25940b2d94fb338e4635987a127219b43110f6b4c246e135"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation.",
+    "mathematics": "Both sides of the pos/neg inclusions link the observation definitions. The weakening relation is the subject defined by those inclusions.",
+    "links": [
+      {
+        "occurrence": "given.typing.forgetting:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalize' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'base class' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'example declarations' refers to md/given-typing.md#claim-given.typing.example.views for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "714e2af6d907ae67fdaf23a53c6c6bab88e50a07eda823c945bde0b2aaa41ac3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lib.rs:escape",
+    "rust:mdbook-dada/src/lib.rs:protect_math",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order",
+    "test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders",
+    "test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles",
+    "test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies",
+    "unit:meta.math.typesetting"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.typesetting against rust:mdbook-dada/src/lib.rs:protect_math, rust:mdbook-dada/src/lib.rs:render_unit, rust:mdbook-dada/src/lean.rs:render_authored, rust:mdbook-dada/src/lib.rs:escape, test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order, test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders, test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies, test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles. protect_math excludes code/link/HTML contexts and escapes explicit display/inline formulas before Markdown processing; render_authored escapes raw TeX without translating Lean. Tests retain row breaks/primes under smart punctuation, reject HTML interpretation, preserve literal contexts and citation order. This supports syntax preservation, not validation that TeX means the same proposition as Lean. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "e0f3ef7f96a4467291913792cfa7474f6a9d603e7a515e4f33f681bdbdb19531"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "6a76820c6cb3b1fd1aa7bc58fd290730792223f09122e9ac634d91084d3bdb9f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cce19ef6a71eb7d3cab3d2e2c78a524748e4bdf086d09a170c945dcbe7dcef9",
+    "audit:unit:given.typing.example.views",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Reviewed source/destination order and the classified occurrence: {\"kind\": \"forward\", \"necessity\": \"The first view table distinguishes complete knowledge from complete initialization. Moving Full earlier also requires its pos/neg/class-at prerequisites before the first concrete views; moving the table later leaves signed views without this central concrete distinction. Splitting away its full/partial labels loses the contrast between unknown and known-empty fields. The preview states only that distinction.\", \"signposting\": \"The selected source passage explicitly identifies the following definition and limits the current preview: The [formal fullness predicate](#claim-given.typing.full) comes after this example;\\nonly this distinction is needed to read the table.\", \"signpost\": {\"path\": \"md/given-typing.md\", \"start\": 5062, \"end\": 5196}, \"minimal_use\": \"The opening sentences define full as accounting for every field recursively, including empty fields, and partial as leaving statuses unknown. The table needs only those facts, not the later quantified Full judgment.\"}",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "98635eca3e746d805029c4d3812d911420ff53bc4764542d07bf2930ea9eae92"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The first view table distinguishes complete knowledge from complete initialization. Moving Full earlier also requires its pos/neg/class-at prerequisites before the first concrete views; moving the table later leaves signed views without this central concrete distinction. Splitting away its full/partial labels loses the contrast between unknown and known-empty fields. The preview states only that distinction.",
+      "signposting": "The selected source passage explicitly identifies the following definition and limits the current preview: The [formal fullness predicate](#claim-given.typing.full) comes after this example;\nonly this distinction is needed to read the table.",
+      "signpost": {
+        "path": "md/given-typing.md",
+        "start": 5062,
+        "end": 5196
+      },
+      "minimal_use": "The opening sentences define full as accounting for every field recursively, including empty fields, and partial as leaving statuses unknown. The table needs only those facts, not the later quantified Full judgment."
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "d5238e95a45ab7dc05802090cd4e48ec5103703293ce3decc2a46f398d950e73",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:example_source",
+    "rust:mdbook-dada/src/lean.rs:extract_example",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "test:mdbook-dada/src/lean.rs:tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_end_markers_that_cut_off_a_proof_continuation",
+    "test:mdbook-dada/src/lean.rs:tests::requires_one_complete_anonymous_example",
+    "test:mdbook-dada/tests/book.rs:linked_example_bodies_index_anchors_and_scope_nested_selectors",
+    "test:mdbook-dada/tests/book.rs:linked_examples_fail_on_invalid_citations_bodies_or_nesting",
+    "test:mdbook-dada/tests/book.rs:linked_examples_preserve_native_markdown_and_select_one_lean_test",
+    "unit:meta.examples.selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.examples.selection against rust:mdbook-dada/src/lean.rs:extract_example, rust:mdbook-dada/src/lean.rs:example_source, rust:mdbook-dada/src/lib.rs:render, rust:mdbook-dada/src/lib.rs:chapter_roles, test:mdbook-dada/tests/book.rs:linked_examples_preserve_native_markdown_and_select_one_lean_test, test:mdbook-dada/tests/book.rs:linked_example_bodies_index_anchors_and_scope_nested_selectors, test:mdbook-dada/tests/book.rs:linked_examples_fail_on_invalid_citations_bodies_or_nesting, test:mdbook-dada/src/lean.rs:tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments, test:mdbook-dada/src/lean.rs:tests::requires_one_complete_anonymous_example, test:mdbook-dada/src/lean.rs:tests::rejects_end_markers_that_cut_off_a_proof_continuation. extract_example recognizes standalone comment markers, enforces one complete column-zero anonymous example with a body, excludes nested/sibling commands and rejects end markers before an indented continuation. Rendering retains Markdown and scoped nested diagrams. Tests cover decoy markers, malformed ranges, citation/nesting failures and body markup; they do not execute the selected Lean test. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "4ad86648905589c9a50bea5cb9f43d964b532d1fd6c755751d437e9bb7b435f6"
+  ]
+}

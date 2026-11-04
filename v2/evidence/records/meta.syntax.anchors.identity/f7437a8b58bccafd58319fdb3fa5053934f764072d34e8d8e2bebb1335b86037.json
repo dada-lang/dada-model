@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "7b1c94d635cfb87a76ac0dad601615c6162df33ffe68f1fe285f0a79343c08a2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "unit:meta.syntax.anchors.identity"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.anchors.identity against rust:mdbook-dada/src/lib.rs:roles, rust:mdbook-dada/src/lib.rs:chapter_roles, rust:mdbook-dada/src/lib.rs:process_with_roots, rust:mdbook-dada/src/lib.rs:relative_html, rust:mdbook-dada/src/lib.rs:render_role, test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters, test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail, test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors, test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs. roles validates the documented ASCII ID shape and excludes literal contexts; chapter_roles adds structured IDs to the shared namespace; process_with_roots indexes all chapters before rendering and rejects duplicates. relative_html and render_role build local/relative shield links. Tests cover forward/nested/parent references, missing/duplicate IDs, literal examples and neutral/definition role labels without proof implications. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "3eba4175b697742b8e21bf25d4ea7014d69c733d4689f103d1702f595234c577"
+  ]
+}

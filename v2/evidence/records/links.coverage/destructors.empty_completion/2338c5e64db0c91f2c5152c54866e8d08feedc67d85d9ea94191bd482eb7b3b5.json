@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "7d6806b86d81fe701ab7680359356cf59e518e2707f4b9d946fe71e03426a567",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a5c71aae5d779970f59da90b8b016cb2144890c06151d49ddcdd5a1f53c7ca45",
+    "audit:target:c8cc0b8b6abef8a10509119d2140141701f58f8925ed109a7a9eb157fbf76014",
+    "audit:unit:destructors.empty_completion",
+    "audit:unit:destructors.heap_obligations",
+    "audit:unit:destructors.machine",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links typed configuration and no-frame completion; the conclusion only concerns an empty heap, not an allocation-counter reset. No mathematical metavariables or equations are used.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links typed configuration and no-frame completion; the conclusion only concerns an empty heap, not an allocation-counter reset.",
+    "mathematics": "No mathematical metavariables or equations are used.",
+    "links": [
+      {
+        "occurrence": "destructors.empty_completion:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'typed configuration' supplies the definition or concrete example setup used here, at #claim-destructors.heap_obligations. Links typed configuration and no-frame completion; the conclusion only concerns an empty heap, not an allocation-counter reset."
+      },
+      {
+        "occurrence": "destructors.empty_completion:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'no frames' supplies the definition or concrete example setup used here, at #claim-destructors.machine. Links typed configuration and no-frame completion; the conclusion only concerns an empty heap, not an allocation-counter reset."
+      }
+    ]
+  }
+}

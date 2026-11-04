@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "bundle": "c85024d6c38d8e614856bbbfd7874013f6219aec1af4b287bcaaa4c29117ec6f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:11aed29a6b82dfc70e7df19c3fad999a9f8fa3cfb7d1b2ebf35e0b7a63f92a16",
+    "audit:target:250e67d7508718bea2e3571b83e4b2d80632b14c4db059cb7a01b9104100b14a",
+    "audit:target:96c9b9b5cd25895c1a9810c7ca3007a977353f311c7ff2e268efd415d4833cca",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "audit:target:ee677a280b28caae8944bc8ea17f855a3a4cc330d7651935f345a4588c0263f5",
+    "audit:target:fb4a0a7c76309b32e5a213a669d711379cd8a6679fb9638296922e99112ebcb4",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:shared.typing.base",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.environments",
+    "audit:unit:shared.typing.field",
+    "audit:unit:shared.typing.patterns",
+    "audit:unit:shared.typing.perm",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. BindingTyped.variable preserves the value type in a fresh entry. unpack requires given permission, matching base/class declaration, a permutation of all declared fields, distinct fresh destination names and FieldBindings. The displayed declaration-order rule is equivalent under the stated reordering convention and transfers empty descriptions explicitly.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3e56227cee9d671b9b3fddee38afd562c9af9a4ef6cc84e80e4771d471fbf5c8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. BindingTyped.variable preserves the value type in a fresh entry. unpack requires given permission, matching base/class declaration, a permutation of all declared fields, distinct fresh destination names and FieldBindings. The displayed declaration-order rule is equivalent under the stated reordering convention and transfers empty descriptions explicitly.",
+    "links": [
+      {
+        "occurrence": "shared.typing.bindings:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'environment' refers to md/shared-typing.md#claim-shared.typing.environments for the concept or example setup used by this unit. Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment."
+      },
+      {
+        "occurrence": "shared.typing.bindings:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'field descriptions' refers to md/shared-typing.md#claim-shared.typing.field for the concept or example setup used by this unit. Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment."
+      },
+      {
+        "occurrence": "shared.typing.bindings:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{perm}(T)' refers to md/shared-typing.md#claim-shared.typing.perm for the concept or example setup used by this unit. Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment."
+      },
+      {
+        "occurrence": "shared.typing.bindings:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{base}(T)' refers to md/shared-typing.md#claim-shared.typing.base for the concept or example setup used by this unit. Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment."
+      },
+      {
+        "occurrence": "shared.typing.bindings:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma(C)' refers to md/shared-typing.md#claim-shared.typing.declarations for the concept or example setup used by this unit. Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment."
+      },
+      {
+        "occurrence": "shared.typing.bindings:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{field}_{\\\\Sigma}(T,f_i)' refers to md/shared-typing.md#claim-shared.typing.field for the concept or example setup used by this unit. Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment."
+      },
+      {
+        "occurrence": "shared.typing.bindings:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's binding rules\" refers to md/given-typing.md#claim-given.typing.bindings for the concept or example setup used by this unit. Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment."
+      }
+    ]
+  }
+}

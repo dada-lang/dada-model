@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "9aa2e17b58abdfea7e0d7af62389a857f154dbde32a6faaed14c750d0d54b701",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c606944c55fcc1af8071d20ef9cfffd91dabf71226ad1a2eab085091751daee3",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.machine directly introduces shared.typing.machine. Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations. The frame tuple and optional-frame alternatives are introduced here. Initialization uses the linked empty state; no later transition judgment is needed to understand the representation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "23c850f2600a912d6d6256b62597118f4dcd35ad9ea6120b699f2e240a7b6883"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.machine",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 23024,
+      "end": 23445
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.machine directly introduces shared.typing.machine. Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations.",
+    "independence": "The frame tuple and optional-frame alternatives are introduced here. Initialization uses the linked empty state; no later transition judgment is needed to understand the representation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

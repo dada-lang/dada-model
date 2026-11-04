@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "58b6edb6c81af04d64e79a17e00be454b1e8eca42c650394c2ef99d5c105c173",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:directive_blocks",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/book.rs:block_directives_are_distinct_from_literal_code_and_inline_roles",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:generated_grammar_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:inferred_judgment_and_rule_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:informational_paragraphs_preserve_markdown_and_literal_examples",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:draft_status_is_explicit_and_does_not_relax_citation_checks",
+    "test:mdbook-dada/tests/units.rs:drafts_keep_their_semantic_kind_without_claiming_a_formalization",
+    "test:mdbook-dada/tests/units.rs:removed_obligation_syntax_is_rejected_at_every_authoring_entry_point",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "unit:meta.syntax.anchors.identity",
+    "unit:meta.syntax.inline_and_block",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.inline_and_block against rust:mdbook-dada/src/units.rs:parse_block, rust:mdbook-dada/src/lib.rs:directive_blocks, rust:mdbook-dada/src/lib.rs:render, test:mdbook-dada/tests/book.rs:block_directives_are_distinct_from_literal_code_and_inline_roles, test:mdbook-dada/tests/book.rs:informational_paragraphs_preserve_markdown_and_literal_examples, test:mdbook-dada/tests/book.rs:generated_grammar_directives_require_migration, test:mdbook-dada/tests/book.rs:inferred_judgment_and_rule_directives_require_migration, test:mdbook-dada/tests/units.rs:drafts_keep_their_semantic_kind_without_claiming_a_formalization, test:mdbook-dada/tests/units.rs:draft_status_is_explicit_and_does_not_relax_citation_checks, test:mdbook-dada/tests/units.rs:removed_obligation_syntax_is_rejected_at_every_authoring_entry_point. directive_blocks distinguishes brace-prefixed supported fences from ordinary language fences; parse_block retains semantic kind under draft status while still checking supplied citations; render rejects legacy inferred forms and paragraph examples. Tests cover literals, informational Markdown, old syntax diagnostics, draft forms and removed obligations at all entry points. The closed-body dependency supplies the structured nesting boundary. Notation and judgment context was checked in unit:meta.units.closed_body. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "8aed826c5e11724212e8b91c31428a9887a031c2f33f7be2340841662b22bb92"
+  ]
+}

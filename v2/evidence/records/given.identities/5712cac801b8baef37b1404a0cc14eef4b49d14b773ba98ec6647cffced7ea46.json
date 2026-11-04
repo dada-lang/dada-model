@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "ce9a7030737322185afdf9632451575ee822ab058d0c43262e285256f53b356f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "ObjectId is a structure wrapping index : Nat. obj(n) is the mathematical spelling of its constructor; index(obj(n))=n is the structure projection, so identities are tagged rather than bare naturals. Notation and premises are supplied by the examined units given.classes, given.collections, given.programs, given.syntax. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "234e99927c20ebbea38a1cf20cbf2c343d7dbf1fbb5e11a440089defae477039"
+  ]
+}

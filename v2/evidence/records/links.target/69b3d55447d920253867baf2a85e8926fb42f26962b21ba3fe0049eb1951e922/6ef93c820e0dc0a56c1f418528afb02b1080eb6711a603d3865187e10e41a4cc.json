@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "80688ddc022ef12f892d50efa508125357d72b115c5902fb41613c78eeb8211f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:69b3d55447d920253867baf2a85e8926fb42f26962b21ba3fe0049eb1951e922",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.well_formed_types directly introduces well-formed nominal views with nonoverlapping valid entries. Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here. C is the locally named base class; the C.{f,-f.g} notation is a literal counterexample to the condition, not a new operation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "f67e3dc4a3d267ce4170d9bd89dae8145311eb9c212aa902e986220e549d48b4"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "well-formed nominal views with nonoverlapping valid entries",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 4309,
+      "end": 4793
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.well_formed_types directly introduces well-formed nominal views with nonoverlapping valid entries. Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here.",
+    "independence": "C is the locally named base class; the C.{f,-f.g} notation is a literal counterexample to the condition, not a new operation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

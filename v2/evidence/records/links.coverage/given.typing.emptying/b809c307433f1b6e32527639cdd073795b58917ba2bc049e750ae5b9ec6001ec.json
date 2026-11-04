@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "b0bbf7b506d9bd4804fb182d31e15d4c05d49032b2f7c7cf9934408b586a54ce",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.emptying",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.focus",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.observations",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper. The initialized-path premise links pos. T[-rho] is the operation being defined, and the displayed Box equality uses the linked example declarations.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "82b34ba69d1128fc1524f930a4de79a6d53f2f4bfd5277cc55e17d86b70b384a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper.",
+    "mathematics": "The initialized-path premise links pos. T[-rho] is the operation being defined, and the displayed Box equality uses the linked example declarations.",
+    "links": [
+      {
+        "occurrence": "given.typing.emptying:1",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper."
+      },
+      {
+        "occurrence": "given.typing.emptying:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Normalize' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper."
+      },
+      {
+        "occurrence": "given.typing.emptying:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"example's Box\" refers to md/given-typing.md#claim-given.typing.example.views for the concept or example setup used by this unit. Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper."
+      }
+    ]
+  }
+}

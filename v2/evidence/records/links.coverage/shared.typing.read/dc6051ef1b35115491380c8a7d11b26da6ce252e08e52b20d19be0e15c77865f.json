@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "36440d0843d466d2f5807d96df48c20122723100116e2a29b12e3efb76872ccf",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:b50fba7e62f9aaf161a6e1aaec2b60ca9f8ca33678e15facd8c24af1d87648a9",
+    "audit:unit:given.typing.paths",
+    "audit:unit:shared.references",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.typing.read",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links relative paths and runtime resolution; the standalone read defines mode accumulation and failure. Empty-path success explicitly requires the root object to exist. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. readPath checks that the root object exists, returns the effective root reference at epsilon, and traverses intermediate occupied slots; enter joins the carried mode with each stored reference mode. A final slot may be empty. The prose describes this read rather than prescribing one type per object.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "a9dac12570a97759958a2c680a6b21344adb9d3832f5a94a1feb63a2392fa543"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links relative paths and runtime resolution; the standalone read defines mode accumulation and failure. Empty-path success explicitly requires the root object to exist.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. readPath checks that the root object exists, returns the effective root reference at epsilon, and traverses intermediate occupied slots; enter joins the carried mode with each stored reference mode. A final slot may be empty. The prose describes this read rather than prescribing one type per object.",
+    "links": [
+      {
+        "occurrence": "shared.typing.read:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative path' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. Links relative paths and runtime resolution; the standalone read defines mode accumulation and failure. Empty-path success explicitly requires the root object to exist."
+      },
+      {
+        "occurrence": "shared.typing.read:2",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'shared.resolution' refers to md/shared.md#claim-shared.resolution for the concept or example setup used by this unit. Links relative paths and runtime resolution; the standalone read defines mode accumulation and failure. Empty-path success explicitly requires the root object to exist."
+      }
+    ]
+  }
+}

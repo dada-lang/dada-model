@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "d344bdee0653e45a54b0e900e62f1efdfcd8dcd2bc407a3d0f0328db887166fa",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ebfba957e71355eb935d98a00e36f333b32109122d87727b953f4a40601942fe",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.mode directly introduces shared.typing.mode. Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.toMode maps given to unique and shared to shared. The displayed equations connect static permissions with reference modes, without placing modes on objects. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "7e99431afd3940eeb4a9f52583017cf5fc628e8951d163e8c2765496633492ab"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.mode",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 31108,
+      "end": 31434
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.mode directly introduces shared.typing.mode. Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.toMode maps given to unique and shared to shared. The displayed equations connect static permissions with reference modes, without placing modes on objects. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

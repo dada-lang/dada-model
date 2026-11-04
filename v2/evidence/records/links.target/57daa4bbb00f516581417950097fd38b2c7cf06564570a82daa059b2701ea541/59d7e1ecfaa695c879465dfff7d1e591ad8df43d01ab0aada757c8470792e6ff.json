@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "179ed3d3049bc39895aa58453990f5869441f6b032c3ce115f8aef2a45c2f657",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:57daa4bbb00f516581417950097fd38b2c7cf06564570a82daa059b2701ea541",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.stuck directly introduces stuckness in the extended unpacking language. Finishedness links to its operational definition. Stuckness is defined directly by not-finished and absence of a successor. The extended step arrow links to its definition; there is no hidden reachability predicate. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4ef405e26fa83ebae9ad4cc552ca1fc9fd9dfe52de5a8881027f8a24ba20822e"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "stuckness in the extended unpacking language",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 31859,
+      "end": 32110
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.stuck directly introduces stuckness in the extended unpacking language. Finishedness links to its operational definition. Stuckness is defined directly by not-finished and absence of a successor.",
+    "independence": "The extended step arrow links to its definition; there is no hidden reachability predicate. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

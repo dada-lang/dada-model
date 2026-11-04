@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "b6fb9d704db01465d86cbc4bf1f3b2cf3697ddb7dc4380138afbe864d0a438db",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.evaluation directly introduces Shared expression evaluation. Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The revised rules link struct eligibility and declaration kinds, including the guard on every struct argument. The Eval judgment is introduced before the clauses. Δ(C) and obj allocation link their definitions; the intermediate states and final tuple equations are locally scoped, and Give links the prior behavior table. StructReference and mode(k) are defined immediately below Construct; the guard uses the final argument state S_n. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "42624a00adc64c148a2cdc5eeb2f2ebb1bff000effbae16dce4e46dc388db7c3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared expression evaluation",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 15919,
+      "end": 18180
+    },
+    "clarity": "The landing md/shared.md#claim-shared.evaluation directly introduces Shared expression evaluation. Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The revised rules link struct eligibility and declaration kinds, including the guard on every struct argument.",
+    "independence": "The Eval judgment is introduced before the clauses. Δ(C) and obj allocation link their definitions; the intermediate states and final tuple equations are locally scoped, and Give links the prior behavior table. StructReference and mode(k) are defined immediately below Construct; the guard uses the final argument state S_n. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

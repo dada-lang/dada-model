@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "f4d35cd725f0c5af561e08f33cb1d22aff886fb9a7fde4072cfe1942de465022",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:unit:shared.typing.composition",
+    "audit:unit:shared.typing.types",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links permission grammar; the unique table defines juxtaposition of outer and inner permissions. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.comp returns given only for the pair given/given and shared in the other three cases, exactly the four table cells. Both operands are permissions, not object classifications.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "a3d1ea6db73572fb16a72eca0850c3f8b8e70fc973b2dd31fd1be08d551a4977"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links permission grammar; the unique table defines juxtaposition of outer and inner permissions.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.comp returns given only for the pair given/given and shared in the other three cases, exactly the four table cells. Both operands are permissions, not object classifications.",
+    "links": [
+      {
+        "occurrence": "shared.typing.composition:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'permission' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links permission grammar; the unique table defines juxtaposition of outer and inner permissions."
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "e73910d88a7b7a6ec0cad5fcf33567dab2663c976ef11bbbac5090eb6938dd85",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2f4fae6642af15eee453aa7a85b451f092126af505d334ad49884a5cd4d2688a",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.machine_finished",
+    "audit:unit:functions.stuck",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links configuration, finishedness and successor. The definition is exactly not-finished/no-successor; no new mathematical notation is imported.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3fd1c20a41000e90694a60ea862f4fbe67eceef0578abff61d765f3b4d12d172"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links configuration, finishedness and successor.",
+    "mathematics": "The definition is exactly not-finished/no-successor; no new mathematical notation is imported.",
+    "links": [
+      {
+        "occurrence": "functions.stuck:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links configuration, finishedness and successor."
+      },
+      {
+        "occurrence": "functions.stuck:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/functions.md#claim-functions.machine_finished for the concept or example setup used by this unit. Links configuration, finishedness and successor."
+      },
+      {
+        "occurrence": "functions.stuck:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'successor' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links configuration, finishedness and successor."
+      }
+    ]
+  }
+}

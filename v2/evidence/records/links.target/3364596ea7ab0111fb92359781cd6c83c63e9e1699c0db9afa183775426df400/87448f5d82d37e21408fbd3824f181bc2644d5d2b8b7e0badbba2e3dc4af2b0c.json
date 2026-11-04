@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "d4ccf3d7829b89efa3a035eaf35d7e4c5866de6638d17206787251829b2d7a64",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3364596ea7ab0111fb92359781cd6c83c63e9e1699c0db9afa183775426df400",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces the recur infinite-call example. Links program typing, traces and the preceding Shared completion theorem. recur is declared locally. Infinite adjacent steps are described as an example rather than a new unlinked trace operator; the finite-state reachability and absence of completion are stated explicitly. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c1cec1990d874a89ef7c2d9ee2ae40b4702a89b06ad5dec07780c22bea31393a"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the recur infinite-call example",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 25828,
+      "end": 26281
+    },
+    "clarity": "The named landing directly introduces the recur infinite-call example. Links program typing, traces and the preceding Shared completion theorem. recur is declared locally.",
+    "independence": "Infinite adjacent steps are described as an example rather than a new unlinked trace operator; the finite-state reachability and absence of completion are stated explicitly. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "b86705f3c6c380dc07c5d1863d617f481e6b8d687810075ed69537ea0b9912ea",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.example.paths",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Uses the already-defined composition table and local declarations to explain whole-type permission routes. Does not require a forward call to the later focusing algorithm. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. The permission_paths example asserts the four static give results for b.item, s.item, o.box.item, h.item. The given case updates the source view; the three shared cases preserve the environment. Its classes and declared permissions match the displayed Box/Outer/Holder setup.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "433e31b6cb35a5dcfe8732995e24790da455baed9d58abcc51d0ec48d9219ca4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Uses the already-defined composition table and local declarations to explain whole-type permission routes. Does not require a forward call to the later focusing algorithm.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. The permission_paths example asserts the four static give results for b.item, s.item, o.box.item, h.item. The given case updates the source view; the three shared cases preserve the environment. Its classes and declared permissions match the displayed Box/Outer/Holder setup.",
+    "links": []
+  }
+}

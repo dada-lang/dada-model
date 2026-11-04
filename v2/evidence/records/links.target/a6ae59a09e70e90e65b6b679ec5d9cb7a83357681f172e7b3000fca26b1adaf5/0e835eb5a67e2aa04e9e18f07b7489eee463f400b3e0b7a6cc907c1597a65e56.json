@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "24df1eb2de04def9eaae62e4ad2465d8112e43585ba51fc57a82edd074e23c65",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.paths directly introduces finite relative field paths and their composition. This unit introduces finite relative field paths, epsilon, concatenation, and append in place. It uses field names from the operational syntax without introducing another semantic predicate. The rho production is its defining grammar; every new symbol is assigned meaning in the preceding sentence. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "1c98b2e7441b16703c8902e16ee9309f6951feacc22c00f016a46b5f2859f05b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "finite relative field paths and their composition",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 1922,
+      "end": 2185
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.paths directly introduces finite relative field paths and their composition. This unit introduces finite relative field paths, epsilon, concatenation, and append in place. It uses field names from the operational syntax without introducing another semantic predicate.",
+    "independence": "The rho production is its defining grammar; every new symbol is assigned meaning in the preceding sentence. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

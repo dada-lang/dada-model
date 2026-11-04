@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "91493983e2a49175c6c39af72554b396fd6d47d3596505f43c7bbf6f94316f9b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:79283484adee6a2142c00e38e1f1accde4d861bb79aa4ecbf735a13e187ee7c9",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.well_formed_classes directly introduces shared.typing.well_formed_classes. The shared.typing.well_formed_classes unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types. The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3dda6919d1d43e138499c5532e88acb467c54bf4386335414b04201e3c4197f2"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.well_formed_classes",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 5963,
+      "end": 6536
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.well_formed_classes directly introduces shared.typing.well_formed_classes. The shared.typing.well_formed_classes unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types.",
+    "independence": "The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

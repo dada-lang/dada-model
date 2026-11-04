@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "bundle": "accfe326eb27ce549093712302360586ee799da46f105536a94f521792bec162",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:given.typing.statements",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.statements",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links both expression and binding typing in prose and the rule premises; Let defines statement typing. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. StatementTyped.letValue composes ExprTyped before/middle with BindingTyped middle/after, exactly the two premises and final environment of the displayed Let rule.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "84fcb2cec01575be60fe7e16c027774a44a8447fb25e3e3498480e10a401650a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links both expression and binding typing in prose and the rule premises; Let defines statement typing.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. StatementTyped.letValue composes ExprTyped before/middle with BindingTyped middle/after, exactly the two premises and final environment of the displayed Let rule.",
+    "links": [
+      {
+        "occurrence": "shared.typing.statements:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression typing' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links both expression and binding typing in prose and the rule premises; Let defines statement typing."
+      },
+      {
+        "occurrence": "shared.typing.statements:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'binding typing' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links both expression and binding typing in prose and the rule premises; Let defines statement typing."
+      },
+      {
+        "occurrence": "shared.typing.statements:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma\\\\vdash e:T\\\\;\\\\triangleright\\\\;\\\\Gamma_1' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links both expression and binding typing in prose and the rule premises; Let defines statement typing."
+      },
+      {
+        "occurrence": "shared.typing.statements:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma_1\\\\vdash b:T\\\\Rightarrow\\\\Gamma_2' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links both expression and binding typing in prose and the rule premises; Let defines statement typing."
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "6b2acb373e581770203a04b77e5a8aae5dbaa8a1fc2570471a10a8421ca14b25",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/graph.rs:args",
+    "rust:mdbook-dada/src/graph.rs:edge_target",
+    "rust:mdbook-dada/src/graph.rs:identifier",
+    "rust:mdbook-dada/src/graph.rs:label",
+    "rust:mdbook-dada/src/graph.rs:parse",
+    "test:mdbook-dada/src/graph.rs:cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically",
+    "test:mdbook-dada/src/graph.rs:lease_tests::leases_join_edges_and_shleases_target_objects",
+    "test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices",
+    "test:mdbook-dada/src/graph.rs:tests::bad_facts_fail_instead_of_silently_changing_the_graph",
+    "test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds",
+    "test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved",
+    "test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_array_size_boundary_preserves_all_slots",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges",
+    "unit:meta.syntax.heap.nodes",
+    "unit:meta.syntax.heap.validation"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.heap.validation against rust:mdbook-dada/src/graph.rs:parse, rust:mdbook-dada/src/graph.rs:edge_target, test:mdbook-dada/src/graph.rs:tests::bad_facts_fail_instead_of_silently_changing_the_graph, test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices, test:mdbook-dada/src/graph.rs:lease_tests::leases_join_edges_and_shleases_target_objects, test:mdbook-dada/src/graph.rs:cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically, test:mdbook-dada/tests/renderer_contracts.rs:diagram_array_size_boundary_preserves_all_slots. parse rejects duplicate nodes/slots, absent targets, invalid projections and arrays above 64; edge_target requires leases to name an initialized owned or leased edge. Tests cover the 0/64/65 boundary, invalid targets and supports, variable-store restrictions and deterministic cyclic examples. Ownership cycles are intentionally accepted rather than presented as valid language states. Notation and judgment context was checked in unit:meta.syntax.heap.nodes. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "92d1cac7c0f1c0b1bc218970bd50c1426da148a605d6165cc47918991e58cdd2"
+  ]
+}

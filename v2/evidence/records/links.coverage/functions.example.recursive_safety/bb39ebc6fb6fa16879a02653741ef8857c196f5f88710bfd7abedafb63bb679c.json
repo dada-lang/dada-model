@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "8bd53a5247de2233fc4e43b664248cc84b107dfcb9ce8faa079b08cb38d0b27c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:084af8c121ddc59986f42a7ab3f0d5d6acde12eabd63b8c398e3227243248fd1",
+    "audit:target:3364596ea7ab0111fb92359781cd6c83c63e9e1699c0db9afa183775426df400",
+    "audit:unit:functions.example.recursion",
+    "audit:unit:functions.example.recursive_safety",
+    "audit:unit:functions.safety",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links stack typing, stuckness and the prior recursive example. Depth is a locally quantified natural iteration of that example; no new safety predicate is introduced without a definition link.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "9a6532a68b18df5a79a5442582be84c7ecad5529bac6e064119f406e32066939"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links stack typing, stuckness and the prior recursive example.",
+    "mathematics": "Depth is a locally quantified natural iteration of that example; no new safety predicate is introduced without a definition link.",
+    "links": [
+      {
+        "occurrence": "functions.example.recursive_safety:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well typed' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links stack typing, stuckness and the prior recursive example."
+      },
+      {
+        "occurrence": "functions.example.recursive_safety:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck' refers to md/functions.md#claim-functions.stuck for the concept or example setup used by this unit. Links stack typing, stuckness and the prior recursive example."
+      },
+      {
+        "occurrence": "functions.example.recursive_safety:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'recursive' refers to md/functions.md#claim-functions.example.recursion for the concept or example setup used by this unit. Links stack typing, stuckness and the prior recursive example."
+      }
+    ]
+  }
+}

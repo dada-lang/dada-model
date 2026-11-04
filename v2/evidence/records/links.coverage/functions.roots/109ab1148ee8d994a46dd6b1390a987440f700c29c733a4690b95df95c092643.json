@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "b712fef18786a2b399748a3f8b52d42359b3ee6c17579cb1504015050bc05eae",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.roots",
+    "audit:unit:shared.live",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links all live frames and Shared reachability. Explains concatenation for membership, not name-based lookup. No formula beyond helper names; occurrence identity across frames is explicitly retained.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "340f83375af24d8c6a1ac1418dd25debf6a974c8c1e05c86905d628f39c67fb1"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links all live frames and Shared reachability. Explains concatenation for membership, not name-based lookup.",
+    "mathematics": "No formula beyond helper names; occurrence identity across frames is explicitly retained.",
+    "links": [
+      {
+        "occurrence": "functions.roots:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'frames' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links all live frames and Shared reachability. Explains concatenation for membership, not name-based lookup."
+      },
+      {
+        "occurrence": "functions.roots:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reachability relation' refers to md/shared.md#claim-shared.live for the concept or example setup used by this unit. Links all live frames and Shared reachability. Explains concatenation for membership, not name-based lookup."
+      }
+    ]
+  }
+}

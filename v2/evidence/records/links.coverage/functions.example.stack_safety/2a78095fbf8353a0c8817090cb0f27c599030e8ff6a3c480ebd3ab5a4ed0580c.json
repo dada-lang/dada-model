@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "42a227e09d7c045c931fdb2c37d2ccd478350e696ece80952b1678fdc8049209",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:310a96e86b0173dd94b6129b44adfbba60f6c9459371fa872417f5af84cdb656",
+    "audit:target:ef7aedb66f188b157bd66e467ed07f4ec8f3366639a1a82c26fc4370ae9980d8",
+    "audit:unit:functions.example.nested",
+    "audit:unit:functions.example.stack_safety",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the nested example, finite traces and the explicitly following stack-typing definition. The deferred notion is exactly the suspended caller's promised result. The example states finite-prefix safety in prose and identifies its concrete program; the separate forward assessment explains the limited preview of stack typing.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "08fde9e2ee90d8e6c3a10a4451504bcc265ea99b53b302174edd6489017ca3a4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the nested example, finite traces and the explicitly following stack-typing definition. The deferred notion is exactly the suspended caller's promised result.",
+    "mathematics": "The example states finite-prefix safety in prose and identifies its concrete program; the separate forward assessment explains the limited preview of stack typing.",
+    "links": [
+      {
+        "occurrence": "functions.example.stack_safety:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nested relay/identity example' refers to md/functions.md#claim-functions.example.nested for the concept or example setup used by this unit. Links the nested example, finite traces and the explicitly following stack-typing definition. The deferred notion is exactly the suspended caller's promised result."
+      },
+      {
+        "occurrence": "functions.example.stack_safety:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finite execution prefix' refers to md/functions.md#claim-functions.traces for the concept or example setup used by this unit. Links the nested example, finite traces and the explicitly following stack-typing definition. The deferred notion is exactly the suspended caller's promised result."
+      },
+      {
+        "occurrence": "functions.example.stack_safety:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stack-typing definition' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links the nested example, finite traces and the explicitly following stack-typing definition. The deferred notion is exactly the suspended caller's promised result."
+      }
+    ]
+  }
+}

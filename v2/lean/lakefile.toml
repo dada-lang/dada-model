@@ -1,6 +1,6 @@
 name = "dada_model"
 version = "0.1.0"
-defaultTargets = ["Common", "Unique", "Shared", "Functions", "Correspondence"]
+defaultTargets = ["Common", "Unique", "Shared", "Functions", "Destructors", "Correspondence"]
 
 [[lean_lib]]
 name = "Common"
@@ -21,3 +21,7 @@ globs = ["Correspondence.+"]
 [[lean_lib]]
 name = "Functions"
 globs = ["Functions.+"]
+
+[[lean_lib]]
+name = "Destructors"
+globs = ["Destructors.+"]

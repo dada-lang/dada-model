@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "bundle": "46c9fe52f2d353f204571d25b5e752cea7f40d51f2b61f85878710ddd9e796db",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:01136db71db4cfa667c6e3740ce6232362099005c519039ee87981eda09ab977",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:given.unpacking",
+    "audit:unit:shared.state",
+    "audit:unit:shared.steps",
+    "audit:unit:shared.typing.patterns",
+    "audit:unit:shared.typing.steps",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Step evaluates the expression then applies Bind. Variable binding accepts either reference mode at a fresh variable; unpack requires an owned reference, declared class/field shape, exhaustive Transfer and fresh distinct destinations, then removes the container. Transfer preserves empty slots and reference values, matching the prose. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "81ada698f0169fd111eecbd217cbc7fefa53e0a625dff2219c584089647f71aa"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Step evaluates the expression then applies Bind. Variable binding accepts either reference mode at a fresh variable; unpack requires an owned reference, declared class/field shape, exhaustive Transfer and fresh distinct destinations, then removes the container. Transfer preserves empty slots and reference values, matching the prose. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place.",
+    "links": [
+      {
+        "occurrence": "shared.typing.steps:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'binding pattern' refers to md/shared-typing.md#claim-shared.typing.patterns for the concept or example setup used by this unit. Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      },
+      {
+        "occurrence": "shared.typing.steps:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash\\\\langle S,e\\\\rangle\\\\Downarrow\\\\langle S',r\\\\rangle\" refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      },
+      {
+        "occurrence": "shared.typing.steps:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Shared's expression evaluation\" refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      },
+      {
+        "occurrence": "shared.typing.steps:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'allocated' refers to md/shared.md#claim-shared.allocated for the concept or example setup used by this unit. Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "cf79bf0ce80136c8ffccac09918c45e95b6f3e6236fcbe00c120f290e019941c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:unit:given.example.unpack",
+    "audit:unit:given.finished",
+    "audit:unit:given.machine",
+    "audit:unit:given.patterns",
+    "audit:unit:given.unpacking",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links unpacking and completion; all class declarations and the moved/empty field scenario are present locally. No field-description typing rule is assumed ahead of the next chapter. All source class/field names are declared in the example. Its unpacking and finished claims link backwards, and empty bindings use already introduced slot semantics.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "f5f75122c8f44879fb7c08ace472b5709ff7604a5c01f92548fe72593e7349a0"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links unpacking and completion; all class declarations and the moved/empty field scenario are present locally. No field-description typing rule is assumed ahead of the next chapter.",
+    "mathematics": "All source class/field names are declared in the example. Its unpacking and finished claims link backwards, and empty bindings use already introduced slot semantics.",
+    "links": [
+      {
+        "occurrence": "given.example.unpack:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Unpacking' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. Links unpacking and completion; all class declarations and the moved/empty field scenario are present locally. No field-description typing rule is assumed ahead of the next chapter."
+      },
+      {
+        "occurrence": "given.example.unpack:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/given.md#claim-given.finished for the concept or example setup used by this unit. Links unpacking and completion; all class declarations and the moved/empty field scenario are present locally. No field-description typing rule is assumed ahead of the next chapter."
+      }
+    ]
+  }
+}

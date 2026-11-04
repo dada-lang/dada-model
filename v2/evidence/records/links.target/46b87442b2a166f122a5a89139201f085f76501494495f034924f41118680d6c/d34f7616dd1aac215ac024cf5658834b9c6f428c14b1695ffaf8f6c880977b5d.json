@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "b574264814d216ac79cd3b4aa0b38f26b996ed0412440a3381c3fadae6dfe460",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:46b87442b2a166f122a5a89139201f085f76501494495f034924f41118680d6c",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces root references from every live frame. Links all live frames and Shared reachability. Explains concatenation for membership, not name-based lookup. No formula beyond helper names; occurrence identity across frames is explicitly retained. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "471c4228f1ba9638fbf57cae3549620bee5a1f138d7bfd5215d71644c14acd51"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "root references from every live frame",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 17038,
+      "end": 17387
+    },
+    "clarity": "The named landing directly introduces root references from every live frame. Links all live frames and Shared reachability. Explains concatenation for membership, not name-based lookup.",
+    "independence": "No formula beyond helper names; occurrence identity across frames is explicitly retained. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

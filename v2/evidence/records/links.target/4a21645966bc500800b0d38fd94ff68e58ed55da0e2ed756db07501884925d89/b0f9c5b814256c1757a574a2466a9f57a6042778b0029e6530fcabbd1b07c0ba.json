@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "1478cd3312b6e429f00969aa228605118bca53945c770d446f75f29ae71a53bd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4a21645966bc500800b0d38fd94ff68e58ed55da0e2ed756db07501884925d89",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/renderer-contracts.md#claim-meta.math.typesetting directly introduces Authored mathematics delimiters. This is the defining contract for authored math delimiters and preservation. The distinction between raw-TeX and Markdown bodies, escaped output and browser typesetting is stated locally. Delimiter samples and grammar rendering are syntax examples, not equations relying on model concepts. No mathematical reference needs an external definition. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "1412462f9a9d7c91dcd532d6f9ce558a07770cd44fd1ad43c8cb6bb5f56e42dc"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Authored mathematics delimiters",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 6103,
+      "end": 6985
+    },
+    "clarity": "The landing md/repo/renderer-contracts.md#claim-meta.math.typesetting directly introduces Authored mathematics delimiters. This is the defining contract for authored math delimiters and preservation. The distinction between raw-TeX and Markdown bodies, escaped output and browser typesetting is stated locally.",
+    "independence": "Delimiter samples and grammar rendering are syntax examples, not equations relying on model concepts. No mathematical reference needs an external definition. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

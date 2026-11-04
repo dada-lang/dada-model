@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "40f6211e1d13479b8256bd04b82cbc947fd3b9f5c1afcc14f227d7301d215777",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5b191b4ae73004553b8e41cc5f545f7c147cba689bcb49ef7849cef20bd54b19",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces typing installation of a call result. Links well-formed environments and Shared variable binding. It defines result installation and explicitly rejects discarding a value result. The none rule uses the linked WF check; the present rule uses the linked binding judgment. Gamma, d and R are already introduced by environments and call syntax. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "249ec8228d118670328b2ed5ed407359302f1dcfba1c45af7487ab978f8dcff2"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "typing installation of a call result",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 9380,
+      "end": 10112
+    },
+    "clarity": "The named landing directly introduces typing installation of a call result. Links well-formed environments and Shared variable binding. It defines result installation and explicitly rejects discarding a value result.",
+    "independence": "The none rule uses the linked WF check; the present rule uses the linked binding judgment. Gamma, d and R are already introduced by environments and call syntax. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

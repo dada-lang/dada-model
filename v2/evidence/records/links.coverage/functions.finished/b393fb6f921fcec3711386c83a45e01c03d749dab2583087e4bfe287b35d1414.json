@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "2a48d369f297ed9cc5e273e1fe15c10b29f31e6d4d747eaad38638f83c0e0400",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2f4fae6642af15eee453aa7a85b451f092126af505d334ad49884a5cd4d2688a",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.finished",
+    "audit:unit:functions.machine",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links finished stack and successor relation; the theorem quantifies over any declaration table. There is no hidden formula: no successor is the stated consequence of stack emptiness.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "27bb4eff727b4abbb7bbcd7bdff790c988309f6c7305d34b22edf13f302c54c5"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links finished stack and successor relation; the theorem quantifies over any declaration table.",
+    "mathematics": "There is no hidden formula: no successor is the stated consequence of stack emptiness.",
+    "links": [
+      {
+        "occurrence": "functions.finished:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished configuration' refers to md/functions.md#claim-functions.machine_finished for the concept or example setup used by this unit. Links finished stack and successor relation; the theorem quantifies over any declaration table."
+      },
+      {
+        "occurrence": "functions.finished:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'successor' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links finished stack and successor relation; the theorem quantifies over any declaration table."
+      }
+    ]
+  }
+}

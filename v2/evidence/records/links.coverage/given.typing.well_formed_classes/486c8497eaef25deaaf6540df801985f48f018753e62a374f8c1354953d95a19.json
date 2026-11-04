@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "6c1797c9e288ca6332a8a4e4147984e5bc8da099d44dd9eb3e1ba987b907ea0a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.well_formed_classes",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The typed-class-table link identifies the exact object constrained by the three conditions. There is no separate displayed equation or undefined operator: Sigma names the linked table.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d9e58c36e36110cc01eb1821843b7d5c5f99a472937724e7a5f7f736d1c49660"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The typed-class-table link identifies the exact object constrained by the three conditions.",
+    "mathematics": "There is no separate displayed equation or undefined operator: Sigma names the linked table.",
+    "links": [
+      {
+        "occurrence": "given.typing.well_formed_classes:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'typed class table' refers to md/given-typing.md#claim-given.typing.declarations for the concept or example setup used by this unit. The typed-class-table link identifies the exact object constrained by the three conditions."
+      }
+    ]
+  }
+}

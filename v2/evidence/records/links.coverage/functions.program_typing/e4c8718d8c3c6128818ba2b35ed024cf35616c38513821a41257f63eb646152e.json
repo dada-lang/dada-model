@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "f836ad65f836f3eb285e14c24bad204edc17bf4b18d46f1e872b41b682f95d76",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:79283484adee6a2142c00e38e1f1accde4d861bb79aa4ecbf735a13e187ee7c9",
+    "audit:target:7dc073f30dfdeb7c8e9599d8a935c9ddd6bc39f688b2ff9fd1a3dd55453c75d7",
+    "audit:target:939f180934edf65d84a072aad2dd778c3a2dc532ce0e9d8b312e9d65b1b4483b",
+    "audit:unit:functions.declaration_typing",
+    "audit:unit:functions.program_typing",
+    "audit:unit:functions.typing",
+    "audit:unit:shared.typing.well_formed_classes",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nominal-table validity, declaration-table checking and top-level sequence typing. The empty initial environment and existential final environment are explicit, with no extra terminal-consumption condition.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "df2a074493b0b13bc0c7969846cd903354f246d388468fbb3762d961f145ea63"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nominal-table validity, declaration-table checking and top-level sequence typing.",
+    "mathematics": "The empty initial environment and existential final environment are explicit, with no extra terminal-consumption condition.",
+    "links": [
+      {
+        "occurrence": "functions.program_typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal table' refers to md/shared-typing.md#claim-shared.typing.well_formed_classes for the concept or example setup used by this unit. Links nominal-table validity, declaration-table checking and top-level sequence typing."
+      },
+      {
+        "occurrence": "functions.program_typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declaration table' refers to md/functions.md#claim-functions.declaration_typing for the concept or example setup used by this unit. Links nominal-table validity, declaration-table checking and top-level sequence typing."
+      },
+      {
+        "occurrence": "functions.program_typing:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'top-level statements check' refers to md/functions.md#claim-functions.typing for the concept or example setup used by this unit. Links nominal-table validity, declaration-table checking and top-level sequence typing."
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "e8ae7298d2c8bb22b19b23f21e6375da35510b69423855be83fddb0f074e6842",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:18e50dab95df074f64b089e4a508e22ce099405e437bd6cb4f61d60712b67a3c",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces the public Shared-to-Functions embedding and step correspondence. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse. The translation is defined in prose here; no unintroduced relation or restriction to already-embedded endpoints weakens the claim. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "90d2d1dcb57edce8a0f65a8093862708f31863a7a86c53ae574726c7f47a9154"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the public Shared-to-Functions embedding and step correspondence",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 27219,
+      "end": 28029
+    },
+    "clarity": "The named landing directly introduces the public Shared-to-Functions embedding and step correspondence. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse.",
+    "independence": "The translation is defined in prose here; no unintroduced relation or restriction to already-embedded endpoints weakens the claim. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

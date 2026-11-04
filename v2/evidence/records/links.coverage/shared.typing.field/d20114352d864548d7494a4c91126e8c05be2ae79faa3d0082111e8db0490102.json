@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "bundle": "3148a8218a352951484c72aae37594c33e3ebaad6afe8b91b4d5f4023b604e4b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:target:2e73a816de64641201d0a60f2df58d7490dcf3352f6e52f13591043ab00ec548",
+    "audit:target:7ca3252c424052cffbaaf2fb3da6b66220637dbf063c6038d7142db073228302",
+    "audit:unit:shared.typing.environments",
+    "audit:unit:shared.typing.field",
+    "audit:unit:shared.typing.focus",
+    "audit:unit:shared.typing.observations",
+    "audit:unit:shared.typing.patterns",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links pattern context, pos/neg and focus; defines the one direct-field-description operator. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. fieldDescription returns an existing empty description when the single-field path is negative, otherwise maps successful focus to an inhabited description. The cases distinguish unknown from empty, and shared focusing preserves the effective permission.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "f3b5813cdb652480f025c7823afed90ab81930fee2a805ec90e60ddb48dc8800"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links pattern context, pos/neg and focus; defines the one direct-field-description operator.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. fieldDescription returns an existing empty description when the single-field path is negative, otherwise maps successful focus to an inhabited description. The cases distinguish unknown from empty, and shared focusing preserves the effective permission.",
+    "links": [
+      {
+        "occurrence": "shared.typing.field:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'unpackingpattern' refers to md/shared-typing.md#claim-shared.typing.patterns for the concept or example setup used by this unit. Links pattern context, pos/neg and focus; defines the one direct-field-description operator."
+      },
+      {
+        "occurrence": "shared.typing.field:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}_{\\\\Sigma}(T)' refers to md/shared-typing.md#claim-shared.typing.observations for the concept or example setup used by this unit. Links pattern context, pos/neg and focus; defines the one direct-field-description operator."
+      },
+      {
+        "occurrence": "shared.typing.field:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'T\\\\downarrow f' refers to md/shared-typing.md#claim-shared.typing.focus for the concept or example setup used by this unit. Links pattern context, pos/neg and focus; defines the one direct-field-description operator."
+      },
+      {
+        "occurrence": "shared.typing.field:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}_{\\\\Sigma}(T)' refers to md/shared-typing.md#claim-shared.typing.observations for the concept or example setup used by this unit. Links pattern context, pos/neg and focus; defines the one direct-field-description operator."
+      }
+    ]
+  }
+}

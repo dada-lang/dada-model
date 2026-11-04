@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "8a46128a52b3d9daec05994d63de73162c5ca6ffd740f2aa70b6786e5c7bebdf",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d624ee0d5cd5657b31ab57c7b4683b005539b9d45e491bf03994c6837439d23e",
+    "audit:unit:meta.math.definition.selection",
+    "audit:unit:meta.sources.exact_selection",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Definition extraction and grammar citation kinds are defined here. The reused mutual-inductive source-selection rules link the exact earlier extraction contract. Local anchors separate body extraction, grammar selection and validation. Authored LaTeX is discussed as a representation; no equation or inference-rule symbol is relied upon here.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b68ec1b21137330c10b2a5a3dbc1048910fde2613f7b607e16ac1a97dc36a8b3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Definition extraction and grammar citation kinds are defined here. The reused mutual-inductive source-selection rules link the exact earlier extraction contract. Local anchors separate body extraction, grammar selection and validation.",
+    "mathematics": "Authored LaTeX is discussed as a representation; no equation or inference-rule symbol is relied upon here.",
+    "links": [
+      {
+        "occurrence": "meta.math.definition.selection:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'meta.sources.exact_selection' refers to md/repo/evidence-pilot.md#claim-meta.sources.exact_selection for the concept or example setup used by this unit. Definition extraction and grammar citation kinds are defined here. The reused mutual-inductive source-selection rules link the exact earlier extraction contract. Local anchors separate body extraction, grammar selection and validation."
+      }
+    ]
+  }
+}

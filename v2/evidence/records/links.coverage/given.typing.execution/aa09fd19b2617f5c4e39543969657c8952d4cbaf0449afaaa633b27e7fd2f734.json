@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "b23de179fd9d4475ef0de955f8cc0b8db61652fcbb391d58b89aaae1c7f90660",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:472873be00917a4ebf8d69e3b338f3e2a17aa6e7d92d58a52bc513ef0d20f263",
+    "audit:unit:given.executions",
+    "audit:unit:given.typing.execution",
+    "audit:unit:given.unpacking",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation. The star and k superscripts are the defining occurrences. The underlying extended step relation is linked in the sentence introducing them.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "5f24572c8fbdfddd439182297bda1f66b92564998faa41fdd720172c575c47a3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation.",
+    "mathematics": "The star and k superscripts are the defining occurrences. The underlying extended step relation is linked in the sentence introducing them.",
+    "links": [
+      {
+        "occurrence": "given.typing.execution:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'extended steps' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation."
+      },
+      {
+        "occurrence": "given.typing.execution:2",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'given.executions' refers to md/given.md#claim-given.executions for the concept or example setup used by this unit. The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation."
+      }
+    ]
+  }
+}

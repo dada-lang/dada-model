@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "c8e287a353c1277e8b18092ddfce44d36d3522a67e094877ab77595a1992bd44",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:shared.declarations",
+    "audit:unit:shared.example.declarations",
+    "audit:unit:shared.struct",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links kinds and the struct-field restriction. All accepted and rejected nominal declarations are local. No mathematical judgment is reused without a link; the empty-view observation restates that the restriction is nominal.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "aa403f7db979ea72192cfb3d6bf41c4e75f95e3caa1c890e7af654d8dd5416a4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links kinds and the struct-field restriction. All accepted and rejected nominal declarations are local.",
+    "mathematics": "No mathematical judgment is reused without a link; the empty-view observation restates that the restriction is nominal.",
+    "links": [
+      {
+        "occurrence": "shared.example.declarations:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'three forms' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links kinds and the struct-field restriction. All accepted and rejected nominal declarations are local."
+      },
+      {
+        "occurrence": "shared.example.declarations:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'struct-only field restriction' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. Links kinds and the struct-field restriction. All accepted and rejected nominal declarations are local."
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "bd1d3cf812349ed1a9be52618db7f945e3e427ffb8471f42a381d18fc1a865b8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:unit:destructors.future",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Deferred assignment/drop insertion and borrow-based struct destructors remain explicitly future conveniences. The only code shorthand refers directly to the existing explicit pattern. The code example binds resource and self by the described shorthand context; no current typing theorem or borrowing judgment is asserted.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "fb1fe30d2d83335bf434eac86efb981fdf504f7b5432eab004a14470f042448c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Deferred assignment/drop insertion and borrow-based struct destructors remain explicitly future conveniences. The only code shorthand refers directly to the existing explicit pattern.",
+    "mathematics": "The code example binds resource and self by the described shorthand context; no current typing theorem or borrowing judgment is asserted.",
+    "links": [
+      {
+        "occurrence": "destructors.future:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'explicit pattern' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.patterns. Deferred assignment/drop insertion and borrow-based struct destructors remain explicitly future conveniences. The only code shorthand refers directly to the existing explicit pattern."
+      }
+    ]
+  }
+}

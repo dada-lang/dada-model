@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "519364b61c3b892bb8f1da64a867b641caa407664c8f6d2ae29e4b7442a32136",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:validate_mutual_groups",
+    "test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection",
+    "test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.sources.exact_selection against rust:mdbook-dada/src/lean.rs:select, rust:mdbook-dada/src/lean.rs:extract_declaration, rust:mdbook-dada/src/lean.rs:validate_mutual_groups, rust:mdbook-dada/src/lean.rs:extract_case, rust:mdbook-dada/src/lean.rs:scan, test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor, test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens, test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations, test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys, test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection. The scanner masks comments/literals while retaining original selected text; extract_declaration rejects sibling commands and validates restricted column-zero mutual inductives before selection; extract_case chooses the minimum-indent named constructor and excludes siblings. Tests exercise indented sibling attacks, final literal tokens, complete mutual members and malformed/comment-decoy mutual groups. This remains textual selection, not elaboration. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "7519176e60fc35c7dbbfe7167fdd0f433da9fcb925a284996d3097cd9d1168fb"
+  ]
+}

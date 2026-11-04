@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "bundle": "0f7d876c9bcca35617d99849682690cd422cfe4e4728113e8e88e4a6f5c4966b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "audit:target:8132c92fa5f747ccdf2fbc59a0936de31747623e06e98e9afada9d4d962dc8b4",
+    "audit:unit:shared.finished",
+    "audit:unit:shared.give",
+    "audit:unit:shared.steps",
+    "audit:unit:shared.stuck",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation. The equation links both Finished and Step. The prose counterexample refers back to giving rather than assuming static initialization typing.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d4f42e6046ce9d6a962b770ed3de857d20002d0a8a3eb2856b1e03cd70715680"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation.",
+    "mathematics": "The equation links both Finished and Step. The prose counterexample refers back to giving rather than assuming static initialization typing.",
+    "links": [
+      {
+        "occurrence": "shared.stuck:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation."
+      },
+      {
+        "occurrence": "shared.stuck:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{Finished}(K)' refers to md/shared.md#claim-shared.finished for the concept or example setup used by this unit. Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation."
+      },
+      {
+        "occurrence": "shared.stuck:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash K\\\\longrightarrow K'\" refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation."
+      },
+      {
+        "occurrence": "shared.stuck:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'giving' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation."
+      }
+    ]
+  }
+}

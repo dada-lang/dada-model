@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "0d71233a732004e5961b41ce7ab08ee2a63785ca9495dba08c4c2f5bb12f590a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.syntax directly introduces Given place, value and statement syntax. Links field names back to class declarations; defines p, e, t, fresh variables, gives, and constructors together as the syntax grammar. The explanatory operation words here do not invoke a later formal judgment. The p/e/t grammar defines the syntactic categories together; x is introduced as a variable name, and field names have the preceding class link. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "945373e5afeb189ff0d8544cd55e259ab53da92c2552624600ec16dd99a58f4d"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given place, value and statement syntax",
+    "definition": {
+      "path": "md/given.md",
+      "start": 1100,
+      "end": 2108
+    },
+    "clarity": "The landing md/given.md#claim-given.syntax directly introduces Given place, value and statement syntax. Links field names back to class declarations; defines p, e, t, fresh variables, gives, and constructors together as the syntax grammar. The explanatory operation words here do not invoke a later formal judgment.",
+    "independence": "The p/e/t grammar defines the syntactic categories together; x is introduced as a variable name, and field names have the preceding class link. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

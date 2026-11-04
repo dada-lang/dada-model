@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "c1d72d8b82f582f2dc2267798529aa50d1f8f2c01976f25d95e2084a7c808920",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.programs directly introduces Given programs, class tables and statement sequences. Links class declarations and statements, then defines the program/class-table/statement-sequence grammar. Finite-map conventions and table well-formedness now have separate targets. Δ, P and Π are introduced by the local grammar; C/f/t come from linked class and statement syntax. Brackets, [] and cons are explained with this grammar. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b47e478d53586caacf288bcaab7e7e65b0313e02f012995318b6ee89013a22e6"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given programs, class tables and statement sequences",
+    "definition": {
+      "path": "md/given.md",
+      "start": 2514,
+      "end": 3224
+    },
+    "clarity": "The landing md/given.md#claim-given.programs directly introduces Given programs, class tables and statement sequences. Links class declarations and statements, then defines the program/class-table/statement-sequence grammar. Finite-map conventions and table well-formedness now have separate targets.",
+    "independence": "Δ, P and Π are introduced by the local grammar; C/f/t come from linked class and statement syntax. Brackets, [] and cons are explained with this grammar. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

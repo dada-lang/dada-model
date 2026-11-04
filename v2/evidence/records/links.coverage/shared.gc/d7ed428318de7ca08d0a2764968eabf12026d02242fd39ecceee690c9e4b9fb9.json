@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "99e7640e90c25b21df500b388732578ec612260db0e269a10e2dafc0ffb0cca6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:ca14680f9125a36fd78068c76b0489c10f2e57376ae1804ee0628deb5ff977c6",
+    "audit:unit:shared.gc",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.state",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop. S_K, D and the filtered heap are scoped in the text; gc retains the counter/frame and surviving object data.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "37fc83f587fdfb27256b2c16b68bdd7431451c10bebb637a69ebff1ec3d4dec3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop.",
+    "mathematics": "S_K, D and the filtered heap are scoped in the text; gc retains the counter/frame and surviving object data.",
+    "links": [
+      {
+        "occurrence": "shared.gc:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'live frame' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop."
+      },
+      {
+        "occurrence": "shared.gc:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'initialized object fields' refers to md/shared.md#claim-shared.objects for the concept or example setup used by this unit. Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop."
+      }
+    ]
+  }
+}

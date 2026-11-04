@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "45272e3b024077b3e573e827ccd90934a656f6f8a0303703c788573e50d54825",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:2f4fae6642af15eee453aa7a85b451f092126af505d334ad49884a5cd4d2688a",
+    "audit:target:3e34120c88f7f20e50abd13d3572e04b10cad13d040b1ef300f681e3792499a4",
+    "audit:unit:functions.gc",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.stack_typing",
+    "audit:unit:functions.typed_completion",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links machine typing, finishedness and the earlier step-target theorem. The new premise is typing of the configuration, not having just taken a step; the prose explicitly states this stronger scope.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "468ef56b8e6371482b5d1970b9bee7755bc4c7790a9ce641d0144296101afb2b"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links machine typing, finishedness and the earlier step-target theorem.",
+    "mathematics": "The new premise is typing of the configuration, not having just taken a step; the prose explicitly states this stronger scope.",
+    "links": [
+      {
+        "occurrence": "functions.typed_completion:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links machine typing, finishedness and the earlier step-target theorem."
+      },
+      {
+        "occurrence": "functions.typed_completion:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/functions.md#claim-functions.machine_finished for the concept or example setup used by this unit. Links machine typing, finishedness and the earlier step-target theorem."
+      },
+      {
+        "occurrence": "functions.typed_completion:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step-target result' refers to md/functions.md#claim-functions.terminal_heap for the concept or example setup used by this unit. Links machine typing, finishedness and the earlier step-target theorem."
+      }
+    ]
+  }
+}

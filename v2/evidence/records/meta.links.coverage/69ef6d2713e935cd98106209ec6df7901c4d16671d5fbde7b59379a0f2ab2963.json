@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "1eb77188cf04fd045f908643cb67d6ef4a84d6fe37a4ef4a76ede7aeeab5b081",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/link_audit.rs:AuditInventory::build",
+    "rust:mdbook-dada/src/link_audit.rs:validate_review",
+    "rust:mdbook-dada/src/links.rs:LinkInventory::build",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_renderer_rejects_a_correct_claim_in_the_wrong_chapter",
+    "test:mdbook-dada/tests/link_audit.rs:complete_link_audits_pass_but_preparation_alone_does_not",
+    "test:mdbook-dada/tests/link_audit.rs:conceptual_external_links_require_an_inspectable_local_definition",
+    "test:mdbook-dada/tests/link_audit.rs:coverage_requires_each_occurrence_once_and_both_prose_and_math_rationales",
+    "test:mdbook-dada/tests/links.rs:inventory_reads_markdown_reference_roles_and_math_with_exact_ranges",
+    "test:mdbook-dada/tests/links.rs:order_comes_from_summary_and_byte_position_not_filename_or_unit_id",
+    "test:mdbook-dada/tests/links.rs:reference_definitions_outside_unit_and_bare_math_directives_are_inventoried",
+    "test:mdbook-dada/tests/links.rs:relative_paths_preserve_target_chapter_and_wrong_path_does_not_match_global_id",
+    "unit:meta.links.coverage",
+    "unit:meta.links.inventory"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "AuditInventory generates a coverage subject for each structured source; validate_review requires prose and math reasoning and one assessment for every exact occurrence, rejecting duplicates, omissions and extras. Conceptual external links are rejected without a local inspectable definition. The cited tests separate preparation from approval and exercise malformed coverage. The prose explicitly locates discovery of missing links and truth of the judgment in review, not in syntactic extraction. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "4f15c99154b56284a2666675f40d4eb5f9cca8332061a1b6a623a32776eca59f"
+  ]
+}

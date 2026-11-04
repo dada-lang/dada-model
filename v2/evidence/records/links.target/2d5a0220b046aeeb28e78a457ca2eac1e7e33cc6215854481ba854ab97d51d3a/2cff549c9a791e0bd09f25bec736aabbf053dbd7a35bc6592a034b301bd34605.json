@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "cb7746faf7fe95e378ed2f7165a8db963b30c2246ffc291da8b7d4a0e5a5cf01",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.declarations directly introduces A nominal type has a name and an ordered list of fields. Its declaration chooses whether its values can be shared and whether construction makes them shared imm. Defines the three nominal kinds with their shareability and construction table, linking reference modes. The table is the definition of the kind behavior, not a new mode on runtime objects. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "e728799f5227df08a8229aa591360662b0f735378ffa40a48b7ec7b8f4da9961"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "A nominal type has a name and an ordered list of fields. Its declaration chooses whether its values can be shared and whether construction makes them shared imm",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 2271,
+      "end": 2826
+    },
+    "clarity": "The landing md/shared.md#claim-shared.declarations directly introduces A nominal type has a name and an ordered list of fields. Its declaration chooses whether its values can be shared and whether construction makes them shared imm. Defines the three nominal kinds with their shareability and construction table, linking reference modes.",
+    "independence": "The table is the definition of the kind behavior, not a new mode on runtime objects. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "bundle": "fccc6076f9fc8ab999d681fbe7d36bf073d6d1a92da9aab2ff59e447ae56b1a9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:01136db71db4cfa667c6e3740ce6232362099005c519039ee87981eda09ab977",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:f0800758e25ea7ee9fd903ee7d59491b9696d69585d50197192201ce0604d301",
+    "audit:unit:shared.state",
+    "audit:unit:shared.well_formed",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness. WF is the defined predicate. Its declaration and allocated-identity conditions link directly; pairwise owner-mode compatibility is written out rather than using an unexplained auxiliary relation.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b2dd792c0846569625365c1e9900d8098eee66d34e074638cd7df24a145013ea"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness.",
+    "mathematics": "WF is the defined predicate. Its declaration and allocated-identity conditions link directly; pairwise owner-mode compatibility is written out rather than using an unexplained auxiliary relation.",
+    "links": [
+      {
+        "occurrence": "shared.well_formed:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Allocated objects' refers to md/shared.md#claim-shared.allocated for the concept or example setup used by this unit. Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness."
+      },
+      {
+        "occurrence": "shared.well_formed:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'live objects' refers to md/shared.md#claim-shared.live for the concept or example setup used by this unit. Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness."
+      },
+      {
+        "occurrence": "shared.well_formed:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'state' refers to md/shared.md#claim-shared.state for the concept or example setup used by this unit. Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness."
+      },
+      {
+        "occurrence": "shared.well_formed:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declared' refers to md/shared.md#claim-shared.programs for the concept or example setup used by this unit. Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness."
+      },
+      {
+        "occurrence": "shared.well_formed:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'allocated identity' refers to md/shared.md#claim-shared.allocated for the concept or example setup used by this unit. Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness."
+      }
+    ]
+  }
+}

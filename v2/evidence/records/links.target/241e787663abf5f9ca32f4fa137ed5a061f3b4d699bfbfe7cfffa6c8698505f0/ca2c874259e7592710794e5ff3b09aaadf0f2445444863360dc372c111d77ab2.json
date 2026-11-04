@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "4133436a40e0c982482fc486b63872c9cb20545c66b510f1c882ee87b94f66b2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:241e787663abf5f9ca32f4fa137ed5a061f3b4d699bfbfe7cfffa6c8698505f0",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/functions.md identifies # Functions and methods at the named paragraph or section. This is the explicitly named paragraph/section selected by the link. Its surrounding chapter supplies the authoring or navigation context; it is not represented as a formal language judgment.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3202d9412efff4198222129801752c844bad96be493951fde2c3b5313ae9d578"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "# Functions and methods",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 0,
+      "end": 63
+    },
+    "clarity": "The landing md/functions.md identifies # Functions and methods at the named paragraph or section.",
+    "independence": "This is the explicitly named paragraph/section selected by the link. Its surrounding chapter supplies the authoring or navigation context; it is not represented as a formal language judgment."
+  }
+}

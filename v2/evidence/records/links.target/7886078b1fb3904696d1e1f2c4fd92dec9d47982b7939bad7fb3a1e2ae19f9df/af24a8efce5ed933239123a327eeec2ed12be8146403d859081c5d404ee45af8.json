@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "db03e07222026c91084ba52563a9e62b8930fdfeef236fe2f7d5e86bc2979e42",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces call frames and machine configurations. Links remaining bodies and Shared evaluation storage. Defines frames, their order, common heap/counter and initialization locally. phi, V, B, d, K, H, n and M are introduced before their tuple equations; running is explained without invoking later step rules. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "9c00d5c5ba61d775320567f4f212d79fc770af2cd3a9e25edded60dd20162900"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "call frames and machine configurations",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 15612,
+      "end": 16587
+    },
+    "clarity": "The named landing directly introduces call frames and machine configurations. Links remaining bodies and Shared evaluation storage. Defines frames, their order, common heap/counter and initialization locally.",
+    "independence": "phi, V, B, d, K, H, n and M are introduced before their tuple equations; running is explained without invoking later step rules. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

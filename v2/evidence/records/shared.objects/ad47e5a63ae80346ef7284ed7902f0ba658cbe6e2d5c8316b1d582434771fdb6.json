@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "30d3c436de6c1a12ca14dba90ac35d66f226f1d0d7d79a0aba6640bf02da7c91",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Shared/State:Kind.mode",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Object",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Reference.owned",
+    "lean:Shared/State:Reference.shared",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:ClassName",
+    "lean:Shared/Syntax:FieldName",
+    "lean:Shared/Syntax:Kind",
+    "lean:Shared/Syntax:ObjectId",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.classes",
+    "unit:shared.declarations",
+    "unit:shared.objects",
+    "unit:shared.references"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Object has className and List(FieldName × Slot). The displayed o grammar follows these ordered fields and retains none slots; ownership modes belong to the references in slots, not this record. Notation and premises are supplied by the examined units given.classes, given.collections, given.identities, given.programs, given.syntax, shared.classes, shared.references. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Author self-review; no independent reviewer. Lean checks proof correctness separately. This review compares the cited statements, definitions and examples with the authored claims.",
+    "The model has abstract syntax and noncomputable mathematical GC; no surface parser or executable collector is certified. Recursive execution need not terminate."
+  ],
+  "supersedes": [
+    "73234c5a0c3ca92f1023fb2d46a9560d060f308d7bc44fbc129980806cd6ec42"
+  ]
+}

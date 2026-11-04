@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "ca2dd66e7c97a8f971dbf8f087d49e5eb8363d2036242727184af2729faf8be8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:bd50ee157533d7842a1634a68112529d4e247a05098eebac486fab1dec1ef353",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces well-typed Functions programs. Links nominal-table validity, declaration-table checking and top-level sequence typing. The empty initial environment and existential final environment are explicit, with no extra terminal-consumption condition. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "1fc390200bd29464c66f68d790c1a1e87e3023347593340d755d7c38571617a3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "well-typed Functions programs",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 14090,
+      "end": 14373
+    },
+    "clarity": "The named landing directly introduces well-typed Functions programs. Links nominal-table validity, declaration-table checking and top-level sequence typing.",
+    "independence": "The empty initial environment and existential final environment are explicit, with no extra terminal-consumption condition. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

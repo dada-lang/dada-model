@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "208a36130e57210c9d3cf8423f91be91d77039143cc61d03823166c8420e06ff",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.evaluation directly introduces Given expression evaluation. The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local. The Give premise and result link Resolve and slot update. Construct links Δ(C) and obj, while S_i, β, dom and map extension are scoped in its where explanation; recursive Eval is locally defined. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d89874894f31a1a72b8e285f27417236043c66b372e9a0f843c7035d258b01bb"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given expression evaluation",
+    "definition": {
+      "path": "md/given.md",
+      "start": 10996,
+      "end": 13140
+    },
+    "clarity": "The landing md/given.md#claim-given.evaluation directly introduces Given expression evaluation. The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local.",
+    "independence": "The Give premise and result link Resolve and slot update. Construct links Δ(C) and obj, while S_i, β, dom and map extension are scoped in its where explanation; recursive Eval is locally defined. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

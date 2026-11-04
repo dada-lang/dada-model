@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "04e5bf1f8f1eb954664e6098a39ea7243a377fac52d851d2d1dc015decb656b9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:definition_source",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:has_named_definition_body",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:validate_mutual_groups",
+    "test:mdbook-dada/src/lean.rs:tests::definition_selection_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::definitions_reject_unsupported_incomplete_and_ambiguous_sources",
+    "test:mdbook-dada/src/lean.rs:tests::definitions_select_complete_equations_structure_literals_and_multiline_bodies",
+    "test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection",
+    "test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations",
+    "test:mdbook-dada/tests/book.rs:definition_blocks_reject_missing_wrong_kind_and_malformed_citations",
+    "test:mdbook-dada/tests/book.rs:definition_blocks_select_multiple_complete_declarations_and_preserve_markdown",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "unit:meta.math.definition.selection",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.definition.selection against rust:mdbook-dada/src/lean.rs:select, rust:mdbook-dada/src/lean.rs:extract_declaration, rust:mdbook-dada/src/lean.rs:has_named_definition_body, rust:mdbook-dada/src/lean.rs:definition_source, test:mdbook-dada/tests/book.rs:definition_blocks_select_multiple_complete_declarations_and_preserve_markdown, test:mdbook-dada/tests/book.rs:definition_blocks_reject_missing_wrong_kind_and_malformed_citations, test:mdbook-dada/src/lean.rs:tests::definitions_select_complete_equations_structure_literals_and_multiline_bodies, test:mdbook-dada/src/lean.rs:tests::definition_selection_ignores_comment_and_literal_decoys, test:mdbook-dada/src/lean.rs:tests::definitions_reject_unsupported_incomplete_and_ambiguous_sources. select routes definitions to exact named extraction, which admits def/abbrev/structure/inductive and rejects wrong kinds, modifiers, attributes, ambiguous or incomplete forms. Bodies recognize documented equations, where and := forms. Tests compare complete multi-declaration output and exercise decoys, multiline bodies, missing targets and unsupported forms. The mutually recursive source restriction comes from meta.sources.exact_selection. Notation and judgment context was checked in unit:meta.sources.exact_selection. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "53f60cddfa6df1fbadf2edf541d12db3ef4bfefd6cdb8d74999372991c17571a"
+  ]
+}

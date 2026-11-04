@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "e1779d59ffc686ccbfb877576762f858df9f7f03bd2f147338e7222970bedd60",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:unit:given.classes",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.patterns",
+    "audit:unit:given.syntax",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines the binding-pattern extension locally and links unchanged expression evaluation. Removed the unnecessary forward announcement of the later preservation theorem. b/t/P are the locally defined syntax extension; e remains the linked original value evaluation. Ellipses in the illustrative form do not act as an omission pattern.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "2fa8225874ac71a740ec8c9631c014e704ee92f5e831a9cbf0f23566cde197aa"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines the binding-pattern extension locally and links unchanged expression evaluation. Removed the unnecessary forward announcement of the later preservation theorem.",
+    "mathematics": "b/t/P are the locally defined syntax extension; e remains the linked original value evaluation. Ellipses in the illustrative form do not act as an omission pattern.",
+    "links": [
+      {
+        "occurrence": "given.patterns:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression evaluation' refers to md/given.md#claim-given.evaluation for the concept or example setup used by this unit. Defines the binding-pattern extension locally and links unchanged expression evaluation. Removed the unnecessary forward announcement of the later preservation theorem."
+      }
+    ]
+  }
+}

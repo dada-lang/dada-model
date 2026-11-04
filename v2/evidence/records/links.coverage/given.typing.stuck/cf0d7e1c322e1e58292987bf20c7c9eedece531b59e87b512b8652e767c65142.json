@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "df2c2c9646b182eb95240b3eef056e1733ebc03c4acf084946bebfcf32a2fc66",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:unit:given.finished",
+    "audit:unit:given.typing.stuck",
+    "audit:unit:given.unpacking",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Finishedness links to its operational definition. Stuckness is defined directly by not-finished and absence of a successor. The extended step arrow links to its definition; there is no hidden reachability predicate.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c564608d0aa2e52dcfecf3d81f34f3c8000ed8a9ed10d318066ffa08445e9edd"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Finishedness links to its operational definition. Stuckness is defined directly by not-finished and absence of a successor.",
+    "mathematics": "The extended step arrow links to its definition; there is no hidden reachability predicate.",
+    "links": [
+      {
+        "occurrence": "given.typing.stuck:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/given.md#claim-given.finished for the concept or example setup used by this unit. Finishedness links to its operational definition. Stuckness is defined directly by not-finished and absence of a successor."
+      },
+      {
+        "occurrence": "given.typing.stuck:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\longrightarrow_u' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. Finishedness links to its operational definition. Stuckness is defined directly by not-finished and absence of a successor."
+      }
+    ]
+  }
+}

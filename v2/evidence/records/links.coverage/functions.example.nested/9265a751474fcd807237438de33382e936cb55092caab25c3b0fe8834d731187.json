@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "880162840a475430ed24c8fe9cc24095798d6c746cd33d38d79db3c9fb534b44",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8c93add9c0c83a776892d18710675ad1a169196ba74e7618d4b2ef28a872c904",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:bd50ee157533d7842a1634a68112529d4e247a05098eebac486fab1dec1ef353",
+    "audit:unit:functions.example.nested",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.return",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nested execution, return and program typing. Token, identity and relay supply the local declarations. The repeated token names are explicitly in different frames; the observations distinguish returned caller state from terminal empty storage.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "508cc2f686b4a02b0b630292cb69f88946181838f6ec8c0e53ea4c1c83acabb2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nested execution, return and program typing. Token, identity and relay supply the local declarations.",
+    "mathematics": "The repeated token names are explicitly in different frames; the observations distinguish returned caller state from terminal empty storage.",
+    "links": [
+      {
+        "occurrence": "functions.example.nested:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nested call' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links nested execution, return and program typing. Token, identity and relay supply the local declarations."
+      },
+      {
+        "occurrence": "functions.example.nested:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'After both returns' refers to md/functions.md#claim-functions.return for the concept or example setup used by this unit. Links nested execution, return and program typing. Token, identity and relay supply the local declarations."
+      },
+      {
+        "occurrence": "functions.example.nested:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'checks typing' refers to md/functions.md#claim-functions.program_typing for the concept or example setup used by this unit. Links nested execution, return and program typing. Token, identity and relay supply the local declarations."
+      }
+    ]
+  }
+}

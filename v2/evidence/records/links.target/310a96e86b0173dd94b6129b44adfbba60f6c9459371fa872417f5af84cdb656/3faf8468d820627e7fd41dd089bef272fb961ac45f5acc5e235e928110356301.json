@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "0fcba8af01ed5610b966945bfa97d4fbe4cc9c17da49faf5d41f1a7927689060",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:310a96e86b0173dd94b6129b44adfbba60f6c9459371fa872417f5af84cdb656",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces the relay/identity nested-call example. Links nested execution, return and program typing. Token, identity and relay supply the local declarations. The repeated token names are explicitly in different frames; the observations distinguish returned caller state from terminal empty storage. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "7a7e6b4cdd77bbbae67fedecdf2aa793ce53394b9f2ca43091324d0d0512ac7d"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the relay/identity nested-call example",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 23376,
+      "end": 24184
+    },
+    "clarity": "The named landing directly introduces the relay/identity nested-call example. Links nested execution, return and program typing. Token, identity and relay supply the local declarations.",
+    "independence": "The repeated token names are explicitly in different frames; the observations distinguish returned caller state from terminal empty storage. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

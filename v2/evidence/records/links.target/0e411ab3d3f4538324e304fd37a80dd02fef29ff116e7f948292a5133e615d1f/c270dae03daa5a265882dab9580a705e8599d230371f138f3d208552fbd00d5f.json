@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "21e1f268bab9186c5f08616c999b8c4b580875f3f963c02c734e4b7e1e092b96",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e411ab3d3f4538324e304fd37a80dd02fef29ff116e7f948292a5133e615d1f",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.erasure directly introduces shared.typing.erasure. The shared.typing.erasure unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types. The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "586cf39281447fa9fb02e0ab08914ca63c14da473a4f2a688bd5beecb54f08f2"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.erasure",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 6674,
+      "end": 7065
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.erasure directly introduces shared.typing.erasure. The shared.typing.erasure unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types.",
+    "independence": "The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

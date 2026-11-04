@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "92dc68d939c78aedc80cf0665a1431a7686f4239aa19457eb88d357f958019eb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.give directly introduces Shared giving, including move/copy/final-slot conversion. Links the unchanged place concept and the preceding reference definition. Its table itself defines move/copy/final-slot conversion; it is not an implicit forward invocation of Resolve. The table is the definition of giving behavior at this level. It uses the preceding reference modes and linked place concept; it does not invoke the later Resolve judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "65481d06c98fa546fdb94520910d5d4e82f1d161c1b45e5bbe8eef99c202274b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared giving, including move/copy/final-slot conversion",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 1000,
+      "end": 2158
+    },
+    "clarity": "The landing md/shared.md#claim-shared.give directly introduces Shared giving, including move/copy/final-slot conversion. Links the unchanged place concept and the preceding reference definition. Its table itself defines move/copy/final-slot conversion; it is not an implicit forward invocation of Resolve.",
+    "independence": "The table is the definition of giving behavior at this level. It uses the preceding reference modes and linked place concept; it does not invoke the later Resolve judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

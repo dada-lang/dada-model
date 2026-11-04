@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "08e8efd11532f20b06e88eb473fdfd5f982b1d2fe7f5e6ed5f347364dbd086ae",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:837551691616f7856e5628608f269668034d86818f25ff4e307500ffcff69cb3",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.take directly introduces taking a source place and updating its root environment entry. Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations. The accessibility premise links pos; the result and update cases link focusing and emptying. The new take operator and root-empty case are defined here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "fbade6dfba87399128ad27bf9ee2fdbd07b5409000cfb9554e61b5be566b79cd"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "taking a source place and updating its root environment entry",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 17028,
+      "end": 18061
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.take directly introduces taking a source place and updating its root environment entry. Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations.",
+    "independence": "The accessibility premise links pos; the result and update cases link focusing and emptying. The new take operator and root-empty case are defined here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

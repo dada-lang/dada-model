@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "332f80cfa433280c895b52acecb9bbe79a3ec7a30a78aae5f600fd2b9e60a99c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:shared.declarations",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines the three nominal kinds with their shareability and construction table, linking reference modes. The table is the definition of the kind behavior, not a new mode on runtime objects.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "773503e3bd4d767e14547aa8087777a34c9c3b34614ca673943c41a7c7a80b7c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines the three nominal kinds with their shareability and construction table, linking reference modes.",
+    "mathematics": "The table is the definition of the kind behavior, not a new mode on runtime objects.",
+    "links": [
+      {
+        "occurrence": "shared.declarations:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Modes' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Defines the three nominal kinds with their shareability and construction table, linking reference modes."
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "ccf6c7c960cf55e21230a7e2f774108d5460fde33a5f3f129f98ba8eeb880382",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d624ee0d5cd5657b31ab57c7b4683b005539b9d45e491bf03994c6837439d23e",
+    "audit:unit:meta.evidence.required_inputs",
+    "audit:unit:meta.sources.configuration",
+    "audit:unit:meta.sources.exact_selection",
+    "audit:unit:meta.units.closed_body",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The exact cited declaration requirement now links the opening definition of source selection. Other required input categories are listed directly, including fixture and theme snapshots and the non-oracle limitation. No mathematical rules are reused; hashes, source paths and bundle inputs are concrete tooling data described by this unit.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "f352a5d060b641de524d61356965cea4785117d46fec803d7d7b3f7671832a99"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The exact cited declaration requirement now links the opening definition of source selection. Other required input categories are listed directly, including fixture and theme snapshots and the non-oracle limitation.",
+    "mathematics": "No mathematical rules are reused; hashes, source paths and bundle inputs are concrete tooling data described by this unit.",
+    "links": [
+      {
+        "occurrence": "meta.evidence.required_inputs:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'exact cited Lean declaration' refers to md/repo/evidence-pilot.md#claim-meta.sources.exact_selection for the concept or example setup used by this unit. The exact cited declaration requirement now links the opening definition of source selection. Other required input categories are listed directly, including fixture and theme snapshots and the non-oracle limitation."
+      }
+    ]
+  }
+}

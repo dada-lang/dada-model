@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "5732c62f1ace3cfabbe78fc2d8cdfe5f609a4a655496ecb3975a19b56cf462b7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "audit:target:9cc9154e3592cdc44cca3510ac58cfa325b84ffa766de384bb8a62113e702254",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:shared.gc",
+    "audit:unit:shared.gc_inert",
+    "audit:unit:shared.liveness",
+    "audit:unit:shared.well_formed",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links collection and well-formed storage, invoking rooted liveness only for a live frame. The equality is conditional on WF and a live frame, not a claim that terminal reclamation is inert.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "83fd03a6c0fc2bb55c8464946e2719245d485f1ffe3a6f8b161622a611602b07"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links collection and well-formed storage, invoking rooted liveness only for a live frame.",
+    "mathematics": "The equality is conditional on WF and a live frame, not a claim that terminal reclamation is inert.",
+    "links": [
+      {
+        "occurrence": "shared.gc_inert:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Collection' refers to md/shared.md#claim-shared.gc for the concept or example setup used by this unit. Links collection and well-formed storage, invoking rooted liveness only for a live frame."
+      },
+      {
+        "occurrence": "shared.gc_inert:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'structurally well-formed evaluation storage' refers to md/shared.md#claim-shared.well_formed for the concept or example setup used by this unit. Links collection and well-formed storage, invoking rooted liveness only for a live frame."
+      },
+      {
+        "occurrence": "shared.gc_inert:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reachable' refers to md/shared.md#claim-shared.live for the concept or example setup used by this unit. Links collection and well-formed storage, invoking rooted liveness only for a live frame."
+      }
+    ]
+  }
+}

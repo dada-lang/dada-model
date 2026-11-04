@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "5addf71ebbe79809a4831780b588766cfa0a7674cb0e3f1db910fe79456a081f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:33809897369fd4607384d07eadc60386712478a8b6088571abb3604e50110c5c",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.parameters",
+    "audit:unit:functions.signatures",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links signatures, runtime references and optional destination/result syntax. Defines ordered binding and presence matching. bind, d~R, and list arity are introduced locally; equal lengths are the operation's stated domain, not a hidden zip truncation assumption.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "92e82bc62886abb160773f316c30e7f19a66ed0ac49895b72a5a4d74e89e0e94"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links signatures, runtime references and optional destination/result syntax. Defines ordered binding and presence matching.",
+    "mathematics": "bind, d~R, and list arity are introduced locally; equal lengths are the operation's stated domain, not a hidden zip truncation assumption.",
+    "links": [
+      {
+        "occurrence": "functions.parameters:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'parameter' refers to md/functions.md#claim-functions.signatures for the concept or example setup used by this unit. Links signatures, runtime references and optional destination/result syntax. Defines ordered binding and presence matching."
+      },
+      {
+        "occurrence": "functions.parameters:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'runtime reference' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links signatures, runtime references and optional destination/result syntax. Defines ordered binding and presence matching."
+      },
+      {
+        "occurrence": "functions.parameters:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'destination and result' refers to md/functions.md#claim-functions.calls for the concept or example setup used by this unit. Links signatures, runtime references and optional destination/result syntax. Defines ordered binding and presence matching."
+      }
+    ]
+  }
+}

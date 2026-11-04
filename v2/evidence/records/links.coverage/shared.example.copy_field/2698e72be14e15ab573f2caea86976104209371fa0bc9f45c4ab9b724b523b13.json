@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "0c355a29b1d0fd5bc1dee117b940446e46e36036b88d92555142c1318f9093c2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:shared.example.copy_field",
+    "audit:unit:shared.give",
+    "audit:unit:shared.syntax",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links already-defined give behavior; classes and full five-statement program are local. Explains copy versus move before introducing storage machinery without relying on a later judgment. Source declarations and the entire five-let example are local. Its modes are explained by the linked give table rather than an undeclared evaluation symbol.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "349ecfa343160b82f5090d8c3aecacd91b6bc290d985aa0f1cf87f175f6fed49"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links already-defined give behavior; classes and full five-statement program are local. Explains copy versus move before introducing storage machinery without relying on a later judgment.",
+    "mathematics": "Source declarations and the entire five-let example are local. Its modes are explained by the linked give table rather than an undeclared evaluation symbol.",
+    "links": [
+      {
+        "occurrence": "shared.example.copy_field:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'shared variable' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links already-defined give behavior; classes and full five-statement program are local. Explains copy versus move before introducing storage machinery without relying on a later judgment."
+      },
+      {
+        "occurrence": "shared.example.copy_field:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'shared owners' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links already-defined give behavior; classes and full five-statement program are local. Explains copy versus move before introducing storage machinery without relying on a later judgment."
+      }
+    ]
+  }
+}

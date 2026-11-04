@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "e1d91abbe05bd8b3b15996d597fa92fd11dd85ba78ce56b0931f7b2e16653588",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.units.closed_body against rust:mdbook-dada/src/units.rs:parse_block, rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters, test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations, test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence, test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation, test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content. parse_block rejects include/playground/rustdoc directives in raw unit text, including literal samples, and rejects nested legacy citations. validate_chapters reparses original and received content and compares ordered IDs/raw units. Tests cover raw includes and simulated pre-expansion/addition/rewrite; the real mdBook pipeline regression is explicitly ignored by default and requires a separate run. The claim correctly limits the boundary to received chapters and this preprocessing stage. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "292fb41932753c3397423a2c3383288a237b7269103e14a648143985f49a8ca8"
+  ]
+}

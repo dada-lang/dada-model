@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "015bb8591ed05981cf6e9dacadba42b81a5dba2d6f1d2c3f2dd031d3b97a8bed",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:unit:shared.typing.execution",
+    "audit:unit:shared.typing.steps",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The shared.typing.execution unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame. The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "95a9ae7f255e26b6552ef9f94fbf292ac7fb19a3ab4f20ad8a962f8a4a25c284"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The shared.typing.execution unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame.",
+    "mathematics": "The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+    "links": [
+      {
+        "occurrence": "shared.typing.execution:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'program steps' refers to md/shared-typing.md#claim-shared.typing.steps for the concept or example setup used by this unit. The shared.typing.execution unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      }
+    ]
+  }
+}

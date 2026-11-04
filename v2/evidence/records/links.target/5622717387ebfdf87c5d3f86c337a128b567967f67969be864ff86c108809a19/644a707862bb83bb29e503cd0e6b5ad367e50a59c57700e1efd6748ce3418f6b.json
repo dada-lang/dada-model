@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "2fe04255bdaa3ce21a0a914077a95413386595f1541390f77bf8a6cd121dd8f3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5622717387ebfdf87c5d3f86c337a128b567967f67969be864ff86c108809a19",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.liveness directly introduces the Shared allocated/live equivalence. WF, Live and Allocated each link to their standalone definitions in the equivalence. WF, Live and Allocated are individually linked in the equivalence formula. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "105fa399982a7cb05e4b1dcd1a8e344b6d9a1ef1172f2cabc4b9c427647e4ee0"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the Shared allocated/live equivalence",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 28962,
+      "end": 29395
+    },
+    "clarity": "The landing md/shared.md#claim-shared.liveness directly introduces the Shared allocated/live equivalence. WF, Live and Allocated each link to their standalone definitions in the equivalence.",
+    "independence": "WF, Live and Allocated are individually linked in the equivalence formula. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

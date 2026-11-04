@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "801e0760ca978fdc2ebe70f32f63b1337c972dbe439f915ba3831d6d2ebd3182",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:30846f25dcc13bb8ac2e31bafade18aabeadf7be174a0cd94b2aa2882f083558",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.example.paths directly introduces shared.typing.example.paths. Uses the already-defined composition table and local declarations to explain whole-type permission routes. Does not require a forward call to the later focusing algorithm. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. The permission_paths example asserts the four static give results for b.item, s.item, o.box.item, h.item. The given case updates the source view; the three shared cases preserve the environment. Its classes and declared permissions match the displayed Box/Outer/Holder setup. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "5adf1c43c580f477320f04d510dd0d3b51e98101c32fb600a24835829b03a0c9"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.example.paths",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 10080,
+      "end": 10820
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.example.paths directly introduces shared.typing.example.paths. Uses the already-defined composition table and local declarations to explain whole-type permission routes. Does not require a forward call to the later focusing algorithm.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. The permission_paths example asserts the four static give results for b.item, s.item, o.box.item, h.item. The given case updates the source view; the three shared cases preserve the environment. Its classes and declared permissions match the displayed Box/Outer/Holder setup. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

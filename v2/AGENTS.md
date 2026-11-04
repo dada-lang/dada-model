@@ -130,8 +130,22 @@ completion, and safety of every finite execution prefix of a well-typed program.
 Recursion remains permitted without a termination claim. The proof uses
 `Shared/TypingBindingPending` for arbitrary additional roots and
 `Shared/TypingCollection` for collection after discarding roots.
-`Functions/SafetyChecks` applies the theorem to nested and recursive calls. `md/destructors.md` remains a nonnormative future-design sketch
-without a Lean model. Both chapters have inherited machinery appendices.
+`Functions/SafetyChecks` applies the theorem to nested and recursive calls.
+`md/destructors.md` and `lean/Destructors/` add explicit destruction. Class drops
+elaborate to calls in a dedicated destructor-name namespace with one given whole
+receiver and no result. Struct drops give and discard without running code.
+Every body must leave only empty or struct locals after evaluating its result;
+raw return and initial exit also check the runtime store. Destructor signatures
+are visible recursively, but empty class destructors fail consumption checking.
+`Destructors/Safety` proves progress, preservation, finite-prefix safety, empty
+completion, and that collection after every typed raw step retains all class
+objects. `Destructors/Collection` proves that discarded struct roots cannot hide
+class garbage, using nominal correctness of fields even when omitted by views.
+`Destructors/Checks` and `ExecutionChecks` cover consumption, rejected partial
+and absent destructors, struct effects, complete nested destruction, and recursive
+execution. `Correspondence/FunctionsDestructors` preserves and reflects steps of
+the embedded Functions fragment under an explicit exit condition and reflects
+arbitrary successors and traces. Both chapters have inherited machinery appendices.
 Destructors are
 followed by Assignment, Branching,
 Looping explicit with declared invariants, and Looping natural with inference.
@@ -218,9 +232,8 @@ Path-dependent permissions and permission/type unions remain future extensions
 in `md/dada/future-extensions.md`.
 
 The strict chapters are `md/given.md`, `md/given-typing.md`, `md/shared.md`,
-`md/shared-typing.md`, `md/functions.md`, and the nonnormative `md/destructors.md`, plus future extensions
-and the evidence pilot. Destructor notes preserve the proposed design for review
-before formalization; they do not claim established rules or results.
+`md/shared-typing.md`, `md/functions.md`, and `md/destructors.md`, plus future extensions
+and the evidence pilot. Deferred destructor conveniences remain nonnormative future notes.
 The future notes are publishable without formalization; adding a formalization
 citation to a future note is an error. Changes to the evidence configuration and these instructions also
 invalidate earlier reviews; do not claim those records remain current or

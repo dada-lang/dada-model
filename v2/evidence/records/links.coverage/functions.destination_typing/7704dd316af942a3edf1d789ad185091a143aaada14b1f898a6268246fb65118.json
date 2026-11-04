@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "eab7e3a21d05045817696219e1dc07d8436c034b2705535031294ed5844a4e40",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:unit:functions.calls",
+    "audit:unit:functions.destination_typing",
+    "audit:unit:functions.environments",
+    "audit:unit:shared.typing.bindings",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links well-formed environments and Shared variable binding. It defines result installation and explicitly rejects discarding a value result. The none rule uses the linked WF check; the present rule uses the linked binding judgment. Gamma, d and R are already introduced by environments and call syntax.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d193867c39c277c75dbf4202ba55c2d86e9560e1134772f296879780e84efade"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links well-formed environments and Shared variable binding. It defines result installation and explicitly rejects discarding a value result.",
+    "mathematics": "The none rule uses the linked WF check; the present rule uses the linked binding judgment. Gamma, d and R are already introduced by environments and call syntax.",
+    "links": [
+      {
+        "occurrence": "functions.destination_typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed environment' refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links well-formed environments and Shared variable binding. It defines result installation and explicitly rejects discarding a value result."
+      },
+      {
+        "occurrence": "functions.destination_typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Shared's fresh-variable binding judgment\" refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links well-formed environments and Shared variable binding. It defines result installation and explicitly rejects discarding a value result."
+      }
+    ]
+  }
+}

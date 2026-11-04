@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "59f5454daf341a5a50c95d38082fdfb29cb514e646b57f27d6b72f9ce81935f2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a65eb6e25dc5992af74682e3ee7637608f951cbca91ff863784472c2c21591a9",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.expressions directly introduces expression typing: Give, Construct, and Weaken. Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule. Give links static take, Construct links Sigma(C), and Weaken links the subtype relation. The expression-typing judgments in conclusions and recursive premises are defined in this unit. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "583d84a2cd18678563b04df16987300120efc0c8746fa6e910adc61e89e9c6bf"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "expression typing: Give, Construct, and Weaken",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 19159,
+      "end": 20885
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.expressions directly introduces expression typing: Give, Construct, and Weaken. Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule.",
+    "independence": "Give links static take, Construct links Sigma(C), and Weaken links the subtype relation. The expression-typing judgments in conclusions and recursive premises are defined in this unit. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

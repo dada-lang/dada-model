@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "a23e6f77c3ce5289baff7431e80fbf16f9a84821f2c4d4f081a21809d859c254",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.stack_ownership",
+    "audit:unit:functions.stack_typing",
+    "audit:unit:shared.well_formed",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names. No separate path uniqueness formula is assumed: pairwise occurrence compatibility and allocated incoming targets are spelled out.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "cb562f7e0604094d662bfb7cb341622846ad703f886221903846eecf6e0aa26a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names.",
+    "mathematics": "No separate path uniqueness formula is assumed: pairwise occurrence compatibility and allocated incoming targets are spelled out.",
+    "links": [
+      {
+        "occurrence": "functions.stack_ownership:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names."
+      },
+      {
+        "occurrence": "functions.stack_ownership:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'owning occurrences' refers to md/shared.md#claim-shared.well_formed for the concept or example setup used by this unit. Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names."
+      }
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "bundle": "93ab755a53ea45fe0245477776fd6eccc9255523c7a0c921663274d23b075c5b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:target:33809897369fd4607384d07eadc60386712478a8b6088571abb3604e50110c5c",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:87f4db0fb5ffac0232ba636a7b725d3d49798dc0561864d9f86bc65fc3fa676b",
+    "audit:target:8c93add9c0c83a776892d18710675ad1a169196ba74e7618d4b2ef28a872c904",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.gc",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.parameters",
+    "audit:unit:functions.return",
+    "audit:unit:shared.steps",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery. The linked judgments account for every raw-rule premise; H,V,n and evaluated variants are scoped immediately before the rules, B_r is defined there, and raw/public step symbols are the local definitions.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c80b1d7802abe1af334907590e9cf8ffa17fc68a0b6f6da87f4fcef15d8e1283"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery.",
+    "mathematics": "The linked judgments account for every raw-rule premise; H,V,n and evaluated variants are scoped immediately before the rules, B_r is defined there, and raw/public step symbols are the local definitions.",
+    "links": [
+      {
+        "occurrence": "functions.execution:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'collects' refers to md/functions.md#claim-functions.gc for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      },
+      {
+        "occurrence": "functions.execution:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"active frame's evaluation state\" refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      },
+      {
+        "occurrence": "functions.execution:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Shared'sleft-to-right argument evaluation\" refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      },
+      {
+        "occurrence": "functions.execution:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared binding or unpacking statement' refers to md/shared-typing.md#claim-shared.typing.steps for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      },
+      {
+        "occurrence": "functions.execution:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'remaining body' refers to md/functions.md#claim-functions.calls for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      },
+      {
+        "occurrence": "functions.execution:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'parameter operations' refers to md/functions.md#claim-functions.parameters for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      },
+      {
+        "occurrence": "functions.execution:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'optional-result evaluation and delivery' refers to md/functions.md#claim-functions.return for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      }
+    ]
+  }
+}

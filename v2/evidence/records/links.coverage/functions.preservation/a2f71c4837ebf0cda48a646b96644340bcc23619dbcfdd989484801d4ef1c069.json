@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "41855bac3e3e1a3a65c7132d3d09a462ce539ca3b01b989483a8073e232418d5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.gc",
+    "audit:unit:functions.preservation",
+    "audit:unit:functions.stack_typing",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links machine typing and public steps, explaining all frames and eager collection. Both typing judgments and the step premise use the linked definitions. Delta/F/M/M-prime are scoped by the theorem; every successor is covered.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b4c88c29b91b8b8906272ca878532cd664a810d4ce83abb2bdf6ca690dde1385"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links machine typing and public steps, explaining all frames and eager collection.",
+    "mathematics": "Both typing judgments and the step premise use the linked definitions. Delta/F/M/M-prime are scoped by the theorem; every successor is covered.",
+    "links": [
+      {
+        "occurrence": "functions.preservation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links machine typing and public steps, explaining all frames and eager collection."
+      },
+      {
+        "occurrence": "functions.preservation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'machine typing' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links machine typing and public steps, explaining all frames and eager collection."
+      }
+    ]
+  }
+}

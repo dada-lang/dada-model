@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "f251a34ae035a4597826285dd9dcf36430c051cb2a9ffeaad9bacf78776826ec",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:shared.references",
+    "audit:unit:shared.state",
+    "audit:unit:shared.typing.mode",
+    "audit:unit:shared.typing.types",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.toMode maps given to unique and shared to shared. The displayed equations connect static permissions with reference modes, without placing modes on objects.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "da2c69f1ea5ce3f33b38e5f9866807fc7e1be7f4d98a9c51bf507f842c647474"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.toMode maps given to unique and shared to shared. The displayed equations connect static permissions with reference modes, without placing modes on objects.",
+    "links": [
+      {
+        "occurrence": "shared.typing.mode:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'type permission' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly."
+      },
+      {
+        "occurrence": "shared.typing.mode:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reference mode' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly."
+      }
+    ]
+  }
+}

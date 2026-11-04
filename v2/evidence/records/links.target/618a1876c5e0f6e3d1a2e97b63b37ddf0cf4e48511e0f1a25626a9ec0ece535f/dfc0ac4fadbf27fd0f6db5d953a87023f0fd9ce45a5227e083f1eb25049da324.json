@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "c625bf20974650487b8ae2afb0e1c145f4d5fb428f57ca4c609bdf47284b70a3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:618a1876c5e0f6e3d1a2e97b63b37ddf0cf4e48511e0f1a25626a9ec0ece535f",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces body typing against a signature. Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation. Both premises reuse exactly the linked sequence/result judgments. env and result are the projections introduced by the environment/signature definitions; middle/final environments are scoped to this rule. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "fc420f39e06db0ac632ea24e1b5ce4f7269375206a31fbee5951d18750ee997e"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "body typing against a signature",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 12943,
+      "end": 13525
+    },
+    "clarity": "The named landing directly introduces body typing against a signature. Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation.",
+    "independence": "Both premises reuse exactly the linked sequence/result judgments. env and result are the projections introduced by the environment/signature definitions; middle/final environments are scoped to this rule. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

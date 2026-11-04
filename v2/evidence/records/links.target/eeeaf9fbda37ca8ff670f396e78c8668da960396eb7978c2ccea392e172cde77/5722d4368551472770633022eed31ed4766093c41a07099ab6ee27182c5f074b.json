@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "656ea87fc52a0c1d1a4770f15f1ab2f3e4cfb7b789e2b3426e8ec08e8a270d00",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:eeeaf9fbda37ca8ff670f396e78c8668da960396eb7978c2ccea392e172cde77",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Links destructor declaration, finished environment, Functions signatures, and droppability; the whole-table recursion policy is defined here. The appendix is supplementary navigation. The selected defining body includes its local setup, conditions and direct prerequisite links. self: given C denotes the locally identified whole receiver. Function and result types come from the linked signature definition; no undefined judgment notation appears.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "f3f6ef68bb258629752981dcd99040f3a5d5f81db9b84d031cafabe0e75e2e04"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "body typing",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 10058,
+      "end": 11180
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Links destructor declaration, finished environment, Functions signatures, and droppability; the whole-table recursion policy is defined here. The appendix is supplementary navigation.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. self: given C denotes the locally identified whole receiver. Function and result types come from the linked signature definition; no undefined judgment notation appears."
+  }
+}

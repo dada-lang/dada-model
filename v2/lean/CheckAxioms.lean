@@ -4,6 +4,8 @@ import Shared.FrameChecks
 import Shared.FrameInvariants
 import Correspondence.UniqueSharedFrames
 import Correspondence.SharedFunctionsFrames
+import Destructors.ExecutionChecks
+import Correspondence.FunctionsDestructors
 import Functions.Checks
 import Functions.SafetyChecks
 import Correspondence.SharedFunctions
@@ -80,3 +82,14 @@ import Correspondence.UniqueShared
 #print axioms Dada.Unique.Framed.ConfigurationTyped.preservation
 #print axioms Dada.Shared.Framed.ConfigurationTyped.progress
 #print axioms Dada.Shared.Framed.ConfigurationTyped.preservation
+
+#print axioms Dada.Destructors.ConfigurationTyped.progress
+#print axioms Dada.Destructors.ConfigurationTyped.preservation
+#print axioms Dada.Destructors.RawStep.sound
+#print axioms Dada.Destructors.program_safety
+#print axioms Dada.Destructors.ConfigurationTyped.finished_heap_empty
+#print axioms Dada.Destructors.collectPending_retains_classes
+#print axioms Dada.Destructors.Checks.wrapper_execution
+#print axioms Dada.Destructors.Checks.recursive_prefix
+#print axioms Dada.Correspondence.FunctionsDestructors.step_correspondence
+#print axioms Dada.Correspondence.FunctionsDestructors.steps_backward

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "c936f513c4212b5b31589debe57b7f74af1f23751d87707a202b91b06d39381e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f0800758e25ea7ee9fd903ee7d59491b9696d69585d50197192201ce0604d301",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.programs directly introduces Shared program, class-table and statement-sequence grammar. Links statements, class declarations and finite-map/list convention. Program/table/sequence grammar is here; table WF was separated for direct targeting. The Δ/P/Π grammar introduces its three syntactic components; finite maps/lists, statement syntax and class declarations each have links. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "07af5bb2f0a55dd9e2e2f27c6e1bd96925ee5332405281e51f428644f9ec2aee"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared program, class-table and statement-sequence grammar",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 6886,
+      "end": 7451
+    },
+    "clarity": "The landing md/shared.md#claim-shared.programs directly introduces Shared program, class-table and statement-sequence grammar. Links statements, class declarations and finite-map/list convention. Program/table/sequence grammar is here; table WF was separated for direct targeting.",
+    "independence": "The Δ/P/Π grammar introduces its three syntactic components; finite maps/lists, statement syntax and class declarations each have links. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

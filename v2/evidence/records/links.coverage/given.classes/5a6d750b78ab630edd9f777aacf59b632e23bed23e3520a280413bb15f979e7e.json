@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "5320fbfd1885811fdee68f495fb0e3f8580fff76afbcbd6e841225767b8a978c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.classes",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Introduces ownership transfer and class/field names locally. The declaration grammar binds C, f, n and d; no later judgment is needed for this intent-level introduction. The displayed d/C/f declaration grammar binds its class/field categories and arity locally; it is an introduction, not a use of a later judgment.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "418e2c5e69216cf01bb6de5d84740b7715cd71665f5fc08271b95decdb9c7dc9"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Introduces ownership transfer and class/field names locally. The declaration grammar binds C, f, n and d; no later judgment is needed for this intent-level introduction.",
+    "mathematics": "The displayed d/C/f declaration grammar binds its class/field categories and arity locally; it is an introduction, not a use of a later judgment.",
+    "links": []
+  }
+}

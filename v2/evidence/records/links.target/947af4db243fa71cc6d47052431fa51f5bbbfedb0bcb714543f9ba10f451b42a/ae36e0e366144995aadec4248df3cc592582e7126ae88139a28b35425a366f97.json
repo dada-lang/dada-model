@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "6dccb0e8104d5faad38bf5a3c0a60b84a7d8d50e1ab6b741e499f521cfa97444",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:947af4db243fa71cc6d47052431fa51f5bbbfedb0bcb714543f9ba10f451b42a",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.liveness directly introduces the Given allocated/live equivalence. WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence. Every nonlogical predicate in the theorem formula—WF, Live and Allocated—has a direct definition link. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "364fd395350fa0e7e26310a2b24ca32742d87b92ad8119fd671abe2034212dac"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the Given allocated/live equivalence",
+    "definition": {
+      "path": "md/given.md",
+      "start": 22341,
+      "end": 22785
+    },
+    "clarity": "The landing md/given.md#claim-given.liveness directly introduces the Given allocated/live equivalence. WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence.",
+    "independence": "Every nonlogical predicate in the theorem formula—WF, Live and Allocated—has a direct definition link. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

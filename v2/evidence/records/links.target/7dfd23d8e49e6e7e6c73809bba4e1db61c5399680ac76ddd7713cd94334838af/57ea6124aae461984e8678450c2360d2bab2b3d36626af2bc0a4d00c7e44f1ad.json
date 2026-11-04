@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "dcd0b856e3d9f174187012922d45e66eed480ed81466c1518096c6ea1fd87870",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.finished directly introduces Given finished configurations. Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit. The no-frame condition defines Finished. It makes no claim that a live frame with empty code is already terminal. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "68c478d83f486b8f3fdd17ea91283a59bfc4ba819bbc3837dce53be4ff40e4ac"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given finished configurations",
+    "definition": {
+      "path": "md/given.md",
+      "start": 9526,
+      "end": 9856
+    },
+    "clarity": "The landing md/given.md#claim-given.finished directly introduces Given finished configurations. Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit.",
+    "independence": "The no-frame condition defines Finished. It makes no claim that a live frame with empty code is already terminal. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

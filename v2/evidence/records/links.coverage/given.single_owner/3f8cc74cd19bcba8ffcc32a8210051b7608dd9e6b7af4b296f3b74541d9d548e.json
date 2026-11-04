@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "ba0e55e624923c1fa05d2dc7bd746669e652aaf02f7e880d2764a984ad69d762",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:unit:given.allocated",
+    "audit:unit:given.single_owner",
+    "audit:unit:given.well_formed",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links WF and allocated objects; owning occurrences are counted explicitly rather than conflated with whole paths. It invokes no new counting operator. The prose count is of immediately occupied owner slots, with WF and allocated objects linked. No unnamed path-count equation is used.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "683d0a38500eed3166d37fcacc3af6b828609f3509ca71cdae23ce7e2e084f86"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links WF and allocated objects; owning occurrences are counted explicitly rather than conflated with whole paths. It invokes no new counting operator.",
+    "mathematics": "The prose count is of immediately occupied owner slots, with WF and allocated objects linked. No unnamed path-count equation is used.",
+    "links": [
+      {
+        "occurrence": "given.single_owner:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed state' refers to md/given.md#claim-given.well_formed for the concept or example setup used by this unit. Links WF and allocated objects; owning occurrences are counted explicitly rather than conflated with whole paths. It invokes no new counting operator."
+      },
+      {
+        "occurrence": "given.single_owner:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'allocated object' refers to md/given.md#claim-given.allocated for the concept or example setup used by this unit. Links WF and allocated objects; owning occurrences are counted explicitly rather than conflated with whole paths. It invokes no new counting operator."
+      }
+    ]
+  }
+}

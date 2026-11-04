@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "2f02751c54663ad053cd01109fd8d91b38bad90826629fb5d1e84cea29a7fdbb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:56968a0b61d069156a3c6cf55db5ba12bcfdf730847f49c102707a617d46863b",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:unit:given.unpacking",
+    "audit:unit:given.unpacking.soundness",
+    "audit:unit:given.well_formed",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result. The theorem is stated in prose with links to class-table WF, the extended transition and state WF; there is no separate hidden predicate.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "59d3fe332da88027991f5a6fdbdc2629ead3f155926f58cceadc59aa2870b106"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result.",
+    "mathematics": "The theorem is stated in prose with links to class-table WF, the extended transition and state WF; there is no separate hidden predicate.",
+    "links": [
+      {
+        "occurrence": "given.unpacking.soundness:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed class table' refers to md/given.md#claim-given.well_formed_classes for the concept or example setup used by this unit. The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result."
+      },
+      {
+        "occurrence": "given.unpacking.soundness:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'extended step' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result."
+      },
+      {
+        "occurrence": "given.unpacking.soundness:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed storage' refers to md/given.md#claim-given.well_formed for the concept or example setup used by this unit. The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result."
+      }
+    ]
+  }
+}

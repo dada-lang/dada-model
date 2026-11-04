@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "dbd7b5848e15f8eae54bac9bb3e49878c4c3615a3fe33a3660326de0850748b3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:939f180934edf65d84a072aad2dd778c3a2dc532ce0e9d8b312e9d65b1b4483b",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces Functions statement and sequence typing. Links argument typing, destination installation, signatures, inherited local statements and environment WF. Call premises use those linked definitions; the rule binds the table entry and intermediate environment locally. Sequence typing is defined recursively here, with explicit WF for the empty sequence. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "5644af497bbf4772a91294e8e06f61bd1fd169df41d088cc828353a64c884292"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Functions statement and sequence typing",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 10319,
+      "end": 12106
+    },
+    "clarity": "The named landing directly introduces Functions statement and sequence typing. Links argument typing, destination installation, signatures, inherited local statements and environment WF.",
+    "independence": "Call premises use those linked definitions; the rule binds the table entry and intermediate environment locally. Sequence typing is defined recursively here, with explicit WF for the empty sequence. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

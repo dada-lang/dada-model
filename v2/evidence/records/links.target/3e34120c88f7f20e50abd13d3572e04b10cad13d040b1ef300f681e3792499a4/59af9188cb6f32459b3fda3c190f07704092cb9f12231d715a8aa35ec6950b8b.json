@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "9c2070bc160e19bb91cb12961374a2828643d4ff1cbe6be4ea2a0df24264c130",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3e34120c88f7f20e50abd13d3572e04b10cad13d040b1ef300f681e3792499a4",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces empty heap at finished step targets. Links public steps, finished stack and collection. Distinguishes step targets from arbitrary malformed terminal records. The heap-empty consequence and retained counter are stated explicitly; no reachability theorem is silently generalized. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "7aa74138f6494f340ca46e83321502f2022646fad40a10995550457a70b95112"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "empty heap at finished step targets",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 26685,
+      "end": 27023
+    },
+    "clarity": "The named landing directly introduces empty heap at finished step targets. Links public steps, finished stack and collection. Distinguishes step targets from arbitrary malformed terminal records.",
+    "independence": "The heap-empty consequence and retained counter are stated explicitly; no reachability theorem is silently generalized. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

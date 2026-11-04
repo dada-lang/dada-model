@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "2161b5a4d1a69e761a9feb98a38e00400419f1f6cde7c5bf97eb30dbabe7938f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:unit:given.programs",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.erasure",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The target operational class table links to its grammar. The text says exactly which annotations erasure removes. The source Sigma(C) links to the typed-class-table definition; the floor operator is introduced by this equation.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "85ac0421c31a2e2784320415843e20482221f6c2e3d4f8e49eafbcc0cb83237d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The target operational class table links to its grammar. The text says exactly which annotations erasure removes.",
+    "mathematics": "The source Sigma(C) links to the typed-class-table definition; the floor operator is introduced by this equation.",
+    "links": [
+      {
+        "occurrence": "given.typing.erasure:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'operational class table' refers to md/given.md#claim-given.programs for the concept or example setup used by this unit. The target operational class table links to its grammar. The text says exactly which annotations erasure removes."
+      },
+      {
+        "occurrence": "given.typing.erasure:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma(C)' refers to md/given-typing.md#claim-given.typing.declarations for the concept or example setup used by this unit. The target operational class table links to its grammar. The text says exactly which annotations erasure removes."
+      }
+    ]
+  }
+}

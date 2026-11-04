@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "bundle": "4d218343f54c13860e7bcfd75875869a86c0287a8e1a4ff7b2f7c5b0bc5f61e9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:target:d6c2319422bc09f8bd5db42388b5e094818d235328c57f2f2ed44355c8fd76d1",
+    "audit:target:e35657bf769f399f71a289ab97c3d64f55d9f44be732a34633b1c76ef237a49c",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "audit:unit:given.patterns",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.field",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally. The Unpack premises link base, the typed class table, and field descriptions. The conclusions define binding typing here; dom and freshness are ordinary finite-map conditions.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "8f8d63799e6666ee8805121009a5f36eb32a04e3adc7535783cf7d5ea1529787"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally.",
+    "mathematics": "The Unpack premises link base, the typed class table, and field descriptions. The conclusions define binding typing here; dom and freshness are ordinary finite-map conditions.",
+    "links": [
+      {
+        "occurrence": "given.typing.bindings:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'variable pattern' refers to md/given.md#claim-given.patterns for the concept or example setup used by this unit. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally."
+      },
+      {
+        "occurrence": "given.typing.bindings:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'unpacking pattern' refers to md/given.md#claim-given.patterns for the concept or example setup used by this unit. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally."
+      },
+      {
+        "occurrence": "given.typing.bindings:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"field's description\" refers to md/given-typing.md#claim-given.typing.field for the concept or example setup used by this unit. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally."
+      },
+      {
+        "occurrence": "given.typing.bindings:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{base}' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally."
+      },
+      {
+        "occurrence": "given.typing.bindings:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma(C)' refers to md/given-typing.md#claim-given.typing.declarations for the concept or example setup used by this unit. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally."
+      },
+      {
+        "occurrence": "given.typing.bindings:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{field}' refers to md/given-typing.md#claim-given.typing.field for the concept or example setup used by this unit. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally."
+      }
+    ]
+  }
+}

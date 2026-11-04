@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "1d82cb3ea6fec0de1edf2087f53bcb2caace15d81ea9a6010c138615be1af09b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:ReviewBundle::prepare",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/units.rs:parse",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:future_notes_are_publishable_but_cannot_receive_correspondence_reviews",
+    "test:mdbook-dada/tests/units.rs:future_notes_reject_formalizations_and_nested_specifications",
+    "test:mdbook-dada/tests/units.rs:future_notes_render_without_formalization_or_draft_status",
+    "unit:meta.future_notes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.future_notes against rust:mdbook-dada/src/units.rs:parse_block, rust:mdbook-dada/src/units.rs:parse, rust:mdbook-dada/src/lib.rs:render_unit, rust:mdbook-dada/src/evidence.rs:ReviewBundle::prepare, rust:mdbook-dada/src/evidence.rs:record, rust:mdbook-dada/src/evidence.rs:check, test:mdbook-dada/tests/units.rs:future_notes_render_without_formalization_or_draft_status, test:mdbook-dada/tests/units.rs:future_notes_reject_formalizations_and_nested_specifications, test:mdbook-dada/tests/evidence_validation.rs:future_notes_are_publishable_but_cannot_receive_correspondence_reviews. parse_block and parse reject formalization citations, draft status, nested units and non-top-level future notes while retaining ordinary dependencies/identity. render_unit emits a label without a source selector; prepare/record explicitly reject future notes and check reports not applicable. Tests cover each rejected option, nesting, literal examples and an attempted reuse of a prior specification review. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. The correspondence preparation/recording prohibition does not exclude editorial link audits, which apply to future notes under the integrated link policy. Extension re-review: the exact authored unit and prior selected declarations/tests are unchanged from the previously reviewed packet. The added Destructor namespace and its explicitly stronger frame-exit/GC theorems do not change this earlier layer or its stated assumptions; reviewed the added source and updated repository scope separately. This is a differential author review, not a new independent assessment.",
+  "limitations": [
+    "Differential author self-review of unchanged implementation/test selections; this does not establish universal tooling correctness or browser appearance. Mechanical execution is reported separately."
+  ],
+  "supersedes": [
+    "eba06617048cb2bf6c4dc09651b41fed5922b3f295a5fc88b94b1585d77fa98e"
+  ]
+}

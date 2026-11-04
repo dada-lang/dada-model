@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "9ba3e3277949a9aaf3abe5cc5d70433afe1e8438831a5e0512e26cd016523f43",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0cdbf42c41e7e944b7cfdecf7bb762ce6c2d75970d563b592d053b10c0002f94",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:eeeaf9fbda37ca8ff670f396e78c8668da960396eb7978c2ccea392e172cde77",
+    "audit:unit:destructors.body_typing",
+    "audit:unit:destructors.droppable",
+    "audit:unit:destructors.example.boundaries",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the body checks, droppability and unpacking rule; Resource and Again are concrete local examples. The text distinguishes runtime recursion from the empty-body typing rejection. Only code and class/type names occur; the examples introduce all their local binders.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "2ffd080e4eada33a59aa976cd840512a9b4b7bbdde253fadb0d50ebe460f55f7"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the body checks, droppability and unpacking rule; Resource and Again are concrete local examples. The text distinguishes runtime recursion from the empty-body typing rejection.",
+    "mathematics": "Only code and class/type names occur; the examples introduce all their local binders.",
+    "links": [
+      {
+        "occurrence": "destructors.example.boundaries:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'checks' supplies the definition or concrete example setup used here, at #claim-destructors.body_typing. Links the body checks, droppability and unpacking rule; Resource and Again are concrete local examples. The text distinguishes runtime recursion from the empty-body typing rejection."
+      },
+      {
+        "occurrence": "destructors.example.boundaries:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'without a destructor cannot be explicitly dropped' supplies the definition or concrete example setup used here, at #claim-destructors.droppable. Links the body checks, droppability and unpacking rule; Resource and Again are concrete local examples. The text distinguishes runtime recursion from the empty-body typing rejection."
+      },
+      {
+        "occurrence": "destructors.example.boundaries:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'inherited unpacking rule' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.bindings. Links the body checks, droppability and unpacking rule; Resource and Again are concrete local examples. The text distinguishes runtime recursion from the empty-body typing rejection."
+      }
+    ]
+  }
+}

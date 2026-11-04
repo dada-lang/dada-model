@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "00e3d1352373e82511540de39e03229a5424b8a7eb8f4858169e94b91efe59d5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:a395ec3d77295857a26e9571e271df4e3a3c5c6ae23ac869fc9fd981731e6507",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:unit:given.machine",
+    "audit:unit:given.state",
+    "audit:unit:given.syntax",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations. The frame tuple and optional-frame alternatives are introduced here. Initialization uses the linked empty state; no later transition judgment is needed to understand the representation.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "ecafb9d11b3dad3e54498ffceb01e7888df38178f4788cc3ea14150544f6b5a2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations.",
+    "mathematics": "The frame tuple and optional-frame alternatives are introduced here. Initialization uses the linked empty state; no later transition judgment is needed to understand the representation.",
+    "links": [
+      {
+        "occurrence": "given.machine:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statements' refers to md/given.md#claim-given.syntax for the concept or example setup used by this unit. Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations."
+      },
+      {
+        "occurrence": "given.machine:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'program' refers to md/given.md#claim-given.programs for the concept or example setup used by this unit. Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations."
+      },
+      {
+        "occurrence": "given.machine:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage' refers to md/given.md#claim-given.state for the concept or example setup used by this unit. Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations."
+      }
+    ]
+  }
+}

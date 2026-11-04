@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "44df96943997c89db225cfb4bae8a2e942623a1e60486e797df59717a07b250d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:33809897369fd4607384d07eadc60386712478a8b6088571abb3604e50110c5c",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces call, body and declaration syntax. Links inherited expression and pattern syntax, signatures and nominal declarations. The appendix is optional recap; all prerequisites already link backward. d,t,r,B,D and F are defined locally, including optional results and the whole program. Metasyntax is explicitly distinguished from surface call spelling. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "66487239442fb1ffc951be3771dd7e31c1446dbff3004e895ee72ce1f114554d"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "call, body and declaration syntax",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 6847,
+      "end": 8454
+    },
+    "clarity": "The named landing directly introduces call, body and declaration syntax. Links inherited expression and pattern syntax, signatures and nominal declarations. The appendix is optional recap; all prerequisites already link backward.",
+    "independence": "d,t,r,B,D and F are defined locally, including optional results and the whole program. Metasyntax is explicitly distinguished from surface call spelling. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "00df8f2c38e95b2e34d33da35bef97cf212356e0b1777c4b10b173d7f07be963",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:unit:given.classes",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.patterns",
+    "audit:unit:given.programs",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.unpacking",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language. The d/Sigma grammar introduces its metavariables and domains locally. Field and class names are syntax categories, and the ordered pair/list/map notation carries no additional language judgment.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "eccf0751efb460b1859eafc9429b6ff8774b8d49cdba04f9f4b4beda9afab5cb"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language.",
+    "mathematics": "The d/Sigma grammar introduces its metavariables and domains locally. Field and class names are syntax categories, and the ordered pair/list/map notation carries no additional language judgment.",
+    "links": [
+      {
+        "occurrence": "given.typing.declarations:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'given.unpacking' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language."
+      },
+      {
+        "occurrence": "given.typing.declarations:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression evaluation' refers to md/given.md#claim-given.evaluation for the concept or example setup used by this unit. The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language."
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "d51fdf7cc8fee7455c719dfc9f056ce4ae1cc07d686fadb86c2c3a8d24a1265d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.types directly introduces shared.typing.types. Defines π, N and raw T together, with a direct link to signed views. Bare C uses the previously established whole-view convention. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm has exactly given/shared; RawType distinguishes a nominal view from recursive permission application. Nominal aliases Given's ViewType and ValueType.whole uses its epsilon-positive whole shorthand. The prose does not ascribe a mode to objects. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "288c0f3bffcd7fdc22bd07c9c57bc2d611c5a3988046d655cf621c1b7faacfbf"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.types",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 1599,
+      "end": 2197
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.types directly introduces shared.typing.types. Defines π, N and raw T together, with a direct link to signed views. Bare C uses the previously established whole-view convention.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm has exactly given/shared; RawType distinguishes a nominal view from recursive permission application. Nominal aliases Given's ViewType and ValueType.whole uses its epsilon-positive whole shorthand. The prose does not ascribe a mode to objects. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

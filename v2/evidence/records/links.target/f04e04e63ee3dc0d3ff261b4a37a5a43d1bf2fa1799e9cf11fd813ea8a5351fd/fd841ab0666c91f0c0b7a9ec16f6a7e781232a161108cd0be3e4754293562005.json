@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "2d8bb8864f3aaea29d589350428d2df6da39ad2519f27f3ab8e5f2df2dc00042",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f04e04e63ee3dc0d3ff261b4a37a5a43d1bf2fa1799e9cf11fd813ea8a5351fd",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. The consumption obligation is introduced directly by the opening paragraph and the complete Pair example. Unpacking, moving and struct kinds link to their earlier definitions. Token/Pair are local declarations, not unlinked external concepts. The selected defining body includes its local setup, conditions and direct prerequisite links. No display equations. Surface code defines its own class, field and local names; → uses the linked give operation.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "707c46a52137ae058f223e168fae3af7ff478df5d70d73d26c64f636be96edfe"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "example.consume",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 147,
+      "end": 1435
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. The consumption obligation is introduced directly by the opening paragraph and the complete Pair example. Unpacking, moving and struct kinds link to their earlier definitions. Token/Pair are local declarations, not unlinked external concepts.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. No display equations. Surface code defines its own class, field and local names; → uses the linked give operation."
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "bundle": "1f3739c99910e70de96cb248a2639aef545b99cf1ca85f93a829ee7a4bbd7df5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:49d19d3e6321b8309608988f0dba1cb54f8a069b5a7946d9f117d0fb274166d9",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.finished",
+    "audit:unit:given.lookup",
+    "audit:unit:given.machine",
+    "audit:unit:given.steps",
+    "audit:unit:given.stuck",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links. Both Finished and the excluded Step in the iff formula link directly to their defining blocks.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "ce9c67e3c8f46ff32002ed3278db5919582e889f0225610dd4c549085e23808e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links.",
+    "mathematics": "Both Finished and the excluded Step in the iff formula link directly to their defining blocks.",
+    "links": [
+      {
+        "occurrence": "given.stuck:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links."
+      },
+      {
+        "occurrence": "given.stuck:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{Finished}(K)' refers to md/given.md#claim-given.finished for the concept or example setup used by this unit. Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links."
+      },
+      {
+        "occurrence": "given.stuck:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash K\\\\longrightarrow K'\" refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links."
+      },
+      {
+        "occurrence": "given.stuck:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression evaluation' refers to md/given.md#claim-given.evaluation for the concept or example setup used by this unit. Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links."
+      },
+      {
+        "occurrence": "given.stuck:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Undefined lookup' refers to md/given.md#claim-given.lookup for the concept or example setup used by this unit. Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links."
+      }
+    ]
+  }
+}

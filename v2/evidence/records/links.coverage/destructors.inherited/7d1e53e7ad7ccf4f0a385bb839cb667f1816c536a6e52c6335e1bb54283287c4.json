@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "bundle": "02733a66f190b42a9a0edb5259f19dc659887fdede890701a689afe04709162f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Destructor implementation and correspondence review. Read the new definitions, theorem statements, example propositions and chapter; compared unchanged required selections and units byte-for-byte with previously reviewed packets from this conversation. Reviewed new class-drop elaboration, finished environments, raw-step class retention, recursion and the qualified Functions embedding. Re-reviewed destructor link coverage and target landings and moved a buried completion definition and avoidable forward reference. Prior unchanged chapter judgments are retained with differential review, not represented as independent new readings. No subagents were used; conservative full-source snapshots are freshness inputs, not an attestation of proof-tactic auditing.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:828c2e9a592d1b90f2650b6136e24abe27a4c6886c1c3487d5a24c9e3f96fcf7",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:destructors.inherited",
+    "audit:unit:shared.declarations",
+    "audit:unit:shared.give",
+    "audit:unit:shared.state",
+    "audit:unit:shared.struct",
+    "audit:unit:shared.syntax",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.giving",
+    "audit:unit:shared.typing.patterns",
+    "audit:unit:shared.typing.statements",
+    "audit:unit:shared.typing.types",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions. Code notation C → { fields } and struct(T) are accompanied by their definition links; n-step completion is described in prose and not reused as a theorem here.",
+  "limitations": [
+    "Author editorial self-review; extraction and byte ranges do not themselves establish clarity or completeness. Unchanged chapters retain their previously examined reasoning after exact-input comparison; the destructor chapter was reviewed anew. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "727022bf9f7cd9cc2a8fc2f5d3693f68f0b13dcb5269166c9f84dfe4beb030cd"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions.",
+    "mathematics": "Code notation C → { fields } and struct(T) are accompanied by their definition links; n-step completion is described in prose and not reused as a theorem here.",
+    "links": [
+      {
+        "occurrence": "destructors.inherited:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'completion condition' supplies the definition or concrete example setup used here, at #claim-destructors.finished_environment. The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions."
+      },
+      {
+        "occurrence": "destructors.inherited:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Declarations and kinds' supplies the definition or concrete example setup used here, at shared.md#claim-shared.declarations. The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions."
+      },
+      {
+        "occurrence": "destructors.inherited:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'struct(T)' supplies the definition or concrete example setup used here, at shared.md#claim-shared.struct. The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions."
+      },
+      {
+        "occurrence": "destructors.inherited:4",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Syntax' supplies the definition or concrete example setup used here, at shared.md#claim-shared.syntax. The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions."
+      },
+      {
+        "occurrence": "destructors.inherited:5",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Storage' supplies the definition or concrete example setup used here, at shared.md#claim-shared.state. The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions."
+      },
+      {
+        "occurrence": "destructors.inherited:6",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Types and views' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.types. The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions."
+      },
+      {
+        "occurrence": "destructors.inherited:7",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Ordinary give' supplies the definition or concrete example setup used here, at shared.md#claim-shared.give. The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions."
+      },
+      {
+        "occurrence": "destructors.inherited:8",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Static give' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.giving. The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions."
+      },
+      {
+        "occurrence": "destructors.inherited:9",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Construction' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.expressions. The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions."
+      },
+      {
+        "occurrence": "destructors.inherited:10",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Unpacking' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.patterns. The table links each inherited operation to its actual defining unit, while the new completion condition links back to its opening definition. This is a summary landing, not a substitute for those direct definitions."
+      }
+    ]
+  }
+}
