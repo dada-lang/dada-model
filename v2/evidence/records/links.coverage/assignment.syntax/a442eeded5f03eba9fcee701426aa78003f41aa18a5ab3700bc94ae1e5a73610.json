@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "0284192f1a05ce25512983d917c6e76f1b7ec975abc1bd1504f8a765217b7d08",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:unit:assignment.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Each inherited syntactic domain links Shared syntax or Destructor declarations. p and e are introduced as place and value expression beside their use. The extended statement and body structures are defined here. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Each inherited syntactic domain links Shared syntax or Destructor declarations. p and e are introduced as place and value expression beside their use. The extended statement and body structures are defined here.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Each inherited syntactic domain links Shared syntax or Destructor declarations. p and e are introduced as place and value expression beside their use. The extended statement and body structures are defined here.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Each inherited syntactic domain links Shared syntax or Destructor declarations. p and e are introduced as place and value expression beside their use. The extended statement and body structures are defined here.",
+    "links": [
+      {
+        "occurrence": "assignment.syntax:1",
+        "role": "conceptual",
+        "rationale": "The label 'Destructor statements' supplies the earlier definition/setup at destructors.md#claim-destructors.declarations used by this passage."
+      },
+      {
+        "occurrence": "assignment.syntax:2",
+        "role": "conceptual",
+        "rationale": "The label 'place' supplies the earlier definition/setup at shared.md#claim-shared.syntax used by this passage."
+      },
+      {
+        "occurrence": "assignment.syntax:3",
+        "role": "conceptual",
+        "rationale": "The label 'Shared value expression' supplies the earlier definition/setup at shared.md#claim-shared.syntax used by this passage."
+      }
+    ]
+  }
+}

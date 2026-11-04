@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "924377ad0ee14297e5b5876efc503323ead377368e3791ffbbab5292af829c5a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:functions.example.gc",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The table supplies the three lifetime boundaries and roots directly. The forward frame/collector links are explicitly marked below and reviewed separately. All object names are declared in the code; the table defines the concrete states, including spent identifiers. It does not require a future symbolic transition derivation to read the observation. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c1bc3125151c1eba4bcc400f89b8d560a9f61c1a36769056d1541a91aafdcb4c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The table supplies the three lifetime boundaries and roots directly. The forward frame/collector links are explicitly marked below and reviewed separately.",
+    "mathematics": "All object names are declared in the code; the table defines the concrete states, including spent identifiers. It does not require a future symbolic transition derivation to read the observation.",
+    "links": [
+      {
+        "occurrence": "functions.example.gc:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'frame rules' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. The table supplies the three lifetime boundaries and roots directly. The forward frame/collector links are explicitly marked below and reviewed separately."
+      },
+      {
+        "occurrence": "functions.example.gc:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'collector definition' refers to md/functions.md#claim-functions.gc for the concept or example setup used by this unit. The table supplies the three lifetime boundaries and roots directly. The forward frame/collector links are explicitly marked below and reviewed separately."
+      }
+    ]
+  }
+}

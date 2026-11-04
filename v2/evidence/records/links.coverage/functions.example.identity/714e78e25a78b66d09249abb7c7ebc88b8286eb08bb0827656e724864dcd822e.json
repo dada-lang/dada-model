@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "e3956be6f54ecaf9944153e45a9349dde6e02b8cd96290404dff29da8d942f28",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:e0f7028e3af89f0a1f93b77464e6ca10ddc3704b8a553bd11b721c356306583f",
+    "audit:unit:functions.example.identity",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program. The Unicode arrow is explained as the signature permission and as the give operation; no symbolic judgment beyond the example is assumed. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "92988637e647e419f94e58a50639f75a77db1c6d044f6666d66c23edc2291781"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program.",
+    "mathematics": "The Unicode arrow is explained as the signature permission and as the give operation; no symbolic judgment beyond the example is assumed.",
+    "links": [
+      {
+        "occurrence": "functions.example.identity:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'uniquely owned Token' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program."
+      },
+      {
+        "occurrence": "functions.example.identity:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empties original' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program."
+      },
+      {
+        "occurrence": "functions.example.identity:3",
+        "role": "navigation",
+        "rationale": "Optional appendix navigation: the source already links the inherited definitions it actually uses; this appendix gathers those same rules in one summary without supplying a missing premise."
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "3aee5eddda6ddc8c9cef916e5bde1f5eb0808f04ade3fd5fbb9dc2ad4205c1df",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b20705f3e353f94b364e5cbddd1eb281eec7a3997129b64ea696b10fd0a0febf",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.heap.slots directly introduces Diagram slot assignments and stored references. The diagram vocabulary is introduced here: graph facts, nodes and slots each have clear named passages. Aliases, initial empty slots and the boundary from language semantics are stated locally. No language formula is used. α or edge-style examples elsewhere are diagram identifiers, while this unit defines the available fact constructors. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "a708ec2139d622f8448028345158f963f6ef4ff81762169138bfdafdbeca3502"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Diagram slot assignments and stored references",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 19489,
+      "end": 19783
+    },
+    "clarity": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.heap.slots directly introduces Diagram slot assignments and stored references. The diagram vocabulary is introduced here: graph facts, nodes and slots each have clear named passages. Aliases, initial empty slots and the boundary from language semantics are stated locally.",
+    "independence": "No language formula is used. α or edge-style examples elsewhere are diagram identifiers, while this unit defines the available fact constructors. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

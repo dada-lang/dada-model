@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "dbe84f978b15eed3670808106d3c5d292f78bb5eca04cec83459f1b4396a8a07",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1f7a5686f1ade1d96f51f430abce68f4805e63ed85e8238b1c8780ae7b61da69",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.anchors.roles directly introduces Legacy defining and reference roles. The unit defines identity syntax, namespace, defining roles, reference roles, shields and literal contexts in individually marked passages. No language-level permission or heap concept is needed. No mathematical block or reused equation occurs; all backtick text is authoring syntax. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3bf2aad553960050202f74b9544952f51a464ac20fbd5127aaeaf41017c742cb"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Legacy defining and reference roles",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 993,
+      "end": 1259
+    },
+    "clarity": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.anchors.roles directly introduces Legacy defining and reference roles. The unit defines identity syntax, namespace, defining roles, reference roles, shields and literal contexts in individually marked passages. No language-level permission or heap concept is needed.",
+    "independence": "No mathematical block or reused equation occurs; all backtick text is authoring syntax. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

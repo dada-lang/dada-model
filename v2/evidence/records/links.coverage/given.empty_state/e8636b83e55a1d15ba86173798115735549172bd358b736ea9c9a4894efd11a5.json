@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "dfec5b3e0f1036b473ba493199de47496dab70c0761eacf0fcffe29949943456",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.empty_state",
+    "audit:unit:given.state",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Empty storage has its own formula and zero allocation counter. The empty-map symbol is explained beside the equation, so machine initialization no longer lands inside general storage. S_empty is defined by its tuple equation and the empty-map symbol is explained locally. It is not a reference to a later initial-machine rule. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "11de4afae7c574c4ea4f1f0be74e5a1fc47df4389b7c74451cfdf8bf44ebb5e0"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Empty storage has its own formula and zero allocation counter. The empty-map symbol is explained beside the equation, so machine initialization no longer lands inside general storage.",
+    "mathematics": "S_empty is defined by its tuple equation and the empty-map symbol is explained locally. It is not a reference to a later initial-machine rule.",
+    "links": []
+  }
+}

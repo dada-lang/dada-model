@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "46506e523a669998e2ba54367421eef717dc79ecfbe08db90a2d7a9a42e6ebec",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:target:d6c2319422bc09f8bd5db42388b5e094818d235328c57f2f2ed44355c8fd76d1",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.patterns",
+    "audit:unit:given.state",
+    "audit:unit:given.steps",
+    "audit:unit:given.unpacking",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Eval, original Let, extended pattern syntax and the class table. The removal/map-extension equations are local adjuncts defining Unpack, not unexplained global operators. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation. Eval and Δ(C) in the rule are linked. Removal of the container and adding the enumerated field slots are given by local equations and freshness/order adjuncts. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3b14f33c895ea014ab4d0829aa15fb389f672bada1dfac3c8f80cbdf7478f329"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Eval, original Let, extended pattern syntax and the class table. The removal/map-extension equations are local adjuncts defining Unpack, not unexplained global operators. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation.",
+    "mathematics": "Eval and Δ(C) in the rule are linked. Removal of the container and adding the enumerated field slots are given by local equations and freshness/order adjuncts. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place.",
+    "links": [
+      {
+        "occurrence": "given.unpacking:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'evaluate e' refers to md/given.md#claim-given.evaluation for the concept or example setup used by this unit. Links Eval, original Let, extended pattern syntax and the class table. The removal/map-extension equations are local adjuncts defining Unpack, not unexplained global operators. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      },
+      {
+        "occurrence": "given.unpacking:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Let rule' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Links Eval, original Let, extended pattern syntax and the class table. The removal/map-extension equations are local adjuncts defining Unpack, not unexplained global operators. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      },
+      {
+        "occurrence": "given.unpacking:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statementsyntax' refers to md/given.md#claim-given.patterns for the concept or example setup used by this unit. Links Eval, original Let, extended pattern syntax and the class table. The removal/map-extension equations are local adjuncts defining Unpack, not unexplained global operators. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      }
+    ]
+  }
+}

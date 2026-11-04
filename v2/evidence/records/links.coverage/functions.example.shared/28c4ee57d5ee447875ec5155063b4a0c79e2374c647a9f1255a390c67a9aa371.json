@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "aa248b81dde2562ac53840c8e8dbfdfdda091dd41952ba6f33c5d71195d0c324",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:functions.example.shared",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links owned references, give and the struct restriction. Point/copy and all locals are declared in the example. shared[] is explicitly identified with owned shared permission, not a borrow. No unintroduced lifetime dependency is required. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "85322c17ca23d766bf08b4eedfea7b47f0ae9d8decf8b37485a6f843f65be8b2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links owned references, give and the struct restriction. Point/copy and all locals are declared in the example.",
+    "mathematics": "shared[] is explicitly identified with owned shared permission, not a borrow. No unintroduced lifetime dependency is required.",
+    "links": [
+      {
+        "occurrence": "functions.example.shared:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'owned shared reference' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links owned references, give and the struct restriction. Point/copy and all locals are declared in the example."
+      },
+      {
+        "occurrence": "functions.example.shared:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Giving s copies it' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links owned references, give and the struct restriction. Point/copy and all locals are declared in the example."
+      },
+      {
+        "occurrence": "functions.example.shared:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Classes cannot be shared' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. Links owned references, give and the struct restriction. Point/copy and all locals are declared in the example."
+      }
+    ]
+  }
+}

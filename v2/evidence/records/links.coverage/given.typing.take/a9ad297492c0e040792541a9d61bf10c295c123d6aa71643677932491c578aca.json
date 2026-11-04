@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "bundle": "581d062b0595ada1fbff31cbaa0f64e9f67b446946740b953e1c7e96e1a9a49e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:7182ffe25a84f5fbb71fc4b99d76d34d5086f0b0437229df2fdd4106cd7c96b7",
+    "audit:target:8413a9827dd730e438bc0c027d5a8e0b0375cf3b64b8dc044fdc5fb8b250d751",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:b525b2193e0c35e677269ca5a180c068848ebca97990c0e69502745a2fc78704",
+    "audit:unit:given.syntax",
+    "audit:unit:given.typing.emptying",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.focus",
+    "audit:unit:given.typing.observations",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.take",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations. The accessibility premise links pos; the result and update cases link focusing and emptying. The new take operator and root-empty case are defined here. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "469ee59c671660ade2aa4c9be6dc123c6cfb986fdb73b3d4116274a3e3d94a54"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations.",
+    "mathematics": "The accessibility premise links pos; the result and update cases link focusing and emptying. The new take operator and root-empty case are defined here.",
+    "links": [
+      {
+        "occurrence": "given.typing.take:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative place' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations."
+      },
+      {
+        "occurrence": "given.typing.take:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'place expression' refers to md/given.md#claim-given.syntax for the concept or example setup used by this unit. Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations."
+      },
+      {
+        "occurrence": "given.typing.take:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'environment description' refers to md/given-typing.md#claim-given.typing.environments for the concept or example setup used by this unit. Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations."
+      },
+      {
+        "occurrence": "given.typing.take:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations."
+      },
+      {
+        "occurrence": "given.typing.take:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\downarrow' refers to md/given-typing.md#claim-given.typing.focus for the concept or example setup used by this unit. Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations."
+      },
+      {
+        "occurrence": "given.typing.take:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'U[-\\\\rho]' refers to md/given-typing.md#claim-given.typing.emptying for the concept or example setup used by this unit. Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations."
+      }
+    ]
+  }
+}

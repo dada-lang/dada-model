@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "bundle": "a2e0142e9b0cdd8519c41943b2b586a5af2cfd438556c4cad75ff1cfcd0ca786",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:destructors.body_typing",
+    "audit:unit:destructors.drop_typing",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.machine",
+    "audit:unit:shared.give",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit. No display rules. p is the previously defined place in drop p; state actions use the machine components introduced immediately above. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c9371dcb0aa6e116b861848e508fa22dd841ae89c19483879cb10ee76f6a63a1"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit.",
+    "mathematics": "No display rules. p is the previously defined place in drop p; state actions use the machine components introduced immediately above.",
+    "links": [
+      {
+        "occurrence": "destructors.execution:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Functions' ordinary call and returnmachinery' supplies the definition or concrete example setup used here, at functions.md#claim-functions.execution. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit."
+      },
+      {
+        "occurrence": "destructors.execution:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'stricter completion' supplies the definition or concrete example setup used here, at #claim-destructors.finished_environment. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit."
+      },
+      {
+        "occurrence": "destructors.execution:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'unpacking statement' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.steps. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit."
+      },
+      {
+        "occurrence": "destructors.execution:4",
+        "role": "conceptual",
+        "rationale": "The occurrence 'ordinary give' supplies the definition or concrete example setup used here, at shared.md#claim-shared.give. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit."
+      },
+      {
+        "occurrence": "destructors.execution:5",
+        "role": "conceptual",
+        "rationale": "The occurrence 'eager GC' supplies the definition or concrete example setup used here, at functions.md#claim-functions.gc. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit."
+      },
+      {
+        "occurrence": "destructors.execution:6",
+        "role": "conceptual",
+        "rationale": "The occurrence 'declared destructor' supplies the definition or concrete example setup used here, at #claim-destructors.declarations. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit."
+      }
+    ]
+  }
+}

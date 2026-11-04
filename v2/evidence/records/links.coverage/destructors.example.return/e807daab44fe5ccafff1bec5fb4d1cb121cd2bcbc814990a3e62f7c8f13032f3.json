@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "e10c6ad7ffa01a85d2f004a36763a7f55bf56f5fc5ec21a81f616f68eb027d67",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3e4d50612007d6c6a5604a2b81222e88270e78922e73195442049d92573c2bda",
+    "audit:target:8c93add9c0c83a776892d18710675ad1a169196ba74e7618d4b2ef28a872c904",
+    "audit:unit:destructors.example.return",
+    "audit:unit:destructors.example.wrapper",
+    "audit:unit:functions.return",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The code introduces identity, original and returned and links the actual Resource declaration and earlier return operation. The prose explains caller versus callee obligations locally, so no forward reference to a later typing judgment is needed. → Resource and token→ use the already introduced signature and give forms. No new mathematical notation appears. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "8b4ede3c9264b2b233630150cc2c354f4383742b2e3e9b738b1c049b98ecf3cf"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The code introduces identity, original and returned and links the actual Resource declaration and earlier return operation. The prose explains caller versus callee obligations locally, so no forward reference to a later typing judgment is needed.",
+    "mathematics": "→ Resource and token→ use the already introduced signature and give forms. No new mathematical notation appears.",
+    "links": [
+      {
+        "occurrence": "destructors.example.return:1",
+        "role": "conceptual",
+        "rationale": "'return an owned value' refers to functions.md#claim-functions.return for the definition or concrete setup used in this example. The code introduces identity, original and returned and links the actual Resource declaration and earlier return operation. The prose explains caller versus callee obligations locally, so no forward reference to a later typing judgment is needed."
+      },
+      {
+        "occurrence": "destructors.example.return:2",
+        "role": "conceptual",
+        "rationale": "'Resource destructor above' refers to #claim-destructors.example.wrapper for the definition or concrete setup used in this example. The code introduces identity, original and returned and links the actual Resource declaration and earlier return operation. The prose explains caller versus callee obligations locally, so no forward reference to a later typing judgment is needed."
+      }
+    ]
+  }
+}

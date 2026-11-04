@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "c82f78b08cbc879b12978b45b7798f7d8af4337f5e52d6ec9297f3429d8d211f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2948fd23e337d523facb0a0bd8446f0c73151a1b3773cee11a0866dd45cc1d0a",
+    "audit:target:c8cc0b8b6abef8a10509119d2140141701f58f8925ed109a7a9eb157fbf76014",
+    "audit:target:eeeaf9fbda37ca8ff670f396e78c8668da960396eb7978c2ccea392e172cde77",
+    "audit:unit:destructors.body_typing",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.heap_obligations",
+    "audit:unit:destructors.safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links program typing, configuration typing and step execution. The finite-prefix quantifier and no-termination limitation are explicit. No new judgment notation; all named semantic objects have preceding definitions and links. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4b7850e6ab5b6efefa1e4c9f57febafb1f99644edc75f11498b8f72c290856c9"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links program typing, configuration typing and step execution. The finite-prefix quantifier and no-termination limitation are explicit.",
+    "mathematics": "No new judgment notation; all named semantic objects have preceding definitions and links.",
+    "links": [
+      {
+        "occurrence": "destructors.safety:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'well-typed program' supplies the definition or concrete example setup used here, at #claim-destructors.body_typing. Links program typing, configuration typing and step execution. The finite-prefix quantifier and no-termination limitation are explicit."
+      },
+      {
+        "occurrence": "destructors.safety:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'typed configuration' supplies the definition or concrete example setup used here, at #claim-destructors.heap_obligations. Links program typing, configuration typing and step execution. The finite-prefix quantifier and no-termination limitation are explicit."
+      },
+      {
+        "occurrence": "destructors.safety:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'take a step' supplies the definition or concrete example setup used here, at #claim-destructors.execution. Links program typing, configuration typing and step execution. The finite-prefix quantifier and no-termination limitation are explicit."
+      }
+    ]
+  }
+}

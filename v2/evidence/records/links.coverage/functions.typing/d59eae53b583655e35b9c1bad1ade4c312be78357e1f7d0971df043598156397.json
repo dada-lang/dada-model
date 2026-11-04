@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "bundle": "b9a1ed8113166efd702064e5b6cfba6d8034f15037fe272f53303d71938cd4a1",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:58f17a684fc230b323ae8c0c0a29e40b2208af121a7764998e534a69fd23250c",
+    "audit:target:5b191b4ae73004553b8e41cc5f545f7c147cba689bcb49ef7849cef20bd54b19",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:unit:functions.calls",
+    "audit:unit:functions.environments",
+    "audit:unit:functions.typing",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.statements",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links argument typing, destination installation, signatures, inherited local statements and environment WF. Call premises use those linked definitions; the rule binds the table entry and intermediate environment locally. Sequence typing is defined recursively here, with explicit WF for the empty sequence. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "38305fe80190ee963568695a5656c936aedc2a4a44ae0e82cba6a10e97dc26d3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links argument typing, destination installation, signatures, inherited local statements and environment WF.",
+    "mathematics": "Call premises use those linked definitions; the rule binds the table entry and intermediate environment locally. Sequence typing is defined recursively here, with explicit WF for the empty sequence.",
+    "links": [
+      {
+        "occurrence": "functions.typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Shared's argument judgment\" refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links argument typing, destination installation, signatures, inherited local statements and environment WF."
+      },
+      {
+        "occurrence": "functions.typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'destination judgment' refers to md/functions.md#claim-functions.destination_typing for the concept or example setup used by this unit. Links argument typing, destination installation, signatures, inherited local statements and environment WF."
+      },
+      {
+        "occurrence": "functions.typing:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'a signature' refers to md/functions.md#claim-functions.signatures for the concept or example setup used by this unit. Links argument typing, destination installation, signatures, inherited local statements and environment WF."
+      },
+      {
+        "occurrence": "functions.typing:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'their typing rule' refers to md/shared-typing.md#claim-shared.typing.statements for the concept or example setup used by this unit. Links argument typing, destination installation, signatures, inherited local statements and environment WF."
+      },
+      {
+        "occurrence": "functions.typing:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed environment' refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links argument typing, destination installation, signatures, inherited local statements and environment WF."
+      }
+    ]
+  }
+}

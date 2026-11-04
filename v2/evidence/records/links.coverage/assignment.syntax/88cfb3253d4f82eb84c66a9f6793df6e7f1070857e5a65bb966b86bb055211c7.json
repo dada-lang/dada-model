@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "cec2d4af0963ea43ccc7f64cf2035d3a08829cec6feec044b2de5196ea33442f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:unit:assignment.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Each inherited syntactic domain links Shared syntax or Destructor declarations. p and e are introduced as place and value expression beside their use. The extended statement and body structures are defined here. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Each inherited syntactic domain links Shared syntax or Destructor declarations. p and e are introduced as place and value expression beside their use. The extended statement and body structures are defined here. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "a442eeded5f03eba9fcee701426aa78003f41aa18a5ab3700bc94ae1e5a73610"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Each inherited syntactic domain links Shared syntax or Destructor declarations. p and e are introduced as place and value expression beside their use. The extended statement and body structures are defined here.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Each inherited syntactic domain links Shared syntax or Destructor declarations. p and e are introduced as place and value expression beside their use. The extended statement and body structures are defined here.",
+    "links": [
+      {
+        "occurrence": "assignment.syntax:1",
+        "role": "conceptual",
+        "rationale": "The label 'Destructor statements' supplies the earlier definition/setup at destructors.md#claim-destructors.declarations used by this passage."
+      },
+      {
+        "occurrence": "assignment.syntax:2",
+        "role": "conceptual",
+        "rationale": "The label 'place' supplies the earlier definition/setup at shared.md#claim-shared.syntax used by this passage."
+      },
+      {
+        "occurrence": "assignment.syntax:3",
+        "role": "conceptual",
+        "rationale": "The label 'Shared value expression' supplies the earlier definition/setup at shared.md#claim-shared.syntax used by this passage."
+      }
+    ]
+  }
+}

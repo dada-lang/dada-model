@@ -142,35 +142,6 @@ theorem readPath_target_allocated (wf : WellFormedWith classes state pending)
       exact field_allocated (reference := child) wf stored atField
     · exact ih more
 
-theorem readPath_index (wf : WellFormedWith classes state pending)
-    (read : readPath state reference path = some (some target)) :
-    target.object.index ≤ reference.object.index := by
-  induction path generalizing reference with
-  | nil =>
-    cases found : state.objects.lookup reference.object <;> simp [readPath, found] at read
-    subst target
-    exact Nat.le_refl _
-  | cons field rest ih =>
-    obtain ⟨data, slot, stored, atField, final | ⟨next, rfl, more⟩⟩ := readPath_cons read
-    · rcases final with ⟨rfl, final⟩
-      obtain ⟨child, rfl, same⟩ := Option.map_eq_some_iff.mp final
-      subst target
-      exact Nat.le_of_lt (wf.older _ _ _ child stored atField)
-    · exact Nat.le_trans (ih more) (Nat.le_of_lt (wf.older _ _ _ next stored atField))
-
-theorem readPath_index_strict (wf : WellFormedWith classes state pending)
-    (nonempty : path ≠ []) (read : readPath state reference path = some (some target)) :
-    target.object.index < reference.object.index := by
-  cases path with
-  | nil => exact False.elim (nonempty rfl)
-  | cons field rest =>
-    obtain ⟨data, slot, stored, atField, final | ⟨child, rfl, more⟩⟩ := readPath_cons read
-    · rcases final with ⟨rfl, final⟩
-      obtain ⟨child, rfl, same⟩ := Option.map_eq_some_iff.mp final
-      subst target
-      exact wf.older _ _ _ child stored atField
-    · exact Nat.lt_of_le_of_lt (readPath_index wf more) (wf.older _ _ _ child stored atField)
-
 theorem readPath_nil_of_allocated (wf : WellFormedWith classes state pending)
     (allocated : Allocated state reference.object) :
     readPath state reference [] = some (some reference) := by

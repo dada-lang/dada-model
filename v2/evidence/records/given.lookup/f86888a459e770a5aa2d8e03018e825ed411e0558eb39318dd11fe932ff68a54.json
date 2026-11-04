@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "1b3f878e100ebccf32589770b74497e05c27b84ec7423043d4b60196039a26d3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.lookup",
+    "unit:given.programs",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Stored matches variable membership or an existential object/field membership. Under the stated finite-map convention it is precisely the two displayed partial lookup equations; none remains a defined empty Slot, unlike absent membership. Notation and premises are supplied by the examined units given.classes, given.collections, given.identities, given.programs, given.slots, given.state, given.storage_places, given.syntax. Assignment differential re-review: exact authored unit and selected formalization/test inputs are unchanged from the previously reviewed bundle. The new Assignment modules import the earlier layers without modifying their source or claims. Reviewed the revised AGENTS scope and explicit Assignment proof boundary; it does not change this earlier claim. This retains the prior correspondence judgment after exact required-input comparison, not an independent fresh proof audit.",
+  "limitations": [
+    "Differential author self-review of unchanged semantic/tool selections; mechanical checks are reported separately. No independent re-proof is claimed."
+  ],
+  "supersedes": [
+    "cd5a23e270359ebf053d1db0adf2b140b4f9c1a2a12eb1520c0f6d1e5fe82e4b"
+  ]
+}

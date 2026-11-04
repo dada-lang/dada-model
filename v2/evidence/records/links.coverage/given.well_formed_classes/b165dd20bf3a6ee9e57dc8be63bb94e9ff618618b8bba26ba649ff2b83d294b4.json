@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "647db928a456f69b4c16e55310cd34d458049d816a921217cd5cd82c6ddc4924",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:unit:given.programs",
+    "audit:unit:given.well_formed_classes",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly. There is no separate formula: the two distinctness conditions directly define the named property. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "673469e1a7894b17aa45a0602932afd06c11ad16f93b3c517dc0fbbb630c7482"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly.",
+    "mathematics": "There is no separate formula: the two distinctness conditions directly define the named property.",
+    "links": [
+      {
+        "occurrence": "given.well_formed_classes:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class table' refers to md/given.md#claim-given.programs for the concept or example setup used by this unit. The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly."
+      }
+    ]
+  }
+}

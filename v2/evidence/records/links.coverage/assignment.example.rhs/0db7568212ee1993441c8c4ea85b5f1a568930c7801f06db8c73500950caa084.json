@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "3346083f2566ac3adf294b2914b4bb84cfcd64dc7f62991701015fe0635e1ba1",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:assignment.example.rhs",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The whole input, self-move code and empty-root alternative are explicit. The example introduces evaluation ordering directly, without using a later formal judgment or unexplained mathematical variable. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. The whole input, self-move code and empty-root alternative are explicit. The example introduces evaluation ordering directly, without using a later formal judgment or unexplained mathematical variable. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "eb1deb78df58129aa6c69d86acb6c766c1089a53caddba0a323e0c859aa6e934"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The whole input, self-move code and empty-root alternative are explicit. The example introduces evaluation ordering directly, without using a later formal judgment or unexplained mathematical variable.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. The whole input, self-move code and empty-root alternative are explicit. The example introduces evaluation ordering directly, without using a later formal judgment or unexplained mathematical variable.",
+    "links": []
+  }
+}

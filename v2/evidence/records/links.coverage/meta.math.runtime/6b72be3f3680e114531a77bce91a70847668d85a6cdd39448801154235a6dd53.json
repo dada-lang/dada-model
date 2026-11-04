@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "dbf4b8e229968c12a2970640abbcce0accb11a0d8317dc861da07630755b833b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:495573557cbd18357f32548655128ad41947aed83299b509c1c38ceca7f36384",
+    "audit:target:4a21645966bc500800b0d38fd94ff68e58ed55da0e2ed756db07501884925d89",
+    "audit:unit:meta.math.runtime",
+    "audit:unit:meta.math.source_view",
+    "audit:unit:meta.math.typesetting",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The runtime unit links math delimiters and source-view selectors at their reuse. Pinned loader, CDN access and display overflow are explained locally without implying browser-proof evidence. No formulas are introduced. The version and build names are concrete runtime configuration, with the delimiter notation supplied by its link. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "37d9f3c9cf58a1ee48a6760c55d04c74112a8685231b7628d632e36ba269ce62"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The runtime unit links math delimiters and source-view selectors at their reuse. Pinned loader, CDN access and display overflow are explained locally without implying browser-proof evidence.",
+    "mathematics": "No formulas are introduced. The version and build names are concrete runtime configuration, with the delimiter notation supplied by its link.",
+    "links": [
+      {
+        "occurrence": "meta.math.runtime:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'MathJax delimiters' refers to md/repo/renderer-contracts.md#claim-meta.math.typesetting for the concept or example setup used by this unit. The runtime unit links math delimiters and source-view selectors at their reuse. Pinned loader, CDN access and display overflow are explained locally without implying browser-proof evidence."
+      },
+      {
+        "occurrence": "meta.math.runtime:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'selectors' refers to md/repo/renderer-contracts.md#claim-meta.math.source_view for the concept or example setup used by this unit. The runtime unit links math delimiters and source-view selectors at their reuse. Pinned loader, CDN access and display overflow are explained locally without implying browser-proof evidence."
+      }
+    ]
+  }
+}

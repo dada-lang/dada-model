@@ -17,8 +17,18 @@ theorem Bind.preserves_pending
     (wf : WellFormedWith classes before (reference :: pending)) : WellFormedWith classes after pending := by
   cases binding with
   | «variable» fresh =>
-    refine ⟨wf.objectKeys, ?_, wf.shapes, wf.bounds, wf.older, ?_, ?_⟩
+    refine ⟨wf.objectKeys, ?_, wf.shapes, wf.bounds, ?_, ?_, ?_⟩
     · simpa [State.bind] using List.nodup_cons.mpr ⟨fresh, wf.variableKeys⟩
+    · intro id allocated
+      have live := wf.rooted id allocated
+      clear allocated
+      induction live with
+      | pending member =>
+        rcases List.mem_cons.mp member with rfl | member
+        · exact .variable (List.mem_cons_self ..)
+        · exact .pending member
+      | «variable» member => exact .variable (List.mem_cons_of_mem _ member)
+      | field _ stored field ih => exact .field ih stored field
     · simpa [State.bind, Owners] using (List.perm_middle (a := reference) (l₁ := pending) (l₂ := Owners before)).symm.pairwise wf.ownersCompatible compatible_symm
     · intro id
       have complete := wf.referencesComplete id
@@ -70,8 +80,15 @@ theorem Bind.preserves_pending
       exact wf.shapes id data (subset _ member)
     · intro id data member
       exact wf.bounds id data (subset _ member)
-    · intro id data name target member field
-      exact wf.older id data name target (subset _ member) field
+    · intro id allocated
+      have notRemoved : id ≠ object := by
+        intro same; subst id
+        exact removedAbsent (by simpa [Allocated, List.map_append] using allocated)
+      have oldAllocated : Allocated
+          ⟨before ++ (object, ⟨className, fields⟩) :: after, variables, nextId⟩ id := by
+        obtain ⟨entry, member, same⟩ := List.mem_map.mp allocated
+        exact List.mem_map.mpr ⟨entry, subset _ member, same⟩
+      exact (unpack_live transfer (by simpa using removedAbsent) (wf.rooted id oldAllocated)).resolve_left notRemoved
     · exact compatible.of_cons
     · intro id
       have complete := wf.referencesComplete id

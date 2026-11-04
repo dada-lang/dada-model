@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "3fae11866b2f9e3e98cb9829a159a91246e5241be075cd7491584cc844587975",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c606944c55fcc1af8071d20ef9cfffd91dabf71226ad1a2eab085091751daee3",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.machine directly introduces shared.typing.machine. Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations. The frame tuple and optional-frame alternatives are introduced here. Initialization uses the linked empty state; no later transition judgment is needed to understand the representation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3037d06ba0c00d0befd332197e4cfdb3ed8eb78f7fdd17f1432d55ac9f5ca578"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.machine",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 23024,
+      "end": 23445
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.machine directly introduces shared.typing.machine. Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations.",
+    "independence": "The frame tuple and optional-frame alternatives are introduced here. Initialization uses the linked empty state; no later transition judgment is needed to understand the representation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

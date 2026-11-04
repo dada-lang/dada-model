@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "9a0e4bd2d8cc3eec26ebff61472a9c3035a825ff79a0cc0784fced487cb190a2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ea88350f35acf3dbe92ab2a6eee84184c0fb823f75907318dc522380864a6084",
+    "audit:unit:given.classes",
+    "audit:unit:given.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links field names back to class declarations; defines p, e, t, fresh variables, gives, and constructors together as the syntax grammar. The explanatory operation words here do not invoke a later formal judgment. The p/e/t grammar defines the syntactic categories together; x is introduced as a variable name, and field names have the preceding class link. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "752dbac94ba1e134225758cafdd120654ff4cb7bdd23fbaa2f8305856af97421"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links field names back to class declarations; defines p, e, t, fresh variables, gives, and constructors together as the syntax grammar. The explanatory operation words here do not invoke a later formal judgment.",
+    "mathematics": "The p/e/t grammar defines the syntactic categories together; x is introduced as a variable name, and field names have the preceding class link.",
+    "links": [
+      {
+        "occurrence": "given.syntax:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'fields' refers to md/given.md#claim-given.classes for the concept or example setup used by this unit. Links field names back to class declarations; defines p, e, t, fresh variables, gives, and constructors together as the syntax grammar. The explanatory operation words here do not invoke a later formal judgment."
+      }
+    ]
+  }
+}

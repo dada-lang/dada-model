@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "557bd13a7735197b749673a038e67553c2cba206295ffe2b29fe3351c67ad6f9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e352bf1830e74f15198be0594d0061f7c9c957dfd9710c03023c40e4b5b65bf8",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:shared.example.share_value",
+    "audit:unit:shared.example.shared_middle",
+    "audit:unit:shared.give",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate. The earlier state is linked explicitly; the two source statements use known syntax, and the resulting route interpretation links resolution. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b1e16112541cbb784f4aae33c912eeab6fd56a42bcaf8432787fe9e573c79e7a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate.",
+    "mathematics": "The earlier state is linked explicitly; the two source statements use known syntax, and the resulting route interpretation links resolution.",
+    "links": [
+      {
+        "occurrence": "shared.example.shared_middle:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'shared.example.share_value' refers to md/shared.md#claim-shared.example.share_value for the concept or example setup used by this unit. Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate."
+      },
+      {
+        "occurrence": "shared.example.shared_middle:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'constructor' refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate."
+      }
+    ]
+  }
+}

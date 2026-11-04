@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "321ad8d4595789e384b1490a9eb0b29cc5eb9eb6d659167c4f81fe69a600e3f2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:56968a0b61d069156a3c6cf55db5ba12bcfdf730847f49c102707a617d46863b",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.well_formed_classes directly introduces Given class-table well-formedness. The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly. There is no separate formula: the two distinctness conditions directly define the named property. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "f78a715159c2face56b7659e1d837fbee83f4c437d9a891cc3d39ed4b54d621f"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given class-table well-formedness",
+    "definition": {
+      "path": "md/given.md",
+      "start": 3337,
+      "end": 3471
+    },
+    "clarity": "The landing md/given.md#claim-given.well_formed_classes directly introduces Given class-table well-formedness. The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly.",
+    "independence": "There is no separate formula: the two distinctness conditions directly define the named property. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

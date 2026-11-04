@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "0df5f2cfb6c8c9c2ee3dab754825fbd2ad2314eb92b38083d294ae9564d13d09",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:escape",
+    "rust:mdbook-dada/src/lib.rs:markdown_heading",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:protect_math",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "rust:mdbook-dada/src/lib.rs:selector_header",
+    "test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order",
+    "test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles",
+    "test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "test:mdbook-dada/tests/book.rs:unanchored_rendered_blocks_share_named_headers_and_grouped_choices",
+    "test:mdbook-dada/tests/renderer_contracts.rs:pinned_mathjax_configuration_uses_one_loader",
+    "test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent",
+    "test:mdbook-dada/tests/units.rs:meta_units_show_named_rust_implementation_and_test",
+    "test:mdbook-dada/tests/units.rs:structured_units_render_identified_headers_and_exact_lean_views",
+    "unit:meta.math.runtime",
+    "unit:meta.math.source_view",
+    "unit:meta.math.typesetting",
+    "unit:meta.syntax.anchors.identity"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.runtime against rust:mdbook-dada/src/lib.rs:protect_math, rust:mdbook-dada/src/lean.rs:render_authored, test:mdbook-dada/tests/renderer_contracts.rs:pinned_mathjax_configuration_uses_one_loader, test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent. The runtime test inspects book.toml and theme/mathjax.js for one pinned 4.1.3 CommonHTML loader, built-in MathJax disabled, configured delimiters and display overflow. The CSS test checks horizontal overflow rules and independent selectors. These checks support configuration/emitted assets, while the unit explicitly excludes CDN availability and universal browser appearance guarantees. Notation and judgment context was checked in unit:meta.math.typesetting, unit:meta.math.source_view. Assignment differential re-review: exact authored unit and selected formalization/test inputs are unchanged from the previously reviewed bundle. The new Assignment modules import the earlier layers without modifying their source or claims. Reviewed the revised AGENTS scope and explicit Assignment proof boundary; it does not change this earlier claim. This retains the prior correspondence judgment after exact required-input comparison, not an independent fresh proof audit.",
+  "limitations": [
+    "Differential author self-review of unchanged semantic/tool selections; mechanical checks are reported separately. No independent re-proof is claimed."
+  ],
+  "supersedes": [
+    "e816fd8ee2caa93436fa9868d964435fae9734b2a20dd399561218c623d9f42c"
+  ]
+}

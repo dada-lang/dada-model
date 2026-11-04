@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "7b6e532ee45a7b94e299886649b65236ab01839f59e15850373319a077e0f9da",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Assignment/ExecutionChecks.lean",
+    "context:lean/Shared/RootedChecks.lean",
+    "context:lean/Shared/RootedPathChecks.lean",
+    "context:lean/Unique/RootedChecks.lean",
+    "lean:Assignment/Checks:rhs_first",
+    "policy:md/repo/correspondence-review.md",
+    "unit:assignment.example.rhs"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Checks.rhs_first establishes StatementTyped for store w,w→ on whole Wrapper using an intermediate empty w and checks rejection of field storage from that empty root. Thus the two claims are exactly self-move/refill and unavailable-parent rejection, without claiming arbitrary RHS evaluation is executable. Rooted-foundation review: the structural invariants now require explicit rootedness (including pending values) plus unique/compatible ownership. Allocation bounds remain solely for freshness; no safety proof assumes edge-age order or global DAG structure. Changed proof selections retain their public statement unless this unit explicitly defines the revised invariant or example. Given/Shared root transport and path reasoning were reviewed by their implementing agents, with fresh review of root-owned unpacking, GC, frame rerooting, class retention and the refill example. Earlier syntax and runtime rules are unchanged. The widened invariant domain is covered by recompilation of all earlier safety proofs and concrete shared-cycle/nonmonotonic-ID regressions, not by a claim that constructors can generate cycles.",
+  "limitations": [
+    "Author integration review with agent review of Given/Shared foundations and fresh review of root-owned integration. Lean checks proof correctness separately.",
+    "Assignment general safety remains deferred. Cyclic heap examples test invariant and operation scope, not source-program construction from the current empty initial state."
+  ],
+  "supersedes": [
+    "e31e487c2c23b13abf86ebdf7926a5a22776393dfdfa80ee643aa877f2512af9"
+  ]
+}

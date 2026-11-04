@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "30be6cb4c42f02b47b916d3868aa29dc1d6e180e52327a0f740b87ce30370ac8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:fb102fffa34394933fb7961431f0e3e35308342998590976bbea48c889b79ba1",
+    "audit:unit:assignment.example.replacement",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Explicit destruction links its actual elaboration definition; Resource and its destructor are shown here and r/replacement are stated inputs. Calls and suspended roots are inherited earlier concepts described concretely, with no forward use of the new judgment. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Explicit destruction links its actual elaboration definition; Resource and its destructor are shown here and r/replacement are stated inputs. Calls and suspended roots are inherited earlier concepts described concretely, with no forward use of the new judgment. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3d42b04b619a44d5833eb9a76bcda31b09f44e2660ea44175c618954711731f0"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Explicit destruction links its actual elaboration definition; Resource and its destructor are shown here and r/replacement are stated inputs. Calls and suspended roots are inherited earlier concepts described concretely, with no forward use of the new judgment.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Explicit destruction links its actual elaboration definition; Resource and its destructor are shown here and r/replacement are stated inputs. Calls and suspended roots are inherited earlier concepts described concretely, with no forward use of the new judgment.",
+    "links": [
+      {
+        "occurrence": "assignment.example.replacement:1",
+        "role": "conceptual",
+        "rationale": "The label 'explicit destruction' supplies the earlier definition/setup at destructors.md#claim-destructors.drop_typing used by this passage."
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "99ce51e3f38e24a549e1c4bc28db213501b6923b913daef36d85b86c86ecaefb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d624ee0d5cd5657b31ab57c7b4683b005539b9d45e491bf03994c6837439d23e",
+    "audit:unit:meta.math.definition.selection",
+    "audit:unit:meta.sources.exact_selection",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Definition extraction and grammar citation kinds are defined here. The reused mutual-inductive source-selection rules link the exact earlier extraction contract. Local anchors separate body extraction, grammar selection and validation. Authored LaTeX is discussed as a representation; no equation or inference-rule symbol is relied upon here. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "2b43b99b38aa29f28eb0372de580fae818b95fdf4b9c6203434b2f78f55de662"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Definition extraction and grammar citation kinds are defined here. The reused mutual-inductive source-selection rules link the exact earlier extraction contract. Local anchors separate body extraction, grammar selection and validation.",
+    "mathematics": "Authored LaTeX is discussed as a representation; no equation or inference-rule symbol is relied upon here.",
+    "links": [
+      {
+        "occurrence": "meta.math.definition.selection:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'meta.sources.exact_selection' refers to md/repo/evidence-pilot.md#claim-meta.sources.exact_selection for the concept or example setup used by this unit. Definition extraction and grammar citation kinds are defined here. The reused mutual-inductive source-selection rules link the exact earlier extraction contract. Local anchors separate body extraction, grammar selection and validation."
+      }
+    ]
+  }
+}

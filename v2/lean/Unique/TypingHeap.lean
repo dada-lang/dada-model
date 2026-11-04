@@ -97,30 +97,6 @@ theorem readPath_target_allocated (wf : WellFormedWith classes state pending)
       exact WellFormedWith.field_allocated wf stored atField
     · exact ih more
 
-theorem readPath_index (wf : WellFormedWith classes state pending)
-    (read : readPath state object path = some (some target)) : target.index ≤ object.index := by
-  induction path generalizing object with
-  | nil =>
-    cases found : state.objects.lookup object <;> simp [readPath, found] at read
-    subst target
-    exact Nat.le_refl _
-  | cons field rest ih =>
-    obtain ⟨data, slot, stored, atField, final | ⟨next, rfl, more⟩⟩ := readPath_cons read
-    · rcases final with ⟨rfl, rfl⟩
-      exact Nat.le_of_lt (wf.older _ _ _ _ stored atField)
-    · exact Nat.le_trans (ih more) (Nat.le_of_lt (wf.older _ _ _ _ stored atField))
-
-theorem readPath_index_strict (wf : WellFormedWith classes state pending)
-    (nonempty : path ≠ []) (read : readPath state object path = some (some target)) :
-    target.index < object.index := by
-  cases path with
-  | nil => exact False.elim (nonempty rfl)
-  | cons field rest =>
-    obtain ⟨data, slot, stored, atField, final | ⟨child, rfl, more⟩⟩ := readPath_cons read
-    · rcases final with ⟨rfl, rfl⟩
-      exact wf.older _ _ _ _ stored atField
-    · exact Nat.lt_of_le_of_lt (readPath_index wf more) (wf.older _ _ _ _ stored atField)
-
 theorem readPath_nil_of_allocated (wf : WellFormedWith classes state pending)
     (allocated : Allocated state object) : readPath state object [] = some (some object) := by
   obtain ⟨⟨id, data⟩, stored, same⟩ := List.mem_map.mp allocated

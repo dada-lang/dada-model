@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "a9d0f3213acaa95e017e5e79bfd7e152a3a1dc9c0e85d357c2e4177a6f684a30",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.empty_state",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "State.empty is exactly the State constructor with two empty lists and counter 0. This is the displayed S_empty and retains no objects/variables. Notation and premises are supplied by the examined units given.classes, given.collections, given.identities, given.programs, given.slots, given.state, given.syntax. Assignment differential re-review: exact authored unit and selected formalization/test inputs are unchanged from the previously reviewed bundle. The new Assignment modules import the earlier layers without modifying their source or claims. Reviewed the revised AGENTS scope and explicit Assignment proof boundary; it does not change this earlier claim. This retains the prior correspondence judgment after exact required-input comparison, not an independent fresh proof audit.",
+  "limitations": [
+    "Differential author self-review of unchanged semantic/tool selections; mechanical checks are reported separately. No independent re-proof is claimed."
+  ],
+  "supersedes": [
+    "61fb012b194c42e6e21e0442531787bfe03000348a74638d16342fc01d476c8c"
+  ]
+}

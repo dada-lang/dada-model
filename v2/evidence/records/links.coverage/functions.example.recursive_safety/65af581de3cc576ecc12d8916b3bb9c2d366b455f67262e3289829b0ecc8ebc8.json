@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "90babae6e735bf88eb1ccb4a8a3d8e579455f95391a4d66dfc9ffb3aa11e88fa",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:084af8c121ddc59986f42a7ab3f0d5d6acde12eabd63b8c398e3227243248fd1",
+    "audit:target:3364596ea7ab0111fb92359781cd6c83c63e9e1699c0db9afa183775426df400",
+    "audit:unit:functions.example.recursion",
+    "audit:unit:functions.example.recursive_safety",
+    "audit:unit:functions.safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links stack typing, stuckness and the prior recursive example. Depth is a locally quantified natural iteration of that example; no new safety predicate is introduced without a definition link. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "bf0bfe7c3a320105469556a427ac2906d9d588cf4c6a2a560941718ffb75e857"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links stack typing, stuckness and the prior recursive example.",
+    "mathematics": "Depth is a locally quantified natural iteration of that example; no new safety predicate is introduced without a definition link.",
+    "links": [
+      {
+        "occurrence": "functions.example.recursive_safety:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well typed' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links stack typing, stuckness and the prior recursive example."
+      },
+      {
+        "occurrence": "functions.example.recursive_safety:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck' refers to md/functions.md#claim-functions.stuck for the concept or example setup used by this unit. Links stack typing, stuckness and the prior recursive example."
+      },
+      {
+        "occurrence": "functions.example.recursive_safety:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'recursive' refers to md/functions.md#claim-functions.example.recursion for the concept or example setup used by this unit. Links stack typing, stuckness and the prior recursive example."
+      }
+    ]
+  }
+}

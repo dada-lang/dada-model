@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "8c9c26b3f8639421f386394c4414bd4ace9bbccf83ab9b28c6eec0f8785ff822",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c8ead969bed74ef79c463fa37a326d2236f51323ed159506774205ac0abfe848",
+    "audit:target:fb8728223f67267611c2c2583e138750a3de2c9dbffaf47cc6477356589bd987",
+    "audit:unit:given.example.empty_field",
+    "audit:unit:given.example.field",
+    "audit:unit:given.executions",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded. Δ and K_bad are introduced from the linked predecessor example. The starred arrow and Finished in the no-completion formula are linked. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "63bd27c2cc7fe5d195557dca627931180c600c69c45ae50e310eb24244713394"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded.",
+    "mathematics": "Δ and K_bad are introduced from the linked predecessor example. The starred arrow and Finished in the no-completion formula are linked.",
+    "links": [
+      {
+        "occurrence": "given.example.empty_field:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'given.example.field' refers to md/given.md#claim-given.example.field for the concept or example setup used by this unit. Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded."
+      },
+      {
+        "occurrence": "given.example.empty_field:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck' refers to md/given.md#claim-given.stuck for the concept or example setup used by this unit. Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded."
+      }
+    ]
+  }
+}

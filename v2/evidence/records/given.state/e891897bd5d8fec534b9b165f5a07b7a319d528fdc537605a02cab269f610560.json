@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "6f3ea9bad5a144d1532aebed78417b2a11d4dbf7b85a7573b820f5b8cea988d3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Assignment/ExecutionChecks.lean",
+    "context:lean/Shared/RootedChecks.lean",
+    "context:lean/Shared/RootedPathChecks.lean",
+    "context:lean/Unique/RootedChecks.lean",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "State contains exactly objects, variables and nextId, matching the three-component storage tuple and its domains. The earlier identity and slot units provide their element categories, and given.collections provides finite-map notation. Empty storage has its own separate definition; it is not introduced by this focused State selection. Rooted-foundation review: the structural invariants now require explicit rootedness (including pending values) plus unique/compatible ownership. Allocation bounds remain solely for freshness; no safety proof assumes edge-age order or global DAG structure. Changed proof selections retain their public statement unless this unit explicitly defines the revised invariant or example. Given/Shared root transport and path reasoning were reviewed by their implementing agents, with fresh review of root-owned unpacking, GC, frame rerooting, class retention and the refill example. Earlier syntax and runtime rules are unchanged. The widened invariant domain is covered by recompilation of all earlier safety proofs and concrete shared-cycle/nonmonotonic-ID regressions, not by a claim that constructors can generate cycles.",
+  "limitations": [
+    "Author integration review with agent review of Given/Shared foundations and fresh review of root-owned integration. Lean checks proof correctness separately.",
+    "Assignment general safety remains deferred. Cyclic heap examples test invariant and operation scope, not source-program construction from the current empty initial state."
+  ],
+  "supersedes": [
+    "67bd128d7176ada32679c8e0ab3c3519291bc9ee1902b94795a014c204f0a6bb"
+  ]
+}

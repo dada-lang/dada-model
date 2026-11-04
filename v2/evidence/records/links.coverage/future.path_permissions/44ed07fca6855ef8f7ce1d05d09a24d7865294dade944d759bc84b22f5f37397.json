@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "bundle": "4049ae8e1b8b8cb5901bbdeede44a7ecdf5fcbeaedd509092c7c1a825ef9a550",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2e73a816de64641201d0a60f2df58d7490dcf3352f6e52f13591043ab00ec548",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:future.path_permissions",
+    "audit:unit:given.typing.views",
+    "audit:unit:shared.give",
+    "audit:unit:shared.resolution",
+    "context:AGENTS.md",
+    "context:link-chapter:md/dada/future-extensions.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation. P and T are locally bound; the displayed identity and absorption laws link through the preceding explanation to current normalization, while the path-dependent extension is explicitly unsettled. No later borrowing formalism is assumed. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "e13690ff36a423e491d5a922be6356146ac6d6c78e997a3f1bfb753717843892"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation.",
+    "mathematics": "P and T are locally bound; the displayed identity and absorption laws link through the preceding explanation to current normalization, while the path-dependent extension is explicitly unsettled. No later borrowing formalism is assumed.",
+    "links": [
+      {
+        "occurrence": "future.path_permissions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'paths rooted at bindings' refers to md/shared.md#claim-shared.syntax for the concept or example setup used by this unit. The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation."
+      },
+      {
+        "occurrence": "future.path_permissions:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'paths are relative' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation."
+      },
+      {
+        "occurrence": "future.path_permissions:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'typing environment' refers to md/shared-typing.md#claim-shared.typing.environments for the concept or example setup used by this unit. The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation."
+      },
+      {
+        "occurrence": "future.path_permissions:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'effective permission of a field path' refers to md/shared-typing.md#claim-shared.typing.focus for the concept or example setup used by this unit. The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation."
+      },
+      {
+        "occurrence": "future.path_permissions:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'identity and shared-absorption laws' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation."
+      }
+    ]
+  }
+}

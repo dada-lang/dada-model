@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "6721f4d31863fcb50d4870209473281fa25f59c5ddbbc0d790c3b36d46d6c5df",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:eeeaf9fbda37ca8ff670f396e78c8668da960396eb7978c2ccea392e172cde77",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Links destructor declaration, finished environment, Functions signatures, and droppability; the whole-table recursion policy is defined here. The appendix is supplementary navigation. The selected defining body includes its local setup, conditions and direct prerequisite links. self: given C denotes the locally identified whole receiver. Function and result types come from the linked signature definition; no undefined judgment notation appears. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "5a905bba478cbb917b88f67f0182b13025902bd7afab8d2076748fe6a886c6ce"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "body typing",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 14778,
+      "end": 15900
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Links destructor declaration, finished environment, Functions signatures, and droppability; the whole-table recursion policy is defined here. The appendix is supplementary navigation.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. self: given C denotes the locally identified whole receiver. Function and result types come from the linked signature definition; no undefined judgment notation appears."
+  }
+}

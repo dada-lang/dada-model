@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "23a3af5e44324b4381096b0d97c91d42de9f1f43594bd8f3564b19a09a219f58",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:given.syntax",
+    "audit:unit:shared.classes",
+    "audit:unit:shared.give",
+    "audit:unit:shared.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar. p/e/t introduce the extended grammar; the give operation has a direct link and give-share is explained as its result conversion. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4b94aa7ffe51d797050039d40d96d44532a242d6c26df33816c1a860395dec8e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar.",
+    "mathematics": "p/e/t introduce the extended grammar; the give operation has a direct link and give-share is explained as its result conversion.",
+    "links": [
+      {
+        "occurrence": "shared.syntax:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'placeexpression' refers to md/given.md#claim-given.syntax for the concept or example setup used by this unit. Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar."
+      },
+      {
+        "occurrence": "shared.syntax:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'give' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar."
+      },
+      {
+        "occurrence": "shared.syntax:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'struct' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar."
+      }
+    ]
+  }
+}

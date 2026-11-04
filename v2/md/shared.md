@@ -181,6 +181,10 @@ For a [nominal declaration](#claim-shared.classes) of [kind](#claim-shared.decla
 \\(\Delta(C)=(k,[f_1,\ldots,f_n])\\).
 ```
 
+
+
+
+
 ```{definition} shared.well_formed_classes
 :lean: Shared/Soundness:ClassesWellFormed
 :uses: shared.programs
@@ -684,9 +688,21 @@ following occupied slots. Both unique and shared
 Empty slots contribute no edge.
 ```
 
+```{definition} shared.pending_live
+:lean: Shared/Reachability:LiveWith
+:uses: shared.live
+
+During expression evaluation, an object can be *live with pending values* even
+when no variable points to it. A list of pending references supplies additional
+roots alongside the variable roots of [ordinary liveness](#claim-shared.live).
+An object is live with pending values when a finite sequence of occupied field
+slots reaches it from either kind of root. Both unique and shared references
+contribute edges, and a pending reference reaches its own target directly.
+```
+
 ```{definition} shared.well_formed
 :lean: Shared/State:Allocated Shared/State:Live Shared/State:References Shared/Soundness:Owners Shared/Soundness:Compatible Shared/Soundness:WellFormed Shared/Soundness:WellFormedWith Shared/KindSafety:HasKind Shared/KindSafety:ReferenceAllowed Shared/KindSafety:KindCorrect Shared/KindSafety:WellFormedState
-:uses: shared.state
+:uses: shared.state shared.pending_live
 
 [Allocated objects](#claim-shared.allocated) and [live objects](#claim-shared.live)
 are distinguished by presence in storage and reachability from roots.
@@ -696,8 +712,9 @@ A [state](#claim-shared.state) is well formed, written \\(\mathsf{WF}_{\Delta}(S
 - Object identities and variable names are each distinct.
 - Every object's class is [declared](#claim-shared.programs), and its distinct field names match the
   declaration's order, including fields whose slots are empty.
-- Every [allocated identity](#claim-shared.allocated) has an index below the allocation counter. Field
-  references target objects with strictly smaller indices.
+- Every [allocated identity](#claim-shared.allocated) has an index below the allocation counter.
+- Every allocated object is [live](#claim-shared.live): some finite owning path
+  reaches it from a variable root. Field edges need not follow allocation order.
 - Every stored reference targets an allocated object, and every allocated
   object has at least one stored owning reference.
 - Any two distinct owning occurrences targeting the same object are both shared.
@@ -705,17 +722,103 @@ A [state](#claim-shared.state) is well formed, written \\(\mathsf{WF}_{\Delta}(S
 - Every shared reference targets a struct, and every reference to an instance
   of a shared struct is shared.
 
-The first five clauses are *structural well-formedness*. The final two are the
+The first six clauses are *structural well-formedness*. The final two are the
 declaration-kind invariants. Structural well-formedness also has a form that
-counts pending expression results as additional owning occurrences; this lets
-expression soundness describe values not yet placed in a slot.
+counts pending expression results as additional owning occurrences and uses
+[liveness with pending values](#claim-shared.pending_live) for its rootedness
+condition. This lets expression soundness describe values not yet placed in a slot.
 
 Owning occurrences are counted across all variable slots and all object fields.
 The ownership-compatibility condition permits several shared references to an
 object, but a stored unique reference must be its only incoming owning reference. That local condition
 does not by itself give a path unique access: every preceding reference must
-also be unique. The older-object condition follows construction order and prevents
-an owner-only cycle with no variable root.
+also be unique. Rootedness excludes an unreachable component even when its
+objects reference one another. It permits cycles reachable through shared
+access; the allocation counter is a freshness bound, not a ranking of heap edges.
+```
+
+```{example} shared.example.newer_child
+:lean: Shared/RootedChecks:newer_child
+:uses: shared.well_formed
+
+[Structural well-formedness](#claim-shared.well_formed) accepts a parent whose
+child was allocated later. The checked heap contains class `Parent` object 0,
+class `Leaf` object 1, and allocation counter 2. Variable `p` uniquely owns
+object 0; its `child` field uniquely owns object 1. Both objects are reachable,
+and each has exactly one owning occurrence. The field edge from 0 to 1 is
+permitted independently of their allocation indices.
+```
+
+```{example} shared.example.rooted_cycle
+:lean: Shared/RootedChecks:shared_cycle
+:uses: shared.well_formed
+
+Consider two struct `Node` objects, 0 and 1, each with a `next` field. Variable
+`root` holds a shared reference to object 0; object 0's `next` holds a shared
+reference to object 1, and object 1's `next` holds a shared reference back to 0.
+With allocation counter 2, this heap satisfies
+[structural well-formedness](#claim-shared.well_formed). Both objects have finite
+paths from `root`, despite the cycle. This is a check of an arbitrary heap,
+not a claim that this layer's constructor-only operations can create the cycle.
+```
+
+```{example} shared.example.mixed_cycle
+:lean: Shared/RootedChecks:mixed_cycle
+:uses: shared.example.rooted_cycle shared.well_formed
+
+In the [preceding cycle](#claim-shared.example.rooted_cycle), change only object
+0's `next` reference to unique. The heap still satisfies
+[structural well-formedness](#claim-shared.well_formed): that field is the sole
+owning occurrence of object 1. Access from variable `root` still traverses a
+shared reference first. Thus a unique stored edge may occur inside a cycle
+whose access from roots is shared; stored uniqueness alone is not unique access.
+```
+
+```{example} shared.example.raw_take_cycle
+:lean: Shared/RootedPathChecks:raw_take_changes_interior
+:uses: shared.example.mixed_cycle shared.give
+
+The distinction between stored uniqueness and unique access matters when moving
+an object. Use the [mixed cycle](#claim-shared.example.mixed_cycle) shape with
+these concrete names: variable `a` shares object 0 of struct `A`; its field `f`
+uniquely owns object 1 of struct `B`; field `g` of object 1 shares object 0.
+
+Starting at object 1, the path `g.f` leads back to object 1 with shared access.
+The low-level slot-removal operation used by [give](#claim-shared.give) can
+clear object 0's `f` slot. Afterwards, following `g.f` from object 1 reaches an
+empty slot. Thus removing an incoming reference does not, by itself, preserve
+all observations inside its target.
+
+This is an abstract-heap check of the storage helper, not an execution of
+`a.f→`. A valid move also requires unique access along the entire source path.
+```
+
+```{example} shared.example.give_cycle
+:lean: Shared/RootedPathChecks:give_preserves_shared_cycle
+:uses: shared.example.raw_take_cycle shared.give shared.resolution
+
+In the [preceding heap](#claim-shared.example.raw_take_cycle), `a.f→` has
+[shared access](#claim-shared.resolution). The checked transition uses
+[give's promotion case](#claim-shared.give): it changes object 0's `f` reference
+to shared and returns a shared reference to object 1. There is no unique
+resolution of `a.f`, so this access cannot select the move case.
+
+Every finite field-path observation starting from the returned shared reference
+to object 1 is unchanged by the promotion. This includes the shared `g.f`
+backedge, empty slots, and failed lookups. The cycle remains present; no
+allocation ordering or global acyclicity is required for this result. As above,
+the example starts from an abstract heap rather than constructing the cycle
+with this layer's source operations.
+```
+
+```{example} shared.example.unrooted_cycle
+:lean: Shared/RootedChecks:unrooted_cycle
+:uses: shared.example.rooted_cycle shared.well_formed
+
+Remove variable `root` from the [two-shared-edge cycle](#claim-shared.example.rooted_cycle).
+Each object still has an incoming shared reference, but neither has a path from
+a variable. The resulting heap fails [structural well-formedness](#claim-shared.well_formed).
+Incoming-reference coverage does not replace rootedness.
 ```
 
 ```{theorem} shared.path_exclusivity

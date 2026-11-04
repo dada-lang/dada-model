@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "3854aa8b1eb7b53975755b89697e0b2a9d30f7e47cc33e199a8d817d704eaf7b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:69b3d55447d920253867baf2a85e8926fb42f26962b21ba3fe0049eb1951e922",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.syntax",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.views",
+    "audit:unit:given.typing.well_formed_types",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Well-formedness and normalization link to their definitions. Slot descriptions, environment, empty marker, and retained variable domain are introduced in this compact paired grammar. The B and Gamma productions bind their symbols; 0 is explained as empty rather than a value type. dom is ordinary finite-map notation, not another language predicate. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d9f96b338c4328bd71ef3d60d291aa7c1fb00139453c2dd5896873d2e43a0893"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Well-formedness and normalization link to their definitions. Slot descriptions, environment, empty marker, and retained variable domain are introduced in this compact paired grammar.",
+    "mathematics": "The B and Gamma productions bind their symbols; 0 is explained as empty rather than a value type. dom is ordinary finite-map notation, not another language predicate.",
+    "links": [
+      {
+        "occurrence": "given.typing.environments:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well formed' refers to md/given-typing.md#claim-given.typing.well_formed_types for the concept or example setup used by this unit. Well-formedness and normalization link to their definitions. Slot descriptions, environment, empty marker, and retained variable domain are introduced in this compact paired grammar."
+      },
+      {
+        "occurrence": "given.typing.environments:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalized' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Well-formedness and normalization link to their definitions. Slot descriptions, environment, empty marker, and retained variable domain are introduced in this compact paired grammar."
+      }
+    ]
+  }
+}

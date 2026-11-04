@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "bundle": "75531cb4c6053c7b8601caaf32b6292460ba7e2b7bc40de5f42d2932274167cf",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e0e30b85b0197fab44a8ae02cdee7f7f84182b2175ddfdff24c007254c4a47e",
+    "audit:target:11aed29a6b82dfc70e7df19c3fad999a9f8fa3cfb7d1b2ebf35e0b7a63f92a16",
+    "audit:target:828c2e9a592d1b90f2650b6136e24abe27a4c6886c1c3487d5a24c9e3f96fcf7",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:shared.declarations",
+    "audit:unit:shared.struct",
+    "audit:unit:shared.syntax",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.giving",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.weakening",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The shared.typing.expressions unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types. The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "5e896f9a2443692b70bf2168d3a9a7d70e40b8e2fd34ca1c02a53406e2166d2c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The shared.typing.expressions unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types.",
+    "mathematics": "The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions.",
+    "links": [
+      {
+        "occurrence": "shared.typing.expressions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'type normalization' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. The shared.typing.expressions unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.expressions:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'static give operation' refers to md/shared-typing.md#claim-shared.typing.giving for the concept or example setup used by this unit. The shared.typing.expressions unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.expressions:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\mathsf{give}_{\\\\Sigma}(\\\\Gamma,p)=(T,\\\\Gamma')\" refers to md/shared-typing.md#claim-shared.typing.giving for the concept or example setup used by this unit. The shared.typing.expressions unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.expressions:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'struct(T)' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. The shared.typing.expressions unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.expressions:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\mathsf{give}_{\\\\Sigma}(\\\\Gamma,p)=(T,\\\\Gamma')\" refers to md/shared-typing.md#claim-shared.typing.giving for the concept or example setup used by this unit. The shared.typing.expressions unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.expressions:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\mathsf{give}_{\\\\Sigma}(\\\\Gamma,p)=(T,\\\\Gamma')\" refers to md/shared-typing.md#claim-shared.typing.giving for the concept or example setup used by this unit. The shared.typing.expressions unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.expressions:7",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{struct}' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. The shared.typing.expressions unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.expressions:8",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma(C)' refers to md/shared-typing.md#claim-shared.typing.declarations for the concept or example setup used by this unit. The shared.typing.expressions unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.expressions:9",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'weaker view' refers to md/shared-typing.md#claim-shared.typing.weakening for the concept or example setup used by this unit. The shared.typing.expressions unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.expressions:10",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'T\\\\preceq_{\\\\Sigma}U' refers to md/shared-typing.md#claim-shared.typing.weakening for the concept or example setup used by this unit. The shared.typing.expressions unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      }
+    ]
+  }
+}

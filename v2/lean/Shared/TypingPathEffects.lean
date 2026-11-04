@@ -464,13 +464,16 @@ theorem take_readPath_frame (wf : WellFormedWith classes before pending)
         simpa [List.append_assoc] using separate)
       exact (readPath_append afterWf firstRead rest).trans remaining
 
-theorem take_readPath_below (wf : WellFormedWith classes before pending)
+-- Descendants of a uniquely rooted route cannot traverse its incoming slot.
+theorem take_readPath_descendant (wf : WellFormedWith classes before pending)
     (afterWf : WellFormedWith classes after afterPending)
     (taken : Take before source removed after)
-    (below : reference.object.index ≤ removed.index)
+    (cut : Route before pending site cutPath (.owned removed))
+    (route : Route before pending site initial reference)
+    (below : cutPath.IsPrefix initial)
     (read : readPath before reference path = some slot) :
     readPath after reference path = some slot := by
-  induction path generalizing reference with
+  induction path generalizing initial reference with
   | nil =>
     cases found : before.objects.lookup reference.object <;> simp [readPath, found] at read
     subst slot
@@ -482,11 +485,16 @@ theorem take_readPath_below (wf : WellFormedWith classes before pending)
     all_goals
       have different : StoragePlace.field reference.object field ≠ source := by
         intro sameSource
-        have sourceField : Stored before (.field reference.object field) (some (.owned removed)) :=
-          sameSource ▸ taken.stored
-        obtain ⟨sourceData, sourceStored, sourceAtField⟩ := sourceField
-        have older := wf.older _ _ _ _ sourceStored sourceAtField
-        change removed.index < reference.object.index at older
+        have sameSlot : fieldSlot = some (.owned removed) := stored_value_unique wf
+          (show Stored before (.field reference.object field) fieldSlot from ⟨data, stored, atField⟩)
+          (sameSource ▸ taken.stored)
+        have crossing : Route before pending site (initial ++ [field])
+            (enter reference.mode (.owned removed)) := .field route stored (sameSlot ▸ atField)
+        have samePath := (cut.unique wf rfl crossing rfl).2.1
+        have lengthEq := congrArg List.length samePath
+        obtain ⟨suffix, suffixEq⟩ := below
+        have lengthPrefix := congrArg List.length suffixEq
+        simp only [List.length_append, List.length_singleton] at lengthEq lengthPrefix
         omega
       have firstRead := readPath_singleton_of_stored afterWf
         (taken.stored_unchanged different (show Stored before (.field reference.object field) fieldSlot from
@@ -494,15 +502,20 @@ theorem take_readPath_below (wf : WellFormedWith classes before pending)
     · rcases final with ⟨rfl, rfl⟩
       exact firstRead
     · subst fieldSlot
-      have childBelow := Nat.le_trans (Nat.le_of_lt (wf.older _ _ _ child stored atField)) below
-      exact (readPath_append afterWf firstRead rest).trans (ih childBelow more)
+      have childBelow : cutPath.IsPrefix (initial ++ [field]) := by
+        obtain ⟨suffix, rfl⟩ := below
+        exact ⟨suffix ++ [field], by simp [List.append_assoc]⟩
+      exact (readPath_append afterWf firstRead rest).trans
+        (ih (.field route stored atField) childBelow more)
 
 theorem take_readPath_taken (wf : WellFormedWith classes before pending)
     (afterWf : WellFormedWith classes after afterPending)
     (taken : Take before source reference.object after)
+    (cut : Route before pending site cutPath reference) (unique : reference.mode = .unique)
     (read : readPath before reference path = some slot) :
-    readPath after reference path = some slot :=
-  take_readPath_below wf afterWf taken (Nat.le_refl _) read
+    readPath after reference path = some slot := by
+  have owned : reference = .owned reference.object := reference_owned unique
+  exact take_readPath_descendant wf afterWf taken (owned ▸ cut) cut ⟨[], by simp⟩ read
 
 theorem take_readPath_back (wf : WellFormedWith classes before pending)
     (taken : Take before source removed after)
@@ -569,42 +582,10 @@ theorem promote_readPath_frame (wf : WellFormedWith classes before pending)
     · subst fieldSlot
       exact (readPath_append afterWf firstRead rest).trans (ih (.field route stored atField) more)
 
-theorem promote_readPath_below (wf : WellFormedWith classes before pending)
-    (afterWf : WellFormedWith classes after afterPending)
-    (promoted : Promote before source object after)
-    (below : reference.object.index ≤ object.index)
-    (read : readPath before reference path = some slot) :
-    readPath after reference path = some slot := by
-  induction path generalizing reference with
-  | nil =>
-    cases found : before.objects.lookup reference.object <;> simp [readPath, found] at read
-    subst slot
-    apply readPath_nil_of_allocated afterWf
-    rw [Allocated, promoted.object_keys]
-    exact List.mem_map.mpr ⟨_, lookup_member found, rfl⟩
-  | cons field rest ih =>
-    obtain ⟨data, fieldSlot, stored, atField, final | ⟨child, same, more⟩⟩ := readPath_cons read
-    all_goals
-      have different : StoragePlace.field reference.object field ≠ source := by
-        intro sameSource
-        have sourceField : Stored before (.field reference.object field) (some (.owned object)) :=
-          sameSource ▸ promoted.stored
-        obtain ⟨sourceData, sourceStored, sourceAtField⟩ := sourceField
-        have older := wf.older _ _ _ _ sourceStored sourceAtField
-        change object.index < reference.object.index at older
-        omega
-      have firstRead := readPath_singleton_of_stored afterWf
-        (promoted.stored_unchanged different (show Stored before (.field reference.object field) fieldSlot from
-          ⟨data, stored, atField⟩))
-    · rcases final with ⟨rfl, rfl⟩
-      exact firstRead
-    · subst fieldSlot
-      have childBelow := Nat.le_trans (Nat.le_of_lt (wf.older _ _ _ child stored atField)) below
-      exact (readPath_append afterWf firstRead rest).trans (ih childBelow more)
-
 theorem take_readPath_cleared (wf : WellFormedWith classes before pending)
     (afterWf : WellFormedWith classes after afterPending)
-    (taken : Take before source removed after) (nonempty : path ≠ [])
+    (taken : Take before source removed after)
+    (cut : Route before pending site cutPath (.owned removed)) (nonempty : path ≠ [])
     (read : readPath before reference path = some (some target))
     (targetObject : target.object = removed) : readPath after reference path = some none := by
   induction path generalizing reference with
@@ -631,8 +612,24 @@ theorem take_readPath_cleared (wf : WellFormedWith classes before pending)
             (show Stored before (.field reference.object field) (some child) from ⟨data, stored, atField⟩)
             (same ▸ taken.stored)
           have equalReference := Option.some.inj equalSlot
-          have less := readPath_index_strict wf empty more
-          simp [equalReference, targetObject, enter, Reference.owned] at less
+          have readTargets := readPath_targets (state := before)
+            (first := enter reference.mode child) (second := .owned removed)
+            (by simpa [enter] using congrArg Reference.object equalReference) rest
+          rw [more] at readTargets
+          cases found : readPath before (.owned removed) rest with
+          | none => simp [found] at readTargets
+          | some value =>
+            cases value with
+            | none => simp [found] at readTargets
+            | some observed =>
+              have targetEq : observed.object = removed := by
+                simpa [found, targetObject] using readTargets.symm
+              have loop := cut.follow found
+              have equalPaths := (cut.unique wf rfl loop targetEq).2.1
+              have lengthEq := congrArg List.length equalPaths
+              simp only [List.length_append] at lengthEq
+              apply empty
+              simpa using (show rest.length = 0 by omega)
         have firstRead := readPath_singleton_of_stored (reference := reference) afterWf
           (taken.stored_unchanged different
             (show Stored before (.field reference.object field) (some child) from ⟨data, stored, atField⟩))
@@ -685,19 +682,5 @@ theorem promote_readPath_eq (wf : WellFormedWith classes before pending)
       rw [beforeRead] at oldRead
       contradiction
 
-theorem promote_readPath_below_eq (wf : WellFormedWith classes before pending)
-    (afterWf : WellFormedWith classes after afterPending)
-    (promoted : Promote before source object after)
-    (below : reference.object.index ≤ object.index) (path : List FieldName) :
-    readPath after reference path = readPath before reference path := by
-  cases beforeRead : readPath before reference path with
-  | some slot => exact promote_readPath_below wf afterWf promoted below beforeRead
-  | none =>
-    cases afterRead : readPath after reference path with
-    | none => rfl
-    | some slot =>
-      obtain ⟨oldSlot, oldRead, _⟩ := promote_readPath_back wf promoted rfl afterRead
-      rw [beforeRead] at oldRead
-      contradiction
 
 end Dada.Shared.Typing

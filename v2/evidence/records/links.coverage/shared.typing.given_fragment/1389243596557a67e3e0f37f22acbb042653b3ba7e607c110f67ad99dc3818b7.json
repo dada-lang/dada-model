@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "bundle": "95f70578731609e78c06f6539a129f28c1732b2bccdf4d265a513a9eb593a57f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:target:6da213a18937e4126d7e96483f8007dabd404477df24caffc5a0862001bcce8b",
+    "audit:target:a2dba596236442a6114b2c590477d26ad6ec94d10e80f673b409f34c1bc2449b",
+    "audit:target:c04103a1d651b8b9ae272310c435e218a3c69ad8ef05bf3d1f49e157898c6ce6",
+    "audit:unit:given.typing.statements",
+    "audit:unit:given.unpacking",
+    "audit:unit:shared.correspondence",
+    "audit:unit:shared.embedding",
+    "audit:unit:shared.typing.given_fragment",
+    "audit:unit:shared.typing.outcomes",
+    "audit:unit:shared.typing.patterns",
+    "audit:unit:shared.typing.sequences",
+    "audit:unit:shared.typing.statements",
+    "audit:unit:shared.typing.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Given typing/unpacking, runtime embedding, Shared steps, Finished, and prior base correspondence. The all-given and no-give-share restrictions are local and explicit. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. given_fragment relates expressions, patterns, statements, sequences and programs under embedding, reflects arbitrary extended Shared successors/traces into Given, and preserves/reflects completion. The prose's restricted given fragment and unpacking correspondence are covered; it does not claim the reverse for programs using sharing. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "0201f171c708e814f21711887a5ca4200bbb607ba56ef078b64bd609d593ca5a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Given typing/unpacking, runtime embedding, Shared steps, Finished, and prior base correspondence. The all-given and no-give-share restrictions are local and explicit.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. given_fragment relates expressions, patterns, statements, sequences and programs under embedding, reflects arbitrary extended Shared successors/traces into Given, and preserves/reflects completion. The prose's restricted given fragment and unpacking correspondence are covered; it does not claim the reverse for programs using sharing.",
+    "links": [
+      {
+        "occurrence": "shared.typing.given_fragment:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's rules\" refers to md/given-typing.md#claim-given.typing.statements for the concept or example setup used by this unit. Links Given typing/unpacking, runtime embedding, Shared steps, Finished, and prior base correspondence. The all-given and no-give-share restrictions are local and explicit."
+      },
+      {
+        "occurrence": "shared.typing.given_fragment:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'unpacking extension' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. Links Given typing/unpacking, runtime embedding, Shared steps, Finished, and prior base correspondence. The all-given and no-give-share restrictions are local and explicit."
+      },
+      {
+        "occurrence": "shared.typing.given_fragment:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Embedding' refers to md/shared.md#claim-shared.embedding for the concept or example setup used by this unit. Links Given typing/unpacking, runtime embedding, Shared steps, Finished, and prior base correspondence. The all-given and no-give-share restrictions are local and explicit."
+      },
+      {
+        "occurrence": "shared.typing.given_fragment:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statement transitions' refers to md/shared-typing.md#claim-shared.typing.steps for the concept or example setup used by this unit. Links Given typing/unpacking, runtime embedding, Shared steps, Finished, and prior base correspondence. The all-given and no-give-share restrictions are local and explicit."
+      },
+      {
+        "occurrence": "shared.typing.given_fragment:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'earlier correspondence' refers to md/shared.md#claim-shared.correspondence for the concept or example setup used by this unit. Links Given typing/unpacking, runtime embedding, Shared steps, Finished, and prior base correspondence. The all-given and no-give-share restrictions are local and explicit."
+      }
+    ]
+  }
+}

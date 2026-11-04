@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "1607dffcc73112f4217edbd762238e6a6918866dfd571aaaaee3076d815241e3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ae08b7c87ebb6ccce78c920e81bcd92f0a881d614e165e3e2f5b8c68376061dd",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing names and introduces Componentwise Destructor-to-Assignment embedding. Its opening explanation supplies the operation/setup and the remainder states its components and boundaries; the selected span is the defining passage rather than an incidental mention. The surrounding chapter introduces the syntax and preceding operations first. Defines the embedding components after both machines have been introduced. The preserved components are enumerated directly; it does not cite an unnamed conversion theorem.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Componentwise Destructor-to-Assignment embedding",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 13503,
+      "end": 13734
+    },
+    "clarity": "The unit landing names and introduces Componentwise Destructor-to-Assignment embedding. Its opening explanation supplies the operation/setup and the remainder states its components and boundaries; the selected span is the defining passage rather than an incidental mention.",
+    "independence": "The surrounding chapter introduces the syntax and preceding operations first. Defines the embedding components after both machines have been introduced. The preserved components are enumerated directly; it does not cite an unnamed conversion theorem."
+  }
+}

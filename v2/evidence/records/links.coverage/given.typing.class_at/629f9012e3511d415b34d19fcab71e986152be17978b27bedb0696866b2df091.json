@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "b8f2f40ee64b150f130499be00139ef85faf15446da567c93657923d36a1febd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.paths",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The relative-path and typed-declaration prerequisites both link to their introducing units. Validity and the final declared class are introduced together because they are the domain and output of this lookup. class_Sigma(C,rho) and its epsilon equation are defining occurrences. C, rho, and Sigma are bound by the preceding sentence and linked prerequisites. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "502cc2deca325f167f1886a94212ac2179f21c409783f377bb0bf22d6ae7fa12"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The relative-path and typed-declaration prerequisites both link to their introducing units. Validity and the final declared class are introduced together because they are the domain and output of this lookup.",
+    "mathematics": "class_Sigma(C,rho) and its epsilon equation are defining occurrences. C, rho, and Sigma are bound by the preceding sentence and linked prerequisites.",
+    "links": [
+      {
+        "occurrence": "given.typing.class_at:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative path' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. The relative-path and typed-declaration prerequisites both link to their introducing units. Validity and the final declared class are introduced together because they are the domain and output of this lookup."
+      },
+      {
+        "occurrence": "given.typing.class_at:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declarations' refers to md/given-typing.md#claim-given.typing.declarations for the concept or example setup used by this unit. The relative-path and typed-declaration prerequisites both link to their introducing units. Validity and the final declared class are introduced together because they are the domain and output of this lookup."
+      }
+    ]
+  }
+}

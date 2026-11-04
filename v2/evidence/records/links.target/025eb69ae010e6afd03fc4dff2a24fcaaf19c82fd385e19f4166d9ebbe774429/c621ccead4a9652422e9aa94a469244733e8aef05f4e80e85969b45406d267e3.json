@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "c2c564ac0e1466e773f7324bc497194dcdfce8553578fb2124e300b10b2fb9ba",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:025eb69ae010e6afd03fc4dff2a24fcaaf19c82fd385e19f4166d9ebbe774429",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.single_owner directly introduces the Given sole-owning-occurrence theorem. Links WF and allocated objects; owning occurrences are counted explicitly rather than conflated with whole paths. It invokes no new counting operator. The prose count is of immediately occupied owner slots, with WF and allocated objects linked. No unnamed path-count equation is used. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4eb9e4cacccc9aa4f19a92a73f373fff499b8442ae960df413628d1553f95d72"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the Given sole-owning-occurrence theorem",
+    "definition": {
+      "path": "md/given.md",
+      "start": 22911,
+      "end": 23239
+    },
+    "clarity": "The landing md/given.md#claim-given.single_owner directly introduces the Given sole-owning-occurrence theorem. Links WF and allocated objects; owning occurrences are counted explicitly rather than conflated with whole paths. It invokes no new counting operator.",
+    "independence": "The prose count is of immediately occupied owner slots, with WF and allocated objects linked. No unnamed path-count equation is used. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

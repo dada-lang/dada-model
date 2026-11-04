@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "6fde2ea10072a90cede4143d9ae59a24921d5acbd59902b2f83029d98f6965fc",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:shared.example.copy_field",
+    "audit:unit:shared.give",
+    "audit:unit:shared.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links already-defined give behavior; classes and full five-statement program are local. Explains copy versus move before introducing storage machinery without relying on a later judgment. Source declarations and the entire five-let example are local. Its modes are explained by the linked give table rather than an undeclared evaluation symbol. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "95d63e3d396b6e76554d5ff0f45383dd1188bd1ba0e52fb71c7590da7eb8adbe"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links already-defined give behavior; classes and full five-statement program are local. Explains copy versus move before introducing storage machinery without relying on a later judgment.",
+    "mathematics": "Source declarations and the entire five-let example are local. Its modes are explained by the linked give table rather than an undeclared evaluation symbol.",
+    "links": [
+      {
+        "occurrence": "shared.example.copy_field:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'shared variable' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links already-defined give behavior; classes and full five-statement program are local. Explains copy versus move before introducing storage machinery without relying on a later judgment."
+      },
+      {
+        "occurrence": "shared.example.copy_field:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'shared owners' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links already-defined give behavior; classes and full five-statement program are local. Explains copy versus move before introducing storage machinery without relying on a later judgment."
+      }
+    ]
+  }
+}

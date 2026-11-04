@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "d402e651341312596a6c6314f126f03b2d1bf3ed7b2aa3531b675029db5c262e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:bcbf7b2e6e35008f601cfc25ccf052cb44486c1ce12214fa55a4362b1030db7a",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.draft directly introduces Draft status. Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker. The unit has no formulas; braced directive names are explicitly introduced literal authoring syntax. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "72461b71e507680e33bf3d4695c0fc246a5607dee3f089a10c4dc658c0257034"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Draft status",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 3135,
+      "end": 3360
+    },
+    "clarity": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.draft directly introduces Draft status. Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker.",
+    "independence": "The unit has no formulas; braced directive names are explicitly introduced literal authoring syntax. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

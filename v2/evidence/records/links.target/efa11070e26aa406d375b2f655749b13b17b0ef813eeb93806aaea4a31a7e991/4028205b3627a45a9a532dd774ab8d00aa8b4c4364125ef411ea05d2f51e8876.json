@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "204b752ff8ee5b62be424b435e6d5f934d55b0a8c1fa97fa5b2ba5e099a4d4e6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.identities directly introduces tagged object identities and their numeric projection. Defines tagged object identities and index in the displayed representation. n is locally quantified over natural numbers; it is not an unlinked object identifier or future semantic concept. obj(n), index and the Nat domain are defined here; α and β are explicitly introduced as object identities. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "321a2453ab3234190d67f02eaee1b69a2de0a045e98a552287f551f2145990f6"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "tagged object identities and their numeric projection",
+    "definition": {
+      "path": "md/given.md",
+      "start": 3585,
+      "end": 3931
+    },
+    "clarity": "The landing md/given.md#claim-given.identities directly introduces tagged object identities and their numeric projection. Defines tagged object identities and index in the displayed representation. n is locally quantified over natural numbers; it is not an unlinked object identifier or future semantic concept.",
+    "independence": "obj(n), index and the Nat domain are defined here; α and β are explicitly introduced as object identities. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

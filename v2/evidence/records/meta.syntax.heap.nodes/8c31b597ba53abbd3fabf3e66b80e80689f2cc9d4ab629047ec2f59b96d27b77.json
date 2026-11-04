@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "8bdf7466cef4f2600e1551d7c6bec84af488f8342f45007b8b95f826e8479edb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/graph.rs:args",
+    "rust:mdbook-dada/src/graph.rs:identifier",
+    "rust:mdbook-dada/src/graph.rs:label",
+    "rust:mdbook-dada/src/graph.rs:parse",
+    "test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices",
+    "test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds",
+    "test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved",
+    "test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges",
+    "unit:meta.syntax.heap.nodes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.heap.nodes against rust:mdbook-dada/src/graph.rs:identifier, rust:mdbook-dada/src/graph.rs:args, rust:mdbook-dada/src/graph.rs:label, rust:mdbook-dada/src/graph.rs:parse, test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds, test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices, test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target, test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved, test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges. parse records nodes before resolving assignments, permits the listed object/primitive/array/variable constructors and distinguishes owner, showned, lease and shared-lease edges. args preserves quoted commas and label uses JSON escapes. Tests cover Unicode fields, forward references, aliases, one variable group, empty array slots and label escaping; the unit explicitly treats this as diagram syntax rather than language semantics. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Rooted-foundation review: the structural invariants now require explicit rootedness (including pending values) plus unique/compatible ownership. Allocation bounds remain solely for freshness; no safety proof assumes edge-age order or global DAG structure. Changed proof selections retain their public statement unless this unit explicitly defines the revised invariant or example. Given/Shared root transport and path reasoning were reviewed by their implementing agents, with fresh review of root-owned unpacking, GC, frame rerooting, class retention and the refill example. Earlier syntax and runtime rules are unchanged. The widened invariant domain is covered by recompilation of all earlier safety proofs and concrete shared-cycle/nonmonotonic-ID regressions, not by a claim that constructors can generate cycles.",
+  "limitations": [
+    "Author integration review with agent review of Given/Shared foundations and fresh review of root-owned integration. Lean checks proof correctness separately.",
+    "Assignment general safety remains deferred. Cyclic heap examples test invariant and operation scope, not source-program construction from the current empty initial state."
+  ],
+  "supersedes": [
+    "a7b915694872d4611c494aff2f5d3d857d15319b4ffd3f2a9bade38eaf89d62e"
+  ]
+}

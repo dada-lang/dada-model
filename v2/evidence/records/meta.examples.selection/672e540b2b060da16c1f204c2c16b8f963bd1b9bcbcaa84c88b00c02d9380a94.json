@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "67e80819b05b6fa6cd710d4948760ac3cc2010a2415c7b8c25c8cf97789ba8bd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:example_source",
+    "rust:mdbook-dada/src/lean.rs:extract_example",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "test:mdbook-dada/src/lean.rs:tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_end_markers_that_cut_off_a_proof_continuation",
+    "test:mdbook-dada/src/lean.rs:tests::requires_one_complete_anonymous_example",
+    "test:mdbook-dada/tests/book.rs:linked_example_bodies_index_anchors_and_scope_nested_selectors",
+    "test:mdbook-dada/tests/book.rs:linked_examples_fail_on_invalid_citations_bodies_or_nesting",
+    "test:mdbook-dada/tests/book.rs:linked_examples_preserve_native_markdown_and_select_one_lean_test",
+    "unit:meta.examples.selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.examples.selection against rust:mdbook-dada/src/lean.rs:extract_example, rust:mdbook-dada/src/lean.rs:example_source, rust:mdbook-dada/src/lib.rs:render, rust:mdbook-dada/src/lib.rs:chapter_roles, test:mdbook-dada/tests/book.rs:linked_examples_preserve_native_markdown_and_select_one_lean_test, test:mdbook-dada/tests/book.rs:linked_example_bodies_index_anchors_and_scope_nested_selectors, test:mdbook-dada/tests/book.rs:linked_examples_fail_on_invalid_citations_bodies_or_nesting, test:mdbook-dada/src/lean.rs:tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments, test:mdbook-dada/src/lean.rs:tests::requires_one_complete_anonymous_example, test:mdbook-dada/src/lean.rs:tests::rejects_end_markers_that_cut_off_a_proof_continuation. extract_example recognizes standalone comment markers, enforces one complete column-zero anonymous example with a body, excludes nested/sibling commands and rejects end markers before an indented continuation. Rendering retains Markdown and scoped nested diagrams. Tests cover decoy markers, malformed ranges, citation/nesting failures and body markup; they do not execute the selected Lean test. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Rooted-foundation review: the structural invariants now require explicit rootedness (including pending values) plus unique/compatible ownership. Allocation bounds remain solely for freshness; no safety proof assumes edge-age order or global DAG structure. Changed proof selections retain their public statement unless this unit explicitly defines the revised invariant or example. Given/Shared root transport and path reasoning were reviewed by their implementing agents, with fresh review of root-owned unpacking, GC, frame rerooting, class retention and the refill example. Earlier syntax and runtime rules are unchanged. The widened invariant domain is covered by recompilation of all earlier safety proofs and concrete shared-cycle/nonmonotonic-ID regressions, not by a claim that constructors can generate cycles.",
+  "limitations": [
+    "Author integration review with agent review of Given/Shared foundations and fresh review of root-owned integration. Lean checks proof correctness separately.",
+    "Assignment general safety remains deferred. Cyclic heap examples test invariant and operation scope, not source-program construction from the current empty initial state."
+  ],
+  "supersedes": [
+    "60390b0e71bef7d7cc7163358c128e78bc1e2e1f93a1a4930d84ba7013dbeea0"
+  ]
+}

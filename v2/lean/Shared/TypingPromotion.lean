@@ -28,30 +28,18 @@ theorem Satisfies.promote_frame (wf : WellFormedWith classes.erase before pendin
     rw [promote_readPath_eq wf afterWf promoted cut route path] at read
     exact satisfied.modes path target permission declared read
 
--- The promoted object's own fields lie below its incoming reference in the
--- allocation order. Their contents and permissions do not change.
+-- The returned reference is already reached through shared access. Reusing the
+-- frame-preservation lemma accounts for cycles without an allocation order.
 theorem Satisfies.promote_target (wf : WellFormedWith classes.erase before pending)
     (afterWf : WellFormedWith classes.erase after afterPending)
     (promoted : Promote before source reference.object after)
+    (cut : Route before pending site cutPath reference) (shared : reference.mode = .shared)
     (satisfied : Satisfies classes before reference ty) :
     Satisfies classes after reference ty := by
-  constructor
-  · exact satisfied.mode
-  · obtain ⟨data, stored, correct⟩ := satisfied.root
-    obtain ⟨newData, newStored, same⟩ := promoted.old_object_data reference.object data stored
-    exact ⟨newData, newStored, same.trans correct⟩
-  · intro path positive
-    obtain ⟨target, data, read, stored, correct⟩ := satisfied.positive path positive
-    obtain ⟨newData, newStored, same⟩ := promoted.old_object_data target.object data stored
-    exact ⟨target, newData,
-      (promote_readPath_below_eq wf afterWf promoted (Nat.le_refl _) path).trans read,
-      newStored, same ▸ correct⟩
-  · intro path negative
-    exact (promote_readPath_below_eq wf afterWf promoted (Nat.le_refl _) path).trans
-      (satisfied.negative path negative)
-  · intro path target permission declared read
-    rw [promote_readPath_below_eq wf afterWf promoted (Nat.le_refl _) path] at read
-    exact satisfied.modes path target permission declared read
+  have sharedRef : reference = .shared reference.object := by
+    cases reference with
+    | reference mode object => cases shared; rfl
+  exact satisfied.promote_frame wf afterWf promoted (sharedRef ▸ cut) cut
 
 private theorem promotion_source_field_general (wf : WellFormedWith classes before pending)
     (resolved : Resolve before place source object permission)

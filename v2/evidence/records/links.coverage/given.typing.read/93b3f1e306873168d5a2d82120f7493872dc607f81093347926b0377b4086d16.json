@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "f95b78abd2c6a4f84a9b3b7ad0415c93d747c47a8d90a008e10cded26829f238",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:unit:given.lookup",
+    "audit:unit:given.state",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.read",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly. read is introduced here; alpha and rho are the input object/path, bot is the existing empty-slot notation. No unlinked auxiliary equation is used. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "1f70ddd7607951bc8012521f35719566bb094eeb22f35e21a8090d24b1b76aa8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly.",
+    "mathematics": "read is introduced here; alpha and rho are the input object/path, bot is the existing empty-slot notation. No unlinked auxiliary equation is used.",
+    "links": [
+      {
+        "occurrence": "given.typing.read:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative path' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly."
+      }
+    ]
+  }
+}

@@ -8,8 +8,7 @@ def ClassesWellFormed (classes : Classes) : Prop :=
     ∀ name declaration, (name, declaration) ∈ classes → declaration.fields.Nodup
 
 -- These conditions describe arbitrary finite graphs independently of execution.
--- The older-target condition is maintained because constructors only capture
--- previously allocated objects; it rules out owning cycles in this language.
+-- Rootedness records reachability directly; object IDs are allocation identities.
 structure WellFormed (classes : Classes) (state : State) : Prop where
   objectKeys : (state.objects.map Prod.fst).Nodup
   variableKeys : (state.variables.map Prod.fst).Nodup
@@ -17,8 +16,7 @@ structure WellFormed (classes : Classes) (state : State) : Prop where
     ∃ declaration, (data.className, declaration) ∈ classes ∧
       data.fields.map Prod.fst = declaration.fields ∧ declaration.fields.Nodup
   bounds : ∀ id data, (id, data) ∈ state.objects → id.index < state.nextId
-  older : ∀ id data name target, (id, data) ∈ state.objects →
-    (name, some target) ∈ data.fields → target.index < id.index
+  rooted : ∀ object, Allocated state object → Live state object
   referencesUnique : (References state).Nodup
   referencesComplete : ∀ id, id ∈ References state ↔ Allocated state id
 
@@ -31,8 +29,7 @@ structure WellFormedWith (classes : Classes) (state : State) (pending : List Obj
     ∃ declaration, (data.className, declaration) ∈ classes ∧
       data.fields.map Prod.fst = declaration.fields ∧ declaration.fields.Nodup
   bounds : ∀ id data, (id, data) ∈ state.objects → id.index < state.nextId
-  older : ∀ id data name target, (id, data) ∈ state.objects →
-    (name, some target) ∈ data.fields → target.index < id.index
+  rooted : ∀ object, Allocated state object → LiveWith state pending object
   referencesUnique : (pending ++ References state).Nodup
   referencesComplete : ∀ id, id ∈ pending ++ References state ↔ Allocated state id
 
@@ -94,18 +91,18 @@ theorem WellFormed.empty (classes : Classes) : WellFormed classes State.empty :=
 
 theorem WellFormed.with_empty (wf : WellFormed classes state) :
     WellFormedWith classes state [] := by
-  exact ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, wf.older,
+  exact ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, fun object allocated => (wf.rooted object allocated).with_pending,
     by simpa using wf.referencesUnique, by simpa using wf.referencesComplete⟩
 
 theorem WellFormedWith.without_pending (wf : WellFormedWith classes state []) :
     WellFormed classes state := by
-  exact ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, wf.older,
+  exact ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, fun object allocated => (wf.rooted object allocated).without_pending,
     by simpa using wf.referencesUnique, by simpa using wf.referencesComplete⟩
 
 theorem WellFormedWith.perm (wf : WellFormedWith classes state pending)
     (permutation : pending.Perm other) : WellFormedWith classes state other := by
   have refs := permutation.append_right (References state)
-  exact ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, wf.older,
+  exact ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, fun object allocated => (wf.rooted object allocated).mono (fun _ h => permutation.mem_iff.mp h),
     refs.nodup_iff.mp wf.referencesUnique,
     fun id => refs.mem_iff.symm.trans (wf.referencesComplete id)⟩
 
@@ -125,9 +122,8 @@ theorem Take.preserves_pending (wf : WellFormedWith classes before pending)
   · intro id data member
     obtain ⟨oldData, oldMember, _, _, _⟩ := take.object_data id data member
     simpa [take.next_id] using wf.bounds id oldData oldMember
-  · intro id data name target member field
-    obtain ⟨oldData, oldMember, _, _, remaining⟩ := take.object_data id data member
-    exact wf.older id oldData name target oldMember (remaining name target field)
+  · intro object allocated
+    exact take.liveWith (wf.rooted object (by simpa [Allocated, take.object_keys] using allocated))
   · exact references.nodup_iff.mp wf.referencesUnique
   · intro id
     simpa [Allocated, take.object_keys] using
@@ -141,7 +137,16 @@ theorem WellFormedWith.bind (wf : WellFormedWith classes state [object])
   · simpa [State.bind] using List.nodup_cons.mpr ⟨fresh, wf.variableKeys⟩
   · exact wf.shapes
   · exact wf.bounds
-  · exact wf.older
+  · intro id allocated
+    have live := wf.rooted id allocated
+    clear allocated
+    induction live with
+    | @pending current member =>
+      have same : current = object := by simpa using member
+      subst_vars
+      exact .variable (name := destination) (by simp [State.bind])
+    | «variable» member => exact .variable (List.mem_cons_of_mem _ member)
+    | field _ member field ih => exact .field ih member field
   · simpa [State.bind, References] using wf.referencesUnique
   · simpa [State.bind, References, Allocated] using wf.referencesComplete
 
@@ -151,15 +156,6 @@ theorem Take.bind_preserves (wf : WellFormed classes before)
     WellFormed classes (after.bind destination object) := by
   apply (take.preserves_pending wf.with_empty).bind
   simpa [take.variable_keys] using fresh
-
-private theorem pending_bound (wf : WellFormedWith classes state pending)
-    (member : object ∈ pending) : object.index < state.nextId := by
-  have referred : object ∈ pending ++ References state := List.mem_append_left _ member
-  obtain ⟨⟨id, data⟩, allocated, equality⟩ :=
-    List.mem_map.mp ((wf.referencesComplete object).mp referred)
-  simp only at equality
-  subst id
-  exact wf.bounds object data allocated
 
 private theorem allocation_references (state : State)
     (lengths : objects.length = fields.length) :
@@ -207,14 +203,24 @@ theorem WellFormedWith.allocate (classesWf : ClassesWellFormed classes)
     · cases same
       exact Nat.lt_succ_self _
     · exact Nat.lt_succ_of_lt (wf.bounds id data old)
-  · intro id data name target member field
-    rcases List.mem_cons.mp member with same | old
-    · cases same
-      have referred : target ∈ slotReferences (declaration.fields.zip (objects.map some)) :=
-        List.mem_filterMap.mpr ⟨(name, some target), field, rfl⟩
-      rw [zipped_field_references _ _ lengths] at referred
-      exact pending_bound wf (List.mem_append_left _ referred)
-    · exact wf.older id data name target old field
+  · intro id allocated
+    rcases List.mem_cons.mp allocated with same | oldAllocated
+    · subst id
+      exact .pending (by simp)
+    · have live := wf.rooted id oldAllocated
+      clear allocated oldAllocated
+      induction live with
+      | @pending current member =>
+        rcases List.mem_append.mp member with argument | pending
+        · have fieldMember : current ∈ slotReferences (declaration.fields.zip (objects.map some)) := by
+            rwa [zipped_field_references _ _ lengths]
+          obtain ⟨⟨name, slot⟩, field, value⟩ := List.mem_filterMap.mp fieldMember
+          dsimp at value
+          subst slot
+          exact .field (parent := ⟨state.nextId⟩) (data := ⟨className, declaration.fields.zip (objects.map some)⟩) (.pending (by simp)) (by simp [State.allocate]) field
+        · exact .pending (List.mem_cons_of_mem _ pending)
+      | «variable» member => exact .variable member
+      | field _ member field ih => exact .field ih (List.mem_cons_of_mem _ member) field
   · exact references.nodup_iff.mp (List.nodup_cons.mpr ⟨freshReference, wf.referencesUnique⟩)
   · intro id
     rw [← references.mem_iff]

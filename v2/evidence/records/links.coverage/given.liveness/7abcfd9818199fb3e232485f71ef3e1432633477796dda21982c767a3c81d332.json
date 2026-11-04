@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "bundle": "18eeec647075775b8a1d686d774f3318cb03a15c6de69693fb426a3072932f06",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:56e88d29eb95c2d92fc038aa82ddca6d06f063d06b43e1307ce35878c60572ed",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:unit:given.allocated",
+    "audit:unit:given.live",
+    "audit:unit:given.liveness",
+    "audit:unit:given.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence. Every nonlogical predicate in the theorem formula—WF, Live and Allocated—has a direct definition link. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "96b2718b08bc5f36b4e5d7bcb8b785efde461ab4470fb91ac181002396c25027"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence.",
+    "mathematics": "Every nonlogical predicate in the theorem formula—WF, Live and Allocated—has a direct definition link.",
+    "links": [
+      {
+        "occurrence": "given.liveness:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed state' refers to md/given.md#claim-given.well_formed for the concept or example setup used by this unit. WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence."
+      },
+      {
+        "occurrence": "given.liveness:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{WF}_{\\\\Delta}(S)' refers to md/given.md#claim-given.well_formed for the concept or example setup used by this unit. WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence."
+      },
+      {
+        "occurrence": "given.liveness:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{Live}_S(\\\\alpha)' refers to md/given.md#claim-given.live for the concept or example setup used by this unit. WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence."
+      },
+      {
+        "occurrence": "given.liveness:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{Allocated}_S(\\\\alpha)' refers to md/given.md#claim-given.allocated for the concept or example setup used by this unit. WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence."
+      }
+    ]
+  }
+}

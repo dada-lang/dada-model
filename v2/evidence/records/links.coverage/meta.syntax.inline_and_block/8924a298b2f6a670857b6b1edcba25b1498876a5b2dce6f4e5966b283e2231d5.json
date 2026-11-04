@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "7d74debbba32168174b52ff7f270e918b6f429a2a10bbc0fa09cea329fa84aaf",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1f7a5686f1ade1d96f51f430abce68f4805e63ed85e8238b1c8780ae7b61da69",
+    "audit:target:83be7fbcf36059917cb21e26e5a9bdcd7b053305236cec331e30f20d2fee917b",
+    "audit:unit:meta.syntax.inline_and_block",
+    "audit:unit:meta.units.closed_body",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker. The unit has no formulas; braced directive names are explicitly introduced literal authoring syntax. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "9ee1b72c1b10a7a18e4ea4d06ea1bf93121e80cf6b4e36ed976d2c499f5927be"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker.",
+    "mathematics": "The unit has no formulas; braced directive names are explicitly introduced literal authoring syntax.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.inline_and_block:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Inline roles' refers to md/repo/renderer-contracts.md#claim-meta.syntax.anchors.roles for the concept or example setup used by this unit. Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker."
+      },
+      {
+        "occurrence": "meta.syntax.inline_and_block:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stable ID' refers to md/repo/renderer-contracts.md#claim-meta.syntax.anchors.identity for the concept or example setup used by this unit. Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker."
+      }
+    ]
+  }
+}

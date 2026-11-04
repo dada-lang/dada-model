@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "bundle": "49e6f1cddf54f8359f9e81f274b5d768e98150510f4c4d4d024a5487f690825f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7ea3722fb38b69215437903009c22a0940e840a03133abb2cace53fb606d2c60",
+    "audit:target:a395ec3d77295857a26e9571e271df4e3a3c5c6ae23ac869fc9fd981731e6507",
+    "audit:target:d23f620a4d543e74b2a0c0ebf99c040dfd62ccaae87df02e867c7c374fa3bc58",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:target:e7568deab02a8362a2cff702a90471c7db87143fb7dcec6e5fadfef6433c94d7",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "audit:unit:given.classes",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.identities",
+    "audit:unit:given.programs",
+    "audit:unit:given.resolution",
+    "audit:unit:given.slots",
+    "audit:unit:given.state",
+    "audit:unit:given.storage_places",
+    "audit:unit:given.syntax",
+    "audit:unit:given.update",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local. The Give premise and result link Resolve and slot update. Construct links Δ(C) and obj, while S_i, β, dom and map extension are scoped in its where explanation; recursive Eval is locally defined. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "38811cdb04f42297fdc252dbb29704e06bd1c37498abd54357e7ad050ad9f77b"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local.",
+    "mathematics": "The Give premise and result link Resolve and slot update. Construct links Δ(C) and obj, while S_i, β, dom and map extension are scoped in its where explanation; recursive Eval is locally defined.",
+    "links": [
+      {
+        "occurrence": "given.evaluation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'owning reference' refers to md/given.md#claim-given.slots for the concept or example setup used by this unit. The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local."
+      },
+      {
+        "occurrence": "given.evaluation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage' refers to md/given.md#claim-given.state for the concept or example setup used by this unit. The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local."
+      },
+      {
+        "occurrence": "given.evaluation:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Resolve the place' refers to md/given.md#claim-given.resolution for the concept or example setup used by this unit. The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local."
+      },
+      {
+        "occurrence": "given.evaluation:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty its slot' refers to md/given.md#claim-given.update for the concept or example setup used by this unit. The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local."
+      },
+      {
+        "occurrence": "given.evaluation:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S\\\\vdash p\\\\Downarrow q:\\\\alpha' refers to md/given.md#claim-given.resolution for the concept or example setup used by this unit. The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local."
+      },
+      {
+        "occurrence": "given.evaluation:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S[q\\\\leftarrow\\\\bot]' refers to md/given.md#claim-given.update for the concept or example setup used by this unit. The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local."
+      },
+      {
+        "occurrence": "given.evaluation:7",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Delta(C)' refers to md/given.md#claim-given.programs for the concept or example setup used by this unit. The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local."
+      },
+      {
+        "occurrence": "given.evaluation:8",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{obj}(\\\\nu_n)' refers to md/given.md#claim-given.identities for the concept or example setup used by this unit. The Give premise links resolution and its result links slot update. Construct links the class table and tagged allocation; S_i, β, O′, S′, dom and map extension are local rule adjuncts. Eval recursion is local."
+      }
+    ]
+  }
+}

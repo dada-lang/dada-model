@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "6b025d20335bb02b01e0e8c728e4841d4e68ec52cd3efac95c2874e0bbcb3d27",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "audit:unit:shared.live",
+    "audit:unit:shared.pending_live",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept. Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept.",
+    "mathematics": "Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "shared.pending_live:1",
+        "role": "conceptual",
+        "rationale": "'ordinary liveness' points backward to #claim-shared.live for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "b42ebf812b3d0c66438173a294d2ff145aa69aedfc4386ee29935c60a10a2cd6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e0f7028e3af89f0a1f93b77464e6ca10ddc3704b8a553bd11b721c356306583f",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces navigation summary of inherited Shared rules. Every behavior row links its defining Shared unit. New call syntax and absent later features are distinguished. No independent mathematics: the table is an inherited-definition summary, including whole constructor types and uniquely owned unpacking. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "65ad47d6f15d89f8e5e89d412e8264c6ad2c578824a0f60b47aa7ad328dabeb3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "navigation summary of inherited Shared rules",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 39219,
+      "end": 40628
+    },
+    "clarity": "The named landing directly introduces navigation summary of inherited Shared rules. Every behavior row links its defining Shared unit. New call syntax and absent later features are distinguished.",
+    "independence": "No independent mathematics: the table is an inherited-definition summary, including whole constructor types and uniquely owned unpacking. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

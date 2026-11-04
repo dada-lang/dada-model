@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "b054ec6d19a53d4526239743375178acb95ea435ed37f4afa3d90778d5fb528a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:given.syntax",
+    "audit:unit:shared.classes",
+    "audit:unit:shared.give",
+    "audit:unit:shared.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar. p/e/t introduce the extended grammar; the give operation has a direct link and give-share is explained as its result conversion. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c539c61f3d44a98768ebea27d1cf32e6df5f4e54da0fa97fa2f99efb6f6c61d8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar.",
+    "mathematics": "p/e/t introduce the extended grammar; the give operation has a direct link and give-share is explained as its result conversion.",
+    "links": [
+      {
+        "occurrence": "shared.syntax:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'placeexpression' refers to md/given.md#claim-given.syntax for the concept or example setup used by this unit. Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar."
+      },
+      {
+        "occurrence": "shared.syntax:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'give' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar."
+      },
+      {
+        "occurrence": "shared.syntax:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'struct' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar."
+      }
+    ]
+  }
+}

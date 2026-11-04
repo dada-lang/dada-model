@@ -4,7 +4,7 @@ import Shared.TypingViewLemmas
 
 namespace Dada.Shared.Typing
 
--- Allocation adds a fresh, younger object. Every old path still reads the same slot.
+-- Allocation adds a fresh object. Existing references cannot target its unused ID.
 theorem readPath_allocate (wf : WellFormedWith layouts state pending)
     (older : reference.object.index < state.nextId) (path : Path) :
     readPath (state.allocate name fields arguments) reference path = readPath state reference path := by
@@ -31,8 +31,14 @@ theorem readPath_allocate (wf : WellFormedWith layouts state pending)
           cases value with
           | none => rfl
           | some target =>
-            exact ih (reference := enter reference.mode target) (Nat.lt_trans
-              (wf.older _ _ _ target (lookup_member found) (lookup_member slot)) older)
+            have allocated := (wf.referencesComplete target.object).mp
+              (List.mem_append_right _ (List.mem_append_right _
+                (List.mem_flatMap.mpr ⟨(_, data), lookup_member found,
+                  List.mem_filterMap.mpr ⟨(field, some target), lookup_member slot, rfl⟩⟩)))
+            obtain ⟨⟨id, targetData⟩, member, same⟩ := List.mem_map.mp allocated
+            dsimp at same
+            subst id
+            exact ih (reference := enter reference.mode target) (wf.bounds _ _ member)
 
 theorem Satisfies.allocate (satisfied : Satisfies classes state reference ty)
     (wf : WellFormedWith layouts state pending) :

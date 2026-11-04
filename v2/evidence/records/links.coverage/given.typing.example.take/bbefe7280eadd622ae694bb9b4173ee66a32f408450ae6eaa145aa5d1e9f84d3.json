@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "b9c531c937a45136d339f7d26f171b68afa5015c9a1112a42d6b6d0da7f6ff8b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "audit:target:837551691616f7856e5628608f269668034d86818f25ff4e307500ffcff69cb3",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.example.take",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.take",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The starting Box declarations, static take, and relative-place notation each link directly. The two rows are expressly independent takes, avoiding an implied sequential dependency. The root/suffix metavariables are instantiated by the table; the only standalone formula Gamma(b)=Box states the initial environment rather than using a new operation. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "16e4c9d7d514a6483869d8f75376602666765300a5269cd782e19b48862f4d44"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The starting Box declarations, static take, and relative-place notation each link directly. The two rows are expressly independent takes, avoiding an implied sequential dependency.",
+    "mathematics": "The root/suffix metavariables are instantiated by the table; the only standalone formula Gamma(b)=Box states the initial environment rather than using a new operation.",
+    "links": [
+      {
+        "occurrence": "given.typing.example.take:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declarations above' refers to md/given-typing.md#claim-given.typing.example.views for the concept or example setup used by this unit. The starting Box declarations, static take, and relative-place notation each link directly. The two rows are expressly independent takes, avoiding an implied sequential dependency."
+      },
+      {
+        "occurrence": "given.typing.example.take:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'takes' refers to md/given-typing.md#claim-given.typing.take for the concept or example setup used by this unit. The starting Box declarations, static take, and relative-place notation each link directly. The two rows are expressly independent takes, avoiding an implied sequential dependency."
+      },
+      {
+        "occurrence": "given.typing.example.take:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative place' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. The starting Box declarations, static take, and relative-place notation each link directly. The two rows are expressly independent takes, avoiding an implied sequential dependency."
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "5b24e7a95c4b0847c304dbc59bc55d774d7cb8512c313c48c6abd1f68c74bf05",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7ea3722fb38b69215437903009c22a0940e840a03133abb2cace53fb606d2c60",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.resolution directly introduces Given place resolution. Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment. The lookup symbols in both inference-rule premises link to given.lookup. Resolve occurrences in premise/conclusion recursively define this same judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b64a72355561464b12b852c0aa405c02a8313c866fe93cc2d1a745d95a8193fe"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given place resolution",
+    "definition": {
+      "path": "md/given.md",
+      "start": 10025,
+      "end": 10713
+    },
+    "clarity": "The landing md/given.md#claim-given.resolution directly introduces Given place resolution. Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment.",
+    "independence": "The lookup symbols in both inference-rule premises link to given.lookup. Resolve occurrences in premise/conclusion recursively define this same judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

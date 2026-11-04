@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "ee3f64aa88d901f00ae0b4030a925b5ee73405cd2405ee2c204888fb79ef4b54",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:fb8728223f67267611c2c2583e138750a3de2c9dbffaf47cc6477356589bd987",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.example.field directly introduces the Box field-move execution example. The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations. The Token/Box declarations bind example names; the source code uses known give syntax, and its execution/completion references link to the corresponding definitions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4bda7469b0698fbacf32fe0f39649c6bbb0476db8392fe78ea0676fd16229721"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the Box field-move execution example",
+    "definition": {
+      "path": "md/given.md",
+      "start": 17419,
+      "end": 18115
+    },
+    "clarity": "The landing md/given.md#claim-given.example.field directly introduces the Box field-move execution example. The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations.",
+    "independence": "The Token/Box declarations bind example names; the source code uses known give syntax, and its execution/completion references link to the corresponding definitions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

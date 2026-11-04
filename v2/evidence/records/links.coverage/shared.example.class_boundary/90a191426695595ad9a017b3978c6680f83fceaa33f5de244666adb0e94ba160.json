@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "974cf17029c0e9fba95938ec03d37b39935bf5872eac1723e81103e0d817a1c6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:shared.example.class_boundary",
+    "audit:unit:shared.example.declarations",
+    "audit:unit:shared.give",
+    "audit:unit:shared.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing. The source code uses locally supplied declarations and tests the giveShare boundary, not an undeclared permission conversion. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "84c0f9328dfb5bdb7e278e58795becd2971e5704551acde8c4e6c0bc76284e04"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing.",
+    "mathematics": "The source code uses locally supplied declarations and tests the giveShare boundary, not an undeclared permission conversion.",
+    "links": [
+      {
+        "occurrence": "shared.example.class_boundary:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class reference' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing."
+      },
+      {
+        "occurrence": "shared.example.class_boundary:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'rejected' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing."
+      },
+      {
+        "occurrence": "shared.example.class_boundary:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'move' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing."
+      }
+    ]
+  }
+}

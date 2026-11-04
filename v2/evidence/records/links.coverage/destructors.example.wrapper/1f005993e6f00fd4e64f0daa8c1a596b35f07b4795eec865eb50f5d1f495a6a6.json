@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "915be461b7c761e2fe3d8e0d89cec1348b28b96f1936b627fcfd5aefc8e504f3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2ad9184ea8f87bf25aa062eee2e8605a4933189e40f6aa461d5c7a04418b8674",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:destructors.example.wrapper",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The local declarations define both destructor bodies and their nested consumption behavior; unpacking links to Shared. The appendix is optional navigation because the example describes its own behavior and has the direct prerequisite link. No formal equations. self, resource and w are bound by the displayed declaration and statements; no borrowed permission notation is used. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d1443084c379dca35cac82ae1d1a057cb8ad16e38fb7c94a65236aa862300990"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The local declarations define both destructor bodies and their nested consumption behavior; unpacking links to Shared. The appendix is optional navigation because the example describes its own behavior and has the direct prerequisite link.",
+    "mathematics": "No formal equations. self, resource and w are bound by the displayed declaration and statements; no borrowed permission notation is used.",
+    "links": [
+      {
+        "occurrence": "destructors.example.wrapper:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Unpacking' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.bindings. The local declarations define both destructor bodies and their nested consumption behavior; unpacking links to Shared. The appendix is optional navigation because the example describes its own behavior and has the direct prerequisite link."
+      },
+      {
+        "occurrence": "destructors.example.wrapper:2",
+        "role": "navigation",
+        "rationale": "Optional appendix/chapter navigation: the source directly defines the example or links its needed concepts; this link only gathers further reading."
+      }
+    ]
+  }
+}

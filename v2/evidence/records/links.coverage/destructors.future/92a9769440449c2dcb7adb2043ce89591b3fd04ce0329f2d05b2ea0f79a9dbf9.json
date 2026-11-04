@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "486c0f1c2d7003ed82f274b53f80bef863ef0c4126d64bd085c210a597ae3425",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:unit:destructors.future",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Deferred assignment/drop insertion and borrow-based struct destructors remain explicitly future conveniences. The only code shorthand refers directly to the existing explicit pattern. The code example binds resource and self by the described shorthand context; no current typing theorem or borrowing judgment is asserted. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "6c5eea218a5b547c71a445f4d373a210074ecb0695353b2b3aad22901f7a2bc3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Deferred assignment/drop insertion and borrow-based struct destructors remain explicitly future conveniences. The only code shorthand refers directly to the existing explicit pattern.",
+    "mathematics": "The code example binds resource and self by the described shorthand context; no current typing theorem or borrowing judgment is asserted.",
+    "links": [
+      {
+        "occurrence": "destructors.future:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'explicit pattern' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.patterns. Deferred assignment/drop insertion and borrow-based struct destructors remain explicitly future conveniences. The only code shorthand refers directly to the existing explicit pattern."
+      }
+    ]
+  }
+}

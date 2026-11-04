@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "3df2851a0b8aa2603face06aabd878ff427726a703b63aaaf1ee7504daf03141",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:unit:given.executions",
+    "audit:unit:given.machine",
+    "audit:unit:given.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined. The one-step premise links the Step definition. Reflexivity and recursion define the starred execution relation in place. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "9f80c672e9e9e0f47232028e893d3383d16d2f4a5dfc8ea418d938dec46ad3fa"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined.",
+    "mathematics": "The one-step premise links the Step definition. Reflexivity and recursion define the starred execution relation in place.",
+    "links": [
+      {
+        "occurrence": "given.executions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statement steps' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined."
+      },
+      {
+        "occurrence": "given.executions:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash K\\\\longrightarrow K'\" refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined."
+      }
+    ]
+  }
+}

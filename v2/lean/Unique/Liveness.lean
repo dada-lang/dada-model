@@ -3,49 +3,9 @@ import Common.Rooted
 
 namespace Dada.Unique
 
-private def VariableRoot (state : State) (object : ObjectId) : Prop :=
-  ∃ name, (name, some object) ∈ state.variables
-
-private def FieldEdge (state : State) (parent object : ObjectId) : Prop :=
-  ∃ data name, (parent, data) ∈ state.objects ∧ (name, some object) ∈ data.fields
-
-private theorem reference_origin {state : State} {object : ObjectId}
-    (member : object ∈ References state) :
-    VariableRoot state object ∨ ∃ parent, Allocated state parent ∧ FieldEdge state parent object := by
-  simp only [References, List.mem_append, List.mem_filterMap, List.mem_flatMap] at member
-  rcases member with root | field
-  · obtain ⟨⟨name, slot⟩, stored, value⟩ := root
-    dsimp at value
-    subst slot
-    exact Or.inl ⟨name, stored⟩
-  · obtain ⟨⟨parent, data⟩, allocated, ⟨⟨name, slot⟩, stored, value⟩⟩ := field
-    dsimp at value
-    subst slot
-    exact Or.inr ⟨parent, List.mem_map.mpr ⟨(parent, data), allocated, rfl⟩,
-      data, name, allocated, stored⟩
-
--- The finite allocation order prevents an owner-only cycle from satisfying
--- coverage without any variable root.
+-- Reachability is explicit in the invariant, independent of allocation order.
 theorem WellFormed.allocated_live (wf : WellFormed classes state)
-    (allocated : Allocated state object) : Live state object := by
-  have rooted : Dada.Common.Rooted (VariableRoot state) (FieldEdge state) object :=
-    Dada.Common.rooted_of_covered ObjectId.index state.nextId
-      (fun node member => by
-        obtain ⟨⟨_, data⟩, stored, rfl⟩ := List.mem_map.mp member
-        exact wf.bounds _ data stored)
-      (fun node member => reference_origin ((wf.referencesComplete node).mpr member))
-      (fun parent node _ edge => by
-        obtain ⟨data, name, stored, field⟩ := edge
-        exact wf.older parent data name node stored field)
-      object allocated
-  clear allocated
-  induction rooted with
-  | root atRoot =>
-    obtain ⟨name, stored⟩ := atRoot
-    exact .variable stored
-  | field _ edge ih =>
-    obtain ⟨data, name, stored, field⟩ := edge
-    exact .field ih stored field
+    (allocated : Allocated state object) : Live state object := wf.rooted object allocated
 
 theorem WellFormed.live_allocated (wf : WellFormed classes state)
     (live : Live state object) : Allocated state object := by

@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "4d2a53d3951690dbe6328af06fac138c78336a4d09e2e893331b44c7603253cf",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:shared.example.share_value",
+    "audit:unit:shared.give",
+    "audit:unit:shared.state",
+    "audit:unit:shared.steps",
+    "audit:unit:shared.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Local class/object/slot table supplies the example state; the action links give-share evaluation. Sharing the returned box reference leaves child-reference modes unchanged. The obj0/obj1 state and slot modes are enumerated locally, using preceding identity/reference notation. The transition links give-share evaluation. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "f15627b9332a7643dd1f3d920a8edda603879636981e56456aa5d4be3af3a2bd"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Local class/object/slot table supplies the example state; the action links give-share evaluation. Sharing the returned box reference leaves child-reference modes unchanged.",
+    "mathematics": "The obj0/obj1 state and slot modes are enumerated locally, using preceding identity/reference notation. The transition links give-share evaluation.",
+    "links": [
+      {
+        "occurrence": "shared.example.share_value:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'shared owner' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Local class/object/slot table supplies the example state; the action links give-share evaluation. Sharing the returned box reference leaves child-reference modes unchanged."
+      }
+    ]
+  }
+}

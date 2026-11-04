@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "79f3ee6b5718845435c5e6dea4190028b273578b0c995fefd9e081cf2f8dd34e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e26772c272675bb90bfc2435a28dc1c69c765bfd8f614cfb7be760182ccc4e45",
+    "audit:unit:assignment.fixed",
+    "audit:unit:assignment.store",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The only operation named in the theorem links its preceding definition. Fixed binding maps were introduced in the context unit; the assertion is explicitly about successful static stores. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. The only operation named in the theorem links its preceding definition. Fixed binding maps were introduced in the context unit; the assertion is explicitly about successful static stores.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The only operation named in the theorem links its preceding definition. Fixed binding maps were introduced in the context unit; the assertion is explicitly about successful static stores.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. The only operation named in the theorem links its preceding definition. Fixed binding maps were introduced in the context unit; the assertion is explicitly about successful static stores.",
+    "links": [
+      {
+        "occurrence": "assignment.fixed:1",
+        "role": "conceptual",
+        "rationale": "The label 'static store' supplies the earlier definition/setup at #claim-assignment.store used by this passage."
+      }
+    ]
+  }
+}

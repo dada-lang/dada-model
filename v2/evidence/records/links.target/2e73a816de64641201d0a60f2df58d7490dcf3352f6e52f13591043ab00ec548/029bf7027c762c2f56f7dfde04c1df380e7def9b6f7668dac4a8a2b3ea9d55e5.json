@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "fdc1ca1efe2dcd5a806cf6784a2e3c4361170816d20c48965c95cf4cf9e7f6ff",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2e73a816de64641201d0a60f2df58d7490dcf3352f6e52f13591043ab00ec548",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.focus directly introduces shared.typing.focus. Links declared field types, permission composition, Given focus, nominal grammar/table, pos and normalization. The equation’s two focus operations have distinct current/Given meanings made explicit. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. focus combines the outer permission with declaredPermission after successfully focusing the Given nominal view under classes.nominal. The formula carries that composed permission over the preserved nominal result; the pos side condition excludes empty or hidden paths. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "5bf1692923e92938c527a750f05d9688a460d80abf3f1157ed626fef9a021302"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.focus",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 12105,
+      "end": 13312
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.focus directly introduces shared.typing.focus. Links declared field types, permission composition, Given focus, nominal grammar/table, pos and normalization. The equation’s two focus operations have distinct current/Given meanings made explicit.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. focus combines the outer permission with declaredPermission after successfully focusing the Given nominal view under classes.nominal. The formula carries that composed permission over the preserved nominal result; the pos side condition excludes empty or hidden paths. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

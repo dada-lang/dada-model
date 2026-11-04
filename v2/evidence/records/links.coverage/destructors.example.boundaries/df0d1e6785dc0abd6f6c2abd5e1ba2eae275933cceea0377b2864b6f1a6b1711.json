@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "b09ee650f6a9db5d37772e84053e3dca624de52e82615f26400aeb5a6fde1f3e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f04e04e63ee3dc0d3ff261b4a37a5a43d1bf2fa1799e9cf11fd813ea8a5351fd",
+    "audit:unit:destructors.example.boundaries",
+    "audit:unit:destructors.example.consume",
+    "audit:unit:destructors.example.wrapper",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The moved example introduces the empty and recursive bodies directly and links backward to Token for the no-destructor case. References to later body-typing and droppability rules were removed because the example explains the behavior before those definitions. Resource and Again are local alternative declarations; self is the implicit receiver introduced in the earlier destructor example. No later judgment notation is needed. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "0936f55833c2baf376d6afd5fb6f7e19da87c7047f4075642906d4e437c332c0"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The moved example introduces the empty and recursive bodies directly and links backward to Token for the no-destructor case. References to later body-typing and droppability rules were removed because the example explains the behavior before those definitions.",
+    "mathematics": "Resource and Again are local alternative declarations; self is the implicit receiver introduced in the earlier destructor example. No later judgment notation is needed.",
+    "links": [
+      {
+        "occurrence": "destructors.example.boundaries:1",
+        "role": "conceptual",
+        "rationale": "'Token example' refers to #claim-destructors.example.consume for the definition or concrete setup used in this example. The moved example introduces the empty and recursive bodies directly and links backward to Token for the no-destructor case. References to later body-typing and droppability rules were removed because the example explains the behavior before those definitions."
+      }
+    ]
+  }
+}

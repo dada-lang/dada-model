@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "7f12eb6ff58b4b0f52c6e3f4ed8575a10eb6ff2566c14a2756169d3683ec68b3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:57daa4bbb00f516581417950097fd38b2c7cf06564570a82daa059b2701ea541",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.stuck directly introduces stuckness in the extended unpacking language. Finishedness links to its operational definition. Stuckness is defined directly by not-finished and absence of a successor. The extended step arrow links to its definition; there is no hidden reachability predicate. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "59d7e1ecfaa695c879465dfff7d1e591ad8df43d01ab0aada757c8470792e6ff"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "stuckness in the extended unpacking language",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 31859,
+      "end": 32110
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.stuck directly introduces stuckness in the extended unpacking language. Finishedness links to its operational definition. Stuckness is defined directly by not-finished and absence of a successor.",
+    "independence": "The extended step arrow links to its definition; there is no hidden reachability predicate. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

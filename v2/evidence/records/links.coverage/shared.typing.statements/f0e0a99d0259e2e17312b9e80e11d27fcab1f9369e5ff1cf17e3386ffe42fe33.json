@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "bundle": "ad31c6ef904586b5a124e749f8a5dbbc773b8d39f5dd5e8a4787a2d50083d690",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:given.typing.statements",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.statements",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links both expression and binding typing in prose and the rule premises; Let defines statement typing. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. StatementTyped.letValue composes ExprTyped before/middle with BindingTyped middle/after, exactly the two premises and final environment of the displayed Let rule. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "81bd6cbf20b66471d39b4cd601a8dff58c95636d1e897e9d1aae0c1dafa4a04c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links both expression and binding typing in prose and the rule premises; Let defines statement typing.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. StatementTyped.letValue composes ExprTyped before/middle with BindingTyped middle/after, exactly the two premises and final environment of the displayed Let rule.",
+    "links": [
+      {
+        "occurrence": "shared.typing.statements:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression typing' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links both expression and binding typing in prose and the rule premises; Let defines statement typing."
+      },
+      {
+        "occurrence": "shared.typing.statements:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'binding typing' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links both expression and binding typing in prose and the rule premises; Let defines statement typing."
+      },
+      {
+        "occurrence": "shared.typing.statements:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma\\\\vdash e:T\\\\;\\\\triangleright\\\\;\\\\Gamma_1' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links both expression and binding typing in prose and the rule premises; Let defines statement typing."
+      },
+      {
+        "occurrence": "shared.typing.statements:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma_1\\\\vdash b:T\\\\Rightarrow\\\\Gamma_2' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links both expression and binding typing in prose and the rule premises; Let defines statement typing."
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "00b38360d0579c3c2f999ddbb6251d8c901e9fa0539b382f4b3bb7e4d502b995",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:theorem_source",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections",
+    "test:mdbook-dada/src/lean.rs:tests::selects_complete_named_theorems_without_comment_or_string_decoys",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_reject_wrong_kinds_and_malformed_directives",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_select_literal_qualified_names",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_show_the_exact_named_statement_and_proof",
+    "test:mdbook-dada/tests/book.rs:markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds",
+    "unit:meta.math.theorem.selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.theorem.selection against rust:mdbook-dada/src/lean.rs:select, rust:mdbook-dada/src/lean.rs:extract_declaration, rust:mdbook-dada/src/lean.rs:theorem_source, rust:mdbook-dada/src/lib.rs:chapter_roles, test:mdbook-dada/tests/book.rs:authored_theorems_show_the_exact_named_statement_and_proof, test:mdbook-dada/tests/book.rs:authored_theorems_select_literal_qualified_names, test:mdbook-dada/tests/book.rs:authored_theorems_reject_wrong_kinds_and_malformed_directives, test:mdbook-dada/tests/book.rs:markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds, test:mdbook-dada/src/lean.rs:tests::selects_complete_named_theorems_without_comment_or_string_decoys, test:mdbook-dada/src/lean.rs:tests::rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections. Theorem/lemma selection requires a named theorem with := body; the extractor rejects wrong kinds, duplicate/unsupported declarations and indented sibling commands. Rendering retains the exact selected statement/proof and forbids nested proof/definition/example blocks. Tests cover literal qualified names, comments/string decoys, complete proof output and every nested block-kind combination. Lean proof correctness remains a separate check. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Rooted-foundation review: the structural invariants now require explicit rootedness (including pending values) plus unique/compatible ownership. Allocation bounds remain solely for freshness; no safety proof assumes edge-age order or global DAG structure. Changed proof selections retain their public statement unless this unit explicitly defines the revised invariant or example. Given/Shared root transport and path reasoning were reviewed by their implementing agents, with fresh review of root-owned unpacking, GC, frame rerooting, class retention and the refill example. Earlier syntax and runtime rules are unchanged. The widened invariant domain is covered by recompilation of all earlier safety proofs and concrete shared-cycle/nonmonotonic-ID regressions, not by a claim that constructors can generate cycles.",
+  "limitations": [
+    "Author integration review with agent review of Given/Shared foundations and fresh review of root-owned integration. Lean checks proof correctness separately.",
+    "Assignment general safety remains deferred. Cyclic heap examples test invariant and operation scope, not source-program construction from the current empty initial state."
+  ],
+  "supersedes": [
+    "e6e441568b7714502740adac49aa710db0b2ed13425da09eb30ef19d5b84a282"
+  ]
+}

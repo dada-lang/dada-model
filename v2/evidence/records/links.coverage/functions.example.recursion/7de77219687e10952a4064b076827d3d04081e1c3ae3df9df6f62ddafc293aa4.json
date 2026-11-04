@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "28ec65173cab39706a3e56cbdc4f1995965a599f1327eee8787cb3c142fdccb5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ba52408cfe251de2b0bcae9486e2e319984ef3dec0422c8ca16247b93f3c4818",
+    "audit:target:bd50ee157533d7842a1634a68112529d4e247a05098eebac486fab1dec1ef353",
+    "audit:target:ef7aedb66f188b157bd66e467ed07f4ec8f3366639a1a82c26fc4370ae9980d8",
+    "audit:unit:functions.bodies",
+    "audit:unit:functions.example.recursion",
+    "audit:unit:functions.traces",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links program typing, traces and the preceding Shared completion theorem. recur is declared locally. Infinite adjacent steps are described as an example rather than a new unlinked trace operator; the finite-state reachability and absence of completion are stated explicitly. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "1a87e57ce8cf01c7ce0771dab0aa6bfd6dd9fed8b63ab03a46fc1f8ff34dc29f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links program typing, traces and the preceding Shared completion theorem. recur is declared locally.",
+    "mathematics": "Infinite adjacent steps are described as an example rather than a new unlinked trace operator; the finite-state reachability and absence of completion are stated explicitly.",
+    "links": [
+      {
+        "occurrence": "functions.example.recursion:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'program checks' refers to md/functions.md#claim-functions.program_typing for the concept or example setup used by this unit. Links program typing, traces and the preceding Shared completion theorem. recur is declared locally."
+      },
+      {
+        "occurrence": "functions.example.recursion:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'sequence of adjacentsteps' refers to md/functions.md#claim-functions.traces for the concept or example setup used by this unit. Links program typing, traces and the preceding Shared completion theorem. recur is declared locally."
+      },
+      {
+        "occurrence": "functions.example.recursion:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared completion bound' refers to md/shared-typing.md#claim-shared.typing.safety for the concept or example setup used by this unit. Links program typing, traces and the preceding Shared completion theorem. recur is declared locally."
+      }
+    ]
+  }
+}

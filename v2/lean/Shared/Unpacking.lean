@@ -1,4 +1,5 @@
 import Shared.Liveness
+import Shared.Reachability
 
 namespace Dada.Shared.Unpacking
 
@@ -138,15 +139,47 @@ theorem unpack_owners
         List.count reference (after.flatMap fun e => slotOwners e.2.fields))
   omega
 
+-- Unpacking redirects reachability through the consumed container's fields
+-- to the transferred locals. No ordering on allocation IDs is involved.
+theorem unpack_live {before after : List (ObjectId × Object)}
+    {variables : List (VariableId × Slot)} {pending : List Reference}
+    {object id : ObjectId} {nextId : Nat} {className : ClassName}
+    (transfer : Transfer pattern fields bindings)
+    (absent : object ∉ (before ++ after).map Prod.fst)
+    (live : LiveWith ⟨before ++ (object, ⟨className, fields⟩) :: after, variables, nextId⟩
+      (.owned object :: pending) id) :
+    id = object ∨ LiveWith ⟨before ++ after, bindings ++ variables, nextId⟩ pending id := by
+  induction live with
+  | pending member =>
+    rcases List.mem_cons.mp member with rfl | member
+    · exact .inl rfl
+    · exact .inr (.pending member)
+  | «variable» member => exact .inr (.variable (List.mem_append_right _ member))
+  | @field parent data name reference _ member field ih =>
+    simp only [List.mem_append, List.mem_cons] at member
+    rcases member with left | same | right
+    · have retained := List.mem_append_left after left
+      rcases ih with rfl | live
+      · exact False.elim (absent (List.mem_map.mpr ⟨_, retained, rfl⟩))
+      · exact .inr (.field live retained field)
+    · cases same
+      have referenceMember : reference ∈ slotOwners bindings :=
+        transfer.owners.mem_iff.mpr (List.mem_filterMap.mpr ⟨_, field, rfl⟩)
+      obtain ⟨⟨name, slot⟩, member, value⟩ := List.mem_filterMap.mp referenceMember
+      change slot = some reference at value
+      subst slot
+      exact .inr (.variable (List.mem_append_left _ member))
+    · have retained := List.mem_append_right before right
+      rcases ih with rfl | live
+      · exact False.elim (absent (List.mem_map.mpr ⟨_, retained, rfl⟩))
+      · exact .inr (.field live retained field)
+
 theorem Bind.preserves_wellFormed
     (binding : Bind classes before reference pattern after)
     (wf : WellFormedWith classes before [reference]) : WellFormed classes after := by
   cases binding with
   | «variable» fresh =>
-    refine ⟨wf.objectKeys, ?_, wf.shapes, wf.bounds, wf.older, ?_, ?_⟩
-    · simpa [State.bind] using List.nodup_cons.mpr ⟨fresh, wf.variableKeys⟩
-    · simpa [State.bind, Owners] using wf.ownersCompatible
-    · simpa [State.bind, References, Allocated] using wf.referencesComplete
+    exact wf.bind fresh
   | @unpack before after variables nextId object className fields pattern bindings declaration
       declared shape uniqueFields uniqueNames fresh transfer =>
     have subset : ∀ entry ∈ before ++ after,
@@ -192,8 +225,16 @@ theorem Bind.preserves_wellFormed
       exact wf.shapes id data (subset _ member)
     · intro id data member
       exact wf.bounds id data (subset _ member)
-    · intro id data name target member field
-      exact wf.older id data name target (subset _ member) field
+    · intro id allocated
+      have notRemoved : id ≠ object := by
+        intro same; subst id
+        exact removedAbsent (by simpa [Allocated, List.map_append] using allocated)
+      have oldAllocated : Allocated
+          ⟨before ++ (object, ⟨className, fields⟩) :: after, variables, nextId⟩ id := by
+        obtain ⟨entry, member, same⟩ := List.mem_map.mp allocated
+        exact List.mem_map.mpr ⟨entry, subset _ member, same⟩
+      have live := unpack_live transfer (by simpa using removedAbsent) (wf.rooted id oldAllocated)
+      exact (live.resolve_left notRemoved).to_live
     · exact compatible.of_cons
     · intro id
       have complete := wf.referencesComplete id

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "4282fff41e415bd2c13743a28c6997a9ea4a8468d69dca4ae3df5df03f55b48d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:unit:functions.example.gc",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Reviewed existing reference-order classification: {\"kind\": \"forward\", \"necessity\": \"The example first separates a suspended caller, a departing callee and final program exit using concrete objects. Moving the full machine/collector definitions ahead of it would require the call/body syntax before the opening lifetime motivation; moving the example after those definitions would leave their all-frame roots unexplained during the introduction. Splitting away the exit or suspended-caller case would remove the contrast the table is meant to establish. The retained reference is limited to that lifetime preview.\", \"signposting\": \"The selected source passage explicitly identifies the following definition and limits the current preview: The [frame rules](#claim-functions.machine) and\\n[collector definition](#claim-functions.gc) below make this lifetime explicit.\", \"signpost\": {\"path\": \"md/functions.md\", \"start\": 3522, \"end\": 3648}, \"minimal_use\": \"The table and adjacent prose state exactly which three objects survive each boundary, that all live callers supply roots, and that the final counter remains three. No symbolic Step or collection derivation is needed; the formal tuple representation/filter is deferred.\"} Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "85556d84017521354ee9284b6d00a98486e38a5304e36fe611065ca9a1f6bcea"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The example first separates a suspended caller, a departing callee and final program exit using concrete objects. Moving the full machine/collector definitions ahead of it would require the call/body syntax before the opening lifetime motivation; moving the example after those definitions would leave their all-frame roots unexplained during the introduction. Splitting away the exit or suspended-caller case would remove the contrast the table is meant to establish. The retained reference is limited to that lifetime preview.",
+      "signposting": "The selected source passage explicitly identifies the following definition and limits the current preview: The [frame rules](#claim-functions.machine) and\n[collector definition](#claim-functions.gc) below make this lifetime explicit.",
+      "signpost": {
+        "path": "md/functions.md",
+        "start": 3522,
+        "end": 3648
+      },
+      "minimal_use": "The table and adjacent prose state exactly which three objects survive each boundary, that all live callers supply roots, and that the final counter remains three. No symbolic Step or collection derivation is needed; the formal tuple representation/filter is deferred."
+    }
+  }
+}

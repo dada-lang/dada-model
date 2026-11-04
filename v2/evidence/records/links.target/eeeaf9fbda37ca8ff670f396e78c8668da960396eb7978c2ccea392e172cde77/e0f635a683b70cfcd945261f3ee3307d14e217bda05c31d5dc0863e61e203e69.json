@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "1dd897e963476230031c82b0454a5c92cfdc88dac6c3c88f570abc76aa659b93",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:eeeaf9fbda37ca8ff670f396e78c8668da960396eb7978c2ccea392e172cde77",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Links destructor declaration, finished environment, Functions signatures, and droppability; the whole-table recursion policy is defined here. The appendix is supplementary navigation. The selected defining body includes its local setup, conditions and direct prerequisite links. self: given C denotes the locally identified whole receiver. Function and result types come from the linked signature definition; no undefined judgment notation appears. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "14a3bf7645b2eb2127cb4690da770a74ef73af4ddfb8047259580cb170ea9cf3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "body typing",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 14778,
+      "end": 15900
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Links destructor declaration, finished environment, Functions signatures, and droppability; the whole-table recursion policy is defined here. The appendix is supplementary navigation.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. self: given C denotes the locally identified whole receiver. Function and result types come from the linked signature definition; no undefined judgment notation appears."
+  }
+}

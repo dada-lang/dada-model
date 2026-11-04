@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "bundle": "bb461f910d69e5ab60caea2873a80f77c56339fba60577adc4fbd9b29beea8b7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:241e787663abf5f9ca32f4fa137ed5a061f3b4d699bfbfe7cfffa6c8698505f0",
+    "audit:target:3e4d50612007d6c6a5604a2b81222e88270e78922e73195442049d92573c2bda",
+    "audit:target:8c93add9c0c83a776892d18710675ad1a169196ba74e7618d4b2ef28a872c904",
+    "audit:target:f04e04e63ee3dc0d3ff261b4a37a5a43d1bf2fa1799e9cf11fd813ea8a5351fd",
+    "audit:unit:destructors.example.consume",
+    "audit:unit:destructors.example.wrapper",
+    "audit:unit:destructors.function_example",
+    "audit:unit:functions.typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the Functions chapter as supplementary navigation, the consumption example and actual Wrapper/Resource declarations, and the return rule. Both alternate bodies now have an explicit caller that constructs and moves a wrapper. All parameters and locals are declared in the snippets; → Wrapper and w→ retain earlier signature/give notation. No additional equations or unbound variables are introduced. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "de7ee71fb708fbea4c639ff46b987218fdf1878028463a026e1987bedd5bf8f2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the Functions chapter as supplementary navigation, the consumption example and actual Wrapper/Resource declarations, and the return rule. Both alternate bodies now have an explicit caller that constructs and moves a wrapper.",
+    "mathematics": "All parameters and locals are declared in the snippets; → Wrapper and w→ retain earlier signature/give notation. No additional equations or unbound variables are introduced.",
+    "links": [
+      {
+        "occurrence": "destructors.function_example:1",
+        "role": "navigation",
+        "rationale": "Supplementary chapter navigation; the needed concrete declarations and consumption/return behavior have their own direct links."
+      },
+      {
+        "occurrence": "destructors.function_example:2",
+        "role": "conceptual",
+        "rationale": "'consumption requirement' refers to #claim-destructors.example.consume for the definition or concrete setup used in this example. Links the Functions chapter as supplementary navigation, the consumption example and actual Wrapper/Resource declarations, and the return rule. Both alternate bodies now have an explicit caller that constructs and moves a wrapper."
+      },
+      {
+        "occurrence": "destructors.function_example:3",
+        "role": "conceptual",
+        "rationale": "'declarations above' refers to #claim-destructors.example.wrapper for the definition or concrete setup used in this example. Links the Functions chapter as supplementary navigation, the consumption example and actual Wrapper/Resource declarations, and the return rule. Both alternate bodies now have an explicit caller that constructs and moves a wrapper."
+      },
+      {
+        "occurrence": "destructors.function_example:4",
+        "role": "conceptual",
+        "rationale": "'returning a value' refers to functions.md#claim-functions.return for the definition or concrete setup used in this example. Links the Functions chapter as supplementary navigation, the consumption example and actual Wrapper/Resource declarations, and the return rule. Both alternate bodies now have an explicit caller that constructs and moves a wrapper."
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "7fda67dcd86fe952d81277b8347247118e0248911e091ebdbba1ad2171b92a31",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.sources.exact_selection",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The first paragraph now defines exact source selection; subsequent paragraphs explain rule and mutual-group special cases directly. This unit is the introduction of the extraction boundary, so no self-link is needed. There are no formulas. Constructor names, quoted identifiers and mutual are source-language syntax whose treatment is explained here. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "059787811696b685f65c8f7a0a17efbc98824372c244488e33d9b0b989fd4eb5"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The first paragraph now defines exact source selection; subsequent paragraphs explain rule and mutual-group special cases directly. This unit is the introduction of the extraction boundary, so no self-link is needed.",
+    "mathematics": "There are no formulas. Constructor names, quoted identifiers and mutual are source-language syntax whose treatment is explained here.",
+    "links": []
+  }
+}

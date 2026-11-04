@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "7f17ae6ddeb3ca3f29fdca0cae55f571dcd28deb285ac4db3df16bd6783e2803",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5027e237be554f4900cfc87bba7610cfac1fcc235ce9fc10af2ff498a9d9290e",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.example.younger_child",
+    "audit:unit:given.live_pending",
+    "audit:unit:given.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The example links revised WF, inherited taking/evaluation, and pending-root reachability, all backward. Its diagram declares every concrete ID and slot and states counter3; b is the sole variable. The nonmonotonic-ID setup is explicitly arbitrary storage rather than a claim of operational reachability. The example links revised WF, inherited taking/evaluation, and pending-root reachability, all backward. Its diagram declares every concrete ID and slot and states counter3; b is the sole variable. The nonmonotonic-ID setup is explicitly arbitrary storage rather than a claim of operational reachability. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The example links revised WF, inherited taking/evaluation, and pending-root reachability, all backward. Its diagram declares every concrete ID and slot and states counter3; b is the sole variable. The nonmonotonic-ID setup is explicitly arbitrary storage rather than a claim of operational reachability.",
+    "mathematics": "The example links revised WF, inherited taking/evaluation, and pending-root reachability, all backward. Its diagram declares every concrete ID and slot and states counter3; b is the sole variable. The nonmonotonic-ID setup is explicitly arbitrary storage rather than a claim of operational reachability. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "given.example.younger_child:1",
+        "role": "conceptual",
+        "rationale": "'well-formedness invariant' points backward to #claim-given.well_formed for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "given.example.younger_child:2",
+        "role": "conceptual",
+        "rationale": "'Taking' points backward to #claim-given.evaluation for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "given.example.younger_child:3",
+        "role": "conceptual",
+        "rationale": "'pending root' points backward to #claim-given.live_pending for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

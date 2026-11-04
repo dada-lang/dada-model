@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "be19418fe1d44ac0a3b773da79745b3bc63b8d593d58b2f80f851ad616f0530a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.judgment.selection",
+    "audit:unit:meta.sources.exact_selection",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Judgment and rule citation semantics are the defining subjects, each given a direct introductory sentence and separate rule anchor. Their limits, including lack of Prop-result checking, are stated locally. The only form Judgment.constructor is literal citation notation defined here; no unstated mathematical judgment is used. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "59e9888ac2ae85f2970824b3916f57bcee611d7e87a639ff89f639cac157668a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Judgment and rule citation semantics are the defining subjects, each given a direct introductory sentence and separate rule anchor. Their limits, including lack of Prop-result checking, are stated locally.",
+    "mathematics": "The only form Judgment.constructor is literal citation notation defined here; no unstated mathematical judgment is used.",
+    "links": []
+  }
+}

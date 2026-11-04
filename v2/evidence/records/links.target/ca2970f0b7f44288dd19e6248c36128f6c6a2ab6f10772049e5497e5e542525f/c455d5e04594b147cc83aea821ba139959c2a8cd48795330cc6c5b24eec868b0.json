@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "0d9fa5ad12b06f02ac802a943eed08abc0954bc764d52b14a655cbadb7546964",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ca2970f0b7f44288dd19e6248c36128f6c6a2ab6f10772049e5497e5e542525f",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This landing introduces the named definition or concrete heap setup in its opening passage. The single conceptual link supplies the already defined structural invariant. The cycle's complete graph and declarations are described locally, so no forward definition is needed. The surrounding chapter supplies storage and reachability before using them. The single conceptual link supplies the already defined structural invariant. The cycle's complete graph and declarations are described locally, so no forward definition is needed.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.example.rooted_cycle",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 29615,
+      "end": 30138
+    },
+    "clarity": "This landing introduces the named definition or concrete heap setup in its opening passage. The single conceptual link supplies the already defined structural invariant. The cycle's complete graph and declarations are described locally, so no forward definition is needed.",
+    "independence": "The surrounding chapter supplies storage and reachability before using them. The single conceptual link supplies the already defined structural invariant. The cycle's complete graph and declarations are described locally, so no forward definition is needed."
+  }
+}

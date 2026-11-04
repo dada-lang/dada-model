@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "bundle": "81a26505ea73b90aa3ee695b1f81cc2077db01de2d87396b19be25978a599b3c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:unit:functions.inherited",
+    "audit:unit:shared.declarations",
+    "audit:unit:shared.give",
+    "audit:unit:shared.state",
+    "audit:unit:shared.struct",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.patterns",
+    "audit:unit:shared.typing.types",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Every behavior row links its defining Shared unit. New call syntax and absent later features are distinguished. No independent mathematics: the table is an inherited-definition summary, including whole constructor types and uniquely owned unpacking. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "eca412aab4334a822be2c8b26799e73d707fc57980f821bf8f4d781bdc87c68a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Every behavior row links its defining Shared unit. New call syntax and absent later features are distinguished.",
+    "mathematics": "No independent mathematics: the table is an inherited-definition summary, including whole constructor types and uniquely owned unpacking.",
+    "links": [
+      {
+        "occurrence": "functions.inherited:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Nominal kinds' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Every behavior row links its defining Shared unit. New call syntax and absent later features are distinguished."
+      },
+      {
+        "occurrence": "functions.inherited:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Storage' refers to md/shared.md#claim-shared.state for the concept or example setup used by this unit. Every behavior row links its defining Shared unit. New call syntax and absent later features are distinguished."
+      },
+      {
+        "occurrence": "functions.inherited:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Views' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Every behavior row links its defining Shared unit. New call syntax and absent later features are distinguished."
+      },
+      {
+        "occurrence": "functions.inherited:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Giving' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Every behavior row links its defining Shared unit. New call syntax and absent later features are distinguished."
+      },
+      {
+        "occurrence": "functions.inherited:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Expressions' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Every behavior row links its defining Shared unit. New call syntax and absent later features are distinguished."
+      },
+      {
+        "occurrence": "functions.inherited:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Unpacking' refers to md/shared-typing.md#claim-shared.typing.patterns for the concept or example setup used by this unit. Every behavior row links its defining Shared unit. New call syntax and absent later features are distinguished."
+      }
+    ]
+  }
+}

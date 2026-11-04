@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "bundle": "56242c1a9a31ac9069983ee1f2af8a8e5a5b6abd6f796aff85592c299f68733c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:85bba34d7493853d754e20469c6b70e7fc1ff7e55767b2f552cf9f47ed2e9102",
+    "audit:target:a5c71aae5d779970f59da90b8b016cb2144890c06151d49ddcdd5a1f53c7ca45",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.heap_obligations",
+    "audit:unit:destructors.machine",
+    "audit:unit:shared.liveness",
+    "audit:unit:shared.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation. H and H′ are named as heaps in the defining sentence for RetainsClasses. Root multiplicity and typed pending values are explained with the realization link, without hidden equations. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "73576f98c213765750f2d975560af9813f12278471f3e9e7f38ffc541fc7a8fd"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation.",
+    "mathematics": "H and H′ are named as heaps in the defining sentence for RetainsClasses. Root multiplicity and typed pending values are explained with the realization link, without hidden equations.",
+    "links": [
+      {
+        "occurrence": "destructors.heap_obligations:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'live frames' supplies the definition or concrete example setup used here, at #claim-destructors.machine. The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation."
+      },
+      {
+        "occurrence": "destructors.heap_obligations:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'finished environment' supplies the definition or concrete example setup used here, at #claim-destructors.finished_environment. The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation."
+      },
+      {
+        "occurrence": "destructors.heap_obligations:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Shared's realization' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.realization. The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation."
+      },
+      {
+        "occurrence": "destructors.heap_obligations:4",
+        "role": "conceptual",
+        "rationale": "The occurrence 'simultaneous unique and shared paths' supplies the definition or concrete example setup used here, at shared.md#claim-shared.path_exclusivity. The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation."
+      },
+      {
+        "occurrence": "destructors.heap_obligations:5",
+        "role": "conceptual",
+        "rationale": "The occurrence 'view' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.types. The opening paragraph defines typed configuration and links live frames, finished environments and Shared realization. View/path-ownership concepts link to the foundation. RetainsClasses is introduced locally as the separate collection obligation."
+      }
+    ]
+  }
+}

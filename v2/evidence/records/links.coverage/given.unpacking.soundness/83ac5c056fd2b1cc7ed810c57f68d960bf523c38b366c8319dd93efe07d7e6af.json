@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "7502f87cb541eefb1e73ba30b2c9fba58d1dd06827516f75f62b86ddb3e40528",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:56968a0b61d069156a3c6cf55db5ba12bcfdf730847f49c102707a617d46863b",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:unit:given.unpacking",
+    "audit:unit:given.unpacking.soundness",
+    "audit:unit:given.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result. The theorem is stated in prose with links to class-table WF, the extended transition and state WF; there is no separate hidden predicate. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "0611253d6d560a58ac910dab660dbdada167d1bc920e4e53ed8749b30da13556"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result.",
+    "mathematics": "The theorem is stated in prose with links to class-table WF, the extended transition and state WF; there is no separate hidden predicate.",
+    "links": [
+      {
+        "occurrence": "given.unpacking.soundness:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed class table' refers to md/given.md#claim-given.well_formed_classes for the concept or example setup used by this unit. The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result."
+      },
+      {
+        "occurrence": "given.unpacking.soundness:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'extended step' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result."
+      },
+      {
+        "occurrence": "given.unpacking.soundness:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed storage' refers to md/given.md#claim-given.well_formed for the concept or example setup used by this unit. The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result."
+      }
+    ]
+  }
+}

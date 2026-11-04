@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "8e1bdde05dd2f9a00410f48c50509cc77b7ae330280de3c009b7f17346878ff2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:unit:assignment.example.refill",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The example defines its concrete Resource/Wrapper setup and explains store locally before formal rules. The negative-view entry links its earlier Given definition; w is an explicit assumed input, not an unbound metavariable. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. The example defines its concrete Resource/Wrapper setup and explains store locally before formal rules. The negative-view entry links its earlier Given definition; w is an explicit assumed input, not an unbound metavariable. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "609bc431c83f1b2f5d520d89522e88b667927bc130d913f80a1fad80dedbe6a8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The example defines its concrete Resource/Wrapper setup and explains store locally before formal rules. The negative-view entry links its earlier Given definition; w is an explicit assumed input, not an unbound metavariable.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. The example defines its concrete Resource/Wrapper setup and explains store locally before formal rules. The negative-view entry links its earlier Given definition; w is an explicit assumed input, not an unbound metavariable.",
+    "links": [
+      {
+        "occurrence": "assignment.example.refill:1",
+        "role": "conceptual",
+        "rationale": "The label 'negative view entry' supplies the earlier definition/setup at given-typing.md#claim-given.typing.views used by this passage."
+      }
+    ]
+  }
+}

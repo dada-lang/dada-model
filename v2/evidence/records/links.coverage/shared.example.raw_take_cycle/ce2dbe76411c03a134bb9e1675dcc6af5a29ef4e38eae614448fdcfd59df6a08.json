@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "1d29f679ee8abb8dfda4eb132a7c1c94bd5cd97f54c4c72e37ca477745e24996",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3e00a12c5444e77178eea80082ea8052d2132085237a77dacb63b619304c9d66",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:unit:shared.example.mixed_cycle",
+    "audit:unit:shared.example.raw_take_cycle",
+    "audit:unit:shared.give",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "All conceptual links point backward to the mixed-cycle example and give definition. The passage defines the concrete local/object/field names; g.f is a literal finite path, not a new mathematical judgment. It states the unique-source access condition directly without invoking a future theorem. All conceptual links point backward to the mixed-cycle example and give definition. The passage defines the concrete local/object/field names; g.f is a literal finite path, not a new mathematical judgment. It states the unique-source access condition directly without invoking a future theorem. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "All conceptual links point backward to the mixed-cycle example and give definition. The passage defines the concrete local/object/field names; g.f is a literal finite path, not a new mathematical judgment. It states the unique-source access condition directly without invoking a future theorem.",
+    "mathematics": "All conceptual links point backward to the mixed-cycle example and give definition. The passage defines the concrete local/object/field names; g.f is a literal finite path, not a new mathematical judgment. It states the unique-source access condition directly without invoking a future theorem. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "shared.example.raw_take_cycle:1",
+        "role": "conceptual",
+        "rationale": "'mixed cycle' points backward to #claim-shared.example.mixed_cycle for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "shared.example.raw_take_cycle:2",
+        "role": "conceptual",
+        "rationale": "'give' points backward to #claim-shared.give for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

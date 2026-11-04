@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "183d1f054bc827a7cb4f4cb50503137fb3fd2b09edbce17c709e2fa71b53edfc",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c4f4614282bcbc1eeacf56cc51774e318230c1a0983b9b7c32160b81f84bee8a",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/evidence-pilot.md#claim-evidence.map.empty_definition directly introduces Empty finite map. The unit introduces finite maps directly, with the key uniqueness condition and a separate empty-map anchor; it does not invoke another language operation. M, K, T and entry components k,v are introduced in the same sentences; the map arrow and empty-map symbol are defining occurrences. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c2ca58b30ab130955c5864089bc81154d2eb304797e252afaa2475c90fb62a5d"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Empty finite map",
+    "definition": {
+      "path": "md/repo/evidence-pilot.md",
+      "start": 7215,
+      "end": 7306
+    },
+    "clarity": "The landing md/repo/evidence-pilot.md#claim-evidence.map.empty_definition directly introduces Empty finite map. The unit introduces finite maps directly, with the key uniqueness condition and a separate empty-map anchor; it does not invoke another language operation.",
+    "independence": "M, K, T and entry components k,v are introduced in the same sentences; the map arrow and empty-map symbol are defining occurrences. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

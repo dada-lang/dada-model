@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "50fd7de82c1e6a6f240a17fe1a015dc3f075cb2a4868a26ab187aae585ec6f39",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:18e50dab95df074f64b089e4a508e22ce099405e437bd6cb4f61d60712b67a3c",
+    "audit:target:ef7aedb66f188b157bd66e467ed07f4ec8f3366639a1a82c26fc4370ae9980d8",
+    "audit:target:f518fc51a45f1599c96e5cca147f3048043bee6a5718ef54dd66d238eb0b8dcf",
+    "audit:unit:functions.shared_correspondence",
+    "audit:unit:functions.shared_traces",
+    "audit:unit:functions.traces",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Functions traces, the embedding, and Shared traces. The endpoint equality and arbitrary starting configurations are explicit. No extra well-formedness premise is silently assumed. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c8f20e399edfa70a0923dab878b821b4b1f609ecfdd1d981fc4237dd7c3380c5"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Functions traces, the embedding, and Shared traces.",
+    "mathematics": "The endpoint equality and arbitrary starting configurations are explicit. No extra well-formedness premise is silently assumed.",
+    "links": [
+      {
+        "occurrence": "functions.shared_traces:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Functions trace' refers to md/functions.md#claim-functions.traces for the concept or example setup used by this unit. Links Functions traces, the embedding, and Shared traces."
+      },
+      {
+        "occurrence": "functions.shared_traces:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'embedded Shared program configuration' refers to md/functions.md#claim-functions.shared_correspondence for the concept or example setup used by this unit. Links Functions traces, the embedding, and Shared traces."
+      },
+      {
+        "occurrence": "functions.shared_traces:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared trace' refers to md/shared.md#claim-shared.executions for the concept or example setup used by this unit. Links Functions traces, the embedding, and Shared traces."
+      }
+    ]
+  }
+}

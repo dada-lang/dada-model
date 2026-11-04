@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "1e0f27f32789f2afeeec16471e9bed0dc3c04fc8943cebd18c34b15055e2bfa2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f0800758e25ea7ee9fd903ee7d59491b9696d69585d50197192201ce0604d301",
+    "audit:unit:shared.programs",
+    "audit:unit:shared.well_formed_classes",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Direct target for distinct class keys and distinct fields; links the operational table instead of hiding validity in storage or syntax. No separate formula is used: distinct class keys and distinct listed fields are the complete local definition. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4182d72b87db174ea9f4fe4036bef2ed8aed5a4c29b06a79b7f8b8970b3754fb"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Direct target for distinct class keys and distinct fields; links the operational table instead of hiding validity in storage or syntax.",
+    "mathematics": "No separate formula is used: distinct class keys and distinct listed fields are the complete local definition.",
+    "links": [
+      {
+        "occurrence": "shared.well_formed_classes:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class table' refers to md/shared.md#claim-shared.programs for the concept or example setup used by this unit. Direct target for distinct class keys and distinct fields; links the operational table instead of hiding validity in storage or syntax."
+      }
+    ]
+  }
+}

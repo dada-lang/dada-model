@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "337776a60a0095c6e51bac98d181644ce5b511ed706c283741dbc772d8684163",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e352bf1830e74f15198be0594d0061f7c9c957dfd9710c03023c40e4b5b65bf8",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:shared.example.share_value",
+    "audit:unit:shared.example.shared_middle",
+    "audit:unit:shared.give",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate. The earlier state is linked explicitly; the two source statements use known syntax, and the resulting route interpretation links resolution. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "84788a140fdfdc61dbe2862affaad3982c5f8e57088208958c9cfb722947dc16"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate.",
+    "mathematics": "The earlier state is linked explicitly; the two source statements use known syntax, and the resulting route interpretation links resolution.",
+    "links": [
+      {
+        "occurrence": "shared.example.shared_middle:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'shared.example.share_value' refers to md/shared.md#claim-shared.example.share_value for the concept or example setup used by this unit. Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate."
+      },
+      {
+        "occurrence": "shared.example.shared_middle:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'constructor' refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate."
+      }
+    ]
+  }
+}

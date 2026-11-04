@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "cb7329811ef0ff3ce0bb215fe8d0e88f9957d25f7edcc52cbea341a9e9e84313",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:unit:shared.finished",
+    "audit:unit:shared.machine",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit. The no-frame condition defines Finished. It makes no claim that a live frame with empty code is already terminal. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b1de0a7b717f9953cc588c0aaceda987f20e9931539832694ccc32c25f3af402"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit.",
+    "mathematics": "The no-frame condition defines Finished. It makes no claim that a live frame with empty code is already terminal.",
+    "links": [
+      {
+        "occurrence": "shared.finished:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit."
+      }
+    ]
+  }
+}

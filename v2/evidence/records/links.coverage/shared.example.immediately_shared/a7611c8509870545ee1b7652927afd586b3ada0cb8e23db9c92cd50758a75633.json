@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "8a34a42f0be865b2174fb856e29ada60edb1429d74d17e7d64556de4578acf98",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:d117653630a0c005c713ca2ab7601fe8b51be1b2003b16c196ec6dff075471ce",
+    "audit:unit:shared.example.declarations",
+    "audit:unit:shared.example.immediately_shared",
+    "audit:unit:shared.give",
+    "audit:unit:shared.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links shared-struct construction and the existing declarations; distinguishes result mode from stored field mode. Concrete source names come from the linked setup; the example invokes no independent permission algebra. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "a6433cf4f83ae1952f3e4275a8147f8175adf552d2b09a73d447103a9a6a2833"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links shared-struct construction and the existing declarations; distinguishes result mode from stored field mode.",
+    "mathematics": "Concrete source names come from the linked setup; the example invokes no independent permission algebra.",
+    "links": [
+      {
+        "occurrence": "shared.example.immediately_shared:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declarations above' refers to md/shared.md#claim-shared.example.declarations for the concept or example setup used by this unit. Links shared-struct construction and the existing declarations; distinguishes result mode from stored field mode."
+      },
+      {
+        "occurrence": "shared.example.immediately_shared:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'shared reference immediately' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links shared-struct construction and the existing declarations; distinguishes result mode from stored field mode."
+      },
+      {
+        "occurrence": "shared.example.immediately_shared:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'promotes' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links shared-struct construction and the existing declarations; distinguishes result mode from stored field mode."
+      }
+    ]
+  }
+}

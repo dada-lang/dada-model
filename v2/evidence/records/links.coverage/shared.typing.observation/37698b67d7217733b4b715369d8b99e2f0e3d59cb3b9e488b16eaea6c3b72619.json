@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "284533dde5629147f8b7854f6ffc948ee30ddef1c763b03a72bbbef5aec535a1",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2125be554c01949722a01b484938c16897339c8d6ac2c317a9fc821a16faeeaa",
+    "audit:target:4fbc8d894e68d4383b58ceae09ec533638f4d56e8e7e70e873de2949841887dd",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:unit:shared.typing.configurations",
+    "audit:unit:shared.typing.observation",
+    "audit:unit:shared.typing.realization",
+    "audit:unit:shared.typing.safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links sequence typing and realization and distinguishes bindings before exit from terminal storage. The counted statement prefix preserves the final environment witness; the next exit has no local bindings. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "cc8c4cc70b003ce1a11587d8779fa3a7d7d57a21bd7f139041be9a9529a21ad2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links sequence typing and realization and distinguishes bindings before exit from terminal storage.",
+    "mathematics": "The counted statement prefix preserves the final environment witness; the next exit has no local bindings.",
+    "links": [
+      {
+        "occurrence": "shared.typing.observation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed live frame' refers to md/shared-typing.md#claim-shared.typing.configurations for the concept or example setup used by this unit. Links sequence typing and realization and distinguishes bindings before exit from terminal storage."
+      },
+      {
+        "occurrence": "shared.typing.observation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'program steps' refers to md/shared-typing.md#claim-shared.typing.execution for the concept or example setup used by this unit. Links sequence typing and realization and distinguishes bindings before exit from terminal storage."
+      },
+      {
+        "occurrence": "shared.typing.observation:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'realize the final environment' refers to md/shared-typing.md#claim-shared.typing.realization for the concept or example setup used by this unit. Links sequence typing and realization and distinguishes bindings before exit from terminal storage."
+      }
+    ]
+  }
+}

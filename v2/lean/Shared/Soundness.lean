@@ -1,4 +1,4 @@
-import Shared.Effects
+import Shared.Reachability
 
 namespace Dada.Shared
 
@@ -23,8 +23,7 @@ structure WellFormed (classes : Classes) (state : State) : Prop where
     ∃ declaration, (data.className, declaration) ∈ classes ∧
       data.fields.map Prod.fst = declaration.fields ∧ declaration.fields.Nodup
   bounds : ∀ id data, (id, data) ∈ state.objects → id.index < state.nextId
-  older : ∀ id data name reference, (id, data) ∈ state.objects →
-    (name, some reference) ∈ data.fields → reference.object.index < id.index
+  rooted : ∀ object, Allocated state object → Live state object
   ownersCompatible : (Owners state).Pairwise Compatible
   referencesComplete : ∀ id, id ∈ References state ↔ Allocated state id
 
@@ -233,11 +232,9 @@ theorem Give.bind_preserves (wf : WellFormed classes before)
   · intro id data member
     obtain ⟨oldData, oldMember, _, _, _⟩ := frame.data id data member
     simpa [State.bind, frame.nextId] using wf.bounds id oldData oldMember
-  · intro id data name target member field
-    obtain ⟨oldData, oldMember, _, _, remaining⟩ := frame.data id data member
-    obtain ⟨oldTarget, oldField, sameTarget⟩ := remaining name target field
-    rw [sameTarget]
-    exact wf.older id oldData name oldTarget oldMember oldField
+  · intro object allocated
+    have oldAllocated : Allocated before object := by simpa [Allocated, State.bind, frame.objectKeys] using allocated
+    exact (give.liveWith ((wf.rooted object oldAllocated).with_pending (pending := []))).bind
   · simpa [State.bind, Owners] using give.owners_compatible wf.ownersCompatible
   · intro id
     have target := give.targets id
@@ -253,7 +250,17 @@ theorem WellFormed.share_result {state : State} {name : VariableId} {reference :
   · exact wf.variableKeys
   · exact wf.shapes
   · exact wf.bounds
-  · exact wf.older
+  · intro object allocated
+    apply LiveWith.to_live
+    apply (wf.rooted object allocated).with_pending.transport (pending := [])
+    · simp
+    · intro var ref member
+      simp only [State.bind, List.mem_cons] at member
+      rcases member with h | h
+      · cases h
+        exact .variable (reference := .shared reference.object) (name := name) (by simp [State.bind])
+      · exact .variable (name := var) (by simp [State.bind, h])
+    · exact fun _ _ _ _ stored field live => .field live stored field
   · have compatible : (reference :: Owners state).Pairwise Compatible := by
       simpa [Owners, State.bind] using wf.ownersCompatible
     simpa [Owners, State.bind] using pairwise_weaken compatible
@@ -269,24 +276,23 @@ structure WellFormedWith (classes : Classes) (state : State) (pending : List Ref
     ∃ declaration, (data.className, declaration) ∈ classes ∧
       data.fields.map Prod.fst = declaration.fields ∧ declaration.fields.Nodup
   bounds : ∀ id data, (id, data) ∈ state.objects → id.index < state.nextId
-  older : ∀ id data name reference, (id, data) ∈ state.objects →
-    (name, some reference) ∈ data.fields → reference.object.index < id.index
+  rooted : ∀ object, Allocated state object → LiveWith state pending object
   ownersCompatible : (pending ++ Owners state).Pairwise Compatible
   referencesComplete : ∀ id, id ∈ (pending.map Reference.object ++ References state) ↔ Allocated state id
 
 theorem WellFormed.with_pending (wf : WellFormed classes state) :
     WellFormedWith classes state [] := by
-  exact ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, wf.older,
+  exact ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, (fun object allocated => (wf.rooted object allocated).with_pending),
     by simpa using wf.ownersCompatible, by simpa using wf.referencesComplete⟩
 
 theorem WellFormedWith.no_pending (wf : WellFormedWith classes state []) :
     WellFormed classes state := by
-  exact ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, wf.older,
+  exact ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, (fun object allocated => (wf.rooted object allocated).to_live),
     by simpa using wf.ownersCompatible, by simpa using wf.referencesComplete⟩
 
 theorem WellFormedWith.perm (wf : WellFormedWith classes state pending)
     (permutation : pending.Perm other) : WellFormedWith classes state other := by
-  refine ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, wf.older, ?_, ?_⟩
+  refine ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, (fun object allocated => (wf.rooted object allocated).perm permutation), ?_, ?_⟩
   · exact (permutation.append_right _).pairwise wf.ownersCompatible compatible_symm
   · intro id
     exact ((permutation.map Reference.object).append_right _).mem_iff.symm.trans
@@ -328,11 +334,8 @@ theorem Give.preserves_pending (give : Give before path reference after)
   · intro id data member
     obtain ⟨oldData, oldMember, _, _, _⟩ := frame.data id data member
     simpa [frame.nextId] using wf.bounds id oldData oldMember
-  · intro id data name target member field
-    obtain ⟨oldData, oldMember, _, _, remaining⟩ := frame.data id data member
-    obtain ⟨oldTarget, oldField, sameTarget⟩ := remaining name target field
-    rw [sameTarget]
-    exact wf.older id oldData name oldTarget oldMember oldField
+  · intro object allocated
+    exact give.liveWith (wf.rooted object (by simpa [Allocated, frame.objectKeys] using allocated))
   · intro id
     have targets := give.targets id
     simp only [List.map_cons, owners_targets, List.mem_cons] at targets
@@ -343,9 +346,15 @@ theorem Give.preserves_pending (give : Give before path reference after)
 theorem WellFormedWith.share_result
     (wf : WellFormedWith classes state (reference :: pending)) :
     WellFormedWith classes state (.shared reference.object :: pending) := by
-  refine ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, wf.older,
+  refine ⟨wf.objectKeys, wf.variableKeys, wf.shapes, wf.bounds, ?_,
     pairwise_weaken wf.ownersCompatible, ?_⟩
-  simpa [Reference.shared] using wf.referencesComplete
+  · intro object allocated
+    apply (wf.rooted object allocated).pending_mono
+    intro ref member
+    rcases List.mem_cons.mp member with same | rest
+    · cases same; exact ⟨.shared reference.object, by simp, rfl⟩
+    · exact ⟨ref, List.mem_cons_of_mem _ rest, rfl⟩
+  · simpa [Reference.shared] using wf.referencesComplete
 
 private theorem zipped_field_names (fields : List FieldName) (references : List Reference)
     (lengths : references.length = fields.length) :
@@ -406,14 +415,25 @@ theorem WellFormedWith.allocate (classesWf : ClassesWellFormed classes)
     · cases same
       exact Nat.lt_succ_self _
     · exact Nat.lt_succ_of_lt (wf.bounds id data old)
-  · intro id data name target member field
-    rcases List.mem_cons.mp member with same | old
-    · cases same
-      have referred : target ∈ slotOwners (declaration.fields.zip (references.map some)) :=
-        List.mem_filterMap.mpr ⟨(name, some target), field, rfl⟩
-      rw [zipped_field_owners _ _ lengths] at referred
-      exact wf.pending_bound (List.mem_append_left _ referred)
-    · exact wf.older id data name target old field
+  · intro object allocated
+    rcases List.mem_cons.mp allocated with same | old
+    · subst object; exact .pending (List.mem_cons_self ..)
+    · apply (wf.rooted object old).transport
+      · intro ref member
+        rcases List.mem_append.mp member with captured | remaining
+        · have slots : ref ∈ slotOwners (declaration.fields.zip (references.map some)) := by
+            rw [zipped_field_owners _ _ lengths]; exact captured
+          obtain ⟨⟨fieldName, slot⟩, stored, eq⟩ := List.mem_filterMap.mp slots
+          dsimp at eq
+          subst slot
+          exact .field (parent := ⟨state.nextId⟩)
+            (.pending (reference := .owned ⟨state.nextId⟩) (List.mem_cons_self ..))
+            (data := ⟨className, declaration.fields.zip (references.map some)⟩)
+            (List.mem_cons_self ..) stored
+        · exact .pending (List.mem_cons_of_mem _ remaining)
+      · intro name ref member; exact .variable member
+      · intro parent data name ref stored field live
+        exact .field live (List.mem_cons_of_mem _ stored) field
   · apply List.pairwise_cons.mpr
     refine ⟨?_, combined.symm.pairwise wf.ownersCompatible compatible_symm⟩
     intro reference member
@@ -434,7 +454,7 @@ theorem WellFormedWith.allocate (classesWf : ClassesWellFormed classes)
 theorem WellFormedWith.bind (wf : WellFormedWith classes state [reference])
     (fresh : destination ∉ state.variables.map Prod.fst) :
     WellFormed classes (state.bind destination reference) := by
-  refine ⟨wf.objectKeys, ?_, wf.shapes, wf.bounds, wf.older, ?_, ?_⟩
+  refine ⟨wf.objectKeys, ?_, wf.shapes, wf.bounds, (fun object allocated => (wf.rooted object allocated).bind), ?_, ?_⟩
   · simpa [State.bind] using List.nodup_cons.mpr ⟨fresh, wf.variableKeys⟩
   · simpa [State.bind, Owners] using wf.ownersCompatible
   · simpa [State.bind, References, Allocated] using wf.referencesComplete

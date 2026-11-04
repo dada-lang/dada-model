@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "87490443e68592d45c05cea33889ce2c250e741b2602610b1584ade665b178c7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3d33b028ca981a0fc9321bf9e923e736057fee84a81a9b48d93048441c206c33",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This landing introduces the named definition or concrete heap setup in its opening passage. Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept. The surrounding chapter supplies storage and reachability before using them. Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.pending_live",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 26018,
+      "end": 26486
+    },
+    "clarity": "This landing introduces the named definition or concrete heap setup in its opening passage. Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept.",
+    "independence": "The surrounding chapter supplies storage and reachability before using them. Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept."
+  }
+}

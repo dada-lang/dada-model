@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "bundle": "b46a47c3c1b4d7bbad0366ba150957c6e2b72a0e5e64618e32f06af0207eab35",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:49d19d3e6321b8309608988f0dba1cb54f8a069b5a7946d9f117d0fb274166d9",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.finished",
+    "audit:unit:given.lookup",
+    "audit:unit:given.machine",
+    "audit:unit:given.steps",
+    "audit:unit:given.stuck",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links. Both Finished and the excluded Step in the iff formula link directly to their defining blocks. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3d6411c167d2bd56bb2f4d2dbc5e36f66c460dff83fbd351e1cb165e18f0b92f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links.",
+    "mathematics": "Both Finished and the excluded Step in the iff formula link directly to their defining blocks.",
+    "links": [
+      {
+        "occurrence": "given.stuck:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links."
+      },
+      {
+        "occurrence": "given.stuck:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{Finished}(K)' refers to md/given.md#claim-given.finished for the concept or example setup used by this unit. Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links."
+      },
+      {
+        "occurrence": "given.stuck:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash K\\\\longrightarrow K'\" refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links."
+      },
+      {
+        "occurrence": "given.stuck:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression evaluation' refers to md/given.md#claim-given.evaluation for the concept or example setup used by this unit. Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links."
+      },
+      {
+        "occurrence": "given.stuck:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Undefined lookup' refers to md/given.md#claim-given.lookup for the concept or example setup used by this unit. Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links."
+      }
+    ]
+  }
+}

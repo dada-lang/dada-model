@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "556dafe3df48e38e48516e99761f38adedc4039a4185bb744603628cafce4e94",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces raw transitions and collected public steps. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery. The linked judgments account for every raw-rule premise; H,V,n and evaluated variants are scoped immediately before the rules, B_r is defined there, and raw/public step symbols are the local definitions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "7191868919b4bc3ed884e94edba50b6490bed980673230e423cf17ae42c3ddd0"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "raw transitions and collected public steps",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 20207,
+      "end": 23255
+    },
+    "clarity": "The named landing directly introduces raw transitions and collected public steps. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery.",
+    "independence": "The linked judgments account for every raw-rule premise; H,V,n and evaluated variants are scoped immediately before the rules, B_r is defined there, and raw/public step symbols are the local definitions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

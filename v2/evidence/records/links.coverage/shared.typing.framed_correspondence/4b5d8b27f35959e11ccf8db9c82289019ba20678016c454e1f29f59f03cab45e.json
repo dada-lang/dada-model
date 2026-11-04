@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "bundle": "9d17bb2b7bea52d0c54ebcf8816856b2f5e3c8784902ad51c92e368f2dbe7028",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1351e1c6cc8ff51db610855b1d6e4c1572ca7e99bf1cc523d1aba6d737c4b45f",
+    "audit:target:4fbc8d894e68d4383b58ceae09ec533638f4d56e8e7e70e873de2949841887dd",
+    "audit:target:6da213a18937e4126d7e96483f8007dabd404477df24caffc5a0862001bcce8b",
+    "audit:unit:given.machine",
+    "audit:unit:shared.gc",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.typing.framed_correspondence",
+    "audit:unit:shared.typing.given_fragment",
+    "audit:unit:shared.typing.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the Given/Shared embedding and public framed machines. Separates this lifetime theorem from local observations. The quantified public-step correspondence includes collection and initial-frame exit; both directions use the linked embedding. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "5a87750a5125b99b8d0785d2a9f4d07c48185abd740ba6e9c583ec450b946398"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the Given/Shared embedding and public framed machines. Separates this lifetime theorem from local observations.",
+    "mathematics": "The quantified public-step correspondence includes collection and initial-frame exit; both directions use the linked embedding.",
+    "links": [
+      {
+        "occurrence": "shared.typing.framed_correspondence:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Given' refers to md/given-typing.md#claim-given.typing.execution for the concept or example setup used by this unit. Links the Given/Shared embedding and public framed machines. Separates this lifetime theorem from local observations."
+      },
+      {
+        "occurrence": "shared.typing.framed_correspondence:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared' refers to md/shared-typing.md#claim-shared.typing.execution for the concept or example setup used by this unit. Links the Given/Shared embedding and public framed machines. Separates this lifetime theorem from local observations."
+      },
+      {
+        "occurrence": "shared.typing.framed_correspondence:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'embedding' refers to md/shared.md#claim-shared.embedding for the concept or example setup used by this unit. Links the Given/Shared embedding and public framed machines. Separates this lifetime theorem from local observations."
+      }
+    ]
+  }
+}

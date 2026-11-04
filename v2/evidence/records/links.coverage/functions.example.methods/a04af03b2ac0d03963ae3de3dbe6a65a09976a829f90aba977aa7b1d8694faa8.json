@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "e04bc4ab489a892efa9240c64970299ff9a0238688426c247c0ffb820568a2a1",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:unit:functions.example.methods",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained. The example uses concrete signatures and calls, not an unstated dispatch or overloading relation. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b7c7e515dbe79141d12d039256f9498725824e7c6b8b0623b02b7c2d214fa5ca"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained.",
+    "mathematics": "The example uses concrete signatures and calls, not an unstated dispatch or overloading relation.",
+    "links": [
+      {
+        "occurrence": "functions.example.methods:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal declaration' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained."
+      },
+      {
+        "occurrence": "functions.example.methods:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'give operation' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained."
+      }
+    ]
+  }
+}

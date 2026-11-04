@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "abd0668dda6877b2cd316bb583987ca323614c86f6b2ae94a2a3c50d5c429602",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cce19ef6a71eb7d3cab3d2e2c78a524748e4bdf086d09a170c945dcbe7dcef9",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.full",
+    "audit:unit:given.typing.views",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses. The table contains literal view notation, not an unlinked equation or inference judgment. Full versus partial is explained before the table and formally linked. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d3faeda07b09ae7931397333da7b10ae85d381c6e4655b33de7d658e5adf8f08"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses.",
+    "mathematics": "The table contains literal view notation, not an unlinked equation or inference judgment. Full versus partial is explained before the table and formally linked.",
+    "links": [
+      {
+        "occurrence": "given.typing.example.views:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'formal fullness predicate' refers to md/given-typing.md#claim-given.typing.full for the concept or example setup used by this unit. The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses."
+      }
+    ]
+  }
+}

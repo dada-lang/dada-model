@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "c0959cb098b93e7f020b9e439985ec9c562dca8385e0b1e5ae9ee420ecd0fb42",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:target:ff3e7738076ec20cf83e1713f8a2f88cd97eba66768aa681e849e215d51fcdbe",
+    "audit:unit:shared.lookup",
+    "audit:unit:shared.references",
+    "audit:unit:shared.state",
+    "audit:unit:shared.storage_places",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones. S[x] and S[α.f] are defined by the two partial equations. Storage decomposition and defined-slot conditions are local; q and references are linked. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "fe105500b2b66ce59d12b324b0cd05c47bae0621994ce2e0be91ec68101b752d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones.",
+    "mathematics": "S[x] and S[α.f] are defined by the two partial equations. Storage decomposition and defined-slot conditions are local; q and references are linked.",
+    "links": [
+      {
+        "occurrence": "shared.lookup:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage place' refers to md/shared.md#claim-shared.storage_places for the concept or example setup used by this unit. Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones."
+      },
+      {
+        "occurrence": "shared.lookup:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage' refers to md/shared.md#claim-shared.state for the concept or example setup used by this unit. Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones."
+      },
+      {
+        "occurrence": "shared.lookup:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reference' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones."
+      }
+    ]
+  }
+}

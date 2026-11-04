@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "39ba557eccc360c2166eb6e8582253d243a9bf984d29669c482a1a32e9e95c21",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8d81c7b4f11aeea46a624df3356f9dcaa7eda85398e02854dbe437303e0c69ea",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.reference_realization directly introduces shared.typing.reference_realization. Links read, normalized types, mode, allocation, pos/neg, valid paths, declared permission and composition. Its three conditions define access from a reference, including hidden routes. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Satisfies requires matching root mode/class, allocated correctly classed results for all positive paths, empty slots for negative paths, and composed declared modes on every valid inhabited read, including paths omitted by the view. The three conditions preserve the distinction between a stored mode and effective path mode. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "6303ebe86628d512ad2cca5af44b660d47620e2251ca4aae452b942fb7abd6ac"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.reference_realization",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 32479,
+      "end": 33939
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.reference_realization directly introduces shared.typing.reference_realization. Links read, normalized types, mode, allocation, pos/neg, valid paths, declared permission and composition. Its three conditions define access from a reference, including hidden routes.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Satisfies requires matching root mode/class, allocated correctly classed results for all positive paths, empty slots for negative paths, and composed declared modes on every valid inhabited read, including paths omitted by the view. The three conditions preserve the distinction between a stored mode and effective path mode. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

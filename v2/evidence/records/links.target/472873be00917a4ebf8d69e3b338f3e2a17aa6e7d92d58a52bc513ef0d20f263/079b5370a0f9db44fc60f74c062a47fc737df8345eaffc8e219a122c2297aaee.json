@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "9593b92bcce13a6af927e7cd9750241f58cb009322ac08ec82ad606908dd1858",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:472873be00917a4ebf8d69e3b338f3e2a17aa6e7d92d58a52bc513ef0d20f263",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.executions directly introduces Given zero-or-more-step execution. Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined. The one-step premise links the Step definition. Reflexivity and recursion define the starred execution relation in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "eb0ab51420e1eb24ca5554ebc3225ef6dd05d204a67655b7ee8c136d88c976b1"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given zero-or-more-step execution",
+    "definition": {
+      "path": "md/given.md",
+      "start": 15485,
+      "end": 15861
+    },
+    "clarity": "The landing md/given.md#claim-given.executions directly introduces Given zero-or-more-step execution. Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined.",
+    "independence": "The one-step premise links the Step definition. Reflexivity and recursion define the starred execution relation in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

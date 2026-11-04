@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "bundle": "7b777368af6ab04b3efd733cbcd6980a963e4c1e641ee77c1d463cc1c860a0db",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a65eb6e25dc5992af74682e3ee7637608f951cbca91ff863784472c2c21591a9",
+    "audit:target:ee677a280b28caae8944bc8ea17f855a3a4cc330d7651935f345a4588c0263f5",
+    "audit:unit:given.patterns",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.expressions",
+    "audit:unit:given.typing.statements",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Expression typing and binding typing both link directly in the introductory explanation. Both premises link their defining judgments, while the Let conclusion defines statement typing here. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "7c3aa62651c6610d52b1c5a29884f14a94ecbfcec0e4b6ac6f08de1f4dec76e6"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Expression typing and binding typing both link directly in the introductory explanation.",
+    "mathematics": "Both premises link their defining judgments, while the Let conclusion defines statement typing here.",
+    "links": [
+      {
+        "occurrence": "given.typing.statements:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'types the expression' refers to md/given-typing.md#claim-given.typing.expressions for the concept or example setup used by this unit. Expression typing and binding typing both link directly in the introductory explanation."
+      },
+      {
+        "occurrence": "given.typing.statements:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'its binding pattern' refers to md/given-typing.md#claim-given.typing.bindings for the concept or example setup used by this unit. Expression typing and binding typing both link directly in the introductory explanation."
+      },
+      {
+        "occurrence": "given.typing.statements:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\triangleright' refers to md/given-typing.md#claim-given.typing.expressions for the concept or example setup used by this unit. Expression typing and binding typing both link directly in the introductory explanation."
+      },
+      {
+        "occurrence": "given.typing.statements:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma_1\\\\vdash b:T\\\\Rightarrow\\\\Gamma_2' refers to md/given-typing.md#claim-given.typing.bindings for the concept or example setup used by this unit. Expression typing and binding typing both link directly in the introductory explanation."
+      }
+    ]
+  }
+}

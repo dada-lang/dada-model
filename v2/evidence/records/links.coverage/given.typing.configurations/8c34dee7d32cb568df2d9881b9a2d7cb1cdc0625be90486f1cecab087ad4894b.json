@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "bundle": "d3daa46a00b7f436d680eb446e05c2f21dc43a3df5336c0af0c0b0f6f528e85e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4eb4444f47c2cf800acfe57f1fe74d9c78d8e7427cc5203d9959826b200440ca",
+    "audit:target:6a677ac22a7333f883a5bbe3ea1f985b201e8e1dfa34eb7895adb06760dc2928",
+    "audit:target:90551fc1b4acbc85cd0af545697c9e6593adef6b426431e751cb7e9684fbc7b8",
+    "audit:target:de8c17107cd2bbf6e44d0bf15ada676d4d817578ead32b69effa4f7154e93041",
+    "audit:unit:given.gc",
+    "audit:unit:given.machine",
+    "audit:unit:given.typing.configurations",
+    "audit:unit:given.typing.realization",
+    "audit:unit:given.typing.statements",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The given.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame. The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b738abb5f9a48842b3e09a888e4430223c9e05d64715fed2aef3a6fe18d099dd"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The given.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame.",
+    "mathematics": "The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+    "links": [
+      {
+        "occurrence": "given.typing.configurations:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'realizes an environment' refers to md/given-typing.md#claim-given.typing.realization for the concept or example setup used by this unit. The given.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "given.typing.configurations:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statements typecheck' refers to md/given-typing.md#claim-given.typing.sequences for the concept or example setup used by this unit. The given.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "given.typing.configurations:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/given.md#claim-given.machine for the concept or example setup used by this unit. The given.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "given.typing.configurations:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed' refers to md/given-typing.md#claim-given.typing.well_formed_classes for the concept or example setup used by this unit. The given.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "7de5f0ba90bbf021a7fad35f82c0ab8e68c8b0de47335f722f9fae676cf18eec",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:functions.example.gc",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The table supplies the three lifetime boundaries and roots directly. The forward frame/collector links are explicitly marked below and reviewed separately. All object names are declared in the code; the table defines the concrete states, including spent identifiers. It does not require a future symbolic transition derivation to read the observation. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "08e1e5eb581a3c7596003631eabefd7deae4f6c0787628728caf8b17f8d8f862"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The table supplies the three lifetime boundaries and roots directly. The forward frame/collector links are explicitly marked below and reviewed separately.",
+    "mathematics": "All object names are declared in the code; the table defines the concrete states, including spent identifiers. It does not require a future symbolic transition derivation to read the observation.",
+    "links": [
+      {
+        "occurrence": "functions.example.gc:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'frame rules' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. The table supplies the three lifetime boundaries and roots directly. The forward frame/collector links are explicitly marked below and reviewed separately."
+      },
+      {
+        "occurrence": "functions.example.gc:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'collector definition' refers to md/functions.md#claim-functions.gc for the concept or example setup used by this unit. The table supplies the three lifetime boundaries and roots directly. The forward frame/collector links are explicitly marked below and reviewed separately."
+      }
+    ]
+  }
+}

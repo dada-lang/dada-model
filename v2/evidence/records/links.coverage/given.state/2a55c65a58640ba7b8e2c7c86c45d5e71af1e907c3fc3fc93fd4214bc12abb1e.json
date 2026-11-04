@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "c3d7c1d45bc2866d27fd8485958e5dca4315a68ee8b0b70692e83591e2de9c5b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6b62588dc91e02fb002f06c49a255ee88f8214c8d7ccbfa6ccf50802d1e5930a",
+    "audit:unit:given.collections",
+    "audit:unit:given.identities",
+    "audit:unit:given.slots",
+    "audit:unit:given.state",
+    "audit:unit:given.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines only the storage tuple, table domains and allocation counter. The finite-map convention links to given.collections; empty storage has been extracted into its own definition. S/O/V/ν are locally introduced storage components. The displayed map domains use the prior identity/slot categories; the finite-map convention has its own direct link. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "46d29cfe233f9da696d2b71e2d82fc2d3e8c225ea967dff7ce3b3b09bb1b13ba"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines only the storage tuple, table domains and allocation counter. The finite-map convention links to given.collections; empty storage has been extracted into its own definition.",
+    "mathematics": "S/O/V/ν are locally introduced storage components. The displayed map domains use the prior identity/slot categories; the finite-map convention has its own direct link.",
+    "links": [
+      {
+        "occurrence": "given.state:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Finite-map notation' refers to md/given.md#claim-given.collections for the concept or example setup used by this unit. Defines only the storage tuple, table domains and allocation counter. The finite-map convention links to given.collections; empty storage has been extracted into its own definition."
+      }
+    ]
+  }
+}

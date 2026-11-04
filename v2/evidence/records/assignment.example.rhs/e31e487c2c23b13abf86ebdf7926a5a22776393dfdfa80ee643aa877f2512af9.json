@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "8c5feaa5d8f237b096f106ff54086081d68987392b6f1240640e0665e0db2caf",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "context:lean/Assignment/Checks.lean",
+    "context:lean/Assignment/ExecutionChecks.lean",
+    "context:lean/Assignment/Step.lean",
+    "context:lean/Assignment/StorageTypes.lean",
+    "context:lean/Assignment/Syntax.lean",
+    "context:lean/Assignment/Typing.lean",
+    "context:lean/Assignment/Write.lean",
+    "context:lean/Correspondence/DestructorsAssignment.lean",
+    "lean:Assignment/Checks:rhs_first",
+    "policy:md/repo/correspondence-review.md",
+    "unit:assignment.example.rhs"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Checks.rhs_first establishes StatementTyped for store w,w→ on whole Wrapper using an intermediate empty w and checks rejection of field storage from that empty root. Thus the two claims are exactly self-move/refill and unavailable-parent rejection, without claiming arbitrary RHS evaluation is executable.",
+  "limitations": [
+    "Author self-review, not independent review. Lean separately checks proofs; this review compares statements and definitions with prose.",
+    "Assignment general soundness, class-retention and reverse execution correspondence are not claimed. Abstract syntax and mathematical GC do not certify a parser or executable collector."
+  ],
+  "supersedes": []
+}

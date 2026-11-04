@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "5992c85d0045f1d4258ddb87cbc440f558de7995c442a9818a0cd568dade03c4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:unit:given.example.unpack",
+    "audit:unit:given.finished",
+    "audit:unit:given.machine",
+    "audit:unit:given.patterns",
+    "audit:unit:given.unpacking",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links unpacking and completion; all class declarations and the moved/empty field scenario are present locally. No field-description typing rule is assumed ahead of the next chapter. All source class/field names are declared in the example. Its unpacking and finished claims link backwards, and empty bindings use already introduced slot semantics. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "f727ea08ac97d1114913df6bec90119b905344b5caa2c42ce08c5d3af7f85f34"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links unpacking and completion; all class declarations and the moved/empty field scenario are present locally. No field-description typing rule is assumed ahead of the next chapter.",
+    "mathematics": "All source class/field names are declared in the example. Its unpacking and finished claims link backwards, and empty bindings use already introduced slot semantics.",
+    "links": [
+      {
+        "occurrence": "given.example.unpack:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Unpacking' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. Links unpacking and completion; all class declarations and the moved/empty field scenario are present locally. No field-description typing rule is assumed ahead of the next chapter."
+      },
+      {
+        "occurrence": "given.example.unpack:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/given.md#claim-given.finished for the concept or example setup used by this unit. Links unpacking and completion; all class declarations and the moved/empty field scenario are present locally. No field-description typing rule is assumed ahead of the next chapter."
+      }
+    ]
+  }
+}

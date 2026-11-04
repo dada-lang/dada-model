@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "42da07356b9be129fe6a7f50d3966707f394d765fb1c04a0d4f61534c4af1198",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ae08b7c87ebb6ccce78c920e81bcd92f0a881d614e165e3e2f5b8c68376061dd",
+    "audit:unit:assignment.embedding",
+    "audit:unit:assignment.forward",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The embedding link identifies the preceding definition, and the statement names both source and target languages. It explicitly limits the claim to forward execution and excludes a typing claim. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. The embedding link identifies the preceding definition, and the statement names both source and target languages. It explicitly limits the claim to forward execution and excludes a typing claim. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d678a9240bc7141724a36f26598840611c2c50df46215b5d6648209c5b0630bf"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The embedding link identifies the preceding definition, and the statement names both source and target languages. It explicitly limits the claim to forward execution and excludes a typing claim.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. The embedding link identifies the preceding definition, and the statement names both source and target languages. It explicitly limits the claim to forward execution and excludes a typing claim.",
+    "links": [
+      {
+        "occurrence": "assignment.forward:1",
+        "role": "conceptual",
+        "rationale": "The label 'embedding' supplies the earlier definition/setup at #claim-assignment.embedding used by this passage."
+      }
+    ]
+  }
+}

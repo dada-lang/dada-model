@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "0b2e1105cd984d56354313afe524410a4ba89d23e4d7bb00265e1ca0bbfca6eb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.perm",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The direct equation extracts the outer permission and links normalized form. No grammar or unrelated operation precedes it in this unit. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.perm projects permission from the already normalized ValueType record. The equation perm(pi C.A)=pi and the printed implicit given case identify precisely that projection. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "fe75d0a43cfe66bbf88ef2536d553bca51a9707ee6429ef8a932ae7b8412076b"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The direct equation extracts the outer permission and links normalized form. No grammar or unrelated operation precedes it in this unit.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.perm projects permission from the already normalized ValueType record. The equation perm(pi C.A)=pi and the printed implicit given case identify precisely that projection.",
+    "links": [
+      {
+        "occurrence": "shared.typing.perm:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalized form' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. The direct equation extracts the outer permission and links normalized form. No grammar or unrelated operation precedes it in this unit."
+      }
+    ]
+  }
+}

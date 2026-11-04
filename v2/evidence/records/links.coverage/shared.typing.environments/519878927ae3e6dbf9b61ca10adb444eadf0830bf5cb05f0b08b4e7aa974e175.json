@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "74a4b93fb31cdbe57fcd446b80a57283ff0f2708e9b5ba7ac58e3c3c61889bbb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7a4e714d94614dfcf82ae12cf39b0fc48783107cffa0afff778a59a28df6719d",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:given.typing.environments",
+    "audit:unit:shared.typing.environments",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.types",
+    "audit:unit:shared.typing.well_formed_types",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SlotDescription is Option ValueType, distinguishing empty from absent lookup; Environment is a list with distinct variable keys. Environment.WellFormed requires Admissible (well-formed and normalized) inhabited descriptions. Replacement retains allocated variable keys, matching the freshness explanation. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "49eb30e73c03b93cedb621a71ccabfefb2fb1d0b2ca1d29bbd587c83eaa36b00"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SlotDescription is Option ValueType, distinguishing empty from absent lookup; Environment is a list with distinct variable keys. Environment.WellFormed requires Admissible (well-formed and normalized) inhabited descriptions. Replacement retains allocated variable keys, matching the freshness explanation.",
+    "links": [
+      {
+        "occurrence": "shared.typing.environments:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well formed' refers to md/shared-typing.md#claim-shared.typing.well_formed_types for the concept or example setup used by this unit. Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here."
+      },
+      {
+        "occurrence": "shared.typing.environments:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalized' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here."
+      }
+    ]
+  }
+}

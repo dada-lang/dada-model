@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "bundle": "e33c87aa4f9a6ed977f0ad1907d8cc034699aae57c1d9b62a7458ae0868853bb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e411ab3d3f4538324e304fd37a80dd02fef29ff116e7f948292a5133e615d1f",
+    "audit:target:2125be554c01949722a01b484938c16897339c8d6ac2c317a9fc821a16faeeaa",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:target:7b9572fe001e266c185e795f8b2fb6d9e4095389cfc90d0fae7eb97acf562bca",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.configurations",
+    "audit:unit:shared.typing.erasure",
+    "audit:unit:shared.typing.expression_soundness",
+    "audit:unit:shared.typing.outcomes",
+    "audit:unit:shared.typing.progress",
+    "audit:unit:shared.typing.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links typed configuration, Finished, erasure and Step in both prose and math. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ConfigurationTyped.progress concludes finished or an existential Unpacking.Step under classes.erase from an arbitrary typed configuration. The rendered disjunction has those same alternatives and no additional dynamic-success assumption. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3c8f7d1a8c069a130f702d14bb99c011abfba6b06b43b936aa348f62371dd3a0"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links typed configuration, Finished, erasure and Step in both prose and math.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ConfigurationTyped.progress concludes finished or an existential Unpacking.Step under classes.erase from an arbitrary typed configuration. The rendered disjunction has those same alternatives and no additional dynamic-success assumption.",
+    "links": [
+      {
+        "occurrence": "shared.typing.progress:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed configuration' refers to md/shared-typing.md#claim-shared.typing.configurations for the concept or example setup used by this unit. Links typed configuration, Finished, erasure and Step in both prose and math."
+      },
+      {
+        "occurrence": "shared.typing.progress:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/shared-typing.md#claim-shared.typing.finished for the concept or example setup used by this unit. Links typed configuration, Finished, erasure and Step in both prose and math."
+      },
+      {
+        "occurrence": "shared.typing.progress:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/shared-typing.md#claim-shared.typing.steps for the concept or example setup used by this unit. Links typed configuration, Finished, erasure and Step in both prose and math."
+      },
+      {
+        "occurrence": "shared.typing.progress:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma\\\\vdash K:\\\\Gamma_f' refers to md/shared-typing.md#claim-shared.typing.configurations for the concept or example setup used by this unit. Links typed configuration, Finished, erasure and Step in both prose and math."
+      },
+      {
+        "occurrence": "shared.typing.progress:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{Finished}(K)' refers to md/shared-typing.md#claim-shared.typing.finished for the concept or example setup used by this unit. Links typed configuration, Finished, erasure and Step in both prose and math."
+      },
+      {
+        "occurrence": "shared.typing.progress:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\lfloor\\\\Sigma\\\\rfloor' refers to md/shared-typing.md#claim-shared.typing.erasure for the concept or example setup used by this unit. Links typed configuration, Finished, erasure and Step in both prose and math."
+      },
+      {
+        "occurrence": "shared.typing.progress:7",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\longrightarrow_u' refers to md/shared-typing.md#claim-shared.typing.steps for the concept or example setup used by this unit. Links typed configuration, Finished, erasure and Step in both prose and math."
+      }
+    ]
+  }
+}

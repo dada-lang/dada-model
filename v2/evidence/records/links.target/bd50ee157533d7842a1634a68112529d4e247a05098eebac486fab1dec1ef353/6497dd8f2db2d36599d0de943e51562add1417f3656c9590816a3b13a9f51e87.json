@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "ee7f1e7bebd7bf236610189cd109e0d58bb4f6765238a627adf7b17718e384b3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:bd50ee157533d7842a1634a68112529d4e247a05098eebac486fab1dec1ef353",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces well-typed Functions programs. Links nominal-table validity, declaration-table checking and top-level sequence typing. The empty initial environment and existential final environment are explicit, with no extra terminal-consumption condition. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "8825b32b0513ac908530cbfe9dc969a74ba27b3b01eccd8940c67507401d54ed"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "well-typed Functions programs",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 14090,
+      "end": 14373
+    },
+    "clarity": "The named landing directly introduces well-typed Functions programs. Links nominal-table validity, declaration-table checking and top-level sequence typing.",
+    "independence": "The empty initial environment and existential final environment are explicit, with no extra terminal-consumption condition. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

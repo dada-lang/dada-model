@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "d4b7f7b1ca16ef43d5768093feba6d3bbcb41f1e5baeba45d77d81fc3f00b69b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:33809897369fd4607384d07eadc60386712478a8b6088571abb3604e50110c5c",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.parameters",
+    "audit:unit:functions.signatures",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links signatures, runtime references and optional destination/result syntax. Defines ordered binding and presence matching. bind, d~R, and list arity are introduced locally; equal lengths are the operation's stated domain, not a hidden zip truncation assumption. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "49dd0e1c826600043edd0fe358dfaa96027c87bbb2c53d7c19a14b2c95646b29"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links signatures, runtime references and optional destination/result syntax. Defines ordered binding and presence matching.",
+    "mathematics": "bind, d~R, and list arity are introduced locally; equal lengths are the operation's stated domain, not a hidden zip truncation assumption.",
+    "links": [
+      {
+        "occurrence": "functions.parameters:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'parameter' refers to md/functions.md#claim-functions.signatures for the concept or example setup used by this unit. Links signatures, runtime references and optional destination/result syntax. Defines ordered binding and presence matching."
+      },
+      {
+        "occurrence": "functions.parameters:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'runtime reference' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links signatures, runtime references and optional destination/result syntax. Defines ordered binding and presence matching."
+      },
+      {
+        "occurrence": "functions.parameters:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'destination and result' refers to md/functions.md#claim-functions.calls for the concept or example setup used by this unit. Links signatures, runtime references and optional destination/result syntax. Defines ordered binding and presence matching."
+      }
+    ]
+  }
+}

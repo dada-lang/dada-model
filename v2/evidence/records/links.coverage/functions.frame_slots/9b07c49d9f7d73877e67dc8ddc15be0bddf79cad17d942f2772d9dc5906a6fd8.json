@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "b4b673f3c2073397e30d4daf9fbe7be3f3ea121c5c33171de6d99334e74193ce",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:unit:functions.environments",
+    "audit:unit:functions.frame_slots",
+    "audit:unit:functions.machine",
+    "audit:unit:shared.typing.realization",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names. R is introduced as the list of reference/type pairs; repeated occurrences are retained explicitly. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4f9b9ed17b02666de14840064c53229b59c94f1b54bd71a1fbb68a41e34ae84a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names.",
+    "mathematics": "R is introduced as the list of reference/type pairs; repeated occurrences are retained explicitly.",
+    "links": [
+      {
+        "occurrence": "functions.frame_slots:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"frame's environment\" refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names."
+      },
+      {
+        "occurrence": "functions.frame_slots:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'runtime locals' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names."
+      },
+      {
+        "occurrence": "functions.frame_slots:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reference/type pairs' refers to md/shared-typing.md#claim-shared.typing.realization for the concept or example setup used by this unit. Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names."
+      }
+    ]
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "bundle": "82784c01cfd6177743a584bd33014896f4237ff4ce935d00aba2a5f0686a9fc6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:destructors.finished_environment",
+    "audit:unit:destructors.machine",
+    "audit:unit:functions.gc",
+    "audit:unit:functions.machine",
+    "audit:unit:shared.state",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target. No new equations. Heap, allocation counter, active/suspended frames and roots are introduced in the paragraph before use. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c18610aae475b7225d03074c7aa7e178ff334559061f170c616f583a971f8590"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target.",
+    "mathematics": "No new equations. Heap, allocation counter, active/suspended frames and roots are introduced in the paragraph before use.",
+    "links": [
+      {
+        "occurrence": "destructors.machine:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Functions' supplies the definition or concrete example setup used here, at functions.md#claim-functions.machine. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      },
+      {
+        "occurrence": "destructors.machine:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Functions' frame-exit rule' supplies the definition or concrete example setup used here, at functions.md#claim-functions.execution. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      },
+      {
+        "occurrence": "destructors.machine:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'class obligations' supplies the definition or concrete example setup used here, at #claim-destructors.finished_environment. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      },
+      {
+        "occurrence": "destructors.machine:4",
+        "role": "conceptual",
+        "rationale": "The occurrence 'EagerGC' supplies the definition or concrete example setup used here, at functions.md#claim-functions.gc. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      },
+      {
+        "occurrence": "destructors.machine:5",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Shared representation' supplies the definition or concrete example setup used here, at shared.md#claim-shared.state. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      }
+    ]
+  }
+}

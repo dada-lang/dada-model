@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "093bfc9216c62490979adfd1a0594b6fa9b5912eba0c45aa7733b98bd0dd3e95",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:theorem_source",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections",
+    "test:mdbook-dada/src/lean.rs:tests::selects_complete_named_theorems_without_comment_or_string_decoys",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_reject_wrong_kinds_and_malformed_directives",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_select_literal_qualified_names",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_show_the_exact_named_statement_and_proof",
+    "test:mdbook-dada/tests/book.rs:markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds",
+    "unit:meta.math.theorem.selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.theorem.selection against rust:mdbook-dada/src/lean.rs:select, rust:mdbook-dada/src/lean.rs:extract_declaration, rust:mdbook-dada/src/lean.rs:theorem_source, rust:mdbook-dada/src/lib.rs:chapter_roles, test:mdbook-dada/tests/book.rs:authored_theorems_show_the_exact_named_statement_and_proof, test:mdbook-dada/tests/book.rs:authored_theorems_select_literal_qualified_names, test:mdbook-dada/tests/book.rs:authored_theorems_reject_wrong_kinds_and_malformed_directives, test:mdbook-dada/tests/book.rs:markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds, test:mdbook-dada/src/lean.rs:tests::selects_complete_named_theorems_without_comment_or_string_decoys, test:mdbook-dada/src/lean.rs:tests::rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections. Theorem/lemma selection requires a named theorem with := body; the extractor rejects wrong kinds, duplicate/unsupported declarations and indented sibling commands. Rendering retains the exact selected statement/proof and forbids nested proof/definition/example blocks. Tests cover literal qualified names, comments/string decoys, complete proof output and every nested block-kind combination. Lean proof correctness remains a separate check. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Assignment differential re-review: exact authored unit and selected formalization/test inputs are unchanged from the previously reviewed bundle. The new Assignment modules import the earlier layers without modifying their source or claims. Reviewed the revised AGENTS scope and explicit Assignment proof boundary; it does not change this earlier claim. This retains the prior correspondence judgment after exact required-input comparison, not an independent fresh proof audit.",
+  "limitations": [
+    "Differential author self-review of unchanged semantic/tool selections; mechanical checks are reported separately. No independent re-proof is claimed."
+  ],
+  "supersedes": [
+    "9e630c0f445b758482339ce168b952b6695328763cdba620459f561ced7fe6f1"
+  ]
+}

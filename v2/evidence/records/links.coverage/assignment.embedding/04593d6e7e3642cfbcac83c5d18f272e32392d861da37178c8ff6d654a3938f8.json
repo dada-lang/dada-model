@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "de730c2747e397a63ea4237d7bcd595350cbd73a326e82e6d9389c7d9fdc22d3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:assignment.embedding",
+    "audit:unit:assignment.machine",
+    "audit:unit:assignment.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines the embedding components after both machines have been introduced. The preserved components are enumerated directly; it does not cite an unnamed conversion theorem. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Defines the embedding components after both machines have been introduced. The preserved components are enumerated directly; it does not cite an unnamed conversion theorem.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines the embedding components after both machines have been introduced. The preserved components are enumerated directly; it does not cite an unnamed conversion theorem.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Defines the embedding components after both machines have been introduced. The preserved components are enumerated directly; it does not cite an unnamed conversion theorem.",
+    "links": []
+  }
+}

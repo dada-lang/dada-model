@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "aa7cba028a2c71d6874580bcf1f99dd33ce8e9373ebd0bf4b8c50a2217608870",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:assignment.context",
+    "audit:unit:assignment.view",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The operation is defined here in terms of positive/negative entries already motivated by the opening examples and inherited views. The normalization link identifies the reused canonicalization definition. There are no undeclared mathematical metavariables. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. The operation is defined here in terms of positive/negative entries already motivated by the opening examples and inherited views. The normalization link identifies the reused canonicalization definition. There are no undeclared mathematical metavariables. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "bdf2d73f40db9992d3955d56da7e109a1156334cd62a4d40390a559c16222c5a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The operation is defined here in terms of positive/negative entries already motivated by the opening examples and inherited views. The normalization link identifies the reused canonicalization definition. There are no undeclared mathematical metavariables.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. The operation is defined here in terms of positive/negative entries already motivated by the opening examples and inherited views. The normalization link identifies the reused canonicalization definition. There are no undeclared mathematical metavariables.",
+    "links": [
+      {
+        "occurrence": "assignment.view:1",
+        "role": "conceptual",
+        "rationale": "The label 'normalized' supplies the earlier definition/setup at given-typing.md#claim-given.typing.normalization used by this passage."
+      }
+    ]
+  }
+}

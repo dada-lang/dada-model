@@ -224,14 +224,34 @@ theorem take_readPath_frame (wf : WellFormedWith classes before pending)
         simpa [List.append_assoc] using separate)
       exact (readPath_append afterWf firstRead rest).trans remaining
 
--- The owner removed from its source remains a live pending value. Its own
--- fields are below the source object in allocation order and are unaffected.
-theorem take_readPath_below (wf : WellFormedWith classes before pending)
+theorem route_of_liveWith (live : LiveWith state pending object) :
+    ∃ site path, Route state pending site path object := by
+  induction live with
+  | pending member => exact ⟨_, [], .root (.pending member)⟩
+  | «variable» member => exact ⟨_, [], .root (.variable member)⟩
+  | field _ member field ih =>
+    obtain ⟨site, path, route⟩ := ih
+    exact ⟨site, _, .field route member field⟩
+
+theorem readPath_no_cycle (wf : WellFormedWith classes state pending)
+    (nonempty : path ≠ []) (read : readPath state object path = some (some object)) : False := by
+  obtain ⟨data, member⟩ := readPath_root_allocated read
+  obtain ⟨site, rootPath, route⟩ := route_of_liveWith (wf.rooted object (List.mem_map.mpr ⟨_, member, rfl⟩))
+  have same := ((route.follow read).unique wf route).2
+  have lengths := congrArg List.length same
+  have : path.length = 0 := by simp only [List.length_append] at lengths; omega
+  exact nonempty (List.length_eq_zero_iff.mp this)
+
+-- An owner's interior cannot lead back to its incoming slot: otherwise two
+-- distinct root routes would own the same object.
+theorem take_readPath_descendant (wf : WellFormedWith classes before pending)
     (taken : Take before source removed after)
-    (below : object.index ≤ removed.index)
+    (cut : Route before pending site cutPath removed)
+    (route : Route before pending site initial object)
+    (below : cutPath.length ≤ initial.length)
     (read : readPath before object path = some slot) : readPath after object path = some slot := by
   have afterWf := taken.preserves_pending wf
-  induction path generalizing object with
+  induction path generalizing initial object with
   | nil =>
     cases found : before.objects.lookup object <;> simp [readPath, found] at read
     subst slot
@@ -244,8 +264,12 @@ theorem take_readPath_below (wf : WellFormedWith classes before pending)
       have different : StoragePlace.field object field ≠ source := by
         intro sameSource
         have sourceField : Stored before (.field object field) (some removed) := sameSource ▸ taken.stored
-        obtain ⟨sourceData, sourceStored, sourceAtField⟩ := sourceField
-        have older := wf.older _ _ _ _ sourceStored sourceAtField
+        have sameSlot := stored_value_unique wf
+          (show Stored before (.field object field) fieldSlot from ⟨_, stored, atField⟩) sourceField
+        have crossing := Route.field route stored (sameSlot ▸ atField)
+        have samePath := (crossing.unique wf cut).2
+        have lengths := congrArg List.length samePath
+        simp only [List.length_append, List.length_singleton] at lengths
         omega
       have firstRead := readPath_singleton_of_stored afterWf
         (taken.stored_unchanged different (show Stored before (.field object field) fieldSlot from
@@ -253,13 +277,15 @@ theorem take_readPath_below (wf : WellFormedWith classes before pending)
     · rcases final with ⟨rfl, rfl⟩
       exact firstRead
     · subst fieldSlot
-      have childBelow := Nat.le_trans (Nat.le_of_lt (wf.older _ _ _ _ stored atField)) below
-      exact (readPath_append afterWf firstRead rest).trans (ih childBelow more)
+      exact (readPath_append afterWf firstRead rest).trans
+        (ih (.field route stored atField) (by simp only [List.length_append, List.length_singleton]; omega) more)
 
 theorem take_readPath_taken (wf : WellFormedWith classes before pending)
     (taken : Take before source object after)
-    (read : readPath before object path = some slot) : readPath after object path = some slot :=
-  take_readPath_below wf taken (Nat.le_refl _) read
+    (read : readPath before object path = some slot) : readPath after object path = some slot := by
+  obtain ⟨data, member⟩ := readPath_root_allocated read
+  obtain ⟨site, rootPath, route⟩ := route_of_liveWith (wf.rooted object (List.mem_map.mpr ⟨_, member, rfl⟩))
+  exact take_readPath_descendant wf taken route route (Nat.le_refl _) read
 
 theorem take_readPath_cleared (wf : WellFormedWith classes before pending)
     (taken : Take before source removed after) (nonempty : path ≠ [])
@@ -290,7 +316,7 @@ theorem take_readPath_cleared (wf : WellFormedWith classes before pending)
             (same ▸ taken.stored)
           have equalObject := Option.some.inj equalSlot
           subst child
-          exact Nat.lt_irrefl _ (readPath_index_strict wf empty more)
+          exact readPath_no_cycle wf empty more
         have firstRead := readPath_singleton_of_stored afterWf
           (taken.stored_unchanged different
             (show Stored before (.field object field) (some child) from ⟨data, stored, atField⟩))

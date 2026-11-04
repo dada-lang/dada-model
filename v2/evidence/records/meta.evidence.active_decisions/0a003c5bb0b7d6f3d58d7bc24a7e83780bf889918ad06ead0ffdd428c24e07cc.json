@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "0396e217d7a9755aec86b8c65a0a916318015256d1072dd06a2c56760645606c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "test:mdbook-dada/tests/evidence_validation.rs:mismatch_and_inconclusive_reviews_never_count_as_correspondence",
+    "test:mdbook-dada/tests/evidence_validation.rs:recording_rechecks_sources_even_with_an_existing_inventory",
+    "test:mdbook-dada/tests/evidence_validation.rs:revised_review_can_supersede_same_unit_after_consulting_more_context",
+    "test:mdbook-dada/tests/evidence_validation.rs:stale_supersession_cannot_fall_back_to_an_independent_positive_review",
+    "unit:meta.evidence.active_decisions"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.evidence.active_decisions against rust:mdbook-dada/src/evidence.rs:record, rust:mdbook-dada/src/evidence.rs:check, test:mdbook-dada/tests/evidence_validation.rs:recording_rechecks_sources_even_with_an_existing_inventory, test:mdbook-dada/tests/evidence_validation.rs:mismatch_and_inconclusive_reviews_never_count_as_correspondence, test:mdbook-dada/tests/evidence_validation.rs:revised_review_can_supersede_same_unit_after_consulting_more_context, test:mdbook-dada/tests/evidence_validation.rs:stale_supersession_cannot_fall_back_to_an_independent_positive_review. record reloads Inventory and validates current sources, rejects future notes/drafts, and requires same-unit existing superseded records. check computes active records and fails on any stale active decision or active mismatch/inconclusive outcome. The cited tests exercise cached-inventory changes, negative decisions alongside positive ones, same-unit supersession with added context and stale replacement without fallback. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Assignment differential re-review: exact authored unit and selected formalization/test inputs are unchanged from the previously reviewed bundle. The new Assignment modules import the earlier layers without modifying their source or claims. Reviewed the revised AGENTS scope and explicit Assignment proof boundary; it does not change this earlier claim. This retains the prior correspondence judgment after exact required-input comparison, not an independent fresh proof audit.",
+  "limitations": [
+    "Differential author self-review of unchanged semantic/tool selections; mechanical checks are reported separately. No independent re-proof is claimed."
+  ],
+  "supersedes": [
+    "f91988800637b476fe1932e0bc1fca7dcf4e1678c5955757f2c6d488d0f6b476"
+  ]
+}

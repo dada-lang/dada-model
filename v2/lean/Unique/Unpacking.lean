@@ -154,6 +154,31 @@ theorem Bind.preserves_wellFormed
     have uniqueAfter : (object :: References
         ⟨before ++ after, bindings ++ variables, nextId⟩).Nodup := by
       exact (List.Perm.cons object refs).nodup_iff.mp wf.referencesUnique
+    have transport : ∀ id,
+        LiveWith ⟨before ++ (object, ⟨className, fields⟩) :: after, variables, nextId⟩ [object] id →
+        id = object ∨ Live ⟨before ++ after, bindings ++ variables, nextId⟩ id := by
+      intro id live
+      induction live with
+      | pending member => exact Or.inl (by simpa using member)
+      | «variable» member => exact Or.inr (.variable (List.mem_append_right _ member))
+      | @field parent target data name _ member field ih =>
+        simp only [List.mem_append, List.mem_cons] at member
+        rcases member with left | same | right
+        · have liveParent := ih.resolve_left (by
+            intro eq; subst parent
+            exact removedAbsent (List.mem_append_left _ (List.mem_map.mpr ⟨_, left, rfl⟩)))
+          exact Or.inr (.field liveParent (List.mem_append_left _ left) field)
+        · cases same
+          have fieldRef : target ∈ slotReferences fields := List.mem_filterMap.mpr ⟨_, field, rfl⟩
+          have rootRef := transfer.references.mem_iff.mpr fieldRef
+          obtain ⟨⟨localName, slot⟩, atRoot, value⟩ := List.mem_filterMap.mp rootRef
+          dsimp at value
+          subst slot
+          exact Or.inr (.variable (List.mem_append_left _ atRoot))
+        · have liveParent := ih.resolve_left (by
+            intro eq; subst parent
+            exact removedAbsent (List.mem_append_right _ (List.mem_map.mpr ⟨_, right, rfl⟩)))
+          exact Or.inr (.field liveParent (List.mem_append_right _ right) field)
     constructor
     · simpa using removedKeys
     · simp only [List.map_append, transfer.keys]
@@ -166,8 +191,13 @@ theorem Bind.preserves_wellFormed
       exact wf.shapes id data (subset _ member)
     · intro id data member
       exact wf.bounds id data (subset _ member)
-    · intro id data name target member field
-      exact wf.older id data name target (subset _ member) field
+    · intro id allocated
+      have oldAllocated : Allocated ⟨before ++ (object, ⟨className, fields⟩) :: after, variables, nextId⟩ id := by
+        obtain ⟨entry, member, same⟩ := List.mem_map.mp allocated
+        exact List.mem_map.mpr ⟨entry, subset _ member, same⟩
+      exact (transport id (wf.rooted id oldAllocated)).resolve_left (by
+        intro eq; subst id
+        exact removedAbsent (by simpa [Allocated, List.map_append] using allocated))
     · exact (List.nodup_cons.mp uniqueAfter).2
     · intro id
       have complete := wf.referencesComplete id

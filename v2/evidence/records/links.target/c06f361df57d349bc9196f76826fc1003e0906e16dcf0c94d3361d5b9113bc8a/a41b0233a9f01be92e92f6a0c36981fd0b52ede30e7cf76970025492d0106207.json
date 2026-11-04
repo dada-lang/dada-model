@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "f6c66ee60729f44d5ec4b700289e38d7cc750cd47a9c30d23a05734fb64b75cb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c06f361df57d349bc9196f76826fc1003e0906e16dcf0c94d3361d5b9113bc8a",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/authoring.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/authoring.md#future-notes identifies Future note at the named paragraph or section. This is the explicitly named paragraph/section selected by the link. Its surrounding chapter supplies the authoring or navigation context; it is not represented as a formal language judgment. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "5f739d43b8af78e4356f4e5ed3df7a6c33cb8081eb8b5fc258c08f46409399e8"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Future note",
+    "definition": {
+      "path": "md/repo/authoring.md",
+      "start": 4125,
+      "end": 4316
+    },
+    "clarity": "The landing md/repo/authoring.md#future-notes identifies Future note at the named paragraph or section.",
+    "independence": "This is the explicitly named paragraph/section selected by the link. Its surrounding chapter supplies the authoring or navigation context; it is not represented as a formal language judgment."
+  }
+}

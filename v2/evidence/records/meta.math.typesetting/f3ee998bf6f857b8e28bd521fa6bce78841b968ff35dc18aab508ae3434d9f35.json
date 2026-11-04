@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "5fd7414a73c5e800f8091e927fd1d5f7883b88ab2d7ff608f64b044ce7e058ca",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lib.rs:escape",
+    "rust:mdbook-dada/src/lib.rs:protect_math",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order",
+    "test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders",
+    "test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles",
+    "test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies",
+    "unit:meta.math.typesetting"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.typesetting against rust:mdbook-dada/src/lib.rs:protect_math, rust:mdbook-dada/src/lib.rs:render_unit, rust:mdbook-dada/src/lean.rs:render_authored, rust:mdbook-dada/src/lib.rs:escape, test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order, test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders, test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies, test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles. protect_math excludes code/link/HTML contexts and escapes explicit display/inline formulas before Markdown processing; render_authored escapes raw TeX without translating Lean. Tests retain row breaks/primes under smart punctuation, reject HTML interpretation, preserve literal contexts and citation order. This supports syntax preservation, not validation that TeX means the same proposition as Lean. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Rooted-foundation review: the structural invariants now require explicit rootedness (including pending values) plus unique/compatible ownership. Allocation bounds remain solely for freshness; no safety proof assumes edge-age order or global DAG structure. Changed proof selections retain their public statement unless this unit explicitly defines the revised invariant or example. Given/Shared root transport and path reasoning were reviewed by their implementing agents, with fresh review of root-owned unpacking, GC, frame rerooting, class retention and the refill example. Earlier syntax and runtime rules are unchanged. The widened invariant domain is covered by recompilation of all earlier safety proofs and concrete shared-cycle/nonmonotonic-ID regressions, not by a claim that constructors can generate cycles.",
+  "limitations": [
+    "Author integration review with agent review of Given/Shared foundations and fresh review of root-owned integration. Lean checks proof correctness separately.",
+    "Assignment general safety remains deferred. Cyclic heap examples test invariant and operation scope, not source-program construction from the current empty initial state."
+  ],
+  "supersedes": [
+    "88e50fc12a589f57bf77d5c99cc14b4c0831543615f3439aaffe55448bc8bd17"
+  ]
+}

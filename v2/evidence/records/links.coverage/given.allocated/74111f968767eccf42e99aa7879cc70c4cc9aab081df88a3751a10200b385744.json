@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "c13081f468689bd7f4d9fe987e462a9b546e638142cb041664dd978261012b04",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a395ec3d77295857a26e9571e271df4e3a3c5c6ae23ac869fc9fd981731e6507",
+    "audit:unit:given.allocated",
+    "audit:unit:given.state",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table. Allocated is the predicate being defined; O and dom are identified by the local S decomposition and the linked object table. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "cae210175dbf633c3eefc9f132b280eb6e60e075f2602de3a695407fce2e8e0c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table.",
+    "mathematics": "Allocated is the predicate being defined; O and dom are identified by the local S decomposition and the linked object table.",
+    "links": [
+      {
+        "occurrence": "given.allocated:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'object table' refers to md/given.md#claim-given.state for the concept or example setup used by this unit. Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table."
+      }
+    ]
+  }
+}

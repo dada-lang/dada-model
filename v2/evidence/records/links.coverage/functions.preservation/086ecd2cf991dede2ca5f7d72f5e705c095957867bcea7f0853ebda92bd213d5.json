@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "1f05a82e0f2a28979d76e59b6559aaa6a1667bef6fb7f1721f24f8d4a387062b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.gc",
+    "audit:unit:functions.preservation",
+    "audit:unit:functions.stack_typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links machine typing and public steps, explaining all frames and eager collection. Both typing judgments and the step premise use the linked definitions. Delta/F/M/M-prime are scoped by the theorem; every successor is covered. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "9fcd5f62d8fde0897a738a07c43cac5f487d683932130651d01b170df3929819"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links machine typing and public steps, explaining all frames and eager collection.",
+    "mathematics": "Both typing judgments and the step premise use the linked definitions. Delta/F/M/M-prime are scoped by the theorem; every successor is covered.",
+    "links": [
+      {
+        "occurrence": "functions.preservation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links machine typing and public steps, explaining all frames and eager collection."
+      },
+      {
+        "occurrence": "functions.preservation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'machine typing' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links machine typing and public steps, explaining all frames and eager collection."
+      }
+    ]
+  }
+}

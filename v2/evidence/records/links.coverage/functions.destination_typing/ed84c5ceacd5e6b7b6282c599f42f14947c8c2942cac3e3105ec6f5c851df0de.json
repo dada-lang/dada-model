@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "b88218eaeb100a9699a0a1891a1cefd60e33f7d99018321e2f6438f25b0a58d3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:unit:functions.calls",
+    "audit:unit:functions.destination_typing",
+    "audit:unit:functions.environments",
+    "audit:unit:shared.typing.bindings",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links well-formed environments and Shared variable binding. It defines result installation and explicitly rejects discarding a value result. The none rule uses the linked WF check; the present rule uses the linked binding judgment. Gamma, d and R are already introduced by environments and call syntax. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "40d7888bef4eb0f9ac3931b1b346693372756aa315a6e80abdd72248493038da"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links well-formed environments and Shared variable binding. It defines result installation and explicitly rejects discarding a value result.",
+    "mathematics": "The none rule uses the linked WF check; the present rule uses the linked binding judgment. Gamma, d and R are already introduced by environments and call syntax.",
+    "links": [
+      {
+        "occurrence": "functions.destination_typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed environment' refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links well-formed environments and Shared variable binding. It defines result installation and explicitly rejects discarding a value result."
+      },
+      {
+        "occurrence": "functions.destination_typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Shared's fresh-variable binding judgment\" refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links well-formed environments and Shared variable binding. It defines result installation and explicitly rejects discarding a value result."
+      }
+    ]
+  }
+}

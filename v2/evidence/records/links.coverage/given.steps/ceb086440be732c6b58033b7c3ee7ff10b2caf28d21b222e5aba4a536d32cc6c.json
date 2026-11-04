@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "dcb6a0b84d0c728b18183c2bc24d0184c42bbe7d5d6098e596fbaafb1ac54394",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:target:6a677ac22a7333f883a5bbe3ea1f985b201e8e1dfa34eb7895adb06760dc2928",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.gc",
+    "audit:unit:given.machine",
+    "audit:unit:given.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links machine configurations, full expression evaluation in both prose and the Let premise, and finished configurations. State-binding notation is a local adjunct to this single Let rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation. The Let premise links expression evaluation. K is linked to machine configuration; the output binding and fresh-variable dom condition are explained as local rule notation. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "5646935cbc13661c90a642c8c55600a26dc95adf1651cd1a164f62bea82ed770"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links machine configurations, full expression evaluation in both prose and the Let premise, and finished configurations. State-binding notation is a local adjunct to this single Let rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation.",
+    "mathematics": "The Let premise links expression evaluation. K is linked to machine configuration; the output binding and fresh-variable dom condition are explained as local rule notation. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place.",
+    "links": [
+      {
+        "occurrence": "given.steps:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'evaluate the expression' refers to md/given.md#claim-given.evaluation for the concept or example setup used by this unit. Links machine configurations, full expression evaluation in both prose and the Let premise, and finished configurations. State-binding notation is a local adjunct to this single Let rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      },
+      {
+        "occurrence": "given.steps:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/given.md#claim-given.machine for the concept or example setup used by this unit. Links machine configurations, full expression evaluation in both prose and the Let premise, and finished configurations. State-binding notation is a local adjunct to this single Let rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      }
+    ]
+  }
+}

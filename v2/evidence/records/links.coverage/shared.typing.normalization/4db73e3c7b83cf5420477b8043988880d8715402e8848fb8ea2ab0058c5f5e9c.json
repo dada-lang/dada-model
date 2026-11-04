@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "a0bd77ff12d12503cd17f0071223d1f4598200aa99be7b3be21b6c4c01ee23d6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4ba614a624608047955c9ae8f552242a0a12fdc9b4cec2848e20eb9b3287e39c",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:shared.declarations",
+    "audit:unit:shared.typing.composition",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.types",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. RawType.normalize supplies given at a nominal leaf and composes each outer permission with the normalized inner permission. normalize changes only the nominal view using Given normalization. This matches the two equations and the single outer-permission representation; nested shared is absorbed. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "beb5e0347ac73a75553e49d61137322953af1c4adda84c18c37755933dc67141"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. RawType.normalize supplies given at a nominal leaf and composes each outer permission with the normalized inner permission. normalize changes only the nominal view using Given normalization. This matches the two equations and the single outer-permission representation; nested shared is absorbed.",
+    "links": [
+      {
+        "occurrence": "shared.typing.normalization:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'composition' refers to md/shared-typing.md#claim-shared.typing.composition for the concept or example setup used by this unit. Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base."
+      },
+      {
+        "occurrence": "shared.typing.normalization:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\pi\\\\pi'\" refers to md/shared-typing.md#claim-shared.typing.composition for the concept or example setup used by this unit. Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base."
+      },
+      {
+        "occurrence": "shared.typing.normalization:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's view normalization\" refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base."
+      }
+    ]
+  }
+}

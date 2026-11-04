@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "b616c072c8ebb48fa0835243b6b018261282f102734a67e0b154056d126ddcf0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.overline.braces",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit introduces the overbar adjacency convention through its literal sample and states its raw-source scope and limits. No undefined custom concept is required. The only TeX fragment is the defining example for overline; f is a placeholder for its argument, not a model metavariable. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "723d82c610464df5cd474cc7d21bd6fbedbdd16932d2730cb4fcce4dcaec563b"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit introduces the overbar adjacency convention through its literal sample and states its raw-source scope and limits. No undefined custom concept is required.",
+    "mathematics": "The only TeX fragment is the defining example for overline; f is a placeholder for its argument, not a model metavariable.",
+    "links": []
+  }
+}

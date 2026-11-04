@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "9e2bb4b9b6729a35e1edb689edf39bacc906efbabc500a5c823a7263aaed0530",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c4f4614282bcbc1eeacf56cc51774e318230c1a0983b9b7c32160b81f84bee8a",
+    "audit:unit:evidence.map",
+    "audit:unit:evidence.map.empty",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The example links the exact empty-map definition before specifying Nat keys/values and an empty list. No other model concept is needed. The only mathematical value is [], explicitly described as the entry list; Nat is explained as natural numbers, not an undeclared model type. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "6e12f05e65ec74f82f4bdd8e148f61a4634983b8d37a859c06ae5f7086980ff3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The example links the exact empty-map definition before specifying Nat keys/values and an empty list. No other model concept is needed.",
+    "mathematics": "The only mathematical value is [], explicitly described as the entry list; Nat is explained as natural numbers, not an undeclared model type.",
+    "links": [
+      {
+        "occurrence": "evidence.map.empty:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty map' refers to md/repo/evidence-pilot.md#claim-evidence.map.empty_definition for the concept or example setup used by this unit. The example links the exact empty-map definition before specifying Nat keys/values and an empty list. No other model concept is needed."
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "3a06f86e3d1f80aad739ae0b1b392fcc6f832421d471593dcd20aba79104b944",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:2f4fae6642af15eee453aa7a85b451f092126af505d334ad49884a5cd4d2688a",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.progress",
+    "audit:unit:functions.stack_typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links machine typing, finishedness and public successor steps. The implication restates these three linked concepts; erasure and fixed tables are explained in the following sentence. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "522ddebe00ffcc81d8e2ba174adfd47622cea550d6828aa253f548f13d81a1fa"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links machine typing, finishedness and public successor steps.",
+    "mathematics": "The implication restates these three linked concepts; erasure and fixed tables are explained in the following sentence.",
+    "links": [
+      {
+        "occurrence": "functions.progress:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links machine typing, finishedness and public successor steps."
+      },
+      {
+        "occurrence": "functions.progress:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/functions.md#claim-functions.machine_finished for the concept or example setup used by this unit. Links machine typing, finishedness and public successor steps."
+      },
+      {
+        "occurrence": "functions.progress:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'successor' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links machine typing, finishedness and public successor steps."
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "56036f72c37ef50079147cacd3ab6d41e5c65e9e5475aefd900a82ab771b3644",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:example_source",
+    "rust:mdbook-dada/src/lean.rs:extract_example",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "test:mdbook-dada/src/lean.rs:tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_end_markers_that_cut_off_a_proof_continuation",
+    "test:mdbook-dada/src/lean.rs:tests::requires_one_complete_anonymous_example",
+    "test:mdbook-dada/tests/book.rs:linked_example_bodies_index_anchors_and_scope_nested_selectors",
+    "test:mdbook-dada/tests/book.rs:linked_examples_fail_on_invalid_citations_bodies_or_nesting",
+    "test:mdbook-dada/tests/book.rs:linked_examples_preserve_native_markdown_and_select_one_lean_test",
+    "unit:meta.examples.selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.examples.selection against rust:mdbook-dada/src/lean.rs:extract_example, rust:mdbook-dada/src/lean.rs:example_source, rust:mdbook-dada/src/lib.rs:render, rust:mdbook-dada/src/lib.rs:chapter_roles, test:mdbook-dada/tests/book.rs:linked_examples_preserve_native_markdown_and_select_one_lean_test, test:mdbook-dada/tests/book.rs:linked_example_bodies_index_anchors_and_scope_nested_selectors, test:mdbook-dada/tests/book.rs:linked_examples_fail_on_invalid_citations_bodies_or_nesting, test:mdbook-dada/src/lean.rs:tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments, test:mdbook-dada/src/lean.rs:tests::requires_one_complete_anonymous_example, test:mdbook-dada/src/lean.rs:tests::rejects_end_markers_that_cut_off_a_proof_continuation. extract_example recognizes standalone comment markers, enforces one complete column-zero anonymous example with a body, excludes nested/sibling commands and rejects end markers before an indented continuation. Rendering retains Markdown and scoped nested diagrams. Tests cover decoy markers, malformed ranges, citation/nesting failures and body markup; they do not execute the selected Lean test. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Assignment differential re-review: exact authored unit and selected formalization/test inputs are unchanged from the previously reviewed bundle. The new Assignment modules import the earlier layers without modifying their source or claims. Reviewed the revised AGENTS scope and explicit Assignment proof boundary; it does not change this earlier claim. This retains the prior correspondence judgment after exact required-input comparison, not an independent fresh proof audit.",
+  "limitations": [
+    "Differential author self-review of unchanged semantic/tool selections; mechanical checks are reported separately. No independent re-proof is claimed."
+  ],
+  "supersedes": [
+    "94fdba7bf8328805d91582db425f0bfd5d5c584fedfe1a014538f8680dd2875c"
+  ]
+}

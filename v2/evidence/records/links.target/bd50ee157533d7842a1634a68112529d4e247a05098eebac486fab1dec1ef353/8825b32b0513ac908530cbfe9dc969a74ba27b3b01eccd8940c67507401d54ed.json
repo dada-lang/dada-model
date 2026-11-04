@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "9cb7b24870f48fe23cc7456f37aaa5f625c4578f38e96d108c80416617c837e8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:bd50ee157533d7842a1634a68112529d4e247a05098eebac486fab1dec1ef353",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces well-typed Functions programs. Links nominal-table validity, declaration-table checking and top-level sequence typing. The empty initial environment and existential final environment are explicit, with no extra terminal-consumption condition. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "49aeccbf47b741b013aebccb25a1589ce45db351ba1c7516988f3e14a258590d"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "well-typed Functions programs",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 14090,
+      "end": 14373
+    },
+    "clarity": "The named landing directly introduces well-typed Functions programs. Links nominal-table validity, declaration-table checking and top-level sequence typing.",
+    "independence": "The empty initial environment and existential final environment are explicit, with no extra terminal-consumption condition. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

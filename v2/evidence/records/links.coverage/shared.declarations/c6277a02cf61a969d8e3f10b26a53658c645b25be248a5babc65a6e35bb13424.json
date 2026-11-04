@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "7a4162c091e2f3bff8c3d0423943fb044c0ae2b8a7c4fb3509dead1be5a2ecf9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:shared.declarations",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines the three nominal kinds with their shareability and construction table, linking reference modes. The table is the definition of the kind behavior, not a new mode on runtime objects. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "9d9713ceaa972694a6bc17fb7afc21f8db9465f0021f77a2f28dd23638acee7d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines the three nominal kinds with their shareability and construction table, linking reference modes.",
+    "mathematics": "The table is the definition of the kind behavior, not a new mode on runtime objects.",
+    "links": [
+      {
+        "occurrence": "shared.declarations:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Modes' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Defines the three nominal kinds with their shareability and construction table, linking reference modes."
+      }
+    ]
+  }
+}

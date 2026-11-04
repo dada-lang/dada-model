@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "6a1d3d8685a8f5b2b352b77d10eeb14b87dfc83d504819b1ca93f4476ba01abb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c04103a1d651b8b9ae272310c435e218a3c69ad8ef05bf3d1f49e157898c6ce6",
+    "audit:unit:given.programs",
+    "audit:unit:given.typing.sequences",
+    "audit:unit:given.typing.statements",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The statement-typing prerequisite links directly. The sequence environment threading is the one subject introduced. The cons rule links the per-statement premise; the recursive sequence premise and empty-sequence conclusion define the new judgment locally. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "78a5aa65d015ddd0a16f8513d42f34b7e10ae02a411882294a9c0c6ff4f52b25"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The statement-typing prerequisite links directly. The sequence environment threading is the one subject introduced.",
+    "mathematics": "The cons rule links the per-statement premise; the recursive sequence premise and empty-sequence conclusion define the new judgment locally.",
+    "links": [
+      {
+        "occurrence": "given.typing.sequences:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statement typings' refers to md/given-typing.md#claim-given.typing.statements for the concept or example setup used by this unit. The statement-typing prerequisite links directly. The sequence environment threading is the one subject introduced."
+      },
+      {
+        "occurrence": "given.typing.sequences:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma\\\\vdash t\\\\Rightarrow\\\\Gamma_1' refers to md/given-typing.md#claim-given.typing.statements for the concept or example setup used by this unit. The statement-typing prerequisite links directly. The sequence environment threading is the one subject introduced."
+      }
+    ]
+  }
+}

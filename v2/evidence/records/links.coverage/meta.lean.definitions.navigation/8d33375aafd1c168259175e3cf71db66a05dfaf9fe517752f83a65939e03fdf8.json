@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "2b982c9b48dc4505c9a43f04696dd57f888bc34f74a1a4f947e96365d696b4f0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c72617e2e092741fb75d1f15cd59a10e3c8c772581b4f5c204a64f9733998f34",
+    "audit:unit:meta.lean.definitions.navigation",
+    "audit:unit:meta.sources.configuration",
+    "audit:unit:meta.sources.exact_selection",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The configured Lean source root is linked at the first use; literal qualification, retained context and rejected source forms are explained directly. The section does not ask the reader to infer namespace resolution. No mathematical content is reused; file/citation forms are the locally discussed navigation interface. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "209b53eb6b1dc70e7a1e65b7c94fec44fa0c6df19a4a48a6f0ce883314372016"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The configured Lean source root is linked at the first use; literal qualification, retained context and rejected source forms are explained directly. The section does not ask the reader to infer namespace resolution.",
+    "mathematics": "No mathematical content is reused; file/citation forms are the locally discussed navigation interface.",
+    "links": [
+      {
+        "occurrence": "meta.lean.definitions.navigation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configured Lean source root' refers to md/repo/evidence-pilot.md#claim-meta.sources.configuration for the concept or example setup used by this unit. The configured Lean source root is linked at the first use; literal qualification, retained context and rejected source forms are explained directly. The section does not ask the reader to infer namespace resolution."
+      }
+    ]
+  }
+}

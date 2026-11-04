@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "1f66176a0525133e76840313e0b59630dfa78bf0a9b2ce50c0c86e31ef83dcf3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3e00a12c5444e77178eea80082ea8052d2132085237a77dacb63b619304c9d66",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This landing introduces the named definition or concrete heap setup in its opening passage. Links backward to the immediately preceding complete two-node setup and to structural well-formedness. The sole changed reference and retained shared root are explicit; no equation symbols need introduction. The surrounding chapter supplies storage and reachability before using them. Links backward to the immediately preceding complete two-node setup and to structural well-formedness. The sole changed reference and retained shared root are explicit; no equation symbols need introduction.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.example.mixed_cycle",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 30278,
+      "end": 30728
+    },
+    "clarity": "This landing introduces the named definition or concrete heap setup in its opening passage. Links backward to the immediately preceding complete two-node setup and to structural well-formedness. The sole changed reference and retained shared root are explicit; no equation symbols need introduction.",
+    "independence": "The surrounding chapter supplies storage and reachability before using them. Links backward to the immediately preceding complete two-node setup and to structural well-formedness. The sole changed reference and retained shared root are explicit; no equation symbols need introduction."
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "3822c3e14b2a7929254c006e95522d9a56afc64b9940cbdbdff885d5de007f3a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.units.closed_body",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This unit defines the closed-body/preprocessing contract itself and spells out all three prohibited expansion forms. Its original-source comparison and scope limitation are explained locally; it does not depend on another undisclosed predicate. There is no mathematical equation or inference rule. Directive names and raw unit IDs are authoring syntax, described here rather than reused model notation. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "8144d0c6e14f28de1d9eac3db9dcf5cda75f77ea94739ca5f408a37df473525e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This unit defines the closed-body/preprocessing contract itself and spells out all three prohibited expansion forms. Its original-source comparison and scope limitation are explained locally; it does not depend on another undisclosed predicate.",
+    "mathematics": "There is no mathematical equation or inference rule. Directive names and raw unit IDs are authoring syntax, described here rather than reused model notation.",
+    "links": []
+  }
+}

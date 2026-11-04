@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "392c76a2bb07fe885e3822ef6f43bc502073323646256ebba958364842f80524",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "unit:meta.syntax.anchors.identity"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.anchors.identity against rust:mdbook-dada/src/lib.rs:roles, rust:mdbook-dada/src/lib.rs:chapter_roles, rust:mdbook-dada/src/lib.rs:process_with_roots, rust:mdbook-dada/src/lib.rs:relative_html, rust:mdbook-dada/src/lib.rs:render_role, test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters, test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail, test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors, test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs. roles validates the documented ASCII ID shape and excludes literal contexts; chapter_roles adds structured IDs to the shared namespace; process_with_roots indexes all chapters before rendering and rejects duplicates. relative_html and render_role build local/relative shield links. Tests cover forward/nested/parent references, missing/duplicate IDs, literal examples and neutral/definition role labels without proof implications. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Rooted-foundation review: the structural invariants now require explicit rootedness (including pending values) plus unique/compatible ownership. Allocation bounds remain solely for freshness; no safety proof assumes edge-age order or global DAG structure. Changed proof selections retain their public statement unless this unit explicitly defines the revised invariant or example. Given/Shared root transport and path reasoning were reviewed by their implementing agents, with fresh review of root-owned unpacking, GC, frame rerooting, class retention and the refill example. Earlier syntax and runtime rules are unchanged. The widened invariant domain is covered by recompilation of all earlier safety proofs and concrete shared-cycle/nonmonotonic-ID regressions, not by a claim that constructors can generate cycles.",
+  "limitations": [
+    "Author integration review with agent review of Given/Shared foundations and fresh review of root-owned integration. Lean checks proof correctness separately.",
+    "Assignment general safety remains deferred. Cyclic heap examples test invariant and operation scope, not source-program construction from the current empty initial state."
+  ],
+  "supersedes": [
+    "109785feefd50745ee27b1957c78d17ebf1e610778c58d8c94fe8f7bdefb4d43"
+  ]
+}

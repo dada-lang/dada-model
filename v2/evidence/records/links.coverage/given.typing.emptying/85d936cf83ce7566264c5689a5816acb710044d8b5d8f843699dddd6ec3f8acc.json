@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "4756f68b8ff07eccd2cc8d98d1e37cae89d2e113ed99eb98e4f291aca6e43560",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.emptying",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.focus",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.observations",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper. The initialized-path premise links pos. T[-rho] is the operation being defined, and the displayed Box equality uses the linked example declarations. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b809c307433f1b6e32527639cdd073795b58917ba2bc049e750ae5b9ec6001ec"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper.",
+    "mathematics": "The initialized-path premise links pos. T[-rho] is the operation being defined, and the displayed Box equality uses the linked example declarations.",
+    "links": [
+      {
+        "occurrence": "given.typing.emptying:1",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper."
+      },
+      {
+        "occurrence": "given.typing.emptying:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Normalize' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper."
+      },
+      {
+        "occurrence": "given.typing.emptying:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"example's Box\" refers to md/given-typing.md#claim-given.typing.example.views for the concept or example setup used by this unit. Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper."
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "91d345249faa6ee13aa0995db7153a7b5e95ce94c80f52ffce06d0a3b52f17b4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3e4d50612007d6c6a5604a2b81222e88270e78922e73195442049d92573c2bda",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:e8e49e649e1c933223b9ce0a289c333cc028e86a574822003a382c3180e7bfab",
+    "audit:unit:destructors.example.struct_drop",
+    "audit:unit:destructors.example.struct_field",
+    "audit:unit:shared.typing.bindings",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the preceding SharedPoint example, inherited unpacking and the preceding Wrapper example. Parcel is declared here, with an explicit shared field type, so its empty-self and surviving-struct-local behavior is understandable before the formal rules. The pattern binds point and self is the destructor receiver already introduced by Wrapper. No new mathematical metavariables appear. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "244dc9e3a2bf0d2ddc468c700b5c5e6f2a9ca2d522b36f802669c4994a8ac8a3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the preceding SharedPoint example, inherited unpacking and the preceding Wrapper example. Parcel is declared here, with an explicit shared field type, so its empty-self and surviving-struct-local behavior is understandable before the formal rules.",
+    "mathematics": "The pattern binds point and self is the destructor receiver already introduced by Wrapper. No new mathematical metavariables appear.",
+    "links": [
+      {
+        "occurrence": "destructors.example.struct_field:1",
+        "role": "conceptual",
+        "rationale": "'SharedPoint declaration above' refers to #claim-destructors.example.struct_drop for the definition or concrete setup used in this example. Links the preceding SharedPoint example, inherited unpacking and the preceding Wrapper example. Parcel is declared here, with an explicit shared field type, so its empty-self and surviving-struct-local behavior is understandable before the formal rules."
+      },
+      {
+        "occurrence": "destructors.example.struct_field:2",
+        "role": "conceptual",
+        "rationale": "'Unpacking' refers to shared-typing.md#claim-shared.typing.bindings for the definition or concrete setup used in this example. Links the preceding SharedPoint example, inherited unpacking and the preceding Wrapper example. Parcel is declared here, with an explicit shared field type, so its empty-self and surviving-struct-local behavior is understandable before the formal rules."
+      },
+      {
+        "occurrence": "destructors.example.struct_field:3",
+        "role": "conceptual",
+        "rationale": "'Wrapper destructor' refers to #claim-destructors.example.wrapper for the definition or concrete setup used in this example. Links the preceding SharedPoint example, inherited unpacking and the preceding Wrapper example. Parcel is declared here, with an explicit shared field type, so its empty-self and surviving-struct-local behavior is understandable before the formal rules."
+      }
+    ]
+  }
+}

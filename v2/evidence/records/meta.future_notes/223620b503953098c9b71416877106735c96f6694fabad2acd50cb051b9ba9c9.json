@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "324a88141104114042aecb8da9f6a0260007aa9a81c49b6f462e1fb773c507b7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:ReviewBundle::prepare",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/units.rs:parse",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:future_notes_are_publishable_but_cannot_receive_correspondence_reviews",
+    "test:mdbook-dada/tests/units.rs:future_notes_reject_formalizations_and_nested_specifications",
+    "test:mdbook-dada/tests/units.rs:future_notes_render_without_formalization_or_draft_status",
+    "unit:meta.future_notes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.future_notes against rust:mdbook-dada/src/units.rs:parse_block, rust:mdbook-dada/src/units.rs:parse, rust:mdbook-dada/src/lib.rs:render_unit, rust:mdbook-dada/src/evidence.rs:ReviewBundle::prepare, rust:mdbook-dada/src/evidence.rs:record, rust:mdbook-dada/src/evidence.rs:check, test:mdbook-dada/tests/units.rs:future_notes_render_without_formalization_or_draft_status, test:mdbook-dada/tests/units.rs:future_notes_reject_formalizations_and_nested_specifications, test:mdbook-dada/tests/evidence_validation.rs:future_notes_are_publishable_but_cannot_receive_correspondence_reviews. parse_block and parse reject formalization citations, draft status, nested units and non-top-level future notes while retaining ordinary dependencies/identity. render_unit emits a label without a source selector; prepare/record explicitly reject future notes and check reports not applicable. Tests cover each rejected option, nesting, literal examples and an attempted reuse of a prior specification review. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. The correspondence preparation/recording prohibition does not exclude editorial link audits, which apply to future notes under the integrated link policy. Assignment differential re-review: exact authored unit and selected formalization/test inputs are unchanged from the previously reviewed bundle. The new Assignment modules import the earlier layers without modifying their source or claims. Reviewed the revised AGENTS scope and explicit Assignment proof boundary; it does not change this earlier claim. This retains the prior correspondence judgment after exact required-input comparison, not an independent fresh proof audit.",
+  "limitations": [
+    "Differential author self-review of unchanged semantic/tool selections; mechanical checks are reported separately. No independent re-proof is claimed."
+  ],
+  "supersedes": [
+    "4f09f14b5c4a863aac24354d5b68a06b7eb63a8d54bcb4a25c3657a5fe01d0e1"
+  ]
+}

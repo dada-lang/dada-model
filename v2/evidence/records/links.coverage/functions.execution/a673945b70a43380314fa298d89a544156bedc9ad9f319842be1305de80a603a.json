@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "bundle": "fc68e4036bc487cb67e6ced9d8163ae95cc907cf85d8b17394c6876936cc1073",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:target:33809897369fd4607384d07eadc60386712478a8b6088571abb3604e50110c5c",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:87f4db0fb5ffac0232ba636a7b725d3d49798dc0561864d9f86bc65fc3fa676b",
+    "audit:target:8c93add9c0c83a776892d18710675ad1a169196ba74e7618d4b2ef28a872c904",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.gc",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.parameters",
+    "audit:unit:functions.return",
+    "audit:unit:shared.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery. The linked judgments account for every raw-rule premise; H,V,n and evaluated variants are scoped immediately before the rules, B_r is defined there, and raw/public step symbols are the local definitions. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3ed95090f2922dc8caea39b3e1e9aae2fcdd77bce159d8b096afc2faeda51e2d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery.",
+    "mathematics": "The linked judgments account for every raw-rule premise; H,V,n and evaluated variants are scoped immediately before the rules, B_r is defined there, and raw/public step symbols are the local definitions.",
+    "links": [
+      {
+        "occurrence": "functions.execution:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'collects' refers to md/functions.md#claim-functions.gc for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      },
+      {
+        "occurrence": "functions.execution:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"active frame's evaluation state\" refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      },
+      {
+        "occurrence": "functions.execution:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Shared'sleft-to-right argument evaluation\" refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      },
+      {
+        "occurrence": "functions.execution:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared binding or unpacking statement' refers to md/shared-typing.md#claim-shared.typing.steps for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      },
+      {
+        "occurrence": "functions.execution:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'remaining body' refers to md/functions.md#claim-functions.calls for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      },
+      {
+        "occurrence": "functions.execution:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'parameter operations' refers to md/functions.md#claim-functions.parameters for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      },
+      {
+        "occurrence": "functions.execution:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'optional-result evaluation and delivery' refers to md/functions.md#claim-functions.return for the concept or example setup used by this unit. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery."
+      }
+    ]
+  }
+}

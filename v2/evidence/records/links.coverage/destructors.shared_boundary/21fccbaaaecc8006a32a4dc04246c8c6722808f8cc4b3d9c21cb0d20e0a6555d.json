@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "38da1bebd5c25f07c059b2ca55cc08c6787743783710ff24e56f7b44f711cf6c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:8c93add9c0c83a776892d18710675ad1a169196ba74e7618d4b2ef28a872c904",
+    "audit:unit:destructors.body_typing",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.shared_boundary",
+    "audit:unit:shared.typing.safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines the componentwise Functions embedding and exit condition in prose, links result evaluation and frame completion, and states the qualified step equivalence. It explicitly excludes unconditional preservation of old typings. The exit condition quantifies over all possible result evaluations; no displayed symbols or undeclared environments are introduced. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "dbcd1a2e83524cb262a65840651a107a5474ac536d164d94c6d16835c3916aa0"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines the componentwise Functions embedding and exit condition in prose, links result evaluation and frame completion, and states the qualified step equivalence. It explicitly excludes unconditional preservation of old typings.",
+    "mathematics": "The exit condition quantifies over all possible result evaluations; no displayed symbols or undeclared environments are introduced.",
+    "links": [
+      {
+        "occurrence": "destructors.shared_boundary:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'result evaluation' supplies the definition or concrete example setup used here, at functions.md#claim-functions.return. Defines the componentwise Functions embedding and exit condition in prose, links result evaluation and frame completion, and states the qualified step equivalence. It explicitly excludes unconditional preservation of old typings."
+      },
+      {
+        "occurrence": "destructors.shared_boundary:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'frame completion' supplies the definition or concrete example setup used here, at #claim-destructors.finished_environment. Defines the componentwise Functions embedding and exit condition in prose, links result evaluation and frame completion, and states the qualified step equivalence. It explicitly excludes unconditional preservation of old typings."
+      }
+    ]
+  }
+}

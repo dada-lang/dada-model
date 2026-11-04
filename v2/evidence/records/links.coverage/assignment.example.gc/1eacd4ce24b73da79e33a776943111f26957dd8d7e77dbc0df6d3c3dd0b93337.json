@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "ba30717fc2591df92476fd10d0fbdb1f9e01d4122cc6f8699e49a66d4f885fa2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:assignment.example.gc",
+    "audit:unit:assignment.machine",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This concrete numbered-object example follows the complete machine/collector definition and uses it directly. Its setup and liveness conclusions are explicit and no new formal judgment is introduced. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. This concrete numbered-object example follows the complete machine/collector definition and uses it directly. Its setup and liveness conclusions are explicit and no new formal judgment is introduced.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This concrete numbered-object example follows the complete machine/collector definition and uses it directly. Its setup and liveness conclusions are explicit and no new formal judgment is introduced.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. This concrete numbered-object example follows the complete machine/collector definition and uses it directly. Its setup and liveness conclusions are explicit and no new formal judgment is introduced.",
+    "links": []
+  }
+}

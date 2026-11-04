@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "366674c830aa14ddb5bc34510f600d0ac38dfbafc80b0e485f550605c5818d86",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:shared.typing.base",
+    "audit:unit:shared.typing.normalization",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The direct equation extracts C independent of permission/view and links normalized form. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.base projects nominal.className, ignoring the outer permission and view entries. The displayed equation has the same domain (normalized types) and result. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "6a5a9f6db14aeecfc6aa8994f7f012984ae95266830892dce1ca392ad29a377d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The direct equation extracts C independent of permission/view and links normalized form.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.base projects nominal.className, ignoring the outer permission and view entries. The displayed equation has the same domain (normalized types) and result.",
+    "links": [
+      {
+        "occurrence": "shared.typing.base:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalized type' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. The direct equation extracts C independent of permission/view and links normalized form."
+      }
+    ]
+  }
+}

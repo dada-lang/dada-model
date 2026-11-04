@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "9397e5c282d99834693385e752c262102cd83906506eda5cd1f1bef810355975",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8132c92fa5f747ccdf2fbc59a0936de31747623e06e98e9afada9d4d962dc8b4",
+    "audit:target:c606944c55fcc1af8071d20ef9cfffd91dabf71226ad1a2eab085091751daee3",
+    "audit:unit:shared.finished",
+    "audit:unit:shared.typing.finished",
+    "audit:unit:shared.typing.machine",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit. The no-frame condition defines Finished. It makes no claim that a live frame with empty code is already terminal. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "64798e103d5aece30c7bc980dab3594a23e8210f165a8cc0b0ff53bbb590df76"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit.",
+    "mathematics": "The no-frame condition defines Finished. It makes no claim that a live frame with empty code is already terminal.",
+    "links": [
+      {
+        "occurrence": "shared.typing.finished:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/shared-typing.md#claim-shared.typing.machine for the concept or example setup used by this unit. Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit."
+      },
+      {
+        "occurrence": "shared.typing.finished:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared completion' refers to md/shared.md#claim-shared.finished for the concept or example setup used by this unit. Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit."
+      }
+    ]
+  }
+}

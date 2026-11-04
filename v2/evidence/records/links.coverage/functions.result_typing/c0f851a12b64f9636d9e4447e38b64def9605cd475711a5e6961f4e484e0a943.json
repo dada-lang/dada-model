@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "0fa2bb996112a5bfd9bb855f032795bb7cbc7d878c4474b1db2e4a7b2fd67036",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:unit:functions.environments",
+    "audit:unit:functions.result_typing",
+    "audit:unit:shared.typing.expressions",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links environment WF and Shared expression typing. Defines no-result and present-result checking. Both rules have exactly those linked premises; optional expression/result syntax comes from calls, and the return judgment is defined here. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "7fe1e491faac0c8de941cbd8e98d253c5b4bcc99643b87be665c6a445a348053"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links environment WF and Shared expression typing. Defines no-result and present-result checking.",
+    "mathematics": "Both rules have exactly those linked premises; optional expression/result syntax comes from calls, and the return judgment is defined here.",
+    "links": [
+      {
+        "occurrence": "functions.result_typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'environment condition' refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links environment WF and Shared expression typing. Defines no-result and present-result checking."
+      },
+      {
+        "occurrence": "functions.result_typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"expression judgment in the second rule is Shared's\" refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links environment WF and Shared expression typing. Defines no-result and present-result checking."
+      }
+    ]
+  }
+}

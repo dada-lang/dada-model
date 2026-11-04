@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "b29f82a5fe2ebe194eb1347b36f6a35c39942e6db7ecb2a4c3a3b9a086a7fe26",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "audit:target:9cc9154e3592cdc44cca3510ac58cfa325b84ffa766de384bb8a62113e702254",
+    "audit:unit:shared.example.frame_lifetime",
+    "audit:unit:shared.gc",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links frame execution/collection and follows the local declaration through initial-frame exit. Object allocation and the retained counter are concrete observations of the linked lifetime, not code-exhaustion completion. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "1cb97007fd9557f1bcadb2f27d8c6f79d7527a33d7acb0de3b112a19d89236b3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links frame execution/collection and follows the local declaration through initial-frame exit.",
+    "mathematics": "Object allocation and the retained counter are concrete observations of the linked lifetime, not code-exhaustion completion.",
+    "links": [
+      {
+        "occurrence": "shared.example.frame_lifetime:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links frame execution/collection and follows the local declaration through initial-frame exit."
+      },
+      {
+        "occurrence": "shared.example.frame_lifetime:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'initial frame' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links frame execution/collection and follows the local declaration through initial-frame exit."
+      },
+      {
+        "occurrence": "shared.example.frame_lifetime:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'collects' refers to md/shared.md#claim-shared.gc for the concept or example setup used by this unit. Links frame execution/collection and follows the local declaration through initial-frame exit."
+      }
+    ]
+  }
+}

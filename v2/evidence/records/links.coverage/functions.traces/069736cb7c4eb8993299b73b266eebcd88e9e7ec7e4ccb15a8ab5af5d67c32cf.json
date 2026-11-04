@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "0b962b961e5f2c663a3f175a3dd10832a96f237f9ec5f0c7cfe3d41b853323e9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.return",
+    "audit:unit:functions.traces",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links public steps and introduces their reflexive/transitive closure. The starred arrow is the defining occurrence, with M and M-prime from the machine grammar. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "453e7f1094ecee92d5b5c64e7c27dda71f9e96faf9dfdcb40f060207e34c7291"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links public steps and introduces their reflexive/transitive closure.",
+    "mathematics": "The starred arrow is the defining occurrence, with M and M-prime from the machine grammar.",
+    "links": [
+      {
+        "occurrence": "functions.traces:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'of steps' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links public steps and introduces their reflexive/transitive closure."
+      }
+    ]
+  }
+}

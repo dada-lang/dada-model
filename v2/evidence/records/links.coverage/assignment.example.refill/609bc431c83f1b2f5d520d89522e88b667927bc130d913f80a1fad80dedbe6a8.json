@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "44374f758c6c93bb79faa89890ada281c0ced6d41fbf42939d7e7c8806aafee0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:unit:assignment.example.refill",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The example defines its concrete Resource/Wrapper setup and explains store locally before formal rules. The negative-view entry links its earlier Given definition; w is an explicit assumed input, not an unbound metavariable. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. The example defines its concrete Resource/Wrapper setup and explains store locally before formal rules. The negative-view entry links its earlier Given definition; w is an explicit assumed input, not an unbound metavariable.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The example defines its concrete Resource/Wrapper setup and explains store locally before formal rules. The negative-view entry links its earlier Given definition; w is an explicit assumed input, not an unbound metavariable.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. The example defines its concrete Resource/Wrapper setup and explains store locally before formal rules. The negative-view entry links its earlier Given definition; w is an explicit assumed input, not an unbound metavariable.",
+    "links": [
+      {
+        "occurrence": "assignment.example.refill:1",
+        "role": "conceptual",
+        "rationale": "The label 'negative view entry' supplies the earlier definition/setup at given-typing.md#claim-given.typing.views used by this passage."
+      }
+    ]
+  }
+}

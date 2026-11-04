@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "bundle": "5b0b67d6611432d67cf3b2837605c19746d387a07fd830b0bc897d67ac427000",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.shared_correspondence",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse. The translation is defined in prose here; no unintroduced relation or restriction to already-embedded endpoints weakens the claim. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "e0f314169172bb37e131f3dd59e3624c52148bd59cb45eaea8c7608419f6d80c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse.",
+    "mathematics": "The translation is defined in prose here; no unintroduced relation or restriction to already-embedded endpoints weakens the claim.",
+    "links": [
+      {
+        "occurrence": "functions.shared_correspondence:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared program configuration' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse."
+      },
+      {
+        "occurrence": "functions.shared_correspondence:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Functions stack' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse."
+      },
+      {
+        "occurrence": "functions.shared_correspondence:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared step' refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse."
+      },
+      {
+        "occurrence": "functions.shared_correspondence:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Functionsstep' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse."
+      }
+    ]
+  }
+}

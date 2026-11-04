@@ -146,7 +146,26 @@ theorem reroot (realized : Realizes classes oldEnvironment oldState oldPending)
     · exact variableKeys
     · simpa [objects] using realized.ownership.shapes
     · simpa [objects,counter] using realized.ownership.bounds
-    · simpa [objects] using realized.ownership.older
+    · have roots : (oldPending.map Prod.fst ++ oldState.variables.filterMap Prod.snd).Perm
+          (newPending.map Prod.fst ++ newState.variables.filterMap Prod.snd) := by
+        apply (List.perm_append_right_iff (oldState.objects.flatMap (fun e => e.2.fields.filterMap Prod.snd))).mp
+        simpa only [Owners, ← List.append_assoc, objects] using owners
+      have moveRoot {reference : Reference}
+          (member : reference ∈ oldPending.map Prod.fst ++ oldState.variables.filterMap Prod.snd) :
+          LiveWith newState (newPending.map Prod.fst) reference.object := by
+        rcases List.mem_append.mp (roots.mem_iff.mp member) with p | v
+        · exact .pending p
+        · obtain ⟨⟨name, slot⟩, stored, value⟩ := List.mem_filterMap.mp v
+          change slot = some reference at value
+          subst slot
+          exact .variable stored
+      intro id allocated
+      have live := realized.ownership.rooted id (by simpa [Allocated,objects] using allocated)
+      clear allocated
+      induction live with
+      | pending member => exact moveRoot (List.mem_append_left _ member)
+      | «variable» member => exact moveRoot (List.mem_append_right _ (List.mem_filterMap.mpr ⟨_,member,rfl⟩))
+      | field _ stored field ih => exact .field ih (by simpa [objects] using stored) field
     · exact owners.pairwise realized.ownership.ownersCompatible compatible_symm
     · intro id
       have eq := (owners.map Reference.object).mem_iff (a := id)

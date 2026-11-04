@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "0aac262c29814371bf220aff15917f3d1072ab18cb652979e982120bbb8ff0f0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:unit:shared.allocated",
+    "audit:unit:shared.state",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Direct object-table-membership definition; storage target supplies O. The defining equation uses O from the linked object table; Allocated itself is the subject introduced here. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "156caa6ca8ffab80149b8ca7830cc0f3c5fa6f0c40cb5f18efd0cf834981fd1f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Direct object-table-membership definition; storage target supplies O.",
+    "mathematics": "The defining equation uses O from the linked object table; Allocated itself is the subject introduced here.",
+    "links": [
+      {
+        "occurrence": "shared.allocated:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'object table' refers to md/shared.md#claim-shared.state for the concept or example setup used by this unit. Direct object-table-membership definition; storage target supplies O."
+      }
+    ]
+  }
+}

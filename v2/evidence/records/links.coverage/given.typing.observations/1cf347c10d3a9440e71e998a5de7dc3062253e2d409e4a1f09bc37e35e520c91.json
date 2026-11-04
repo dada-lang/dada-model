@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "69ae34646f27ed0d4f6dfd093a9e9e0e862a12f0bf4579095beeaf2733bf02c9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.observations",
+    "audit:unit:given.typing.views",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The type and valid-descendant concepts link directly. The four bullets define positive/negative observations and explain the negative-slot boundary. pos and neg are introduced as the two observations of one view; epsilon, entries, and prefix relations are the view grammar components explained in the bullets. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d200bc97c91111ac7aac5785f0bdefd1a142861f5b86710566ef08dd2339ca93"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The type and valid-descendant concepts link directly. The four bullets define positive/negative observations and explain the negative-slot boundary.",
+    "mathematics": "pos and neg are introduced as the two observations of one view; epsilon, entries, and prefix relations are the view grammar components explained in the bullets.",
+    "links": [
+      {
+        "occurrence": "given.typing.observations:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'type' refers to md/given-typing.md#claim-given.typing.views for the concept or example setup used by this unit. The type and valid-descendant concepts link directly. The four bullets define positive/negative observations and explain the negative-slot boundary."
+      },
+      {
+        "occurrence": "given.typing.observations:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'valid descendants' refers to md/given-typing.md#claim-given.typing.class_at for the concept or example setup used by this unit. The type and valid-descendant concepts link directly. The four bullets define positive/negative observations and explain the negative-slot boundary."
+      }
+    ]
+  }
+}

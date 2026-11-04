@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "ed7ca5b8d1ae6aa2730ef34301a55af3233732f24dfa7dc426736f78fe2950a6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/mechanical.rs:Execution::validate",
+    "rust:mdbook-dada/src/mechanical.rs:records",
+    "rust:mdbook-dada/src/mechanical.rs:run",
+    "rust:mdbook-dada/src/mechanical.rs:snapshot",
+    "rust:mdbook-dada/src/mechanical.rs:status",
+    "test:mdbook-dada/tests/evidence_validation.rs:workspace_validation_rejects_malformed_execution_receipts",
+    "test:mdbook-dada/tests/mechanical.rs:execution_preserves_success_failure_and_non_utf8_output",
+    "test:mdbook-dada/tests/mechanical.rs:execution_retains_source_mutations_additions_and_deletions",
+    "test:mdbook-dada/tests/mechanical.rs:failed_after_snapshot_and_launch_failures_are_retained",
+    "test:mdbook-dada/tests/mechanical.rs:later_failures_and_tied_failures_cannot_be_hidden_by_success",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_rejects_tampering_and_profile_substitution",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_requires_selected_sources_and_runner_snapshots",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_and_records_reject_symbolic_links",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_record_empty_directories_and_ignore_generated_outputs",
+    "test:mdbook-dada/tests/mechanical.rs:source_or_profile_changes_stale_receipts_without_corrupting_history",
+    "test:mdbook-dada/tests/mechanical.rs:status_and_record_validation_never_execute_profile_commands",
+    "unit:meta.evidence.mechanical_execution"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.evidence.mechanical_execution against rust:mdbook-dada/src/mechanical.rs:run, rust:mdbook-dada/src/mechanical.rs:snapshot, rust:mdbook-dada/src/mechanical.rs:Execution::validate, rust:mdbook-dada/src/mechanical.rs:status, rust:mdbook-dada/src/mechanical.rs:records, rust:mdbook-dada/src/evidence.rs:check, test:mdbook-dada/tests/mechanical.rs:execution_preserves_success_failure_and_non_utf8_output, test:mdbook-dada/tests/mechanical.rs:execution_retains_source_mutations_additions_and_deletions, test:mdbook-dada/tests/mechanical.rs:failed_after_snapshot_and_launch_failures_are_retained, test:mdbook-dada/tests/mechanical.rs:status_and_record_validation_never_execute_profile_commands, test:mdbook-dada/tests/mechanical.rs:source_or_profile_changes_stale_receipts_without_corrupting_history, test:mdbook-dada/tests/mechanical.rs:later_failures_and_tied_failures_cannot_be_hidden_by_success, test:mdbook-dada/tests/mechanical.rs:receipt_validation_rejects_tampering_and_profile_substitution, test:mdbook-dada/tests/mechanical.rs:receipt_validation_requires_selected_sources_and_runner_snapshots, test:mdbook-dada/tests/mechanical.rs:snapshots_record_empty_directories_and_ignore_generated_outputs, test:mdbook-dada/tests/mechanical.rs:snapshots_and_records_reject_symbolic_links, test:mdbook-dada/tests/evidence_validation.rs:workspace_validation_rejects_malformed_execution_receipts. run snapshots before/after, captures both version probes and command outputs, and retains failed launch/recapture results. succeeded requires identical version results and snapshots plus successful command. validate checks required directory membership and profile consistency; status uses the latest finish time and gives stale/failure precedence on ties. The tests cover source mutations, binary output, missing required snapshots, symlinks, tampering and nonexecution during validation; none authenticates the runner or a hermetic environment. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Rooted-foundation review: the structural invariants now require explicit rootedness (including pending values) plus unique/compatible ownership. Allocation bounds remain solely for freshness; no safety proof assumes edge-age order or global DAG structure. Changed proof selections retain their public statement unless this unit explicitly defines the revised invariant or example. Given/Shared root transport and path reasoning were reviewed by their implementing agents, with fresh review of root-owned unpacking, GC, frame rerooting, class retention and the refill example. Earlier syntax and runtime rules are unchanged. The widened invariant domain is covered by recompilation of all earlier safety proofs and concrete shared-cycle/nonmonotonic-ID regressions, not by a claim that constructors can generate cycles.",
+  "limitations": [
+    "Author integration review with agent review of Given/Shared foundations and fresh review of root-owned integration. Lean checks proof correctness separately.",
+    "Assignment general safety remains deferred. Cyclic heap examples test invariant and operation scope, not source-program construction from the current empty initial state."
+  ],
+  "supersedes": [
+    "8e6e313cd97b0625f08f87ac4d76a38d4a84d24b9855046df5fcd97c087f1009"
+  ]
+}

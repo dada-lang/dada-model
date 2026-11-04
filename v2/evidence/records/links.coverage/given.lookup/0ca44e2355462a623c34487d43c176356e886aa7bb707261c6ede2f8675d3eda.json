@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "5b1d76350eab82221cf6ba18a3a97f9baafd6e7c720d4911b0ede1f405295521",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:27b635e54c096761d195bd023a2b9ff0f50da07131758a43c3e240e9dc3b2ab7",
+    "audit:unit:given.lookup",
+    "audit:unit:given.slots",
+    "audit:unit:given.state",
+    "audit:unit:given.storage_places",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The storage-place link is direct and both variable and field lookup equations are here. Undefined lookup versus a defined empty slot is explained without invoking stuckness ahead of its definition. Both displayed equations define S[q]. The partialness side conditions and S=⟨O,V,ν⟩ decomposition are stated locally, with q linked to its grammar. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4e54df6c2a075e4ac8933b167cc959261c316e4bda00186f2b7413deebfe3bfd"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The storage-place link is direct and both variable and field lookup equations are here. Undefined lookup versus a defined empty slot is explained without invoking stuckness ahead of its definition.",
+    "mathematics": "Both displayed equations define S[q]. The partialness side conditions and S=⟨O,V,ν⟩ decomposition are stated locally, with q linked to its grammar.",
+    "links": [
+      {
+        "occurrence": "given.lookup:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage place' refers to md/given.md#claim-given.storage_places for the concept or example setup used by this unit. The storage-place link is direct and both variable and field lookup equations are here. Undefined lookup versus a defined empty slot is explained without invoking stuckness ahead of its definition."
+      }
+    ]
+  }
+}

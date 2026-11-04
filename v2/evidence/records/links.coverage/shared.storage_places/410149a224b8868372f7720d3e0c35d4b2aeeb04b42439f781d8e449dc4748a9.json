@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "6f3aeac604c3f25298514766bbaa3633fb02748a3efa1ac443a567f80e16385f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:unit:shared.references",
+    "audit:unit:shared.storage_places",
+    "audit:unit:shared.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Gives q grammar and links routed places for the distinction; no lookup equation is buried here. q has the local x/α.f grammar and is distinguished from a linked recursive place expression. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "087c79e33479b24a14735f11e75b036baa8b51821693ef236875cf957154a8e8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Gives q grammar and links routed places for the distinction; no lookup equation is buried here.",
+    "mathematics": "q has the local x/α.f grammar and is distinguished from a linked recursive place expression.",
+    "links": [
+      {
+        "occurrence": "shared.storage_places:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'place expression' refers to md/shared.md#claim-shared.syntax for the concept or example setup used by this unit. Gives q grammar and links routed places for the distinction; no lookup equation is buried here."
+      }
+    ]
+  }
+}

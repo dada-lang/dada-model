@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "7f0df247d3209276336a13184f924e6235ac04e0f66bb97f16066c6f1fc4aafc",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.views",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This is the defining occurrence of base itself; C.A denotes the locally destructured class/view pair, with no separate external prose predicate invoked. The sole equation projects C from C.A and introduces base. C and A are the components of its argument rather than operations needing self-links. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c920cf2de2d6e73b0e2c1a0fc531749d8f4ddc578094c6936fc2d17e77dbde37"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This is the defining occurrence of base itself; C.A denotes the locally destructured class/view pair, with no separate external prose predicate invoked.",
+    "mathematics": "The sole equation projects C from C.A and introduces base. C and A are the components of its argument rather than operations needing self-links.",
+    "links": []
+  }
+}

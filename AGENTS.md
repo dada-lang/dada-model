@@ -76,14 +76,16 @@ uses frame-local typed stores and Shared realization with all frame roots pendin
 it does not assume termination. `Shared/TypingBindingPending` and
 `Shared/TypingCollection` supply binding with additional roots and root-discard
 collection lemmas.
-`v2/md/destructors.md` formalizes explicit destruction, frame completion
-obligations, and stack execution in `v2/lean/Destructors/`, with inherited Shared
-machinery in a chapter appendix. Class destructors are optional and take one
-whole given receiver. Struct drops give and discard without running user code.
-Progress, preservation, finite-prefix safety, empty completion, and class-object
-retention by GC are proved. The Functions-fragment correspondence records the
-stronger frame-exit condition. Assignment and implicit drop insertion remain
-deferred.
+`v2/md/destructors.md` and `v2/lean/Destructors/` formalize explicit destruction,
+frame consumption, and stack execution with full progress/preservation.
+`v2/md/assignment.md` and `v2/lean/Assignment/` add fixed binding types and explicit
+stores to empty or struct slots, with checked static/runtime examples and forward
+Destructor execution correspondence. Assignment safety is not yet proved; see the chapter's explicit proof boundary.
+Given/Shared structural invariants require rootedness (including pending values)
+and unique/compatible ownership, not allocation-age order. Shared permits rooted
+cycles. Their safety proofs and the Functions/Destructors proofs use this weaker
+foundation. Allocation bounds are used only for fresh IDs. A checked Assignment
+refill satisfies the new invariant without relabeling object IDs.
 `v2/md/cflow.md` remains an editorial placeholder.
 The existing chapter paths remain unchanged. `v2/md/given-typing.md` contains
 strictly covered units for signed views, typing rules, and storage realization,

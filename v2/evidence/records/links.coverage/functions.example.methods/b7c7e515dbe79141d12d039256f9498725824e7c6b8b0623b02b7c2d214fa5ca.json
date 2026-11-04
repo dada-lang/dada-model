@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "66d077064735fef34bfb9dad7b12384f78d47e912b57346d4d0fddc432cf460e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:unit:functions.example.methods",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained. The example uses concrete signatures and calls, not an unstated dispatch or overloading relation. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "a4b42b301dc3abf17497b1d74ee879837b57f5c028013e74962e05a74b63b0b3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained.",
+    "mathematics": "The example uses concrete signatures and calls, not an unstated dispatch or overloading relation.",
+    "links": [
+      {
+        "occurrence": "functions.example.methods:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal declaration' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained."
+      },
+      {
+        "occurrence": "functions.example.methods:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'give operation' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained."
+      }
+    ]
+  }
+}

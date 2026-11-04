@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "df680274cd74127ebccc7f3bd86da19f22c9586e08c8ee83480e96f3cdece5c8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:939f180934edf65d84a072aad2dd778c3a2dc532ce0e9d8b312e9d65b1b4483b",
+    "audit:target:985201bc93a5266f348c3a476dcf079ac55befb8aeed7289dd70aee7694c722c",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "audit:unit:functions.shared_typing",
+    "audit:unit:functions.typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links environments and both sequence-typing judgments. Initial/final environments and both tables are quantified in prose; the call-free fragment restriction is explicit. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "34e79d7842bd30fe3ac8f1ef635960f3ccabf1abd1418c3507d7b403bef8801c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links environments and both sequence-typing judgments.",
+    "mathematics": "Initial/final environments and both tables are quantified in prose; the call-free fragment restriction is explicit.",
+    "links": [
+      {
+        "occurrence": "functions.shared_typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'environments' refers to md/shared-typing.md#claim-shared.typing.environments for the concept or example setup used by this unit. Links environments and both sequence-typing judgments."
+      },
+      {
+        "occurrence": "functions.shared_typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'checks in Functions' refers to md/functions.md#claim-functions.typing for the concept or example setup used by this unit. Links environments and both sequence-typing judgments."
+      },
+      {
+        "occurrence": "functions.shared_typing:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'checks in Shared' refers to md/shared-typing.md#claim-shared.typing.sequences for the concept or example setup used by this unit. Links environments and both sequence-typing judgments."
+      }
+    ]
+  }
+}

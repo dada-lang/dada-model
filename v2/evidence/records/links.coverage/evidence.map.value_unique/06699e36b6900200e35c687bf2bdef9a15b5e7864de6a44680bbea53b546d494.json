@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "806af68b233196baa28efb5d51f625129eb6d608d8ccb8677ccc2942f3af42f9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d7a4e8940ecceee98134469b8995cce9e8285a49108151e7d7cfbb7f6afb5aa0",
+    "audit:unit:evidence.map",
+    "audit:unit:evidence.map.value_unique",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The lemma links the finite-map definition, then states all membership premises and its equality conclusion explicitly. M, k, v and w are introduced with their domains in the sentence; equality and pair membership are ordinary mathematical notation, and map structure comes through the definition link. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "58d16bf85f15e8ce91b66f351a986398a4ab347d603ca8de00310142701f191a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The lemma links the finite-map definition, then states all membership premises and its equality conclusion explicitly.",
+    "mathematics": "M, k, v and w are introduced with their domains in the sentence; equality and pair membership are ordinary mathematical notation, and map structure comes through the definition link.",
+    "links": [
+      {
+        "occurrence": "evidence.map.value_unique:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'evidence.map' refers to md/repo/evidence-pilot.md#claim-evidence.map for the concept or example setup used by this unit. The lemma links the finite-map definition, then states all membership premises and its equality conclusion explicitly."
+      }
+    ]
+  }
+}

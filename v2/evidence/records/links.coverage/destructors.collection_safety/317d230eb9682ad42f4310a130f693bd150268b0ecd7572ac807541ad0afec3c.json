@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "3fa880b1e3513f7d131f41d43b86cd3ada91a694128dfd5205a2ded705768b65",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2948fd23e337d523facb0a0bd8446f0c73151a1b3773cee11a0866dd45cc1d0a",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:target:c8cc0b8b6abef8a10509119d2140141701f58f8925ed109a7a9eb157fbf76014",
+    "audit:unit:destructors.collection_safety",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.heap_obligations",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes. No equations; the statement identifies raw and collected states in prose and gives the typed-source assumption. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "a0086754c74b13bb4dde16a4667bb2a81883a4d9a64987257f7dcfa6d297defc"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes.",
+    "mathematics": "No equations; the statement identifies raw and collected states in prose and gives the typed-source assumption.",
+    "links": [
+      {
+        "occurrence": "destructors.collection_safety:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'raw transition' supplies the definition or concrete example setup used here, at #claim-destructors.execution. Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes."
+      },
+      {
+        "occurrence": "destructors.collection_safety:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'typed configuration' supplies the definition or concrete example setup used here, at #claim-destructors.heap_obligations. Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes."
+      },
+      {
+        "occurrence": "destructors.collection_safety:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'struct fields have struct types' supplies the definition or concrete example setup used here, at shared.md#claim-shared.struct. Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes."
+      }
+    ]
+  }
+}

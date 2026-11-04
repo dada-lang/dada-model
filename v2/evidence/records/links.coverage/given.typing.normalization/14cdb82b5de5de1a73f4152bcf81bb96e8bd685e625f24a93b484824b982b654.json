@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "8302f486a443f8d13c2c1136d9e583b62b09fc7e23b0b23b5f16b98595aca748",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.example.normalization",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.observations",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here. The rewrite is a defining rule for normalization, with A, rho, and the complete nonempty field list specified in adjacent prose. N is introduced here and requires no self-link. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "9c02f247bf2cf6bceb6b55f43a37d9673312fa268798a1ee52657bf2c2149241"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here.",
+    "mathematics": "The rewrite is a defining rule for normalization, with A, rho, and the complete nonempty field list specified in adjacent prose. N is introduced here and requires no self-link.",
+    "links": [
+      {
+        "occurrence": "given.typing.normalization:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class at' refers to md/given-typing.md#claim-given.typing.class_at for the concept or example setup used by this unit. The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here."
+      }
+    ]
+  }
+}

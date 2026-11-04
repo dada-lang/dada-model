@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "853377920b8b1ecfcd79fe06de3219553747e67be9b900cf1ef547b204089c81",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.units.closed_body against rust:mdbook-dada/src/units.rs:parse_block, rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters, test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations, test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence, test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation, test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content. parse_block rejects include/playground/rustdoc directives in raw unit text, including literal samples, and rejects nested legacy citations. validate_chapters reparses original and received content and compares ordered IDs/raw units. Tests cover raw includes and simulated pre-expansion/addition/rewrite; the real mdBook pipeline regression is explicitly ignored by default and requires a separate run. The claim correctly limits the boundary to received chapters and this preprocessing stage. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Assignment differential re-review: exact authored unit and selected formalization/test inputs are unchanged from the previously reviewed bundle. The new Assignment modules import the earlier layers without modifying their source or claims. Reviewed the revised AGENTS scope and explicit Assignment proof boundary; it does not change this earlier claim. This retains the prior correspondence judgment after exact required-input comparison, not an independent fresh proof audit.",
+  "limitations": [
+    "Differential author self-review of unchanged semantic/tool selections; mechanical checks are reported separately. No independent re-proof is claimed."
+  ],
+  "supersedes": [
+    "c52fa9e3b162c8b9026ea1e557e8caded6862a283b079c59a3933ea08f75f2b2"
+  ]
+}

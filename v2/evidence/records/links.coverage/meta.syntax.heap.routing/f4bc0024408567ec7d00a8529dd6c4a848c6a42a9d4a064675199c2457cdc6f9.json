@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "34ea7f8ced0764b86ae31aada969169216693b328fd396eac23991bee35e4040",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:cb3e7f137fa264d756a4ce07ced53774f9fec6337e518a0dd5f5f0e263b368b4",
+    "audit:unit:meta.syntax.heap.rendering",
+    "audit:unit:meta.syntax.heap.routing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Diagram edges link their rendering definition before this unit specifies routing corridors, bends, dots and failure behavior. Lease junctions are already explained by that target. No mathematical symbol requires a definition link; routing cost is described in ordinary terms without an omitted formula. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "38a3922d57611b216edd14c76d5674477cecd93bb02d87bdad6673b171cb4163"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Diagram edges link their rendering definition before this unit specifies routing corridors, bends, dots and failure behavior. Lease junctions are already explained by that target.",
+    "mathematics": "No mathematical symbol requires a definition link; routing cost is described in ordinary terms without an omitted formula.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.heap.routing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Diagram edges' refers to md/repo/renderer-contracts.md#claim-meta.syntax.heap.rendering for the concept or example setup used by this unit. Diagram edges link their rendering definition before this unit specifies routing corridors, bends, dots and failure behavior. Lease junctions are already explained by that target."
+      }
+    ]
+  }
+}

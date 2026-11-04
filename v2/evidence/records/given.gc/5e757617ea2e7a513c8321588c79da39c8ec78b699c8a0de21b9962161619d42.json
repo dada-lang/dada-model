@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "2b20c17ec3f9016fe567525380e128dce69752cee92771f0e390e94889ac94de",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/Frames:Configuration",
+    "lean:Unique/Frames:Configuration.collect",
+    "lean:Unique/Frames:Configuration.initial",
+    "lean:Unique/Frames:Configuration.running",
+    "lean:Unique/Frames:Configuration.state",
+    "lean:Unique/Frames:Frame",
+    "lean:Unique/Frames:State.collect",
+    "lean:Unique/State:Live",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.gc",
+    "unit:given.identities",
+    "unit:given.machine",
+    "unit:given.programs",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Live is inductively rooted at initialized local slots and closed through initialized fields of reached objects. State.collect filters existing entries by Live and Configuration.collect uses projected active locals or []. It changes only objects, preserving frame, counter and surviving entries. With no locals Live.has_variable excludes every live object, establishing empty-heap collection. The unit explicitly states whole-statement boundaries and noncomputability; these boundaries are specified by the following Step unit. Assignment differential re-review: exact authored unit and selected formalization/test inputs are unchanged from the previously reviewed bundle. The new Assignment modules import the earlier layers without modifying their source or claims. Reviewed the revised AGENTS scope and explicit Assignment proof boundary; it does not change this earlier claim. This retains the prior correspondence judgment after exact required-input comparison, not an independent fresh proof audit.",
+  "limitations": [
+    "Differential author self-review of unchanged semantic/tool selections; mechanical checks are reported separately. No independent re-proof is claimed."
+  ],
+  "supersedes": [
+    "d99a96346e26d785ba8f0444ab35e297f8e82017fe3e13b6176e3b4e08e3ecfb"
+  ]
+}

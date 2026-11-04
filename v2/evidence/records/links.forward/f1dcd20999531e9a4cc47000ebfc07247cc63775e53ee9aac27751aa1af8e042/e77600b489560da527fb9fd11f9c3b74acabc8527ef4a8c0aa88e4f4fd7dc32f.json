@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "e2c8d6d84ca31110d521fc3312c1f8d79a934dd1add24f2ddca742b5e50eb5b4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:unit:functions.example.stack_safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Reviewed existing reference-order classification: {\"kind\": \"forward\", \"necessity\": \"The nested call already has a complete earlier operational example. This short safety preview identifies the new issue—an undelivered caller result—before introducing the continuation invariant. Moving the full invariant earlier would require introducing typed roots/continuation environments before stating the problem they solve; moving this paragraph later would remove that motivation. Splitting it would either duplicate the nested example or leave its promised-result issue unmotivated.\", \"signposting\": \"The selected source passage explicitly identifies the following definition and limits the current preview: The following [stack-typing definition](#claim-functions.stack_typing) explains what being well typed means for a suspended\\ncaller whose result has not arrived yet.\", \"signpost\": {\"path\": \"md/functions.md\", \"start\": 30518, \"end\": 30682}, \"minimal_use\": \"Only the finite-prefix conclusion (the whole stack stays typed and cannot get stuck) and the need to account for a suspended caller are previewed. The paragraph does not use the later judgment to derive another result; its component definitions follow immediately after the typed-root introduction.\"} Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "2a60bd5470a58907b7e78956b4a28e6fba0c95d1bdc38c8927457e6032200191"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The nested call already has a complete earlier operational example. This short safety preview identifies the new issue—an undelivered caller result—before introducing the continuation invariant. Moving the full invariant earlier would require introducing typed roots/continuation environments before stating the problem they solve; moving this paragraph later would remove that motivation. Splitting it would either duplicate the nested example or leave its promised-result issue unmotivated.",
+      "signposting": "The selected source passage explicitly identifies the following definition and limits the current preview: The following [stack-typing definition](#claim-functions.stack_typing) explains what being well typed means for a suspended\ncaller whose result has not arrived yet.",
+      "signpost": {
+        "path": "md/functions.md",
+        "start": 30518,
+        "end": 30682
+      },
+      "minimal_use": "Only the finite-prefix conclusion (the whole stack stays typed and cannot get stuck) and the need to account for a suspended caller are previewed. The paragraph does not use the later judgment to derive another result; its component definitions follow immediately after the typed-root introduction."
+    }
+  }
+}

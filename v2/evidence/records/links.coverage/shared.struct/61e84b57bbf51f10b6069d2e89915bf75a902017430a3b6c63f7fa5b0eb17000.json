@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "0610b3ae1366cc68792e0f8ad9508b63e993452d273ba5a90687fe460a351664",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:unit:shared.declarations",
+    "audit:unit:shared.struct",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nominal declaration kinds and signed views. Defines struct(T) independently of permission/view, then states the field and kind restrictions. struct(T) is the defining predicate; the empty/hidden-field cases are explained explicitly rather than importing another judgment. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "e6f5f4cda811526b9459c086e25a014fc89e3904a63358ed2a536d84aba9f1ac"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nominal declaration kinds and signed views. Defines struct(T) independently of permission/view, then states the field and kind restrictions.",
+    "mathematics": "struct(T) is the defining predicate; the empty/hidden-field cases are explained explicitly rather than importing another judgment.",
+    "links": [
+      {
+        "occurrence": "shared.struct:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declared' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links nominal declaration kinds and signed views. Defines struct(T) independently of permission/view, then states the field and kind restrictions."
+      },
+      {
+        "occurrence": "shared.struct:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'view exposes' refers to md/given-typing.md#claim-given.typing.views for the concept or example setup used by this unit. Links nominal declaration kinds and signed views. Defines struct(T) independently of permission/view, then states the field and kind restrictions."
+      }
+    ]
+  }
+}

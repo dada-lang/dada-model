@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "bundle": "f1479f4bc5111d9a0be5525aa24078e097b64db879cd36313e6ea0dbd23055d4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:6a677ac22a7333f883a5bbe3ea1f985b201e8e1dfa34eb7895adb06760dc2928",
+    "audit:target:a395ec3d77295857a26e9571e271df4e3a3c5c6ae23ac869fc9fd981731e6507",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:unit:given.classes",
+    "audit:unit:given.state",
+    "audit:unit:given.syntax",
+    "audit:unit:given.unpacking",
+    "audit:unit:shared.embedding",
+    "audit:unit:shared.state",
+    "audit:unit:shared.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the Given single-variable grammar, storage/program/configuration, and Shared reference representation. Defines E componentwise in one translation unit. E is introduced by its componentwise definitions; state/program/configuration and reference representation have direct links to the respective layers. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "9a59b7641b9d95990d1794a5c4b56d1694cd0bbf4988ba3805de76755c2f3dc7"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the Given single-variable grammar, storage/program/configuration, and Shared reference representation. Defines E componentwise in one translation unit.",
+    "mathematics": "E is introduced by its componentwise definitions; state/program/configuration and reference representation have direct links to the respective layers.",
+    "links": [
+      {
+        "occurrence": "shared.embedding:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Given fragment withsingle-variable bindings' refers to md/given.md#claim-given.syntax for the concept or example setup used by this unit. Links the Given single-variable grammar, storage/program/configuration, and Shared reference representation. Defines E componentwise in one translation unit."
+      },
+      {
+        "occurrence": "shared.embedding:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'state' refers to md/given.md#claim-given.state for the concept or example setup used by this unit. Links the Given single-variable grammar, storage/program/configuration, and Shared reference representation. Defines E componentwise in one translation unit."
+      },
+      {
+        "occurrence": "shared.embedding:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reference' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links the Given single-variable grammar, storage/program/configuration, and Shared reference representation. Defines E componentwise in one translation unit."
+      },
+      {
+        "occurrence": "shared.embedding:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'program' refers to md/given.md#claim-given.programs for the concept or example setup used by this unit. Links the Given single-variable grammar, storage/program/configuration, and Shared reference representation. Defines E componentwise in one translation unit."
+      },
+      {
+        "occurrence": "shared.embedding:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/given.md#claim-given.machine for the concept or example setup used by this unit. Links the Given single-variable grammar, storage/program/configuration, and Shared reference representation. Defines E componentwise in one translation unit."
+      }
+    ]
+  }
+}

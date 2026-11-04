@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "e7f97170b9278b873886dd634118cee8761f04f6fb2e8210ebb21a0027ffe96e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d624ee0d5cd5657b31ab57c7b4683b005539b9d45e491bf03994c6837439d23e",
+    "audit:unit:meta.evidence.required_inputs",
+    "audit:unit:meta.sources.configuration",
+    "audit:unit:meta.sources.exact_selection",
+    "audit:unit:meta.units.closed_body",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The exact cited declaration requirement now links the opening definition of source selection. Other required input categories are listed directly, including fixture and theme snapshots and the non-oracle limitation. No mathematical rules are reused; hashes, source paths and bundle inputs are concrete tooling data described by this unit. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4ba0596e106928e52a94059293733b6c494abf58164fd99f5eca4c87384514c2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The exact cited declaration requirement now links the opening definition of source selection. Other required input categories are listed directly, including fixture and theme snapshots and the non-oracle limitation.",
+    "mathematics": "No mathematical rules are reused; hashes, source paths and bundle inputs are concrete tooling data described by this unit.",
+    "links": [
+      {
+        "occurrence": "meta.evidence.required_inputs:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'exact cited Lean declaration' refers to md/repo/evidence-pilot.md#claim-meta.sources.exact_selection for the concept or example setup used by this unit. The exact cited declaration requirement now links the opening definition of source selection. Other required input categories are listed directly, including fixture and theme snapshots and the non-oracle limitation."
+      }
+    ]
+  }
+}

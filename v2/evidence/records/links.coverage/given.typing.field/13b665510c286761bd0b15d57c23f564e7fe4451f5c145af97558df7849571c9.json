@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "bundle": "6c89edcadd2a45a4b313c2bb4757d86ee094b6d006d14da174c72e456f0058b8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:7182ffe25a84f5fbb71fc4b99d76d34d5086f0b0437229df2fdd4106cd7c96b7",
+    "audit:target:8413a9827dd730e438bc0c027d5a8e0b0375cf3b64b8dc044fdc5fb8b250d751",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.field",
+    "audit:unit:given.typing.focus",
+    "audit:unit:given.typing.observations",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The empty-slot description links to the environment grammar. The current-field description is the single subject being introduced. The case split links neg, pos, and focusing. The outer field operator is its defining occurrence. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "a56618a4ae049150050692f1bc37c31c24a78612b8bd3dad9c4892ee3e41b76d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The empty-slot description links to the environment grammar. The current-field description is the single subject being introduced.",
+    "mathematics": "The case split links neg, pos, and focusing. The outer field operator is its defining occurrence.",
+    "links": [
+      {
+        "occurrence": "given.typing.field:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty-slot description' refers to md/given-typing.md#claim-given.typing.environments for the concept or example setup used by this unit. The empty-slot description links to the environment grammar. The current-field description is the single subject being introduced."
+      },
+      {
+        "occurrence": "given.typing.field:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. The empty-slot description links to the environment grammar. The current-field description is the single subject being introduced."
+      },
+      {
+        "occurrence": "given.typing.field:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\downarrow' refers to md/given-typing.md#claim-given.typing.focus for the concept or example setup used by this unit. The empty-slot description links to the environment grammar. The current-field description is the single subject being introduced."
+      },
+      {
+        "occurrence": "given.typing.field:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. The empty-slot description links to the environment grammar. The current-field description is the single subject being introduced."
+      }
+    ]
+  }
+}

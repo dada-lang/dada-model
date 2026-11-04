@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "b9c6a3d1dc7351f25907b75ec8ac3f270edef40b97d65de1948cb4870daa7705",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c8ead969bed74ef79c463fa37a326d2236f51323ed159506774205ac0abfe848",
+    "audit:target:fb8728223f67267611c2c2583e138750a3de2c9dbffaf47cc6477356589bd987",
+    "audit:unit:given.example.empty_field",
+    "audit:unit:given.example.field",
+    "audit:unit:given.executions",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded. Δ and K_bad are introduced from the linked predecessor example. The starred arrow and Finished in the no-completion formula are linked. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "41e29ed9b7e7427eed213d9d5648797ed982bbdd5d09e35b3dea9a301e1cc925"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded.",
+    "mathematics": "Δ and K_bad are introduced from the linked predecessor example. The starred arrow and Finished in the no-completion formula are linked.",
+    "links": [
+      {
+        "occurrence": "given.example.empty_field:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'given.example.field' refers to md/given.md#claim-given.example.field for the concept or example setup used by this unit. Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded."
+      },
+      {
+        "occurrence": "given.example.empty_field:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck' refers to md/given.md#claim-given.stuck for the concept or example setup used by this unit. Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded."
+      }
+    ]
+  }
+}

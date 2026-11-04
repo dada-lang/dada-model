@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "391e3f0db542433ec1b75024ecabbbb1160f2b7dc4b3718b96e05a33855c6d07",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:unit:destructors.future",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Deferred assignment/drop insertion and borrow-based struct destructors remain explicitly future conveniences. The only code shorthand refers directly to the existing explicit pattern. The code example binds resource and self by the described shorthand context; no current typing theorem or borrowing judgment is asserted. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c2fbada3fafc09240f405dc35125eeb85c93db7b0e655a79fee7ab0c027077fe"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Deferred assignment/drop insertion and borrow-based struct destructors remain explicitly future conveniences. The only code shorthand refers directly to the existing explicit pattern.",
+    "mathematics": "The code example binds resource and self by the described shorthand context; no current typing theorem or borrowing judgment is asserted.",
+    "links": [
+      {
+        "occurrence": "destructors.future:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'explicit pattern' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.patterns. Deferred assignment/drop insertion and borrow-based struct destructors remain explicitly future conveniences. The only code shorthand refers directly to the existing explicit pattern."
+      }
+    ]
+  }
+}

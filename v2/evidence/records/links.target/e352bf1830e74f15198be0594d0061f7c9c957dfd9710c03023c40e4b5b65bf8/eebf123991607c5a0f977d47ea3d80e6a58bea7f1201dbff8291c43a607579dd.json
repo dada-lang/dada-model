@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "8863abcc2a6b8834e9ca7008ea3a959f7655f6a254074dbc2e36be2660ea2ede",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e352bf1830e74f15198be0594d0061f7c9c957dfd9710c03023c40e4b5b65bf8",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.example.share_value directly introduces the shared-box example state and transition. Local class/object/slot table supplies the example state; the action links give-share evaluation. Sharing the returned box reference leaves child-reference modes unchanged. The obj0/obj1 state and slot modes are enumerated locally, using preceding identity/reference notation. The transition links give-share evaluation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "650c7fe51abba328c3aa6af9f3964c8cad555bde92b2768326e55f7f99563cfe"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the shared-box example state and transition",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 23183,
+      "end": 23854
+    },
+    "clarity": "The landing md/shared.md#claim-shared.example.share_value directly introduces the shared-box example state and transition. Local class/object/slot table supplies the example state; the action links give-share evaluation. Sharing the returned box reference leaves child-reference modes unchanged.",
+    "independence": "The obj0/obj1 state and slot modes are enumerated locally, using preceding identity/reference notation. The transition links give-share evaluation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

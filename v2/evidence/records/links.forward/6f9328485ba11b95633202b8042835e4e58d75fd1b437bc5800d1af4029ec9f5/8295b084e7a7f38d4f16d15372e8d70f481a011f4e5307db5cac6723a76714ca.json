@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "e78f25fe8e0f70cdc71bf03fef40217403ad9ca971abe800afa784581871ba30",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cce19ef6a71eb7d3cab3d2e2c78a524748e4bdf086d09a170c945dcbe7dcef9",
+    "audit:unit:given.typing.example.views",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Reviewed existing reference-order classification: {\"kind\": \"forward\", \"necessity\": \"The first view table distinguishes complete knowledge from complete initialization. Moving Full earlier also requires its pos/neg/class-at prerequisites before the first concrete views; moving the table later leaves signed views without this central concrete distinction. Splitting away its full/partial labels loses the contrast between unknown and known-empty fields. The preview states only that distinction.\", \"signposting\": \"The selected source passage explicitly identifies the following definition and limits the current preview: The [formal fullness predicate](#claim-given.typing.full) comes after this example;\\nonly this distinction is needed to read the table.\", \"signpost\": {\"path\": \"md/given-typing.md\", \"start\": 5062, \"end\": 5196}, \"minimal_use\": \"The opening sentences define full as accounting for every field recursively, including empty fields, and partial as leaving statuses unknown. The table needs only those facts, not the later quantified Full judgment.\"} Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "88e174bafc86acd10d82e18eae9016830b020e30b03dd4be1b65a426a99e80f2"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The first view table distinguishes complete knowledge from complete initialization. Moving Full earlier also requires its pos/neg/class-at prerequisites before the first concrete views; moving the table later leaves signed views without this central concrete distinction. Splitting away its full/partial labels loses the contrast between unknown and known-empty fields. The preview states only that distinction.",
+      "signposting": "The selected source passage explicitly identifies the following definition and limits the current preview: The [formal fullness predicate](#claim-given.typing.full) comes after this example;\nonly this distinction is needed to read the table.",
+      "signpost": {
+        "path": "md/given-typing.md",
+        "start": 5062,
+        "end": 5196
+      },
+      "minimal_use": "The opening sentences define full as accounting for every field recursively, including empty fields, and partial as leaving statuses unknown. The table needs only those facts, not the later quantified Full judgment."
+    }
+  }
+}

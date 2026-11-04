@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "24ba7fdf090b7005b48f8ef4772112a9da2c30477197ab3d1f4b0ab3dd9b77a2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:534a177bb7b5f174ea012b9052bf1cba1349ac9c24e347fe4fafa25500c25bba",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b50fba7e62f9aaf161a6e1aaec2b60ca9f8ca33678e15facd8c24af1d87648a9",
+    "audit:unit:shared.example.give_cycle",
+    "audit:unit:shared.example.raw_take_cycle",
+    "audit:unit:shared.give",
+    "audit:unit:shared.resolution",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The setup links the preceding concrete example. Shared resolution and give's promotion rule link their earlier definitions. All links are backward; the quantification is described in words with no undefined symbols or forward theorem dependency. The setup links the preceding concrete example. Shared resolution and give's promotion rule link their earlier definitions. All links are backward; the quantification is described in words with no undefined symbols or forward theorem dependency. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The setup links the preceding concrete example. Shared resolution and give's promotion rule link their earlier definitions. All links are backward; the quantification is described in words with no undefined symbols or forward theorem dependency.",
+    "mathematics": "The setup links the preceding concrete example. Shared resolution and give's promotion rule link their earlier definitions. All links are backward; the quantification is described in words with no undefined symbols or forward theorem dependency. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "shared.example.give_cycle:1",
+        "role": "conceptual",
+        "rationale": "'preceding heap' points backward to #claim-shared.example.raw_take_cycle for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "shared.example.give_cycle:2",
+        "role": "conceptual",
+        "rationale": "'shared access' points backward to #claim-shared.resolution for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "shared.example.give_cycle:3",
+        "role": "conceptual",
+        "rationale": "'give's promotion case' points backward to #claim-shared.give for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

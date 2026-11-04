@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "63bb3f90659c2e50f47473d74e14cd8c7bad7c0f62f67b39454db24bcab7b2c0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:shared.references",
+    "audit:unit:shared.state",
+    "audit:unit:shared.typing.mode",
+    "audit:unit:shared.typing.types",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.toMode maps given to unique and shared to shared. The displayed equations connect static permissions with reference modes, without placing modes on objects. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "a1597e02d85333d3e000cc9834f3b0e1a1be4d98a9d6efd27e7d54a253303191"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.toMode maps given to unique and shared to shared. The displayed equations connect static permissions with reference modes, without placing modes on objects.",
+    "links": [
+      {
+        "occurrence": "shared.typing.mode:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'type permission' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly."
+      },
+      {
+        "occurrence": "shared.typing.mode:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reference mode' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly."
+      }
+    ]
+  }
+}

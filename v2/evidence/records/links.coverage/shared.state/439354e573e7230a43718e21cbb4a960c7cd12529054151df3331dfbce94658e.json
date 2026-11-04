@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "86cbaad8a342bbbc30e05a54c480e63e091289bd07fd1c84c122d9ef9d8175bf",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6b62588dc91e02fb002f06c49a255ee88f8214c8d7ccbfa6ccf50802d1e5930a",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:given.collections",
+    "audit:unit:shared.objects",
+    "audit:unit:shared.programs",
+    "audit:unit:shared.references",
+    "audit:unit:shared.state",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets. S/O/V/ν are introduced with their map domains; identity tagging and finite-map notation link backwards. The allocation counter is part of this representation. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "33b72de819c8b540d218c7c7a16ef31d56d0c35f51245c772987162a8e94c9fb"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets.",
+    "mathematics": "S/O/V/ν are introduced with their map domains; identity tagging and finite-map notation link backwards. The allocation counter is part of this representation.",
+    "links": [
+      {
+        "occurrence": "shared.state:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'tagged numbers' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets."
+      },
+      {
+        "occurrence": "shared.state:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finite-map notation' refers to md/given.md#claim-given.collections for the concept or example setup used by this unit. Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets."
+      }
+    ]
+  }
+}

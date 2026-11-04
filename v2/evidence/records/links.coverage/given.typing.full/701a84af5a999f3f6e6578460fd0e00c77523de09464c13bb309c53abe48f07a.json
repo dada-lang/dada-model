@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "bundle": "fb81f45a4ad31a632940dcd75dfc1799c8772a60943e6b86902734bbfce63903",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.full",
+    "audit:unit:given.typing.observations",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation. The equation directly links pos, neg, class-at, and base. Quantified paths and fields are locally bound; Full is its defining occurrence. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4099c81b04f068b426ee44a14adce5e5ce11ffb02870968381ad6589e4288197"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation.",
+    "mathematics": "The equation directly links pos, neg, class-at, and base. Quantified paths and fields are locally bound; Full is its defining occurrence.",
+    "links": [
+      {
+        "occurrence": "given.typing.full:1",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation."
+      },
+      {
+        "occurrence": "given.typing.full:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{class}' refers to md/given-typing.md#claim-given.typing.class_at for the concept or example setup used by this unit. Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation."
+      },
+      {
+        "occurrence": "given.typing.full:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{base}' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation."
+      },
+      {
+        "occurrence": "given.typing.full:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation."
+      },
+      {
+        "occurrence": "given.typing.full:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation."
+      }
+    ]
+  }
+}

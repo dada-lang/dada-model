@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "2b7502c9cdcc3055337482edf1cc9f26a2ec090037e961612469382cc5316f15",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6a677ac22a7333f883a5bbe3ea1f985b201e8e1dfa34eb7895adb06760dc2928",
+    "audit:target:d23f620a4d543e74b2a0c0ebf99c040dfd62ccaae87df02e867c7c374fa3bc58",
+    "audit:unit:given.gc",
+    "audit:unit:given.machine",
+    "audit:unit:given.state",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links live-frame roots and initialized fields; defines reachability for collection with absent frames having no roots. The filter equation defines gc; S_K and D are explained locally, and the frame/counter are preserved. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d5529cf74671456938e2b6e7fb2823d60a550c0c190f1eee309eb93a2dd24793"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links live-frame roots and initialized fields; defines reachability for collection with absent frames having no roots.",
+    "mathematics": "The filter equation defines gc; S_K and D are explained locally, and the frame/counter are preserved.",
+    "links": [
+      {
+        "occurrence": "given.gc:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'live frame' refers to md/given.md#claim-given.machine for the concept or example setup used by this unit. Links live-frame roots and initialized fields; defines reachability for collection with absent frames having no roots."
+      },
+      {
+        "occurrence": "given.gc:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'initialized object fields' refers to md/given.md#claim-given.slots for the concept or example setup used by this unit. Links live-frame roots and initialized fields; defines reachability for collection with absent frames having no roots."
+      }
+    ]
+  }
+}

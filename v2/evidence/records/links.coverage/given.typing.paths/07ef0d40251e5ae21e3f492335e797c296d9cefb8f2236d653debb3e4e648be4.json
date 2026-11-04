@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "ed76802c52242ab1465611406d807b58fdabfd170da7fb52390da6d8b9e47dc5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.paths",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This unit introduces finite relative field paths, epsilon, concatenation, and append in place. It uses field names from the operational syntax without introducing another semantic predicate. The rho production is its defining grammar; every new symbol is assigned meaning in the preceding sentence. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "91c5c18c767416cb2241dde4961480c34b519ad7361c7c1defcf9f282f04cc9f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This unit introduces finite relative field paths, epsilon, concatenation, and append in place. It uses field names from the operational syntax without introducing another semantic predicate.",
+    "mathematics": "The rho production is its defining grammar; every new symbol is assigned meaning in the preceding sentence.",
+    "links": []
+  }
+}

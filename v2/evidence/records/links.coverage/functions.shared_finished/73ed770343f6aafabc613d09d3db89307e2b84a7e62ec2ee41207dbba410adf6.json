@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "cb41cbbfa7493dc27f38173d50adea07df217b72f171d1d3bbfabd1eb231bde7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:18e50dab95df074f64b089e4a508e22ce099405e437bd6cb4f61d60712b67a3c",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:8132c92fa5f747ccdf2fbc59a0936de31747623e06e98e9afada9d4d962dc8b4",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.shared_correspondence",
+    "audit:unit:functions.shared_finished",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Shared configurations/completion and the Functions embedding. Both sides use absent initial frame as the defined boundary; no separate math operator is introduced. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "03373ef1858833cbf050c77f3611f79fa90eb680ff5756bfbf0ba5988d643806"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Shared configurations/completion and the Functions embedding.",
+    "mathematics": "Both sides use absent initial frame as the defined boundary; no separate math operator is introduced.",
+    "links": [
+      {
+        "occurrence": "functions.shared_finished:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared program configuration' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links Shared configurations/completion and the Functions embedding."
+      },
+      {
+        "occurrence": "functions.shared_finished:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/shared.md#claim-shared.finished for the concept or example setup used by this unit. Links Shared configurations/completion and the Functions embedding."
+      },
+      {
+        "occurrence": "functions.shared_finished:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Functions embedding' refers to md/functions.md#claim-functions.shared_correspondence for the concept or example setup used by this unit. Links Shared configurations/completion and the Functions embedding."
+      }
+    ]
+  }
+}

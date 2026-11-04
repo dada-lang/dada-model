@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "0a8aae9687c55a844919bb9d46f35334ca324824117e304363dfedd61f15c292",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:56e88d29eb95c2d92fc038aa82ddca6d06f063d06b43e1307ce35878c60572ed",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:unit:given.example.unreachable_cycle",
+    "audit:unit:given.live",
+    "audit:unit:given.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The example links WF and Live backward; its single Box object, self field and absence of variables are stated directly. The numeric counter and ID are concrete, not unintroduced metavariables. The example links WF and Live backward; its single Box object, self field and absence of variables are stated directly. The numeric counter and ID are concrete, not unintroduced metavariables. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The example links WF and Live backward; its single Box object, self field and absence of variables are stated directly. The numeric counter and ID are concrete, not unintroduced metavariables.",
+    "mathematics": "The example links WF and Live backward; its single Box object, self field and absence of variables are stated directly. The numeric counter and ID are concrete, not unintroduced metavariables. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "given.example.unreachable_cycle:1",
+        "role": "conceptual",
+        "rationale": "'well-formedness' points backward to #claim-given.well_formed for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "given.example.unreachable_cycle:2",
+        "role": "conceptual",
+        "rationale": "'live' points backward to #claim-given.live for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

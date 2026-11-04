@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "3e164b666681dacc4e86440915d9767dfa6963da887bb2789dcb5ebf46cd7886",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1cfbd0076bfd86a8a16c262c93d5c164455765cc74d08c5fbe6a3a9ab3b6981b",
+    "audit:target:48f69fd66c2ff1a3ca310d617921b131abdb2db405cd929c855065a0fcb9107c",
+    "audit:target:bfa16cc3692daff307f4a639791bfdb4421206cb6db19788a47f397a6854ce4b",
+    "audit:unit:assignment.example.age",
+    "audit:unit:assignment.forward",
+    "audit:unit:assignment.safety.next",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links current static/runtime rules and the prior concrete refill example. It distinguishes the completed foundational invariant refactor from still-unproved general Assignment preservation, progress and reflection; no future result is used as a premise. Links current static/runtime rules and the prior concrete refill example. It distinguishes the completed foundational invariant refactor from still-unproved general Assignment preservation, progress and reflection; no future result is used as a premise. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "1624314ddbe38e67db2954aec2955ec96bf0e7063ac69e1890183ce2472b0aaf"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links current static/runtime rules and the prior concrete refill example. It distinguishes the completed foundational invariant refactor from still-unproved general Assignment preservation, progress and reflection; no future result is used as a premise.",
+    "mathematics": "Links current static/runtime rules and the prior concrete refill example. It distinguishes the completed foundational invariant refactor from still-unproved general Assignment preservation, progress and reflection; no future result is used as a premise. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "assignment.safety.next:1",
+        "role": "conceptual",
+        "rationale": "'static rules' points backward to #claim-assignment.typing for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "assignment.safety.next:2",
+        "role": "conceptual",
+        "rationale": "'operational rules' points backward to #claim-assignment.machine for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "assignment.safety.next:3",
+        "role": "conceptual",
+        "rationale": "'refill example' points backward to #claim-assignment.example.age for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

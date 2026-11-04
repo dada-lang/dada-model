@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "cf736c9f4850402c15b70d6eb6ad8dffa4b768fbb7526cad0c1076609d2042b5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:destructors.example.struct_drop",
+    "audit:unit:functions.gc",
+    "audit:unit:shared.give",
+    "audit:unit:shared.struct",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the nominal struct predicate, ordinary give and eager GC. Point and SharedPoint are declared in the example. The unique/shared source effects and permitted completion with s alive are stated directly. All local names are bound in the code; no mathematical symbols or implicit destructor judgment is used. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "12ce6f00357b738155a5e1e9b552a3129240b9e1c6f5b4c96841009f3bacd161"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the nominal struct predicate, ordinary give and eager GC. Point and SharedPoint are declared in the example. The unique/shared source effects and permitted completion with s alive are stated directly.",
+    "mathematics": "All local names are bound in the code; no mathematical symbols or implicit destructor judgment is used.",
+    "links": [
+      {
+        "occurrence": "destructors.example.struct_drop:1",
+        "role": "conceptual",
+        "rationale": "'Structs' refers to shared.md#claim-shared.struct for the definition or concrete setup used in this example. Links the nominal struct predicate, ordinary give and eager GC. Point and SharedPoint are declared in the example. The unique/shared source effects and permitted completion with s alive are stated directly."
+      },
+      {
+        "occurrence": "destructors.example.struct_drop:2",
+        "role": "conceptual",
+        "rationale": "'ordinary give' refers to shared.md#claim-shared.give for the definition or concrete setup used in this example. Links the nominal struct predicate, ordinary give and eager GC. Point and SharedPoint are declared in the example. The unique/shared source effects and permitted completion with s alive are stated directly."
+      },
+      {
+        "occurrence": "destructors.example.struct_drop:3",
+        "role": "conceptual",
+        "rationale": "'GC' refers to functions.md#claim-functions.gc for the definition or concrete setup used in this example. Links the nominal struct predicate, ordinary give and eager GC. Point and SharedPoint are declared in the example. The unique/shared source effects and permitted completion with s alive are stated directly."
+      }
+    ]
+  }
+}

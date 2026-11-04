@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "bundle": "f53a2bd4d4b5ee280fb6f488ad92836a4ce03477405ac2288361320ae725c7d9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:618a1876c5e0f6e3d1a2e97b63b37ddf0cf4e48511e0f1a25626a9ec0ece535f",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:functions.bodies",
+    "audit:unit:functions.example.completion",
+    "audit:unit:functions.return",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally. The code demonstrates permissive final locals in this layer, and distinguishes full execution of leave from body typing of consume. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c31bad55917432d82874b9a69d69932281b504cd5c10f17f8948ab709993d63a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally.",
+    "mathematics": "The code demonstrates permissive final locals in this layer, and distinguishes full execution of leave from body typing of consume.",
+    "links": [
+      {
+        "occurrence": "functions.example.completion:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'accepts a function' refers to md/functions.md#claim-functions.bodies for the concept or example setup used by this unit. Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally."
+      },
+      {
+        "occurrence": "functions.example.completion:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'pops its frame' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally."
+      },
+      {
+        "occurrence": "functions.example.completion:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'eager GC' refers to md/functions.md#claim-functions.gc for the concept or example setup used by this unit. Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally."
+      },
+      {
+        "occurrence": "functions.example.completion:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Explicit unpacking' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally."
+      }
+    ]
+  }
+}

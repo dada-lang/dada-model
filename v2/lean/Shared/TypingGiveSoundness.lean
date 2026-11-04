@@ -35,7 +35,7 @@ theorem give_sound (beforeWf : before.WellFormed classes)
         exact Perm.toMode_injective targetSatisfied.mode.symm
       rcases effect with ⟨shared, _⟩ | ⟨_, effect⟩
       · simp [unique] at shared
-      · have targetAfter := targetSatisfied.take_taken realized.ownership afterOwnership cleared
+      · have targetAfter := targetSatisfied.take_taken realized.ownership afterOwnership cleared (route_of_resolve resolved) rfl
         rcases effect with ⟨empty, rfl⟩ | ⟨remaining, nonempty, emptied, rfl⟩
         · apply realized.give_replace resolved cleared admissible targetAfter afterWf
           have sourceIsVariable := resolve_source_empty resolved empty
@@ -56,7 +56,7 @@ theorem give_sound (beforeWf : before.WellFormed classes)
         exact Perm.toMode_injective targetSatisfied.mode.symm
       rcases effect with ⟨_, rfl⟩ | ⟨unique, _⟩
       · exact realized.promote resolved promoted admissible
-          (targetSatisfied.promote_target realized.ownership afterOwnership promoted)
+          (targetSatisfied.promote_target realized.ownership afterOwnership promoted (route_of_resolve resolved) rfl)
       · simp [shared] at unique
 
 theorem ExprTyped.sound (typed : ExprTyped classes before value ty after) :

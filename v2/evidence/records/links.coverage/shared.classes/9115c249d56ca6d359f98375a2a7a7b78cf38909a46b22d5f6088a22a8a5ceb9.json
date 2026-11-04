@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "cfa6ffcd3beced1c27373b6e97c5faa4561e820eb0a7a9da85740eceafd98232",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:unit:shared.classes",
+    "audit:unit:shared.references",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nominal kind while introducing class/field name categories and ordered fields. Source field typing is explicitly distinguished from its erased operational representation. C, f and natural arity n are introduced locally; operational Class retains kind and field names, including zero fields. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "7e4aaed33c842a587095b0931e4c3cb2560c9643d4f2214bed20272bfeedeed3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nominal kind while introducing class/field name categories and ordered fields. Source field typing is explicitly distinguished from its erased operational representation.",
+    "mathematics": "C, f and natural arity n are introduced locally; operational Class retains kind and field names, including zero fields.",
+    "links": [
+      {
+        "occurrence": "shared.classes:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'kind' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links nominal kind while introducing class/field name categories and ordered fields. Source field typing is explicitly distinguished from its erased operational representation."
+      }
+    ]
+  }
+}

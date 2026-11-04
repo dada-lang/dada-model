@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "7ff866da0b3e7bf0bb1651e12494f5bf30037e6d47b6f69b8dcc4ed928f2ca51",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:18e50dab95df074f64b089e4a508e22ce099405e437bd6cb4f61d60712b67a3c",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces the public Shared-to-Functions embedding and step correspondence. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse. The translation is defined in prose here; no unintroduced relation or restriction to already-embedded endpoints weakens the claim. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "ee82a7bf857883f1c0431353a52fac80d9c1e7f034cda2cd1ad54b16edabd6f6"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the public Shared-to-Functions embedding and step correspondence",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 27219,
+      "end": 28029
+    },
+    "clarity": "The named landing directly introduces the public Shared-to-Functions embedding and step correspondence. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse.",
+    "independence": "The translation is defined in prose here; no unintroduced relation or restriction to already-embedded endpoints weakens the claim. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

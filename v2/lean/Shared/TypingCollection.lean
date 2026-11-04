@@ -140,7 +140,20 @@ theorem Realizes.collect_pending (realized : Realizes classes environment state 
     · exact realized.ownership.variableKeys
     · intro id data member; exact realized.ownership.shapes _ _ (oldMember member)
     · intro id data member; exact realized.ownership.bounds _ _ (oldMember member)
-    · intro id data name reference member field; exact realized.ownership.older _ _ _ _ (oldMember member) field
+    · intro id allocated
+      obtain ⟨⟨_, data⟩, member, rfl⟩ := List.mem_map.mp allocated
+      have live := (collectPending_member.mp member).2
+      clear member allocated
+      induction live with
+      | root member =>
+        rcases List.mem_append.mp member with p | v
+        · exact .pending p
+        · obtain ⟨⟨name, slot⟩, stored, value⟩ := List.mem_filterMap.mp v
+          change slot = some _ at value
+          subst slot
+          exact .variable stored
+      | field live stored field ih =>
+        exact .field ih (collectPending_member.mpr ⟨stored, live⟩) field
     · apply List.Pairwise.sublist _ realized.ownership.ownersCompatible
       apply List.Sublist.append (subset.map Prod.fst)
       apply List.Sublist.append (List.Sublist.refl _)

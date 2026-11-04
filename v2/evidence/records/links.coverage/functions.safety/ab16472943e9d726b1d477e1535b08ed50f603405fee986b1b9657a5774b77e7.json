@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "bundle": "17a275792aa39f93bef0fe8264d31c4f54652d2d391c688d431cbd7670246659",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:084af8c121ddc59986f42a7ab3f0d5d6acde12eabd63b8c398e3227243248fd1",
+    "audit:target:2f4fae6642af15eee453aa7a85b451f092126af505d334ad49884a5cd4d2688a",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:bd50ee157533d7842a1634a68112529d4e247a05098eebac486fab1dec1ef353",
+    "audit:target:ef7aedb66f188b157bd66e467ed07f4ec8f3366639a1a82c26fc4370ae9980d8",
+    "audit:unit:functions.bodies",
+    "audit:unit:functions.preservation",
+    "audit:unit:functions.progress",
+    "audit:unit:functions.safety",
+    "audit:unit:functions.stack_typing",
+    "audit:unit:functions.traces",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness. The finite-prefix quantification is explicit; no unlinked termination bound or operational-success premise is introduced. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "3085a0dfb1924f5cc8a56a872a5be2733d5972b33d515230da85b2a38b0ee3c2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness.",
+    "mathematics": "The finite-prefix quantification is explicit; no unlinked termination bound or operational-success premise is introduced.",
+    "links": [
+      {
+        "occurrence": "functions.safety:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed program' refers to md/functions.md#claim-functions.program_typing for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      },
+      {
+        "occurrence": "functions.safety:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finite execution' refers to md/functions.md#claim-functions.traces for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      },
+      {
+        "occurrence": "functions.safety:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'initial configuration' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      },
+      {
+        "occurrence": "functions.safety:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well typed' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      },
+      {
+        "occurrence": "functions.safety:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/functions.md#claim-functions.machine_finished for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      },
+      {
+        "occurrence": "functions.safety:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      },
+      {
+        "occurrence": "functions.safety:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck' refers to md/functions.md#claim-functions.stuck for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      }
+    ]
+  }
+}

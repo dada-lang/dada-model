@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "252aede6ed5bf1d8a241d577112f5ef8f8d32b411023f9685ff1e08427a28c60",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.example.normalization",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.observations",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here. The rewrite is a defining rule for normalization, with A, rho, and the complete nonempty field list specified in adjacent prose. N is introduced here and requires no self-link. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "270541e4e38a7d6b4c814e5adbacb3e3bee96d2e540e7e7ee40b0e9c725db436"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here.",
+    "mathematics": "The rewrite is a defining rule for normalization, with A, rho, and the complete nonempty field list specified in adjacent prose. N is introduced here and requires no self-link.",
+    "links": [
+      {
+        "occurrence": "given.typing.normalization:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class at' refers to md/given-typing.md#claim-given.typing.class_at for the concept or example setup used by this unit. The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here."
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "02eff59d1976ce8e8beebe0def19a835b7a85c7550602aa04bf110983b74ae86",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:250e67d7508718bea2e3571b83e4b2d80632b14c4db059cb7a01b9104100b14a",
+    "audit:target:85c6f5541eebb05cd28829f9fa8089766a5fcead98afdc63ae0b70b40094da6a",
+    "audit:target:c6cd701ce483fad3d033629a3f92f2d016ca2977340a1b43992963d711dd3413",
+    "audit:unit:assignment.context",
+    "audit:unit:assignment.store",
+    "audit:unit:assignment.view",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links context, field descriptions and the earlier view-replacement definition. The operation and its input/output cases are defined locally in order, including empty versus inaccessible slots and RHS-after context. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Links context, field descriptions and the earlier view-replacement definition. The operation and its input/output cases are defined locally in order, including empty versus inaccessible slots and RHS-after context. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "6d038ec3552dd23c4e3e26fefdd5c70a30e1bd6a9a7aa95160fd8de7455abd80"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links context, field descriptions and the earlier view-replacement definition. The operation and its input/output cases are defined locally in order, including empty versus inaccessible slots and RHS-after context.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Links context, field descriptions and the earlier view-replacement definition. The operation and its input/output cases are defined locally in order, including empty versus inaccessible slots and RHS-after context.",
+    "links": [
+      {
+        "occurrence": "assignment.store:1",
+        "role": "conceptual",
+        "rationale": "The label 'context' supplies the earlier definition/setup at #claim-assignment.context used by this passage."
+      },
+      {
+        "occurrence": "assignment.store:2",
+        "role": "conceptual",
+        "rationale": "The label 'current field description' supplies the earlier definition/setup at shared-typing.md#claim-shared.typing.field used by this passage."
+      },
+      {
+        "occurrence": "assignment.store:3",
+        "role": "conceptual",
+        "rationale": "The label 'view replacement' supplies the earlier definition/setup at #claim-assignment.view used by this passage."
+      }
+    ]
+  }
+}

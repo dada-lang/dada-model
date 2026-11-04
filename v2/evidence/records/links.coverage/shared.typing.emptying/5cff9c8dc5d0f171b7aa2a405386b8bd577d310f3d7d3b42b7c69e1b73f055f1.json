@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "bundle": "e4867bf2454064a83ccd020aaf9958e07b5040a798544233f6825f96ed716fdb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7ca3252c424052cffbaaf2fb3da6b66220637dbf063c6038d7142db073228302",
+    "audit:target:aa210780e33166914e582e1f2aa597e7876855cb4a8137adc65a043a6c43be2f",
+    "audit:target:b525b2193e0c35e677269ca5a180c068848ebca97990c0e69502745a2fc78704",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:given.typing.emptying",
+    "audit:unit:shared.typing.emptying",
+    "audit:unit:shared.typing.nominal_table",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.observations",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. emptyPath maps Given.emptyPath while retaining ty.permission. The empty-path exclusion and positive-path side condition describe the domain, and normalization of the resulting nominal view is inherited from Given. No sharing conversion occurs in this operation. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "23b86f04bf74ea6ea99db28e66ac0c43b7b351b18f00c6b144c747d91112ede2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. emptyPath maps Given.emptyPath while retaining ty.permission. The empty-path exclusion and positive-path side condition describe the domain, and normalization of the resulting nominal view is inherited from Given. No sharing conversion occurs in this operation.",
+    "links": [
+      {
+        "occurrence": "shared.typing.emptying:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalized' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view."
+      },
+      {
+        "occurrence": "shared.typing.emptying:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'N[-\\\\rho]' refers to md/given-typing.md#claim-given.typing.emptying for the concept or example setup used by this unit. Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view."
+      },
+      {
+        "occurrence": "shared.typing.emptying:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}_{\\\\Sigma}(T)' refers to md/shared-typing.md#claim-shared.typing.observations for the concept or example setup used by this unit. Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view."
+      },
+      {
+        "occurrence": "shared.typing.emptying:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's emptying operation\" refers to md/given-typing.md#claim-given.typing.emptying for the concept or example setup used by this unit. Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view."
+      },
+      {
+        "occurrence": "shared.typing.emptying:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal class table' refers to md/shared-typing.md#claim-shared.typing.nominal_table for the concept or example setup used by this unit. Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view."
+      },
+      {
+        "occurrence": "shared.typing.emptying:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Normalize' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view."
+      }
+    ]
+  }
+}

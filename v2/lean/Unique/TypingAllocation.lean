@@ -30,8 +30,9 @@ theorem readPath_allocate (wf : WellFormedWith layouts state pending)
           cases value with
           | none => rfl
           | some target =>
-            exact ih (Nat.lt_trans
-              (wf.older _ _ _ _ (lookup_member found) (lookup_member slot)) older)
+            have allocated := WellFormedWith.field_allocated wf (lookup_member found) (lookup_member slot)
+            obtain ⟨⟨_, targetData⟩, targetStored, rfl⟩ := List.mem_map.mp allocated
+            exact ih (wf.bounds _ targetData targetStored)
 
 theorem Satisfies.allocate (satisfied : Satisfies classes state object ty)
     (wf : WellFormedWith layouts state pending) :

@@ -58,6 +58,32 @@ inductive Live (state : State) : ObjectId → Prop where
       Live state parent → (parent, data) ∈ state.objects →
       (name, some object) ∈ data.fields → Live state object
 
+-- Reachability includes expression results while they await binding.
+inductive LiveWith (state : State) (pending : List ObjectId) : ObjectId → Prop where
+  | pending {object} : object ∈ pending → LiveWith state pending object
+  | variable {name object} : (name, some object) ∈ state.variables → LiveWith state pending object
+  | field {parent object data name} :
+      LiveWith state pending parent → (parent, data) ∈ state.objects →
+      (name, some object) ∈ data.fields → LiveWith state pending object
+
+theorem Live.with_pending (live : Live state object) : LiveWith state pending object := by
+  induction live with
+  | «variable» member => exact .variable member
+  | field _ member field ih => exact .field ih member field
+
+theorem LiveWith.without_pending (live : LiveWith state [] object) : Live state object := by
+  induction live with
+  | pending member => simp at member
+  | «variable» member => exact .variable member
+  | field _ member field ih => exact .field ih member field
+
+theorem LiveWith.mono {pending other : List ObjectId} (live : LiveWith state pending object)
+    (roots : ∀ id ∈ pending, id ∈ other) : LiveWith state other object := by
+  induction live with
+  | pending member => exact .pending (roots _ member)
+  | «variable» member => exact .variable member
+  | field _ member field ih => exact .field ih member field
+
 -- Auxiliary local-frame observation. The program lifetime is defined in Frames.
 structure Configuration where
   state : State

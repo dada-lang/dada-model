@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "bd1c4f0637339ac13aa7407f0ffab7b40d9aaf67a243823f2fc7b34efae916f1",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:ReviewBundle::prepare",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/units.rs:parse",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:future_notes_are_publishable_but_cannot_receive_correspondence_reviews",
+    "test:mdbook-dada/tests/units.rs:future_notes_reject_formalizations_and_nested_specifications",
+    "test:mdbook-dada/tests/units.rs:future_notes_render_without_formalization_or_draft_status",
+    "unit:meta.future_notes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.future_notes against rust:mdbook-dada/src/units.rs:parse_block, rust:mdbook-dada/src/units.rs:parse, rust:mdbook-dada/src/lib.rs:render_unit, rust:mdbook-dada/src/evidence.rs:ReviewBundle::prepare, rust:mdbook-dada/src/evidence.rs:record, rust:mdbook-dada/src/evidence.rs:check, test:mdbook-dada/tests/units.rs:future_notes_render_without_formalization_or_draft_status, test:mdbook-dada/tests/units.rs:future_notes_reject_formalizations_and_nested_specifications, test:mdbook-dada/tests/evidence_validation.rs:future_notes_are_publishable_but_cannot_receive_correspondence_reviews. parse_block and parse reject formalization citations, draft status, nested units and non-top-level future notes while retaining ordinary dependencies/identity. render_unit emits a label without a source selector; prepare/record explicitly reject future notes and check reports not applicable. Tests cover each rejected option, nesting, literal examples and an attempted reuse of a prior specification review. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. The correspondence preparation/recording prohibition does not exclude editorial link audits, which apply to future notes under the integrated link policy. Rooted-foundation review: the structural invariants now require explicit rootedness (including pending values) plus unique/compatible ownership. Allocation bounds remain solely for freshness; no safety proof assumes edge-age order or global DAG structure. Changed proof selections retain their public statement unless this unit explicitly defines the revised invariant or example. Given/Shared root transport and path reasoning were reviewed by their implementing agents, with fresh review of root-owned unpacking, GC, frame rerooting, class retention and the refill example. Earlier syntax and runtime rules are unchanged. The widened invariant domain is covered by recompilation of all earlier safety proofs and concrete shared-cycle/nonmonotonic-ID regressions, not by a claim that constructors can generate cycles.",
+  "limitations": [
+    "Author integration review with agent review of Given/Shared foundations and fresh review of root-owned integration. Lean checks proof correctness separately.",
+    "Assignment general safety remains deferred. Cyclic heap examples test invariant and operation scope, not source-program construction from the current empty initial state."
+  ],
+  "supersedes": [
+    "223620b503953098c9b71416877106735c96f6694fabad2acd50cb051b9ba9c9"
+  ]
+}

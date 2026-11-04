@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "5cea027cb51833c5837ff2293bcbb08de7cf8a7a2deba573cb577038b1779ff0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:unit:shared.declarations",
+    "audit:unit:shared.struct",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nominal declaration kinds and signed views. Defines struct(T) independently of permission/view, then states the field and kind restrictions. struct(T) is the defining predicate; the empty/hidden-field cases are explained explicitly rather than importing another judgment. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "61e84b57bbf51f10b6069d2e89915bf75a902017430a3b6c63f7fa5b0eb17000"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nominal declaration kinds and signed views. Defines struct(T) independently of permission/view, then states the field and kind restrictions.",
+    "mathematics": "struct(T) is the defining predicate; the empty/hidden-field cases are explained explicitly rather than importing another judgment.",
+    "links": [
+      {
+        "occurrence": "shared.struct:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declared' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links nominal declaration kinds and signed views. Defines struct(T) independently of permission/view, then states the field and kind restrictions."
+      },
+      {
+        "occurrence": "shared.struct:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'view exposes' refers to md/given-typing.md#claim-given.typing.views for the concept or example setup used by this unit. Links nominal declaration kinds and signed views. Defines struct(T) independently of permission/view, then states the field and kind restrictions."
+      }
+    ]
+  }
+}

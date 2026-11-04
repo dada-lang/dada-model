@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "e86dacfa56b8d3b19402a3c0989d7cc436e04856d04e4e36be234976993a09f4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/graph.rs:args",
+    "rust:mdbook-dada/src/graph.rs:edge_target",
+    "rust:mdbook-dada/src/graph.rs:identifier",
+    "rust:mdbook-dada/src/graph.rs:label",
+    "rust:mdbook-dada/src/graph.rs:parse",
+    "test:mdbook-dada/src/graph.rs:cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically",
+    "test:mdbook-dada/src/graph.rs:lease_tests::leases_join_edges_and_shleases_target_objects",
+    "test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices",
+    "test:mdbook-dada/src/graph.rs:tests::bad_facts_fail_instead_of_silently_changing_the_graph",
+    "test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds",
+    "test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved",
+    "test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_array_size_boundary_preserves_all_slots",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges",
+    "unit:meta.syntax.heap.nodes",
+    "unit:meta.syntax.heap.validation"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.heap.validation against rust:mdbook-dada/src/graph.rs:parse, rust:mdbook-dada/src/graph.rs:edge_target, test:mdbook-dada/src/graph.rs:tests::bad_facts_fail_instead_of_silently_changing_the_graph, test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices, test:mdbook-dada/src/graph.rs:lease_tests::leases_join_edges_and_shleases_target_objects, test:mdbook-dada/src/graph.rs:cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically, test:mdbook-dada/tests/renderer_contracts.rs:diagram_array_size_boundary_preserves_all_slots. parse rejects duplicate nodes/slots, absent targets, invalid projections and arrays above 64; edge_target requires leases to name an initialized owned or leased edge. Tests cover the 0/64/65 boundary, invalid targets and supports, variable-store restrictions and deterministic cyclic examples. Ownership cycles are intentionally accepted rather than presented as valid language states. Notation and judgment context was checked in unit:meta.syntax.heap.nodes. Rooted-foundation review: the structural invariants now require explicit rootedness (including pending values) plus unique/compatible ownership. Allocation bounds remain solely for freshness; no safety proof assumes edge-age order or global DAG structure. Changed proof selections retain their public statement unless this unit explicitly defines the revised invariant or example. Given/Shared root transport and path reasoning were reviewed by their implementing agents, with fresh review of root-owned unpacking, GC, frame rerooting, class retention and the refill example. Earlier syntax and runtime rules are unchanged. The widened invariant domain is covered by recompilation of all earlier safety proofs and concrete shared-cycle/nonmonotonic-ID regressions, not by a claim that constructors can generate cycles.",
+  "limitations": [
+    "Author integration review with agent review of Given/Shared foundations and fresh review of root-owned integration. Lean checks proof correctness separately.",
+    "Assignment general safety remains deferred. Cyclic heap examples test invariant and operation scope, not source-program construction from the current empty initial state."
+  ],
+  "supersedes": [
+    "6b5cf37b5ce64c5f422e3aa0b9c1278ee8c2a5c8de3975f9b9c5ac45debe8e78"
+  ]
+}

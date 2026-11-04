@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "d92c1efd19ec018ec8e186bf4c0d1e0f258a77d3fa8b56848026d652fe6646c8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:ca14680f9125a36fd78068c76b0489c10f2e57376ae1804ee0628deb5ff977c6",
+    "audit:unit:shared.gc",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.state",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop. S_K, D and the filtered heap are scoped in the text; gc retains the counter/frame and surviving object data. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "fa935a7f5a4f469929ce9a0357641fd602c88944b7c49bd6cd4974e95abea37c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop.",
+    "mathematics": "S_K, D and the filtered heap are scoped in the text; gc retains the counter/frame and surviving object data.",
+    "links": [
+      {
+        "occurrence": "shared.gc:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'live frame' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop."
+      },
+      {
+        "occurrence": "shared.gc:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'initialized object fields' refers to md/shared.md#claim-shared.objects for the concept or example setup used by this unit. Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop."
+      }
+    ]
+  }
+}

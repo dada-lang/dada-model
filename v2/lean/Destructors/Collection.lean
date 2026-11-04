@@ -9,33 +9,12 @@ open Functions (heapState Slots)
 theorem Realizes.reachable {id : ObjectId} (realized : Realizes classes environment state pending)
     (stored : (id, data) ∈ state.objects) :
     Reachable state.objects (rootReferences state pending) id := by
-  have all (n : Nat) : ∀ id data, state.nextId - id.index = n → (id, data) ∈ state.objects →
-      Reachable state.objects (rootReferences state pending) id := by
-    induction n using Nat.strongRecOn with
-    | ind n ih =>
-      intro id data index member
-      have incoming := (realized.ownership.referencesComplete id).mpr
-        (List.mem_map.mpr ⟨(id,data), member, rfl⟩)
-      rcases List.mem_append.mp incoming with pendingRef | storedRef
-      · obtain ⟨reference, referenceMember, same⟩ := List.mem_map.mp pendingRef
-        subst id
-        exact .root (List.mem_append_left _ referenceMember)
-      · simp only [References, List.mem_append, List.mem_filterMap, List.mem_flatMap] at storedRef
-        rcases storedRef with ⟨⟨name,slot⟩, slotMember, value⟩ | ⟨⟨parent,parentData⟩, parentMember, ⟨⟨field,slot⟩, fieldMember, value⟩⟩
-        · obtain ⟨reference, sameSlot, same⟩ := Option.map_eq_some_iff.mp value
-          dsimp at sameSlot
-          subst slot; subst id
-          exact .root (List.mem_append_right _ (List.mem_filterMap.mpr ⟨_,slotMember,rfl⟩))
-        · obtain ⟨reference, sameSlot, same⟩ := Option.map_eq_some_iff.mp value
-          dsimp at sameSlot
-          subst slot; subst id
-          -- Object edges point to older objects. Backwards traversal instead
-          -- uses the finite upper allocation bound as a decreasing rank.
-          have older := realized.ownership.older _ _ _ _ parentMember fieldMember
-          have bound := realized.ownership.bounds _ _ parentMember
-          have rank : state.nextId - parent.index < n := by omega
-          exact .field (ih _ rank parent parentData rfl parentMember) parentMember fieldMember
-  exact all (state.nextId - id.index) id data rfl stored
+  have live := realized.ownership.rooted id (List.mem_map.mpr ⟨(id, data), stored, rfl⟩)
+  clear stored
+  induction live with
+  | pending member => exact .root (List.mem_append_left _ member)
+  | «variable» member => exact .root (List.mem_append_right _ (List.mem_filterMap.mpr ⟨_, member, rfl⟩))
+  | field _ stored field ih => exact .field ih stored field
 
 theorem struct_field (realized : Realizes classes environment state pending)
     (stored : (parent, data) ∈ state.objects)

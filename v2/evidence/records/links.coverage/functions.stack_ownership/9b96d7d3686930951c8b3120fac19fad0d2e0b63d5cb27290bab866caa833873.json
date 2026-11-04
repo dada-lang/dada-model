@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "9088ee6fc1145756ee4b991e70effb5d051be893a995b655aef8d43dcf64dd04",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.stack_ownership",
+    "audit:unit:functions.stack_typing",
+    "audit:unit:shared.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names. No separate path uniqueness formula is assumed: pairwise occurrence compatibility and allocated incoming targets are spelled out. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "0bafe0814a39f4f23263ea2e226f023f6dafad659532571097e7726712037d99"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names.",
+    "mathematics": "No separate path uniqueness formula is assumed: pairwise occurrence compatibility and allocated incoming targets are spelled out.",
+    "links": [
+      {
+        "occurrence": "functions.stack_ownership:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names."
+      },
+      {
+        "occurrence": "functions.stack_ownership:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'owning occurrences' refers to md/shared.md#claim-shared.well_formed for the concept or example setup used by this unit. Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names."
+      }
+    ]
+  }
+}

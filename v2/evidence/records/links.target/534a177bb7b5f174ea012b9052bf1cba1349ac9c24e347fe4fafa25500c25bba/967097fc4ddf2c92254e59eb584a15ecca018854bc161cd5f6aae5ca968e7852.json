@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "7379e0e3016894c33740a185a589adc32dc69aaaed14529a67b7de3c4899a0da",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:534a177bb7b5f174ea012b9052bf1cba1349ac9c24e347fe4fafa25500c25bba",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This landing introduces the named definition or concrete heap setup in its opening passage. All conceptual links point backward to the mixed-cycle example and give definition. The passage defines the concrete local/object/field names; g.f is a literal finite path, not a new mathematical judgment. It states the unique-source access condition directly without invoking a future theorem. The surrounding chapter supplies storage and reachability before using them. All conceptual links point backward to the mixed-cycle example and give definition. The passage defines the concrete local/object/field names; g.f is a literal finite path, not a new mathematical judgment. It states the unique-source access condition directly without invoking a future theorem.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.example.raw_take_cycle",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 30881,
+      "end": 31703
+    },
+    "clarity": "This landing introduces the named definition or concrete heap setup in its opening passage. All conceptual links point backward to the mixed-cycle example and give definition. The passage defines the concrete local/object/field names; g.f is a literal finite path, not a new mathematical judgment. It states the unique-source access condition directly without invoking a future theorem.",
+    "independence": "The surrounding chapter supplies storage and reachability before using them. All conceptual links point backward to the mixed-cycle example and give definition. The passage defines the concrete local/object/field names; g.f is a literal finite path, not a new mathematical judgment. It states the unique-source access condition directly without invoking a future theorem."
+  }
+}

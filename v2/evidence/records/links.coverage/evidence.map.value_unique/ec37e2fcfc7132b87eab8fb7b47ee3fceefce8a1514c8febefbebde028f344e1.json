@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "6c45cf3a57e7c6cfda24bfc93abf1705005d5ca9131b11e56d2d67132e27eeb6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d7a4e8940ecceee98134469b8995cce9e8285a49108151e7d7cfbb7f6afb5aa0",
+    "audit:unit:evidence.map",
+    "audit:unit:evidence.map.value_unique",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The lemma links the finite-map definition, then states all membership premises and its equality conclusion explicitly. M, k, v and w are introduced with their domains in the sentence; equality and pair membership are ordinary mathematical notation, and map structure comes through the definition link. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "06699e36b6900200e35c687bf2bdef9a15b5e7864de6a44680bbea53b546d494"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The lemma links the finite-map definition, then states all membership premises and its equality conclusion explicitly.",
+    "mathematics": "M, k, v and w are introduced with their domains in the sentence; equality and pair membership are ordinary mathematical notation, and map structure comes through the definition link.",
+    "links": [
+      {
+        "occurrence": "evidence.map.value_unique:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'evidence.map' refers to md/repo/evidence-pilot.md#claim-evidence.map for the concept or example setup used by this unit. The lemma links the finite-map definition, then states all membership premises and its equality conclusion explicitly."
+      }
+    ]
+  }
+}

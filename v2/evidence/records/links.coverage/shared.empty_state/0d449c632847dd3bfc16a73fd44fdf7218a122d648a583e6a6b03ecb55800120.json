@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "cc612a4e80af6a0175b69fa261b0ae060b0081161c8699f735f8d7488d1fd6d0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:shared.empty_state",
+    "audit:unit:shared.state",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Empty storage has its own formula, with no variables, no objects and zero counter. Initial-state and empty-storage links land directly here. The empty-state tuple and empty-map notation are explicitly defined here, independently of later machine initialization. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "06522804f5172699cce316da8d3388eefe5b9e7b9676c725fa0173a68cdd214b"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Empty storage has its own formula, with no variables, no objects and zero counter. Initial-state and empty-storage links land directly here.",
+    "mathematics": "The empty-state tuple and empty-map notation are explicitly defined here, independently of later machine initialization.",
+    "links": []
+  }
+}

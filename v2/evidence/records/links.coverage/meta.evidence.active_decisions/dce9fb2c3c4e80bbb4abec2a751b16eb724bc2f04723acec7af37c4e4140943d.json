@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "a86906f7efefec49c7470c972c2b9188014767a2def937345160baf9f6cd3235",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c06f361df57d349bc9196f76826fc1003e0906e16dcf0c94d3361d5b9113bc8a",
+    "audit:unit:meta.evidence.active_decisions",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/authoring.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit states recording freshness and active/superseded decision behavior directly. The exception for Future notes links their defining section. Mismatch, inconclusive and stale outcomes are distinguished in the contract itself. No formal equations or mathematical notation are used; the described operations are the locally introduced review lifecycle. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "7d67f5dad4699347040f5a7c34bda9c6846cf3e9e11e94d6c49e42e8e24460f9"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit states recording freshness and active/superseded decision behavior directly. The exception for Future notes links their defining section. Mismatch, inconclusive and stale outcomes are distinguished in the contract itself.",
+    "mathematics": "No formal equations or mathematical notation are used; the described operations are the locally introduced review lifecycle.",
+    "links": [
+      {
+        "occurrence": "meta.evidence.active_decisions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Future notes' refers to md/repo/authoring.md#future-notes for the concept or example setup used by this unit. The unit states recording freshness and active/superseded decision behavior directly. The exception for Future notes links their defining section. Mismatch, inconclusive and stale outcomes are distinguished in the contract itself."
+      }
+    ]
+  }
+}

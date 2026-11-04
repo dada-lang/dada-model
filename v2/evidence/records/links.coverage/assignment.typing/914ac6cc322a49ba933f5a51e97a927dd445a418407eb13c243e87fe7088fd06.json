@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "bundle": "e39079fecfd17eccac8044e198c1cdc7958206bb6fea1514be9d645e171035b1",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:c6cd701ce483fad3d033629a3f92f2d016ca2977340a1b43992963d711dd3413",
+    "audit:target:e26772c272675bb90bfc2435a28dc1c69c765bfd8f614cfb7be760182ccc4e45",
+    "audit:unit:assignment.context",
+    "audit:unit:assignment.store",
+    "audit:unit:assignment.syntax",
+    "audit:unit:assignment.typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the actual inherited expression/argument and binding rules, fixed-context definition and static store operation. It introduces the lifted judgments in prose before the later theorem; no symbolic inference premises hide extra dependencies. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Links the actual inherited expression/argument and binding rules, fixed-context definition and static store operation. It introduces the lifted judgments in prose before the later theorem; no symbolic inference premises hide extra dependencies. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "da3e2aecfd1033c6ccb6127a2c986a408b28cf85613dbb7606151dde71513b91"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the actual inherited expression/argument and binding rules, fixed-context definition and static store operation. It introduces the lifted judgments in prose before the later theorem; no symbolic inference premises hide extra dependencies.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Links the actual inherited expression/argument and binding rules, fixed-context definition and static store operation. It introduces the lifted judgments in prose before the later theorem; no symbolic inference premises hide extra dependencies.",
+    "links": [
+      {
+        "occurrence": "assignment.typing:1",
+        "role": "conceptual",
+        "rationale": "The label 'Shared judgments' supplies the earlier definition/setup at shared-typing.md#claim-shared.typing.expressions used by this passage."
+      },
+      {
+        "occurrence": "assignment.typing:2",
+        "role": "conceptual",
+        "rationale": "The label 'Shared's binding judgment' supplies the earlier definition/setup at shared-typing.md#claim-shared.typing.bindings used by this passage."
+      },
+      {
+        "occurrence": "assignment.typing:3",
+        "role": "conceptual",
+        "rationale": "The label 'binding types' supplies the earlier definition/setup at #claim-assignment.context used by this passage."
+      },
+      {
+        "occurrence": "assignment.typing:4",
+        "role": "conceptual",
+        "rationale": "The label 'static store operation' supplies the earlier definition/setup at #claim-assignment.store used by this passage."
+      }
+    ]
+  }
+}

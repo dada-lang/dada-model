@@ -1,3 +1,8 @@
+import Unique.RootedChecks
+import Shared.RootedChecks
+import Shared.RootedPathChecks
+import Assignment.ExecutionChecks
+import Correspondence.DestructorsAssignment
 -- Executed by scripts/check-assumptions.sh after rebuilding all dependencies.
 import Unique.FrameChecks
 import Shared.FrameChecks
@@ -93,3 +98,14 @@ import Correspondence.UniqueShared
 #print axioms Dada.Destructors.Checks.recursive_prefix
 #print axioms Dada.Correspondence.FunctionsDestructors.step_correspondence
 #print axioms Dada.Correspondence.FunctionsDestructors.steps_backward
+
+#print axioms Dada.Assignment.store_preserves_bindings
+#print axioms Dada.Assignment.store_wellFormed
+#print axioms Dada.Assignment.Write.objectKeys
+#print axioms Dada.Assignment.Checks.refill_raw
+#print axioms Dada.Correspondence.DestructorsAssignment.step_forward
+
+#print axioms Dada.Unique.Typing.readPath_no_cycle
+#print axioms Dada.Unique.Take.preserves_pending
+#print axioms Dada.Shared.Give.preserves_pending
+#print axioms Dada.Shared.Typing.Route.unique

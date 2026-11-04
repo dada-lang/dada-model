@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "c03ac2ac6199a1e3639a5c553eb5e436b13599f06fe8dba276f8f27129c6ae46",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ff0a789b2ecb06589ed5db3dd8a9f86c491709eb81a4abe737f911eff4c6d6d0",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/link-audits.md#claim-meta.links.coverage directly introduces Link-coverage review. The unit defines a coverage review and links the link inventory it classifies. It explicitly distinguishes missing-link judgment from occurrence-set checking, and explains navigation versus conceptual roles. Inline/display math are included in review scope; no formula is invoked by this meta definition itself. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "4328a953738b1a4c4aaed44e73d020bf373c4bd4014cb27a44151be2806a12fe"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Link-coverage review",
+    "definition": {
+      "path": "md/repo/link-audits.md",
+      "start": 2923,
+      "end": 3894
+    },
+    "clarity": "The landing md/repo/link-audits.md#claim-meta.links.coverage directly introduces Link-coverage review. The unit defines a coverage review and links the link inventory it classifies. It explicitly distinguishes missing-link judgment from occurrence-set checking, and explains navigation versus conceptual roles.",
+    "independence": "Inline/display math are included in review scope; no formula is invoked by this meta definition itself. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

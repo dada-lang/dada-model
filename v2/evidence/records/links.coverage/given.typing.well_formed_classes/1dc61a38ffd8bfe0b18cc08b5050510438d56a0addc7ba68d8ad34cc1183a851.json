@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "1f7f31577a8fb0a0c1fcd89083f632e8097b0cc6e4b135d714fe60ce775153a6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.well_formed_classes",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The typed-class-table link identifies the exact object constrained by the three conditions. There is no separate displayed equation or undefined operator: Sigma names the linked table. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "08d37fe32a49ec5b71e4880af111b0ad83e0ad53adf4e1d16d9eacdebacfec3e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The typed-class-table link identifies the exact object constrained by the three conditions.",
+    "mathematics": "There is no separate displayed equation or undefined operator: Sigma names the linked table.",
+    "links": [
+      {
+        "occurrence": "given.typing.well_formed_classes:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'typed class table' refers to md/given-typing.md#claim-given.typing.declarations for the concept or example setup used by this unit. The typed-class-table link identifies the exact object constrained by the three conditions."
+      }
+    ]
+  }
+}

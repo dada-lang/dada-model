@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "4647d96ae75ff0b52f0180ed12529c5728310de74bacb5335125c00fac2f3acf",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:46b87442b2a166f122a5a89139201f085f76501494495f034924f41118680d6c",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces root references from every live frame. Links all live frames and Shared reachability. Explains concatenation for membership, not name-based lookup. No formula beyond helper names; occurrence identity across frames is explicitly retained. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "9be443f93e17da4a64ec7644d973f958712e37c6b85fc0881de1191f37f3e464"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "root references from every live frame",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 17038,
+      "end": 17387
+    },
+    "clarity": "The named landing directly introduces root references from every live frame. Links all live frames and Shared reachability. Explains concatenation for membership, not name-based lookup.",
+    "independence": "No formula beyond helper names; occurrence identity across frames is explicitly retained. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

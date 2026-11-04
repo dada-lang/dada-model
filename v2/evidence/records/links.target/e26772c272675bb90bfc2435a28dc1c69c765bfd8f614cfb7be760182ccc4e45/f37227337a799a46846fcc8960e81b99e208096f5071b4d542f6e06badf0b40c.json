@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "39b4f1cf9df6c68e408cde8a929dacbc7b9b77fa84b2a8431c500388bc1695e0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e26772c272675bb90bfc2435a28dc1c69c765bfd8f614cfb7be760182ccc4e45",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing names and introduces Static store operation and rejection conditions. Its opening explanation supplies the operation/setup and the remainder states its components and boundaries; the selected span is the defining passage rather than an incidental mention. The surrounding chapter introduces the syntax and preceding operations first. Links context, field descriptions and the earlier view-replacement definition. The operation and its input/output cases are defined locally in order, including empty versus inaccessible slots and RHS-after context. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c1dbe1dc80b41f9767fad24b34f9a4b617f05ebb79e047a3eb01b33532e69e34"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Static store operation and rejection conditions",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 7488,
+      "end": 8609
+    },
+    "clarity": "The unit landing names and introduces Static store operation and rejection conditions. Its opening explanation supplies the operation/setup and the remainder states its components and boundaries; the selected span is the defining passage rather than an incidental mention.",
+    "independence": "The surrounding chapter introduces the syntax and preceding operations first. Links context, field descriptions and the earlier view-replacement definition. The operation and its input/output cases are defined locally in order, including empty versus inaccessible slots and RHS-after context."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "36e7b539ef2950b0f7c1e4df8eaf4ab06d45ab693f32a201ed870313bdc8f47c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5027e237be554f4900cfc87bba7610cfac1fcc235ce9fc10af2ff498a9d9290e",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This landing introduces the named definition or concrete heap setup in its opening passage. Both links are backward concept links: evaluation supplies the pending-result context, and Live supplies the inherited variable/field reachability rules. R and Live(S;R) are introduced before use; S and object identities come from existing chapter syntax. The one new displayed inference rule defines pending membership as a root and uses only locally bound notation. The surrounding chapter supplies storage and reachability before using them. Both links are backward concept links: evaluation supplies the pending-result context, and Live supplies the inherited variable/field reachability rules. R and Live(S;R) are introduced before use; S and object identities come from existing chapter syntax. The one new displayed inference rule defines pending membership as a root and uses only locally bound notation.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "given.live_pending",
+    "definition": {
+      "path": "md/given.md",
+      "start": 20705,
+      "end": 21430
+    },
+    "clarity": "This landing introduces the named definition or concrete heap setup in its opening passage. Both links are backward concept links: evaluation supplies the pending-result context, and Live supplies the inherited variable/field reachability rules. R and Live(S;R) are introduced before use; S and object identities come from existing chapter syntax. The one new displayed inference rule defines pending membership as a root and uses only locally bound notation.",
+    "independence": "The surrounding chapter supplies storage and reachability before using them. Both links are backward concept links: evaluation supplies the pending-result context, and Live supplies the inherited variable/field reachability rules. R and Live(S;R) are introduced before use; S and object identities come from existing chapter syntax. The one new displayed inference rule defines pending membership as a root and uses only locally bound notation."
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "bundle": "229843abac2dc38436635ce36040ea86ba119f9f29c6bc0d16758ac7ce2034d4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:01136db71db4cfa667c6e3740ce6232362099005c519039ee87981eda09ab977",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:given.unpacking",
+    "audit:unit:shared.state",
+    "audit:unit:shared.steps",
+    "audit:unit:shared.typing.patterns",
+    "audit:unit:shared.typing.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Step evaluates the expression then applies Bind. Variable binding accepts either reference mode at a fresh variable; unpack requires an owned reference, declared class/field shape, exhaustive Transfer and fresh distinct destinations, then removes the container. Transfer preserves empty slots and reference values, matching the prose. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "8bc63d4c5aeb0dc2339d44485bbbde5a938c000b9fcac7b4208e642fce4f4a31"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Step evaluates the expression then applies Bind. Variable binding accepts either reference mode at a fresh variable; unpack requires an owned reference, declared class/field shape, exhaustive Transfer and fresh distinct destinations, then removes the container. Transfer preserves empty slots and reference values, matching the prose. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place.",
+    "links": [
+      {
+        "occurrence": "shared.typing.steps:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'binding pattern' refers to md/shared-typing.md#claim-shared.typing.patterns for the concept or example setup used by this unit. Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      },
+      {
+        "occurrence": "shared.typing.steps:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash\\\\langle S,e\\\\rangle\\\\Downarrow\\\\langle S',r\\\\rangle\" refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      },
+      {
+        "occurrence": "shared.typing.steps:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Shared's expression evaluation\" refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      },
+      {
+        "occurrence": "shared.typing.steps:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'allocated' refers to md/shared.md#claim-shared.allocated for the concept or example setup used by this unit. Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      }
+    ]
+  }
+}

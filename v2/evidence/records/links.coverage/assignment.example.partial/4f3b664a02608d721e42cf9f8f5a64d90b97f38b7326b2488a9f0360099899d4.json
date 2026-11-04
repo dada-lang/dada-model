@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "97c49c987e8072921898f55c57cf7e03a4d469c014813756ec7471a5301c2655",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:assignment.example.partial",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the existing completion and unpacking rules. Wrapper and its negative field view come from the opening example; the passage distinguishes current emptiness from fixed field metadata in words. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Links the existing completion and unpacking rules. Wrapper and its negative field view come from the opening example; the passage distinguishes current emptiness from fixed field metadata in words. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "c1fdd77168101c6976ee90d5e6ea63887d283dfeb53c301d4581893768f43d74"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the existing completion and unpacking rules. Wrapper and its negative field view come from the opening example; the passage distinguishes current emptiness from fixed field metadata in words.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Links the existing completion and unpacking rules. Wrapper and its negative field view come from the opening example; the passage distinguishes current emptiness from fixed field metadata in words.",
+    "links": [
+      {
+        "occurrence": "assignment.example.partial:1",
+        "role": "conceptual",
+        "rationale": "The label 'class-consumption obligation' supplies the earlier definition/setup at destructors.md#claim-destructors.finished_environment used by this passage."
+      },
+      {
+        "occurrence": "assignment.example.partial:2",
+        "role": "conceptual",
+        "rationale": "The label 'Unpacking' supplies the earlier definition/setup at shared-typing.md#claim-shared.typing.bindings used by this passage."
+      }
+    ]
+  }
+}

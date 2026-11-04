@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "0c2c2bfd7233e5df88fd0524d55df254b51d58e39ecd91e1a7034d8c501c451a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/graph.rs:args",
+    "rust:mdbook-dada/src/graph.rs:identifier",
+    "rust:mdbook-dada/src/graph.rs:label",
+    "rust:mdbook-dada/src/graph.rs:parse",
+    "test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices",
+    "test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds",
+    "test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved",
+    "test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges",
+    "unit:meta.syntax.heap.nodes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.heap.nodes against rust:mdbook-dada/src/graph.rs:identifier, rust:mdbook-dada/src/graph.rs:args, rust:mdbook-dada/src/graph.rs:label, rust:mdbook-dada/src/graph.rs:parse, test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds, test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices, test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target, test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved, test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges. parse records nodes before resolving assignments, permits the listed object/primitive/array/variable constructors and distinguishes owner, showned, lease and shared-lease edges. args preserves quoted commas and label uses JSON escapes. Tests cover Unicode fields, forward references, aliases, one variable group, empty array slots and label escaping; the unit explicitly treats this as diagram syntax rather than language semantics. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Assignment differential re-review: exact authored unit and selected formalization/test inputs are unchanged from the previously reviewed bundle. The new Assignment modules import the earlier layers without modifying their source or claims. Reviewed the revised AGENTS scope and explicit Assignment proof boundary; it does not change this earlier claim. This retains the prior correspondence judgment after exact required-input comparison, not an independent fresh proof audit.",
+  "limitations": [
+    "Differential author self-review of unchanged semantic/tool selections; mechanical checks are reported separately. No independent re-proof is claimed."
+  ],
+  "supersedes": [
+    "f968229cf44c65b9a54e67ae91c025afd7eebbb4e1f2092f3cd5b318d6ae4d71"
+  ]
+}

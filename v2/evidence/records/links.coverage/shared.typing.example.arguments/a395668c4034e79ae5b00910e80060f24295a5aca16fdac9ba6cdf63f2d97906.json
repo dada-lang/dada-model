@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "9766053189bb37481aba8c90dcf92dec826a221631b97ecc7d2b8ca9bf1b68c4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:30846f25dcc13bb8ac2e31bafade18aabeadf7be174a0cd94b2aa2882f083558",
+    "audit:unit:shared.typing.example.arguments",
+    "audit:unit:shared.typing.example.paths",
+    "audit:unit:shared.typing.expressions",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. constructor_permissions checks the entire argumentProgram execution, final t/h/a/b descriptions, and universally rejects both a given Token argument to Holder and a shared argument to Box. This supports the stated successful example and both rejection variants rather than only a helper operation. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d491964a410040bcc5e33eba305631f8112640146fd5b805e7afe89e23f59547"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. constructor_permissions checks the entire argumentProgram execution, final t/h/a/b descriptions, and universally rejects both a given Token argument to Holder and a shared argument to Box. This supports the stated successful example and both rejection variants rather than only a helper operation.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.arguments:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declared above' refers to md/shared-typing.md#claim-shared.typing.example.paths for the concept or example setup used by this unit. Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules."
+      },
+      {
+        "occurrence": "shared.typing.example.arguments:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'constructor rule' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules."
+      }
+    ]
+  }
+}

@@ -25,7 +25,9 @@ theorem FieldsMatchClasses.promote (fields : FieldsMatchClasses classes before)
 
 theorem Satisfies.take_taken (wf : WellFormedWith classes.erase before pending)
     (afterWf : WellFormedWith classes.erase after afterPending)
-    (taken : Take before source reference.object after) (satisfied : Satisfies classes before reference ty) :
+    (taken : Take before source reference.object after)
+    (cut : Route before pending site cutPath reference) (unique : reference.mode = .unique)
+    (satisfied : Satisfies classes before reference ty) :
     Satisfies classes after reference ty := by
   constructor
   · exact satisfied.mode
@@ -35,9 +37,9 @@ theorem Satisfies.take_taken (wf : WellFormedWith classes.erase before pending)
   · intro path positive
     obtain ⟨target, data, read, stored, correctClass⟩ := satisfied.positive path positive
     obtain ⟨newData, newStored, sameClass⟩ := taken.old_object_data target.object data stored
-    exact ⟨target, newData, take_readPath_taken wf afterWf taken read, newStored, sameClass ▸ correctClass⟩
+    exact ⟨target, newData, take_readPath_taken wf afterWf taken cut unique read, newStored, sameClass ▸ correctClass⟩
   · intro path negative
-    exact take_readPath_taken wf afterWf taken (satisfied.negative path negative)
+    exact take_readPath_taken wf afterWf taken cut unique (satisfied.negative path negative)
 
   · intro path target permission declared read
     exact satisfied.modes path target permission declared (take_readPath_back wf taken read)
@@ -105,7 +107,7 @@ theorem Satisfies.emptyPath (wf : WellFormedWith classes.erase before pending)
     simpa [facts.className, same] using correct
   · intro query negative
     rcases facts.negatives query negative with rfl | ⟨wasNegative, outside⟩
-    · exact take_readPath_cleared wf afterWf taken facts.nonempty read rfl
+    · exact take_readPath_cleared wf afterWf taken cut facts.nonempty read rfl
     · exact take_readPath_frame wf afterWf taken cut (.root root) (satisfied.negative query wasNegative)
         (fun both => outside both.2)
 

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "fe673dc266515513dff293cc7a53dec2cb892120959c09aab1e647c395f25747",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:unit:functions.example.stack_safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Reviewed existing reference-order classification: {\"kind\": \"forward\", \"necessity\": \"The nested call already has a complete earlier operational example. This short safety preview identifies the new issue—an undelivered caller result—before introducing the continuation invariant. Moving the full invariant earlier would require introducing typed roots/continuation environments before stating the problem they solve; moving this paragraph later would remove that motivation. Splitting it would either duplicate the nested example or leave its promised-result issue unmotivated.\", \"signposting\": \"The selected source passage explicitly identifies the following definition and limits the current preview: The following [stack-typing definition](#claim-functions.stack_typing) explains what being well typed means for a suspended\\ncaller whose result has not arrived yet.\", \"signpost\": {\"path\": \"md/functions.md\", \"start\": 30518, \"end\": 30682}, \"minimal_use\": \"Only the finite-prefix conclusion (the whole stack stays typed and cannot get stuck) and the need to account for a suspended caller are previewed. The paragraph does not use the later judgment to derive another result; its component definitions follow immediately after the typed-root introduction.\"} Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "e77600b489560da527fb9fd11f9c3b74acabc8527ef4a8c0aa88e4f4fd7dc32f"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The nested call already has a complete earlier operational example. This short safety preview identifies the new issue—an undelivered caller result—before introducing the continuation invariant. Moving the full invariant earlier would require introducing typed roots/continuation environments before stating the problem they solve; moving this paragraph later would remove that motivation. Splitting it would either duplicate the nested example or leave its promised-result issue unmotivated.",
+      "signposting": "The selected source passage explicitly identifies the following definition and limits the current preview: The following [stack-typing definition](#claim-functions.stack_typing) explains what being well typed means for a suspended\ncaller whose result has not arrived yet.",
+      "signpost": {
+        "path": "md/functions.md",
+        "start": 30518,
+        "end": 30682
+      },
+      "minimal_use": "Only the finite-prefix conclusion (the whole stack stays typed and cannot get stuck) and the need to account for a suspended caller are previewed. The paragraph does not use the later judgment to derive another result; its component definitions follow immediately after the typed-root introduction."
+    }
+  }
+}

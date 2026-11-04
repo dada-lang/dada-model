@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "3be50ff4aa322a0ef387626a071e6e877d370bdb47580cab2d35b340cc4274dc",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4164f3c6aaa84ad9f9044c5d5b66bde8cdcaca726535c1e894d4d1eb03e06df6",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.example.arguments",
+    "audit:unit:shared.typing.example.unpack",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. unpacking_shared_fields proves the continuation typing and six-step execution, the Holder object's removal, preserved shared item/a/b/c descriptions, and universal rejection of unpacking holder.shared. It supports consuming the unique shell while retaining shared field owners. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "df86e9307737fe120c1f057b54da3f297c389b2b2f5a200542b1c21979e58192"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. unpacking_shared_fields proves the continuation typing and six-step execution, the Holder object's removal, preserved shared item/a/b/c descriptions, and universal rejection of unpacking holder.shared. It supports consuming the unique shell while retaining shared field owners.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.unpack:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Holder example' refers to md/shared-typing.md#claim-shared.typing.example.arguments for the concept or example setup used by this unit. Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined."
+      },
+      {
+        "occurrence": "shared.typing.example.unpack:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'unpacking rule' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined."
+      }
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bundle": "f45e4b01f3dc7511af8ceef50b334f80000daa961deef180b241cda1409676ba",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:bfa16cc3692daff307f4a639791bfdb4421206cb6db19788a47f397a6854ce4b",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing names and introduces Lifted context typing and store-statement typing. Its opening explanation supplies the operation/setup and the remainder states its components and boundaries; the selected span is the defining passage rather than an incidental mention. The surrounding chapter introduces the syntax and preceding operations first. Links the actual inherited expression/argument and binding rules, fixed-context definition and static store operation. It introduces the lifted judgments in prose before the later theorem; no symbolic inference premises hide extra dependencies.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Lifted context typing and store-statement typing",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 8867,
+      "end": 9921
+    },
+    "clarity": "The unit landing names and introduces Lifted context typing and store-statement typing. Its opening explanation supplies the operation/setup and the remainder states its components and boundaries; the selected span is the defining passage rather than an incidental mention.",
+    "independence": "The surrounding chapter introduces the syntax and preceding operations first. Links the actual inherited expression/argument and binding rules, fixed-context definition and static store operation. It introduces the lifted judgments in prose before the later theorem; no symbolic inference premises hide extra dependencies."
+  }
+}

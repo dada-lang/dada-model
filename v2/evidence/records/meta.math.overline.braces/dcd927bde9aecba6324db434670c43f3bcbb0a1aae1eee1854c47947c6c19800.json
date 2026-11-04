@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "efcbbb82a2bba4d0d7dfc8a76c26b57f3f4d8625095da98b679062d5d1271127",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lint.rs:check_latex",
+    "test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions",
+    "test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex",
+    "test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf",
+    "test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed",
+    "test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space",
+    "unit:meta.math.overline.braces"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.overline.braces against rust:mdbook-dada/src/lint.rs:check_latex, test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space, test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed, test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf, test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex, test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions. check_latex uses a raw-source regex for the exact control word, requiring an immediately preceding brace and literal ASCII space after it. Tests distinguish tabs/newlines/nonbreaking spaces and longer names, verify Unicode/CRLF line counts, apply the lint in nested book chapters/literal samples and scan all md files recursively. The prose correctly limits this to adjacency rather than TeX parsing. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Rooted-foundation review: the structural invariants now require explicit rootedness (including pending values) plus unique/compatible ownership. Allocation bounds remain solely for freshness; no safety proof assumes edge-age order or global DAG structure. Changed proof selections retain their public statement unless this unit explicitly defines the revised invariant or example. Given/Shared root transport and path reasoning were reviewed by their implementing agents, with fresh review of root-owned unpacking, GC, frame rerooting, class retention and the refill example. Earlier syntax and runtime rules are unchanged. The widened invariant domain is covered by recompilation of all earlier safety proofs and concrete shared-cycle/nonmonotonic-ID regressions, not by a claim that constructors can generate cycles.",
+  "limitations": [
+    "Author integration review with agent review of Given/Shared foundations and fresh review of root-owned integration. Lean checks proof correctness separately.",
+    "Assignment general safety remains deferred. Cyclic heap examples test invariant and operation scope, not source-program construction from the current empty initial state."
+  ],
+  "supersedes": [
+    "3c1b7ddc91e86bd7fbbd3107bd034641bec002a1723095315772c2de499880f5"
+  ]
+}

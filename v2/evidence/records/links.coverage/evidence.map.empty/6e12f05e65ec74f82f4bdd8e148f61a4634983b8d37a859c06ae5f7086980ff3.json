@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "a6fcc3789dd3c0df9d927c9223b29aa509947b524eee2793984dafe66bc40c56",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c4f4614282bcbc1eeacf56cc51774e318230c1a0983b9b7c32160b81f84bee8a",
+    "audit:unit:evidence.map",
+    "audit:unit:evidence.map.empty",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The example links the exact empty-map definition before specifying Nat keys/values and an empty list. No other model concept is needed. The only mathematical value is [], explicitly described as the entry list; Nat is explained as natural numbers, not an undeclared model type. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "b9871e3cde6f8dc77232d46fc1a9a1dffdacb0cb40eb5e8a0a5c367dc90790d3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The example links the exact empty-map definition before specifying Nat keys/values and an empty list. No other model concept is needed.",
+    "mathematics": "The only mathematical value is [], explicitly described as the entry list; Nat is explained as natural numbers, not an undeclared model type.",
+    "links": [
+      {
+        "occurrence": "evidence.map.empty:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty map' refers to md/repo/evidence-pilot.md#claim-evidence.map.empty_definition for the concept or example setup used by this unit. The example links the exact empty-map definition before specifying Nat keys/values and an empty list. No other model concept is needed."
+      }
+    ]
+  }
+}

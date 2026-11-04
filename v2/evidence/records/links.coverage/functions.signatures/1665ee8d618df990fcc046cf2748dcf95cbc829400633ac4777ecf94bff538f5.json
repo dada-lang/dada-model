@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "28bdb6e35bf4844dbef3950e1c5fdfe28ee535f58b613d4ba83ba73ae14a36f7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7a4e714d94614dfcf82ae12cf39b0fc48783107cffa0afff778a59a28df6719d",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:unit:functions.signatures",
+    "audit:unit:shared.struct",
+    "audit:unit:shared.typing.types",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions. a,f,m,C,Q,T,P,R,sigma have domains in the adjacent grammar/explanation. No default or generic permission is silently imported. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "a9260988ff92f32defd450f95b00a1e4a4071d2d56ecd782c4701d8b12c858da"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions.",
+    "mathematics": "a,f,m,C,Q,T,P,R,sigma have domains in the adjacent grammar/explanation. No default or generic permission is silently imported.",
+    "links": [
+      {
+        "occurrence": "functions.signatures:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'whole nominal type' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions."
+      },
+      {
+        "occurrence": "functions.signatures:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'admissible parameterand result types' refers to md/shared-typing.md#claim-shared.typing.well_formed_types for the concept or example setup used by this unit. Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions."
+      }
+    ]
+  }
+}

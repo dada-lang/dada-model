@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "bundle": "c01ec8281f7735374be2b59a1e847453b59156927c29ea0389c2874940edd700",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5027e237be554f4900cfc87bba7610cfac1fcc235ce9fc10af2ff498a9d9290e",
+    "audit:target:56e88d29eb95c2d92fc038aa82ddca6d06f063d06b43e1307ce35878c60572ed",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "audit:unit:given.allocated",
+    "audit:unit:given.identities",
+    "audit:unit:given.live",
+    "audit:unit:given.live_pending",
+    "audit:unit:given.programs",
+    "audit:unit:given.state",
+    "audit:unit:given.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Declared classes, allocated IDs, index notation, ordinary liveness and pending roots all link to earlier definitions. The final Live(S;R) occurrence reuses the immediately preceding linked definition. WF(S) and WF(S;R) are defining occurrences, with S, Delta and nu already introduced by the storage/program units. No forward concept link is required. Declared classes, allocated IDs, index notation, ordinary liveness and pending roots all link to earlier definitions. The final Live(S;R) occurrence reuses the immediately preceding linked definition. WF(S) and WF(S;R) are defining occurrences, with S, Delta and nu already introduced by the storage/program units. No forward concept link is required. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "1cc8f272b627a00e838205e700dfb96060a1547e00ae7c14ac7b9fcd29dfdc38"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Declared classes, allocated IDs, index notation, ordinary liveness and pending roots all link to earlier definitions. The final Live(S;R) occurrence reuses the immediately preceding linked definition. WF(S) and WF(S;R) are defining occurrences, with S, Delta and nu already introduced by the storage/program units. No forward concept link is required.",
+    "mathematics": "Declared classes, allocated IDs, index notation, ordinary liveness and pending roots all link to earlier definitions. The final Live(S;R) occurrence reuses the immediately preceding linked definition. WF(S) and WF(S;R) are defining occurrences, with S, Delta and nu already introduced by the storage/program units. No forward concept link is required. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "given.well_formed:1",
+        "role": "conceptual",
+        "rationale": "'declared' points backward to #claim-given.programs for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "given.well_formed:2",
+        "role": "conceptual",
+        "rationale": "'allocated identity' points backward to #claim-given.allocated for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "given.well_formed:3",
+        "role": "conceptual",
+        "rationale": "'\\operatorname{index}(\\alpha)' points backward to #claim-given.identities for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "given.well_formed:4",
+        "role": "conceptual",
+        "rationale": "'live' points backward to #claim-given.live for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "given.well_formed:5",
+        "role": "conceptual",
+        "rationale": "'pending roots' points backward to #claim-given.live_pending for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

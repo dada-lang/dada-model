@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "bundle": "33a635ae19d4aef40c2af91cc3be33b19dd07f2627f16dd7bcb3a95bc9d77ab5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:destructors.finished_environment",
+    "audit:unit:destructors.machine",
+    "audit:unit:functions.gc",
+    "audit:unit:functions.machine",
+    "audit:unit:shared.state",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target. No new equations. Heap, allocation counter, active/suspended frames and roots are introduced in the paragraph before use. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "e707e957847ca6c411745e071052e0651386af3fdb9146145e328823e704451d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target.",
+    "mathematics": "No new equations. Heap, allocation counter, active/suspended frames and roots are introduced in the paragraph before use.",
+    "links": [
+      {
+        "occurrence": "destructors.machine:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Functions' supplies the definition or concrete example setup used here, at functions.md#claim-functions.machine. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      },
+      {
+        "occurrence": "destructors.machine:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Functions' frame-exit rule' supplies the definition or concrete example setup used here, at functions.md#claim-functions.execution. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      },
+      {
+        "occurrence": "destructors.machine:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'class obligations' supplies the definition or concrete example setup used here, at #claim-destructors.finished_environment. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      },
+      {
+        "occurrence": "destructors.machine:4",
+        "role": "conceptual",
+        "rationale": "The occurrence 'EagerGC' supplies the definition or concrete example setup used here, at functions.md#claim-functions.gc. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      },
+      {
+        "occurrence": "destructors.machine:5",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Shared representation' supplies the definition or concrete example setup used here, at shared.md#claim-shared.state. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      }
+    ]
+  }
+}

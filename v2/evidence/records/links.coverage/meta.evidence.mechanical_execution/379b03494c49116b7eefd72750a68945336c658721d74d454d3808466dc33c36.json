@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "658ccc292373e2d60b793cf362e246fe034ee4ab4cfb56ebef3080a97129a4b5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.evidence.mechanical_execution",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Mechanical execution receipts are introduced by name and then their recording, success, validation and freshness criteria are spelled out. The Lean assumptions command is explicitly described as a separate limited observation rather than an unexplained theorem. There are no equations or model judgments. Command names and generated-directory names are literal execution-interface details. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "19560b88bcfbb1cc58ef4e79fc9f71ee6ef0271b2dd39ff627436f09586d877e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Mechanical execution receipts are introduced by name and then their recording, success, validation and freshness criteria are spelled out. The Lean assumptions command is explicitly described as a separate limited observation rather than an unexplained theorem.",
+    "mathematics": "There are no equations or model judgments. Command names and generated-directory names are literal execution-interface details.",
+    "links": []
+  }
+}

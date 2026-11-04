@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "4aa24e38f64ff8f3fb445bbb2d464eb1bb80b8099ad96b51e2a956320277cf62",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b50fba7e62f9aaf161a6e1aaec2b60ca9f8ca33678e15facd8c24af1d87648a9",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.resolution directly introduces Shared place resolution with effective mode. Links place syntax, storage place, lookup and mode combination in prose/rules. Recursive resolution premises define this judgment; it does not mutate storage. Both lookup premises and the mode-join result carry direct links. The recursive resolution occurrence belongs to the judgment being defined. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "464f3efaf90411c3ecd128a52062a6c4bfd09c196e794775be27ab0b862cd6ad"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared place resolution with effective mode",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 11712,
+      "end": 12758
+    },
+    "clarity": "The landing md/shared.md#claim-shared.resolution directly introduces Shared place resolution with effective mode. Links place syntax, storage place, lookup and mode combination in prose/rules. Recursive resolution premises define this judgment; it does not mutate storage.",
+    "independence": "Both lookup premises and the mode-join result carry direct links. The recursive resolution occurrence belongs to the judgment being defined. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

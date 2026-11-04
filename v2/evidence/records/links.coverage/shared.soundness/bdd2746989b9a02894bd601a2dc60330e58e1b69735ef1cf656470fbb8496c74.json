@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "bundle": "11a6fbedef5c8e83cdc7bf39b062b2c2d1ed50855338c77991f63c542908c5ae",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:486cb05457ebcad15bab1c76ab655c1f301c2a8be2a2eb137d9138cf04969718",
+    "audit:target:5622717387ebfdf87c5d3f86c337a128b567967f67969be864ff86c108809a19",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:85bba34d7493853d754e20469c6b70e7fc1ff7e55767b2f552cf9f47ed2e9102",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:target:f518fc51a45f1599c96e5cca147f3048043bee6a5718ef54dd66d238eb0b8dcf",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:shared.give",
+    "audit:unit:shared.liveness",
+    "audit:unit:shared.path_exclusivity",
+    "audit:unit:shared.soundness",
+    "audit:unit:shared.state",
+    "audit:unit:shared.steps",
+    "audit:unit:shared.syntax",
+    "audit:unit:shared.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links class-table WF, finite execution, initial machine, state WF, liveness, path exclusivity, give-share and copying. No static typing is presupposed by structural preservation. All execution/preservation and liveness/path consequences are linked in prose. No standalone formula assumes a further unintroduced predicate. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "1e381eeb52cb76d0972192dec16eaa1492c20bca93aff01215c5556c3124e51f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links class-table WF, finite execution, initial machine, state WF, liveness, path exclusivity, give-share and copying. No static typing is presupposed by structural preservation.",
+    "mathematics": "All execution/preservation and liveness/path consequences are linked in prose. No standalone formula assumes a further unintroduced predicate.",
+    "links": [
+      {
+        "occurrence": "shared.soundness:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed class table' refers to md/shared.md#claim-shared.well_formed_classes for the concept or example setup used by this unit. Links class-table WF, finite execution, initial machine, state WF, liveness, path exclusivity, give-share and copying. No static typing is presupposed by structural preservation."
+      },
+      {
+        "occurrence": "shared.soundness:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finite execution' refers to md/shared.md#claim-shared.executions for the concept or example setup used by this unit. Links class-table WF, finite execution, initial machine, state WF, liveness, path exclusivity, give-share and copying. No static typing is presupposed by structural preservation."
+      },
+      {
+        "occurrence": "shared.soundness:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty initial state' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links class-table WF, finite execution, initial machine, state WF, liveness, path exclusivity, give-share and copying. No static typing is presupposed by structural preservation."
+      },
+      {
+        "occurrence": "shared.soundness:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed state' refers to md/shared.md#claim-shared.well_formed for the concept or example setup used by this unit. Links class-table WF, finite execution, initial machine, state WF, liveness, path exclusivity, give-share and copying. No static typing is presupposed by structural preservation."
+      },
+      {
+        "occurrence": "shared.soundness:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'live' refers to md/shared.md#claim-shared.liveness for the concept or example setup used by this unit. Links class-table WF, finite execution, initial machine, state WF, liveness, path exclusivity, give-share and copying. No static typing is presupposed by structural preservation."
+      },
+      {
+        "occurrence": "shared.soundness:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'No object has botha unique path and a shared path' refers to md/shared.md#claim-shared.path_exclusivity for the concept or example setup used by this unit. Links class-table WF, finite execution, initial machine, state WF, liveness, path exclusivity, give-share and copying. No static typing is presupposed by structural preservation."
+      },
+      {
+        "occurrence": "shared.soundness:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'give-share' refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links class-table WF, finite execution, initial machine, state WF, liveness, path exclusivity, give-share and copying. No static typing is presupposed by structural preservation."
+      },
+      {
+        "occurrence": "shared.soundness:8",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'copying' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links class-table WF, finite execution, initial machine, state WF, liveness, path exclusivity, give-share and copying. No static typing is presupposed by structural preservation."
+      }
+    ]
+  }
+}

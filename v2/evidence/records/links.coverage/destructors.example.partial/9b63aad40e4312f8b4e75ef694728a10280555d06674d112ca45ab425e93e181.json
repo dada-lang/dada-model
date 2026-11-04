@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "506e8e12485a786a8badc38f8351b3c5895ee27cf1add20df0b8f3bd8643ddf3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3e4d50612007d6c6a5604a2b81222e88270e78922e73195442049d92573c2bda",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:unit:destructors.example.partial",
+    "audit:unit:destructors.example.wrapper",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.types",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the actual Wrapper declaration, Shared partial types, and the unpacking rule. The concrete code distinguishes the rejected commented drop from the accepted cleanup; empty resource and initialized taken are explained directly. w, taken and resource are locally bound in the code. The partial view is described in prose without requiring forward use of Droppable. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "2077de1ea6bf42a3e4d3c649cce923b3985da3fcbfdabd027b59644ba0999d08"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the actual Wrapper declaration, Shared partial types, and the unpacking rule. The concrete code distinguishes the rejected commented drop from the accepted cleanup; empty resource and initialized taken are explained directly.",
+    "mathematics": "w, taken and resource are locally bound in the code. The partial view is described in prose without requiring forward use of Droppable.",
+    "links": [
+      {
+        "occurrence": "destructors.example.partial:1",
+        "role": "conceptual",
+        "rationale": "'Wrapper above' refers to #claim-destructors.example.wrapper for the definition or concrete setup used in this example. Links the actual Wrapper declaration, Shared partial types, and the unpacking rule. The concrete code distinguishes the rejected commented drop from the accepted cleanup; empty resource and initialized taken are explained directly."
+      },
+      {
+        "occurrence": "destructors.example.partial:2",
+        "role": "conceptual",
+        "rationale": "'partial value' refers to shared-typing.md#claim-shared.typing.types for the definition or concrete setup used in this example. Links the actual Wrapper declaration, Shared partial types, and the unpacking rule. The concrete code distinguishes the rejected commented drop from the accepted cleanup; empty resource and initialized taken are explained directly."
+      },
+      {
+        "occurrence": "destructors.example.partial:3",
+        "role": "conceptual",
+        "rationale": "'unpacking rule' refers to shared-typing.md#claim-shared.typing.bindings for the definition or concrete setup used in this example. Links the actual Wrapper declaration, Shared partial types, and the unpacking rule. The concrete code distinguishes the rejected commented drop from the accepted cleanup; empty resource and initialized taken are explained directly."
+      }
+    ]
+  }
+}

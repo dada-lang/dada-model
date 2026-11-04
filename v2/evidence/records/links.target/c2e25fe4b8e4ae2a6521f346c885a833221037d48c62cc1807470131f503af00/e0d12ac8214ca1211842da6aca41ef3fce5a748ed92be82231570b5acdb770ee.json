@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "7d24ae11abfc336c2b7e5e8001eb6c8620daa84cee5cfee0dd49b622f6946f6a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.well_formed directly introduces Shared structural storage well-formedness. Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness. WF is the defined predicate. Its declaration and allocated-identity conditions link directly; pairwise owner-mode compatibility is written out rather than using an unexplained auxiliary relation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "1fa1b88286ab182bb845757baefbbf1e28a4bf15c1397d20941595426c054d9b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared structural storage well-formedness",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 26287,
+      "end": 28063
+    },
+    "clarity": "The landing md/shared.md#claim-shared.well_formed directly introduces Shared structural storage well-formedness. Links storage, declarations and allocated objects. The conditions define one structural invariant, including stored-occurrence compatibility; route uniqueness is not confused with last-slot uniqueness.",
+    "independence": "WF is the defined predicate. Its declaration and allocated-identity conditions link directly; pairwise owner-mode compatibility is written out rather than using an unexplained auxiliary relation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

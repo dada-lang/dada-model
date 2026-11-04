@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "ab40b03ab733b368a50541538c51c176954bb78d94fbeb56c5c7cc8b7384fb9d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:c6cd701ce483fad3d033629a3f92f2d016ca2977340a1b43992963d711dd3413",
+    "audit:unit:assignment.completion",
+    "audit:unit:assignment.typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links signatures and initial/fixed contexts; lifted judgments were introduced in the typing unit. This appendix defines sequence/body/table/program acceptance and recalls existing drop/consumption requirements without forward references. No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Links signatures and initial/fixed contexts; lifted judgments were introduced in the typing unit. This appendix defines sequence/body/table/program acceptance and recalls existing drop/consumption requirements without forward references.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links signatures and initial/fixed contexts; lifted judgments were introduced in the typing unit. This appendix defines sequence/body/table/program acceptance and recalls existing drop/consumption requirements without forward references.",
+    "mathematics": "No displayed mathematical equations or new symbolic judgments occur. Code names and types are locally declared or explicitly assumed; this unit uses the earlier give/permission/view notation. Links signatures and initial/fixed contexts; lifted judgments were introduced in the typing unit. This appendix defines sequence/body/table/program acceptance and recalls existing drop/consumption requirements without forward references.",
+    "links": [
+      {
+        "occurrence": "assignment.completion:1",
+        "role": "conceptual",
+        "rationale": "The label 'signature' supplies the earlier definition/setup at functions.md#claim-functions.signatures used by this passage."
+      },
+      {
+        "occurrence": "assignment.completion:2",
+        "role": "conceptual",
+        "rationale": "The label 'parameter context' supplies the earlier definition/setup at #claim-assignment.context used by this passage."
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "4c61409533f54f8869c4569359f4f2e7b4d2cb1106849592b75a53dd5b8aee28",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:e0f7028e3af89f0a1f93b77464e6ca10ddc3704b8a553bd11b721c356306583f",
+    "audit:unit:functions.example.identity",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program. The Unicode arrow is explained as the signature permission and as the give operation; no symbolic judgment beyond the example is assumed. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "a678859fb80472470caa9482c4555faac7d73381c7c661af03e126869f92bf24"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program.",
+    "mathematics": "The Unicode arrow is explained as the signature permission and as the give operation; no symbolic judgment beyond the example is assumed.",
+    "links": [
+      {
+        "occurrence": "functions.example.identity:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'uniquely owned Token' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program."
+      },
+      {
+        "occurrence": "functions.example.identity:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empties original' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program."
+      },
+      {
+        "occurrence": "functions.example.identity:3",
+        "role": "navigation",
+        "rationale": "Optional appendix navigation: the source already links the inherited definitions it actually uses; this appendix gathers those same rules in one summary without supplying a missing premise."
+      }
+    ]
+  }
+}

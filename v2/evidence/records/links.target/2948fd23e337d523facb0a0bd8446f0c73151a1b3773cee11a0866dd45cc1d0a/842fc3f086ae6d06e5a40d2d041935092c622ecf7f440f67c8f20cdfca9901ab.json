@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "54c46591a5a816d1c74c90fbc5b70e42983fe41bc9334ee370a42c9e65a4a40b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2948fd23e337d523facb0a0bd8446f0c73151a1b3773cee11a0866dd45cc1d0a",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit. The selected defining body includes its local setup, conditions and direct prerequisite links. No display rules. p is the previously defined place in drop p; state actions use the machine components introduced immediately above. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "34b94f2f49ceb37f31c0af351d1d01f069ba52361f99387d75db43d6cce117e3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "execution",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 17682,
+      "end": 19788
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. No display rules. p is the previously defined place in drop p; state actions use the machine components introduced immediately above."
+  }
+}

@@ -146,8 +146,22 @@ and absent destructors, struct effects, complete nested destruction, and recursi
 execution. `Correspondence/FunctionsDestructors` preserves and reflects steps of
 the embedded Functions fragment under an explicit exit condition and reflects
 arbitrary successors and traces. Both chapters have inherited machinery appendices.
-Destructors are
-followed by Assignment, Branching,
+`md/assignment.md` and `lean/Assignment/` add explicit `store p, e` statements.
+The RHS evaluates first; the resulting destination must be an empty or struct
+slot, with unique access to a field's parent. Fixed nominal/permission binding
+metadata survives empty slots; current views track partial values independently.
+Unpacking gives empty bindings their fixed declared field types. Stores do not
+implicitly destroy classes, and given/shared share a nominal layout key.
+The layer has Lean rules, checked examples, and forward operational correspondence
+in `Correspondence/DestructorsAssignment`; general soundness and reverse
+correspondence remain explicitly future work. The foundation now uses rootedness
+and ownership compatibility instead of allocation-age order. The refill transition
+satisfies this invariant without relabeling object IDs; general store preservation
+is still required. Given/Shared and Functions/Destructors safety proofs have been
+rebuilt under this foundation. Shared rooted cycles are permitted; unique path
+properties follow from ownership routes, not a global acyclicity assumption.
+Destructors and Assignment are
+followed by Branching,
 Looping explicit with declared invariants, and Looping natural with inference.
 Reuse preceding-layer machinery when straightforward, with explicit imports
 and correspondence theorems stating the preserved fragment and changed boundaries.
@@ -168,8 +182,13 @@ a container leaves its field references unchanged. `Shared/Liveness` proves that
 a well-formed state cannot have both an entirely unique path and a shared path
 to the same object.
 `Unique/Soundness` and `Shared/Soundness` prove preservation of structural
-well-formedness; the respective `Liveness` modules derive rooted liveness.
-`Common/Rooted` supplies bounded-rank graph reasoning.
+well-formedness with explicit rootedness. `Unique/State.LiveWith` and
+`Shared/Reachability.LiveWith` account for pending roots. The respective `Liveness`
+modules relate the preserved rootedness invariant to allocation. `Common/Rooted`
+retains a general bounded-rank graph lemma but no language safety proof uses it.
+Unique path interior preservation follows from uniqueness of rooted ownership
+routes; Shared raw Take lemmas require the actual unique route supplied by Give.
+A stored unique edge under shared access does not justify an unrestricted move.
 `Common/FiniteMap` and `Common/FiniteMapExamples` supply the evidence pilot's
 small utility example. Renderer fixtures live separately under
 `mdbook-dada/tests/fixtures/lean/` and do not specify language behavior.
@@ -232,7 +251,7 @@ Path-dependent permissions and permission/type unions remain future extensions
 in `md/dada/future-extensions.md`.
 
 The strict chapters are `md/given.md`, `md/given-typing.md`, `md/shared.md`,
-`md/shared-typing.md`, `md/functions.md`, and `md/destructors.md`, plus future extensions
+`md/shared-typing.md`, `md/functions.md`, `md/destructors.md`, and `md/assignment.md`, plus future extensions
 and the evidence pilot. Deferred destructor conveniences remain nonnormative future notes.
 The future notes are publishable without formalization; adding a formalization
 citation to a future note is an error. Changes to the evidence configuration and these instructions also

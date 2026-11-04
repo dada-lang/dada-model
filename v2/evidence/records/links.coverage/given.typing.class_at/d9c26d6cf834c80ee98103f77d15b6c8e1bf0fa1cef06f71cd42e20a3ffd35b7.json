@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "f3d9b07533f8a58485a392c1ade02bbc3bffa0c64877a8497076ef66075cdf20",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.paths",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The relative-path and typed-declaration prerequisites both link to their introducing units. Validity and the final declared class are introduced together because they are the domain and output of this lookup. class_Sigma(C,rho) and its epsilon equation are defining occurrences. C, rho, and Sigma are bound by the preceding sentence and linked prerequisites. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "629f9012e3511d415b34d19fcab71e986152be17978b27bedb0696866b2df091"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The relative-path and typed-declaration prerequisites both link to their introducing units. Validity and the final declared class are introduced together because they are the domain and output of this lookup.",
+    "mathematics": "class_Sigma(C,rho) and its epsilon equation are defining occurrences. C, rho, and Sigma are bound by the preceding sentence and linked prerequisites.",
+    "links": [
+      {
+        "occurrence": "given.typing.class_at:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative path' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. The relative-path and typed-declaration prerequisites both link to their introducing units. Validity and the final declared class are introduced together because they are the domain and output of this lookup."
+      },
+      {
+        "occurrence": "given.typing.class_at:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declarations' refers to md/given-typing.md#claim-given.typing.declarations for the concept or example setup used by this unit. The relative-path and typed-declaration prerequisites both link to their introducing units. Validity and the final declared class are introduced together because they are the domain and output of this lookup."
+      }
+    ]
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "bundle": "3914e07171d232abf7ac8c046201070fbb68764352b7c8f82f16983bdd27e67a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.focus",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.observations",
+    "audit:unit:given.typing.paths",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Relative place and example declarations link directly; the complete case analysis defines focusing in this unit. Every reused mathematical operator has a direct href: pos, normalization, class-at, and base. The downarrow operation and concrete result equation are defining/example uses. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "e302de083475142f09a749268838c66431036e9e3adae7c996d01309d4832a54"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Relative place and example declarations link directly; the complete case analysis defines focusing in this unit.",
+    "mathematics": "Every reused mathematical operator has a direct href: pos, normalization, class-at, and base. The downarrow operation and concrete result equation are defining/example uses.",
+    "links": [
+      {
+        "occurrence": "given.typing.focus:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative place' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. Relative place and example declarations link directly; the complete case analysis defines focusing in this unit."
+      },
+      {
+        "occurrence": "given.typing.focus:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Relative place and example declarations link directly; the complete case analysis defines focusing in this unit."
+      },
+      {
+        "occurrence": "given.typing.focus:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{N}' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Relative place and example declarations link directly; the complete case analysis defines focusing in this unit."
+      },
+      {
+        "occurrence": "given.typing.focus:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{class}' refers to md/given-typing.md#claim-given.typing.class_at for the concept or example setup used by this unit. Relative place and example declarations link directly; the complete case analysis defines focusing in this unit."
+      },
+      {
+        "occurrence": "given.typing.focus:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{base}' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. Relative place and example declarations link directly; the complete case analysis defines focusing in this unit."
+      },
+      {
+        "occurrence": "given.typing.focus:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'example declarations' refers to md/given-typing.md#claim-given.typing.example.views for the concept or example setup used by this unit. Relative place and example declarations link directly; the complete case analysis defines focusing in this unit."
+      }
+    ]
+  }
+}

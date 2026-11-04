@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "b4bfbc3f5be92bcec26b7f25e3ef56711a38213a70c5ee1e9962f3fc292f152f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:validate_mutual_groups",
+    "test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection",
+    "test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.sources.exact_selection against rust:mdbook-dada/src/lean.rs:select, rust:mdbook-dada/src/lean.rs:extract_declaration, rust:mdbook-dada/src/lean.rs:validate_mutual_groups, rust:mdbook-dada/src/lean.rs:extract_case, rust:mdbook-dada/src/lean.rs:scan, test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor, test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens, test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations, test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys, test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection. The scanner masks comments/literals while retaining original selected text; extract_declaration rejects sibling commands and validates restricted column-zero mutual inductives before selection; extract_case chooses the minimum-indent named constructor and excludes siblings. Tests exercise indented sibling attacks, final literal tokens, complete mutual members and malformed/comment-decoy mutual groups. This remains textual selection, not elaboration. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Assignment differential re-review: exact authored unit and selected formalization/test inputs are unchanged from the previously reviewed bundle. The new Assignment modules import the earlier layers without modifying their source or claims. Reviewed the revised AGENTS scope and explicit Assignment proof boundary; it does not change this earlier claim. This retains the prior correspondence judgment after exact required-input comparison, not an independent fresh proof audit.",
+  "limitations": [
+    "Differential author self-review of unchanged semantic/tool selections; mechanical checks are reported separately. No independent re-proof is claimed."
+  ],
+  "supersedes": [
+    "6492056c5ddb7b2bec2a6149046fcc3f06f018c15a7705375d7c287c9d3c4cce"
+  ]
+}

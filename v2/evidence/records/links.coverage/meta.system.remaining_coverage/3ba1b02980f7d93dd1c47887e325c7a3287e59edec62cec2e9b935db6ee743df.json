@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "bundle": "1f7250ad2e4f71aa84dcbaab98909d0b666f394afcf875d620b08a8fc7b355ab",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:10c1f88291dcba5073f56e237308508dc39bc72af450fc04d5d24aef2a179522",
+    "audit:target:c06f361df57d349bc9196f76826fc1003e0906e16dcf0c94d3361d5b9113bc8a",
+    "audit:unit:meta.evidence.mechanical_execution",
+    "audit:unit:meta.examples.selection",
+    "audit:unit:meta.lean.definitions.navigation",
+    "audit:unit:meta.math.definition.selection",
+    "audit:unit:meta.math.judgment.selection",
+    "audit:unit:meta.math.overline.braces",
+    "audit:unit:meta.math.runtime",
+    "audit:unit:meta.math.source_view",
+    "audit:unit:meta.math.theorem.selection",
+    "audit:unit:meta.math.typesetting",
+    "audit:unit:meta.syntax.anchors.identity",
+    "audit:unit:meta.syntax.heap.nodes",
+    "audit:unit:meta.syntax.heap.rendering",
+    "audit:unit:meta.syntax.heap.routing",
+    "audit:unit:meta.syntax.heap.validation",
+    "audit:unit:meta.syntax.inline_and_block",
+    "audit:unit:meta.system.remaining_coverage",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/authoring.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-chapter:md/repo/spec-system.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Future notes link their definition and link audits link the earlier workflow introduction. The unit directly states which sources require which kind of evidence and separates receipts from semantic judgments. There are no formulas. Inventory membership, source selections and tests are concrete tooling terms described in this chapter, not unexplained model predicates. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "48302a878d325d683cbeb4641d05a656e2ff23403dc46bbdd1edd134f32657f5"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Future notes link their definition and link audits link the earlier workflow introduction. The unit directly states which sources require which kind of evidence and separates receipts from semantic judgments.",
+    "mathematics": "There are no formulas. Inventory membership, source selections and tests are concrete tooling terms described in this chapter, not unexplained model predicates.",
+    "links": [
+      {
+        "occurrence": "meta.system.remaining_coverage:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Future notes' refers to md/repo/authoring.md#future-notes for the concept or example setup used by this unit. Future notes link their definition and link audits link the earlier workflow introduction. The unit directly states which sources require which kind of evidence and separates receipts from semantic judgments."
+      },
+      {
+        "occurrence": "meta.system.remaining_coverage:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'link audits' refers to md/repo/link-audits.md for the concept or example setup used by this unit. Future notes link their definition and link audits link the earlier workflow introduction. The unit directly states which sources require which kind of evidence and separates receipts from semantic judgments."
+      }
+    ]
+  }
+}

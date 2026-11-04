@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "629c42dbd22c0578c891189cba5f4de467b5642a348b12fc1e905c299f174a66",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d117653630a0c005c713ca2ab7601fe8b51be1b2003b16c196ec6dff075471ce",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.example.declarations directly introduces These declarations distinguish the [three forms](#claim-shared.declarations) without requiring primitive types:. Links kinds and the struct-field restriction. All accepted and rejected nominal declarations are local. No mathematical judgment is reused without a link; the empty-view observation restates that the restriction is nominal. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "024c8630e70dad6a67fe232b33bb6a9af0ebf5c0c57208c9eb4776965543431e"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "These declarations distinguish the [three forms](#claim-shared.declarations) without requiring primitive types:",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 4065,
+      "end": 4793
+    },
+    "clarity": "The landing md/shared.md#claim-shared.example.declarations directly introduces These declarations distinguish the [three forms](#claim-shared.declarations) without requiring primitive types:. Links kinds and the struct-field restriction. All accepted and rejected nominal declarations are local.",
+    "independence": "No mathematical judgment is reused without a link; the empty-view observation restates that the restriction is nominal. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

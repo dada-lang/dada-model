@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "13d32702b12cc6a506f6f72c7e4bd09e15986b49556b77e07db6e47235016cce",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.future_notes",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Future note syntax and its editorial/formalization distinction are introduced directly and the prohibited metadata is enumerated. Its correspondence exemption and reference checking are explicit; no unpublished model feature is assumed. No equations or model notation are used; code fragments are the defining authoring syntax. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "d027ff72594ba042f1c17dfc06239826f1744bce60ca7523b47c52da18b214e8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Future note syntax and its editorial/formalization distinction are introduced directly and the prohibited metadata is enumerated. Its correspondence exemption and reference checking are explicit; no unpublished model feature is assumed.",
+    "mathematics": "No equations or model notation are used; code fragments are the defining authoring syntax.",
+    "links": []
+  }
+}

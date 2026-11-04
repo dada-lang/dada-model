@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "9bbfa5d3c8e96ec44b0b4179ad975ac89231fb898f85cbbf35956e5faed57acd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Defines class-only optional destructor bodies, receiver and dedicated core name namespace; Shared declarations, whole types, explicit unpacking and struct field restrictions have direct links. The appendix only gathers these definitions. The selected defining body includes its local setup, conditions and direct prerequisite links. The code spellings drop { body }, →self and drop(C) are locally introduced; no mathematical premise is left undefined. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "ee774d2758cfab38e38664e00664350c505472c51923b695f6b0dbd5c9eb117e"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "declarations",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 9455,
+      "end": 10644
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Defines class-only optional destructor bodies, receiver and dedicated core name namespace; Shared declarations, whole types, explicit unpacking and struct field restrictions have direct links. The appendix only gathers these definitions.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. The code spellings drop { body }, →self and drop(C) are locally introduced; no mathematical premise is left undefined."
+  }
+}

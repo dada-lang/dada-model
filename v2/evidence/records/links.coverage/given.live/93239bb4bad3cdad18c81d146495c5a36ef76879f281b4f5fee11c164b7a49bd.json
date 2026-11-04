@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "344375f9189b0d6132660462eed23fd188570c2815d6fb3c095e76910e0d019c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:49d19d3e6321b8309608988f0dba1cb54f8a069b5a7946d9f117d0fb274166d9",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:unit:given.allocated",
+    "audit:unit:given.live",
+    "audit:unit:given.lookup",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference. Each lookup premise links its definition. Live recursion defines this judgment rather than referring to another result. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "af7bd0ca2b0d4411cc906b433da791ae6e1bd68459b452317d48403dbc412936"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference.",
+    "mathematics": "Each lookup premise links its definition. Live recursion defines this judgment rather than referring to another result.",
+    "links": [
+      {
+        "occurrence": "given.live:1",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S[x]' refers to md/given.md#claim-given.lookup for the concept or example setup used by this unit. The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference."
+      },
+      {
+        "occurrence": "given.live:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S[\\\\beta.f]' refers to md/given.md#claim-given.lookup for the concept or example setup used by this unit. The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference."
+      },
+      {
+        "occurrence": "given.live:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Allocation' refers to md/given.md#claim-given.allocated for the concept or example setup used by this unit. The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference."
+      }
+    ]
+  }
+}

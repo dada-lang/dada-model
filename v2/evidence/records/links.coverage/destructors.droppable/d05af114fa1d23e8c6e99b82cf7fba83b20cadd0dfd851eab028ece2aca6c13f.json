@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "bundle": "297341e4bdebc66fb5e4e3aaf44695eea76ee2478dd5eece8bd7bf588694ee39",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2ad9184ea8f87bf25aa062eee2e8605a4933189e40f6aa461d5c7a04418b8674",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:destructors.declarations",
+    "audit:unit:destructors.droppable",
+    "audit:unit:shared.struct",
+    "audit:unit:shared.typing.types",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines Droppable directly and links permissions/views, normalization, declared destructor and unknown view entries. The table states both cases without requiring the appendix to provide a missing condition. T is identified as the value type in the opening sentence. Droppable(T) is the defining occurrence, not an unlinked use. Whole normalization is linked. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "2ba60ab91f173c8ea5d4a3bdb78db7b16dc6f8ad50ca07c9dd2a303e276a392a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines Droppable directly and links permissions/views, normalization, declared destructor and unknown view entries. The table states both cases without requiring the appendix to provide a missing condition.",
+    "mathematics": "T is identified as the value type in the opening sentence. Droppable(T) is the defining occurrence, not an unlinked use. Whole normalization is linked.",
+    "links": [
+      {
+        "occurrence": "destructors.droppable:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Shared's permissions and signed views' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.types. Defines Droppable directly and links permissions/views, normalization, declared destructor and unknown view entries. The table states both cases without requiring the appendix to provide a missing condition."
+      },
+      {
+        "occurrence": "destructors.droppable:2",
+        "role": "navigation",
+        "rationale": "Optional appendix/chapter navigation: the source directly defines the example or links its needed concepts; this link only gathers further reading."
+      },
+      {
+        "occurrence": "destructors.droppable:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'declared destructor' supplies the definition or concrete example setup used here, at #claim-destructors.declarations. Defines Droppable directly and links permissions/views, normalization, declared destructor and unknown view entries. The table states both cases without requiring the appendix to provide a missing condition."
+      },
+      {
+        "occurrence": "destructors.droppable:4",
+        "role": "conceptual",
+        "rationale": "The occurrence 'view normalization' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.normalization. Defines Droppable directly and links permissions/views, normalization, declared destructor and unknown view entries. The table states both cases without requiring the appendix to provide a missing condition."
+      },
+      {
+        "occurrence": "destructors.droppable:5",
+        "role": "conceptual",
+        "rationale": "The occurrence 'unknown' supplies the definition or concrete example setup used here, at given-typing.md#claim-given.typing.views. Defines Droppable directly and links permissions/views, normalization, declared destructor and unknown view entries. The table states both cases without requiring the appendix to provide a missing condition."
+      }
+    ]
+  }
+}

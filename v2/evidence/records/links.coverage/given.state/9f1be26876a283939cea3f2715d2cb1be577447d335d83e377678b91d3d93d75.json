@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "689036e172eaaeb070a7918452109dcfa332aea6afd4c088557233449f574d8d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6b62588dc91e02fb002f06c49a255ee88f8214c8d7ccbfa6ccf50802d1e5930a",
+    "audit:unit:given.collections",
+    "audit:unit:given.identities",
+    "audit:unit:given.slots",
+    "audit:unit:given.state",
+    "audit:unit:given.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines only the storage tuple, table domains and allocation counter. The finite-map convention links to given.collections; empty storage has been extracted into its own definition. S/O/V/ν are locally introduced storage components. The displayed map domains use the prior identity/slot categories; the finite-map convention has its own direct link. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "2a55c65a58640ba7b8e2c7c86c45d5e71af1e907c3fc3fc93fd4214bc12abb1e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines only the storage tuple, table domains and allocation counter. The finite-map convention links to given.collections; empty storage has been extracted into its own definition.",
+    "mathematics": "S/O/V/ν are locally introduced storage components. The displayed map domains use the prior identity/slot categories; the finite-map convention has its own direct link.",
+    "links": [
+      {
+        "occurrence": "given.state:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Finite-map notation' refers to md/given.md#claim-given.collections for the concept or example setup used by this unit. Defines only the storage tuple, table domains and allocation counter. The finite-map convention links to given.collections; empty storage has been extracted into its own definition."
+      }
+    ]
+  }
+}

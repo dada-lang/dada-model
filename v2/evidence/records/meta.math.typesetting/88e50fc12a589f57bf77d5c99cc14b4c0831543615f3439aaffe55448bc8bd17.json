@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "b218d1ecbe651e1704e2136a2335d6bc982f31b39e5aa0895224a91250c5c0d8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lib.rs:escape",
+    "rust:mdbook-dada/src/lib.rs:protect_math",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order",
+    "test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders",
+    "test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles",
+    "test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies",
+    "unit:meta.math.typesetting"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.typesetting against rust:mdbook-dada/src/lib.rs:protect_math, rust:mdbook-dada/src/lib.rs:render_unit, rust:mdbook-dada/src/lean.rs:render_authored, rust:mdbook-dada/src/lib.rs:escape, test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order, test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders, test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies, test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles. protect_math excludes code/link/HTML contexts and escapes explicit display/inline formulas before Markdown processing; render_authored escapes raw TeX without translating Lean. Tests retain row breaks/primes under smart punctuation, reject HTML interpretation, preserve literal contexts and citation order. This supports syntax preservation, not validation that TeX means the same proposition as Lean. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Assignment differential re-review: exact authored unit and selected formalization/test inputs are unchanged from the previously reviewed bundle. The new Assignment modules import the earlier layers without modifying their source or claims. Reviewed the revised AGENTS scope and explicit Assignment proof boundary; it does not change this earlier claim. This retains the prior correspondence judgment after exact required-input comparison, not an independent fresh proof audit.",
+  "limitations": [
+    "Differential author self-review of unchanged semantic/tool selections; mechanical checks are reported separately. No independent re-proof is claimed."
+  ],
+  "supersedes": [
+    "249f792511ee2ba660fe6c39addaefc8d9c8a791937201918b96ff3eedaa268e"
+  ]
+}

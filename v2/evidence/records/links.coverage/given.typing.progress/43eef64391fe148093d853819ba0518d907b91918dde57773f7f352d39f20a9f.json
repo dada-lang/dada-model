@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "b35c95c71df2aba712aade5ea6aa254deb87cd2a5fc5349b916f51552a71ff88",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:target:9152f90a41f757fc02cb545765b11e8fad2e3801166666165f01b88d1a383bb0",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.configurations",
+    "audit:unit:given.typing.expression_soundness",
+    "audit:unit:given.typing.progress",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Typed configurations, finishedness, and operational extended steps all link directly. The displayed premise and disjunction link configuration typing, Finished, erasure, and the step arrow. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "0eaddcc5d32417dbcfb1b7f4df9c0b97ac39ead72b6f2b944c6d802652faacc4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Typed configurations, finishedness, and operational extended steps all link directly.",
+    "mathematics": "The displayed premise and disjunction link configuration typing, Finished, erasure, and the step arrow.",
+    "links": [
+      {
+        "occurrence": "given.typing.progress:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed configuration' refers to md/given-typing.md#claim-given.typing.configurations for the concept or example setup used by this unit. Typed configurations, finishedness, and operational extended steps all link directly."
+      },
+      {
+        "occurrence": "given.typing.progress:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/given.md#claim-given.finished for the concept or example setup used by this unit. Typed configurations, finishedness, and operational extended steps all link directly."
+      },
+      {
+        "occurrence": "given.typing.progress:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. Typed configurations, finishedness, and operational extended steps all link directly."
+      }
+    ]
+  }
+}

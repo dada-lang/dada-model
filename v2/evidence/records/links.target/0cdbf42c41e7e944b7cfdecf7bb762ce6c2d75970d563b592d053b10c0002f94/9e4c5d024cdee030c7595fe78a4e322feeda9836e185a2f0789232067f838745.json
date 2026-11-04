@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "3ed952a92a89ce57347ec812095b7a80d4468d2374234f042db2f2d1c2fdeceb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0cdbf42c41e7e944b7cfdecf7bb762ce6c2d75970d563b592d053b10c0002f94",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Defines Droppable directly and links permissions/views, normalization, declared destructor and unknown view entries. The table states both cases without requiring the appendix to provide a missing condition. The selected defining body includes its local setup, conditions and direct prerequisite links. T is identified as the value type in the opening sentence. Droppable(T) is the defining occurrence, not an unlinked use. Whole normalization is linked. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "540364aa8854e95df5e562344df37e4bd1d26c1b042ac6bcb4cdd35c98bcefc2"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "droppable",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 10791,
+      "end": 11713
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Defines Droppable directly and links permissions/views, normalization, declared destructor and unknown view entries. The table states both cases without requiring the appendix to provide a missing condition.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. T is identified as the value type in the opening sentence. Droppable(T) is the defining occurrence, not an unlinked use. Whole normalization is linked."
+  }
+}

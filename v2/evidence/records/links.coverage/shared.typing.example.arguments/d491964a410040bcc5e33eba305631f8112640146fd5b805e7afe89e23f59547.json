@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "71ae3b827e9ee6a080c1dd8527bed21a9aafaa5d8b7beea8d9f2ee493ebcfb57",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:30846f25dcc13bb8ac2e31bafade18aabeadf7be174a0cd94b2aa2882f083558",
+    "audit:unit:shared.typing.example.arguments",
+    "audit:unit:shared.typing.example.paths",
+    "audit:unit:shared.typing.expressions",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. constructor_permissions checks the entire argumentProgram execution, final t/h/a/b descriptions, and universally rejects both a given Token argument to Holder and a shared argument to Box. This supports the stated successful example and both rejection variants rather than only a helper operation. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "cce21b120c6e2b3806bbe797846b0f41eb0291b57036ba5402b0c35f43a71708"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. constructor_permissions checks the entire argumentProgram execution, final t/h/a/b descriptions, and universally rejects both a given Token argument to Holder and a shared argument to Box. This supports the stated successful example and both rejection variants rather than only a helper operation.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.arguments:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declared above' refers to md/shared-typing.md#claim-shared.typing.example.paths for the concept or example setup used by this unit. Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules."
+      },
+      {
+        "occurrence": "shared.typing.example.arguments:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'constructor rule' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules."
+      }
+    ]
+  }
+}

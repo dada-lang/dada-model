@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "f96db116b911fc47036c4479854854519bc61dbe21a7782433d9cf3b62af7ca7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.collections",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Finite-map and finite-list notation now has its own direct unit before programs. A and B are explicitly the domain/codomain; the named FiniteMap structure supplies finite entries with distinct keys. The two inline constructors A↛B and List(A) are the defined notation. A and B are locally identified domains rather than unlinked operations. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "607ca2f1c469ca2fd4c6511bbbf972464b286c78397d0ff9de2a685bd69866e3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Finite-map and finite-list notation now has its own direct unit before programs. A and B are explicitly the domain/codomain; the named FiniteMap structure supplies finite entries with distinct keys.",
+    "mathematics": "The two inline constructors A↛B and List(A) are the defined notation. A and B are locally identified domains rather than unlinked operations.",
+    "links": []
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "3888d8424f725b1aac2d33fef3639c9d656a347110c88e74bd2c41457f35110e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.overline.braces",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit introduces the overbar adjacency convention through its literal sample and states its raw-source scope and limits. No undefined custom concept is required. The only TeX fragment is the defining example for overline; f is a placeholder for its argument, not a model metavariable. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "7113c3554c41ba30004c1b106b6da30f2832049ac1ae021bd704d7a29e633b9c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit introduces the overbar adjacency convention through its literal sample and states its raw-source scope and limits. No undefined custom concept is required.",
+    "mathematics": "The only TeX fragment is the defining example for overline; f is a placeholder for its argument, not a model metavariable.",
+    "links": []
+  }
+}

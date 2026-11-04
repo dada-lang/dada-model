@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "78bf16b3b1c806c9566511b6e845ec77e3cbca29d533dbd0eb15602f7b66caa4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:83be7fbcf36059917cb21e26e5a9bdcd7b053305236cec331e30f20d2fee917b",
+    "audit:target:bcbf7b2e6e35008f601cfc25ccf052cb44486c1ce12214fa55a4362b1030db7a",
+    "audit:unit:meta.math.source_view",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Header identity and Draft status each link the exact earlier subject. The present unit introduces source-view selectors, defaults, ownership of nested controls and leading-anchor placement. No mathematical judgment is assumed; Lean/Rust/Facts labels are the interface choices being defined. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "06c862ace86820e88633a2f5920ec16d43ca197311228a195445717f27798397"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Header identity and Draft status each link the exact earlier subject. The present unit introduces source-view selectors, defaults, ownership of nested controls and leading-anchor placement.",
+    "mathematics": "No mathematical judgment is assumed; Lean/Rust/Facts labels are the interface choices being defined.",
+    "links": [
+      {
+        "occurrence": "meta.math.source_view:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'identity' refers to md/repo/renderer-contracts.md#claim-meta.syntax.anchors.identity for the concept or example setup used by this unit. Header identity and Draft status each link the exact earlier subject. The present unit introduces source-view selectors, defaults, ownership of nested controls and leading-anchor placement."
+      },
+      {
+        "occurrence": "meta.math.source_view:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Draft status' refers to md/repo/renderer-contracts.md#claim-meta.syntax.draft for the concept or example setup used by this unit. Header identity and Draft status each link the exact earlier subject. The present unit introduces source-view selectors, defaults, ownership of nested controls and leading-anchor placement."
+      }
+    ]
+  }
+}

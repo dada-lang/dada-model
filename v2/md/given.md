@@ -595,33 +595,98 @@ An empty slot contributes no edge to such a path. [Allocation](#claim-given.allo
 properties of the object graph, independent of how the state was produced.
 ```
 
+```{definition} given.live_pending
+:lean: Unique/State:LiveWith
+:uses: given.live given.evaluation
+
+During [expression evaluation](#claim-given.evaluation), a result may have left
+its source slot without yet entering a constructor or local binding. Such a
+result is a *pending root*. Let \\(R\\) be the list of object identities held by
+these pending results.
+
+An object is *live with pending roots*, written
+\\(\mathsf{Live}_{S;R}(\alpha)\\), when it can be reached from a variable or an
+identity in \\(R\\), following initialized fields. This extends
+[ordinary liveness](#claim-given.live) with one additional starting rule:
+
+\\[
+\frac{\alpha\in R}{\mathsf{Live}_{S;R}(\alpha)}.
+\\]
+
+The variable and field rules are otherwise the same. Pending results count as
+roots even though they are not entries in the variable table.
+```
+
 ```{definition} given.well_formed
 :lean: Unique/State:References Unique/Soundness:WellFormed Unique/Soundness:WellFormedWith
-:uses: given.programs given.state given.identities given.allocated given.evaluation
+:uses: given.programs given.state given.identities given.allocated given.live given.live_pending
 
 The following conditions describe storage between statements, including before
-the first statement. References held temporarily during [expression evaluation](#claim-given.evaluation)
-are accounted for within that evaluation.
-
-Write \\(\mathsf{WF}_{\Delta}(S)\\) when the state meets all these conditions:
+the first statement. Write \\(\mathsf{WF}_{\Delta}(S)\\) when the state meets all
+these conditions:
 
 - Object-table keys and variable names are each distinct.
 - Every object's class is [declared](#claim-given.programs). Its field names occur exactly in declaration
   order, without duplicates, including fields whose slots are empty.
 - Every [allocated identity](#claim-given.allocated) \\(\alpha\\) satisfies
-  \\(\href{#claim-given.identities}{\operatorname{index}(\alpha)}<\nu\\). A reference in an object's field
-  targets an older object: its index is strictly smaller than the containing
-  object's index.
+  \\(\href{#claim-given.identities}{\operatorname{index}(\alpha)}<\nu\\).
+  This bounds the identities already used, so the next allocation is fresh.
+- Every allocated object is [live](#claim-given.live): a path from a variable
+  reaches it through initialized fields.
 - The references in **all variable slots and all object fields**, counted by
   occurrence, contain each allocated object identity exactly once and contain
   no other identity.
 
 The last condition excludes both duplicate ownership and references to missing
 objects. Two slots containing the same identity count as two references even
-though their contents are equal. The age condition records the construction
-order: a newly constructed object receives previously existing objects as its
-fields. It excludes cycles of objects owning one another without a variable root.
+though their contents are equal. Rootedness is a separate condition: a cycle
+with no variable root does not become valid merely because each object has one
+incoming reference. Object identities do not impose an ordering on field edges.
+
+Within an expression, write \\(\mathsf{WF}_{\Delta}(S;R)\\) for the version with
+[pending roots](#claim-given.live_pending). Rootedness uses
+\\(\mathsf{Live}_{S;R}\\), and reference counting includes every occurrence in
+\\(R\\) as well as the variable slots and object fields. The other conditions
+are unchanged. Thus moving an owner out of a field can leave that slot empty
+while the returned object remains rooted in the ongoing evaluation.
 ```
+
+````{example} given.example.younger_child
+:lean: Unique/RootedChecks:younger_child
+:uses: given.well_formed given.live_pending given.evaluation
+
+The [well-formedness invariant](#claim-given.well_formed) accepts this storage,
+with allocation counter 3:
+
+```text
+variables: b → Box#1
+objects:   Box#1.value → Token#2
+           Token#2 has no fields
+```
+
+Each object has exactly one incoming reference and is reached from `b`.
+The field points from identity 1 to identity 2; the target's index is larger.
+This is an example of admissible storage, not a claim that the constructor-only
+Given language produces it from an empty state.
+
+[Taking](#claim-given.evaluation) `b.value` empties that field and returns identity 2.
+The checked preservation result establishes well-formedness with identity 2
+as a [pending root](#claim-given.live_pending); identity 1 remains rooted at `b`.
+No allocation-order comparison is needed to preserve this state.
+````
+
+````{example} given.example.unreachable_cycle
+:lean: Unique/RootedChecks:unreachable_cycle
+:uses: given.well_formed given.live
+
+A single allocated `Box#1` with `value` pointing back to itself and no variables
+fails [well-formedness](#claim-given.well_formed), even with allocation counter 2.
+Its one field supplies exactly one incoming reference to the allocated object,
+but no path starts at a variable. It is not [live](#claim-given.live).
+
+This separates ownership counting from rootedness: the former does not imply
+the latter, even when all references are unique.
+````
 
 ```{theorem} given.liveness
 :lean: Unique/Liveness:WellFormed.live_iff_allocated

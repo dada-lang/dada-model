@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "582254dd919ab3e65c3f3549869accd82c51ea5adbf8a376d91c2ecec79dc33e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Rootedness refactor review. Given and Shared foundation agents implemented and reviewed root transport and path proofs; a separate Shared path agent freshly reviewed root-owned unpacking, allocation, GC, frame rerooting, class-retention and Assignment example integration. Root read these findings and the changed definitions/examples, corrected the pending-liveness definition order, and compared earlier required selections against previous reviewed packets. Proof-only changes retain their public propositions; the explicit WF and refill changes are reviewed under the new rootedness invariant. CLI workers only partition evidence artifact preparation/recording. No approval is inferred from compilation alone.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:validate_mutual_groups",
+    "test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection",
+    "test:mdbook-dada/src/lean.rs:tests::selects_a_case_without_interpreting_its_binders",
+    "test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations",
+    "test:mdbook-dada/tests/book.rs:authored_judgments_and_rules_keep_tex_and_show_cited_source",
+    "test:mdbook-dada/tests/book.rs:authored_math_rejects_missing_or_wrong_kind_source_selections",
+    "test:mdbook-dada/tests/book.rs:authored_math_requires_one_opening_argument_and_a_body",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "unit:meta.math.judgment.selection",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.judgment.selection against rust:mdbook-dada/src/lean.rs:select, rust:mdbook-dada/src/lean.rs:extract_case, rust:mdbook-dada/src/lean.rs:render_authored, test:mdbook-dada/tests/book.rs:authored_judgments_and_rules_keep_tex_and_show_cited_source, test:mdbook-dada/tests/book.rs:authored_math_requires_one_opening_argument_and_a_body, test:mdbook-dada/tests/book.rs:authored_math_rejects_missing_or_wrong_kind_source_selections, test:mdbook-dada/src/lean.rs:tests::selects_a_case_without_interpreting_its_binders. select requires an inductive judgment; rule selection splits the constructor name, retains the inductive header plus exactly that constructor, and leaves binder interpretation untouched. Tests demonstrate authored TeX preservation, exclusion of neighboring cases, complex binders, wrong kinds, argument count and empty body errors. No Prop-result check is asserted or implemented. Notation and judgment context was checked in unit:meta.sources.exact_selection. Rooted-foundation review: the structural invariants now require explicit rootedness (including pending values) plus unique/compatible ownership. Allocation bounds remain solely for freshness; no safety proof assumes edge-age order or global DAG structure. Changed proof selections retain their public statement unless this unit explicitly defines the revised invariant or example. Given/Shared root transport and path reasoning were reviewed by their implementing agents, with fresh review of root-owned unpacking, GC, frame rerooting, class retention and the refill example. Earlier syntax and runtime rules are unchanged. The widened invariant domain is covered by recompilation of all earlier safety proofs and concrete shared-cycle/nonmonotonic-ID regressions, not by a claim that constructors can generate cycles.",
+  "limitations": [
+    "Author integration review with agent review of Given/Shared foundations and fresh review of root-owned integration. Lean checks proof correctness separately.",
+    "Assignment general safety remains deferred. Cyclic heap examples test invariant and operation scope, not source-program construction from the current empty initial state."
+  ],
+  "supersedes": [
+    "aa71f4a23203af058d9c79886857a1f209d3345e36b0a094da42d18e5d7858cb"
+  ]
+}

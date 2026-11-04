@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "d4dfc37ce99a7688d471155aaed4724b0c57d29c8bbd7cf6e3838d7705682217",
+  "reviewer": "Codex author self-review",
+  "provenance": "Assignment author review: examined complete new rules and concrete example propositions together with their setup definitions. Reviewed fixed binding metadata, partial-view store updates, RHS-first ordering, runtime writable/replaceable guards, frame GC and forward Destructor embedding. Explicitly retained the demonstrated older-ID invariant failure and missing Assignment soundness/reflection as future proof obligations. Existing claims and selected sources were compared byte-for-byte with prior reviewed packets; new AGENTS scope and SUMMARY insertion were inspected. This is differential author review for unchanged units, not an independent review. CLI workers only partition immutable evidence preparation/recording; no subagents were used.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5622717387ebfdf87c5d3f86c337a128b567967f67969be864ff86c108809a19",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.liveness directly introduces the Shared allocated/live equivalence. WF, Live and Allocated each link to their standalone definitions in the equivalence. WF, Live and Allocated are individually linked in the equivalence formula. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Assignment insertion shifts subsequent chapter positions but leaves existing authored passages, targets, relative concept order and prior classifications unchanged. Required non-audit inputs were compared exactly, except the reviewed SUMMARY and AGENTS updates.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative."
+  ],
+  "supersedes": [
+    "644a707862bb83bb29e503cd0e6b5ad367e50a59c57700e1efd6748ce3418f6b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the Shared allocated/live equivalence",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 28962,
+      "end": 29395
+    },
+    "clarity": "The landing md/shared.md#claim-shared.liveness directly introduces the Shared allocated/live equivalence. WF, Live and Allocated each link to their standalone definitions in the equivalence.",
+    "independence": "WF, Live and Allocated are individually linked in the equivalence formula. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}
