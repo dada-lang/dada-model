@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "bundle": "af729a83623ee9d79f6126387f968e8e6ac72cb0753f8c3701156dea97998142",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:target:f0800758e25ea7ee9fd903ee7d59491b9696d69585d50197192201ce0604d301",
+    "audit:unit:shared.declarations",
+    "audit:unit:shared.evaluation",
+    "audit:unit:shared.give",
+    "audit:unit:shared.programs",
+    "audit:unit:shared.references",
+    "audit:unit:shared.state",
+    "audit:unit:shared.struct",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The revised rules link struct eligibility and declaration kinds, including the guard on every struct argument. The Eval judgment is introduced before the clauses. Δ(C) and obj allocation link their definitions; the intermediate states and final tuple equations are locally scoped, and Give links the prior behavior table. StructReference and mode(k) are defined immediately below Construct; the guard uses the final argument state S_n.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "afb226c7e4ec24d97e1714571b9000ab187723560f22e5b9aa28864312fec583"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The revised rules link struct eligibility and declaration kinds, including the guard on every struct argument.",
+    "mathematics": "The Eval judgment is introduced before the clauses. Δ(C) and obj allocation link their definitions; the intermediate states and final tuple equations are locally scoped, and Give links the prior behavior table. StructReference and mode(k) are defined immediately below Construct; the guard uses the final argument state S_n.",
+    "links": [
+      {
+        "occurrence": "shared.evaluation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reference' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The revised rules link struct eligibility and declaration kinds, including the guard on every struct argument."
+      },
+      {
+        "occurrence": "shared.evaluation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage' refers to md/shared.md#claim-shared.state for the concept or example setup used by this unit. Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The revised rules link struct eligibility and declaration kinds, including the guard on every struct argument."
+      },
+      {
+        "occurrence": "shared.evaluation:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'giving from its route' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The revised rules link struct eligibility and declaration kinds, including the guard on every struct argument."
+      },
+      {
+        "occurrence": "shared.evaluation:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'struct' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The revised rules link struct eligibility and declaration kinds, including the guard on every struct argument."
+      },
+      {
+        "occurrence": "shared.evaluation:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Delta(C)' refers to md/shared.md#claim-shared.programs for the concept or example setup used by this unit. Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The revised rules link struct eligibility and declaration kinds, including the guard on every struct argument."
+      },
+      {
+        "occurrence": "shared.evaluation:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{obj}(\\\\nu_n)' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The revised rules link struct eligibility and declaration kinds, including the guard on every struct argument."
+      },
+      {
+        "occurrence": "shared.evaluation:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declaration kinds' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Supplies the previously missing expression-evaluation judgment. Give links the behavior table, Give-share converts only the returned reference, and Construct links class table/identity; intermediate stores and allocation equations are local adjuncts. The revised rules link struct eligibility and declaration kinds, including the guard on every struct argument."
+      }
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "8b51f510a10e0462bdc534207f0b977acc9bd45d6fbf0453f85550878d05247c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:destructors.example.consume",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links unpacking, moving and struct kinds. Token/Pair and all local bindings are introduced in the example; dropping is introduced as the new proposed action. The code uses the already linked give/unpack syntax and declares every nominal name. This is a future example with no claimed checked derivation.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links unpacking, moving and struct kinds. Token/Pair and all local bindings are introduced in the example; dropping is introduced as the new proposed action.",
+    "mathematics": "The code uses the already linked give/unpack syntax and declares every nominal name. This is a future example with no claimed checked derivation.",
+    "links": [
+      {
+        "occurrence": "destructors.example.consume:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Unpacking' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links unpacking, moving and struct kinds. Token/Pair and all local bindings are introduced in the example; dropping is introduced as the new proposed action."
+      },
+      {
+        "occurrence": "destructors.example.consume:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Moving avalue' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links unpacking, moving and struct kinds. Token/Pair and all local bindings are introduced in the example; dropping is introduced as the new proposed action."
+      },
+      {
+        "occurrence": "destructors.example.consume:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Struct values' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links unpacking, moving and struct kinds. Token/Pair and all local bindings are introduced in the example; dropping is introduced as the new proposed action."
+      }
+    ]
+  }
+}

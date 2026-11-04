@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "66c8a432fe0f21efa53f990d92e69253a024067229bdb445a609a6e02bc63496",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.syntax.anchors.identity",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit defines identity syntax, namespace, defining roles, reference roles, shields and literal contexts in individually marked passages. No language-level permission or heap concept is needed. No mathematical block or reused equation occurs; all backtick text is authoring syntax.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "be4583e238a2d0a0cc1b697c384bd255b19682ecc5f8e989a7b68d05b03702d0"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit defines identity syntax, namespace, defining roles, reference roles, shields and literal contexts in individually marked passages. No language-level permission or heap concept is needed.",
+    "mathematics": "No mathematical block or reused equation occurs; all backtick text is authoring syntax.",
+    "links": []
+  }
+}

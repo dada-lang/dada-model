@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "bundle": "b60f7373c4c8a173babb167ee35ec5422f7aacf0571283452a556cd2cd6821d9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.forgetting",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.observations",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation. Both sides of the pos/neg inclusions link the observation definitions. The weakening relation is the subject defined by those inclusions.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "8f69f80920ced1e9f224aa828da69005833122eb3b4e3abed98a7213ccd7901e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation.",
+    "mathematics": "Both sides of the pos/neg inclusions link the observation definitions. The weakening relation is the subject defined by those inclusions.",
+    "links": [
+      {
+        "occurrence": "given.typing.forgetting:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalize' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'base class' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      },
+      {
+        "occurrence": "given.typing.forgetting:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'example declarations' refers to md/given-typing.md#claim-given.typing.example.views for the concept or example setup used by this unit. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation."
+      }
+    ]
+  }
+}

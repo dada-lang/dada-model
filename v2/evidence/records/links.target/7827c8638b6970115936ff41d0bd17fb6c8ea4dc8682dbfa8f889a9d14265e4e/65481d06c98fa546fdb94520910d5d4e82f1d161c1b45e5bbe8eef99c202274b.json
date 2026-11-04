@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "ec6031a4bddcfaf5c3eb8e1ae9142d72fdb5c08ace4607d47d1672db366d8536",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.give directly introduces Shared giving, including move/copy/final-slot conversion. Links the unchanged place concept and the preceding reference definition. Its table itself defines move/copy/final-slot conversion; it is not an implicit forward invocation of Resolve. The table is the definition of giving behavior at this level. It uses the preceding reference modes and linked place concept; it does not invoke the later Resolve judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "3c04f7e29ea9bc45a14a5fab5370e225152d02c2a8bfe1091897102edaff42f4"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared giving, including move/copy/final-slot conversion",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 1000,
+      "end": 2158
+    },
+    "clarity": "The landing md/shared.md#claim-shared.give directly introduces Shared giving, including move/copy/final-slot conversion. Links the unchanged place concept and the preceding reference definition. Its table itself defines move/copy/final-slot conversion; it is not an implicit forward invocation of Resolve.",
+    "independence": "The table is the definition of giving behavior at this level. It uses the preceding reference modes and linked place concept; it does not invoke the later Resolve judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

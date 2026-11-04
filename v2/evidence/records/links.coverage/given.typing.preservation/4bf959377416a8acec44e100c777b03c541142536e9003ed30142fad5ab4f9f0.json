@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "36b3ed4d41bbe402c3423db42b59fba40cef3f980ced89af3cdc38998304f49b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:9152f90a41f757fc02cb545765b11e8fad2e3801166666165f01b88d1a383bb0",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.configurations",
+    "audit:unit:given.typing.expression_soundness",
+    "audit:unit:given.typing.preservation",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Extended steps and typed configurations link directly. The prose identifies the fixed final environment and arbitrary successor quantification. Configuration-typing judgments, erasure, and the extended step arrow are directly linked in the rule.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "3abed3f68a1d75b04759b9851bde2caed1dfc85478d49a6e99c07836f39164fa"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Extended steps and typed configurations link directly. The prose identifies the fixed final environment and arbitrary successor quantification.",
+    "mathematics": "Configuration-typing judgments, erasure, and the extended step arrow are directly linked in the rule.",
+    "links": [
+      {
+        "occurrence": "given.typing.preservation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. Extended steps and typed configurations link directly. The prose identifies the fixed final environment and arbitrary successor quantification."
+      },
+      {
+        "occurrence": "given.typing.preservation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed configuration' refers to md/given-typing.md#claim-given.typing.configurations for the concept or example setup used by this unit. Extended steps and typed configurations link directly. The prose identifies the fixed final environment and arbitrary successor quantification."
+      }
+    ]
+  }
+}

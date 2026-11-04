@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "915bf7fecd9bd05c022daf3b239a879041bee18ebf4405f8a6a6928a8fb83991",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.patterns directly introduces shared.typing.patterns. Links Given flat patterns; defines the Shared pattern grammar and fresh/distinct/all-fields constraints locally. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Pattern provides variable and flat named unpack forms; Unpacking.Statement pairs a pattern with a value expression. Distinct fresh destinations and exhaustive fields are enforced by binding, as the accompanying scope paragraph states. No wildcard or remainder form is admitted. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "008dc98fdbeb98c57d4bdd7a3fdbab5fae563398af717c36a9f1301a73a814d1"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.patterns",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 22250,
+      "end": 22835
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.patterns directly introduces shared.typing.patterns. Links Given flat patterns; defines the Shared pattern grammar and fresh/distinct/all-fields constraints locally.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Pattern provides variable and flat named unpack forms; Unpacking.Statement pairs a pattern with a value expression. Distinct fresh destinations and exhaustive fields are enforced by binding, as the accompanying scope paragraph states. No wildcard or remainder form is admitted. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

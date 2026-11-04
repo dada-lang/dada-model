@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "7bcc0d494a5fff5b6a109c010a924fed8b0b20f6ae7b61126137ec1963137277",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:destructors.drop_typing",
+    "audit:unit:destructors.finished_environment",
+    "audit:unit:shared.struct",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links frames, struct types and unpacking. Defines the new finished-environment obligation and explicitly distinguishes movement from consumption. No reused mathematical judgment is left implicit; empty/class/struct binding cases constitute the proposed predicate itself.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links frames, struct types and unpacking. Defines the new finished-environment obligation and explicitly distinguishes movement from consumption.",
+    "mathematics": "No reused mathematical judgment is left implicit; empty/class/struct binding cases constitute the proposed predicate itself.",
+    "links": [
+      {
+        "occurrence": "destructors.finished_environment:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'frame' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links frames, struct types and unpacking. Defines the new finished-environment obligation and explicitly distinguishes movement from consumption."
+      },
+      {
+        "occurrence": "destructors.finished_environment:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'structtype' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. Links frames, struct types and unpacking. Defines the new finished-environment obligation and explicitly distinguishes movement from consumption."
+      },
+      {
+        "occurrence": "destructors.finished_environment:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'unpacking' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links frames, struct types and unpacking. Defines the new finished-environment obligation and explicitly distinguishes movement from consumption."
+      }
+    ]
+  }
+}

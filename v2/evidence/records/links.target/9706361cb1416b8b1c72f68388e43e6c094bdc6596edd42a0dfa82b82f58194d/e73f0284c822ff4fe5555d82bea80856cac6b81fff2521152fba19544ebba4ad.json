@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "fc3890a001ed593913ef964ea45757b4674fd185706a0b09df3752c60478f2e7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:9706361cb1416b8b1c72f68388e43e6c094bdc6596edd42a0dfa82b82f58194d",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.forgetting directly introduces view weakening by inclusion of initialization observations. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation. Both sides of the pos/neg inclusions link the observation definitions. The weakening relation is the subject defined by those inclusions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "6deafdb6030a7e7b600787e7301286c0597da6c11bbad9a34c42569ecfa5b71e"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "view weakening by inclusion of initialization observations",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 14566,
+      "end": 15732
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.forgetting directly introduces view weakening by inclusion of initialization observations. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation.",
+    "independence": "Both sides of the pos/neg inclusions link the observation definitions. The weakening relation is the subject defined by those inclusions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

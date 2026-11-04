@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "b41c346948cb2bd94f53a59a1c4e66f1438cbd8e75005f9b29ad027b04fc0a72",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:given.syntax",
+    "audit:unit:shared.classes",
+    "audit:unit:shared.give",
+    "audit:unit:shared.syntax",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar. p/e/t introduce the extended grammar; the give operation has a direct link and give-share is explained as its result conversion.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "3bc838616e63a524227617070a97fe8be213990b56a640228bd7c577fdc2d3fd"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar.",
+    "mathematics": "p/e/t introduce the extended grammar; the give operation has a direct link and give-share is explained as its result conversion.",
+    "links": [
+      {
+        "occurrence": "shared.syntax:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'placeexpression' refers to md/given.md#claim-given.syntax for the concept or example setup used by this unit. Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar."
+      },
+      {
+        "occurrence": "shared.syntax:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'give' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar."
+      },
+      {
+        "occurrence": "shared.syntax:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'struct' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar."
+      }
+    ]
+  }
+}

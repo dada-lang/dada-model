@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "0da9eb01c17fd160028e1ea12a939bbb56897c655bfbfb320a1dd54d16e9e8a6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b525b2193e0c35e677269ca5a180c068848ebca97990c0e69502745a2fc78704",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.emptying directly introduces emptying a known-initialized nonempty path in a view. Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper. The initialized-path premise links pos. T[-rho] is the operation being defined, and the displayed Box equality uses the linked example declarations. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "dcfec6ed683199ea00e79254863072b0514703b01b7c6258993cd7da5f4a4bb2"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "emptying a known-initialized nonempty path in a view",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 13159,
+      "end": 14386
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.emptying directly introduces emptying a known-initialized nonempty path in a view. Normalization and the concrete Box declaration link to their definitions. The finite expansion/removal algorithm is stated here rather than delegated to an unlinked helper.",
+    "independence": "The initialized-path premise links pos. T[-rho] is the operation being defined, and the displayed Box equality uses the linked example declarations. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

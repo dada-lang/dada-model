@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "f5788f5218cd13c0f5b07b7e3ba94a746b42e094f8e771d5b7149f2c9281d99e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4ba614a624608047955c9ae8f552242a0a12fdc9b4cec2848e20eb9b3287e39c",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.composition directly introduces shared.typing.composition. Links permission grammar; the unique table defines juxtaposition of outer and inner permissions. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.comp returns given only for the pair given/given and shared in the other three cases, exactly the four table cells. Both operands are permissions, not object classifications. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "a2e031059bd7d98045f470dedda1367018ebccfd7c9dc52846d20cd2c646f3a5"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.composition",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 2309,
+      "end": 2618
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.composition directly introduces shared.typing.composition. Links permission grammar; the unique table defines juxtaposition of outer and inner permissions.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.comp returns given only for the pair given/given and shared in the other three cases, exactly the four table cells. Both operands are permissions, not object classifications. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "68d2f7c4a0775c6d2b7a41f31bf992768b5eafbfa829de59990e33319a49371f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.declarations directly introduces A nominal type has a name and an ordered list of fields. Its declaration chooses whether its values can be shared and whether construction makes them shared imm. Defines the three nominal kinds with their shareability and construction table, linking reference modes. The table is the definition of the kind behavior, not a new mode on runtime objects. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "A nominal type has a name and an ordered list of fields. Its declaration chooses whether its values can be shared and whether construction makes them shared imm",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 2271,
+      "end": 2826
+    },
+    "clarity": "The landing md/shared.md#claim-shared.declarations directly introduces A nominal type has a name and an ordered list of fields. Its declaration chooses whether its values can be shared and whether construction makes them shared imm. Defines the three nominal kinds with their shareability and construction table, linking reference modes.",
+    "independence": "The table is the definition of the kind behavior, not a new mode on runtime objects. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

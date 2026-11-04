@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "bundle": "c221bb66afe14f5e5e8d49691ce0147f79749ae069524554a1a718f048896dfe",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a65eb6e25dc5992af74682e3ee7637608f951cbca91ff863784472c2c21591a9",
+    "audit:target:ee677a280b28caae8944bc8ea17f855a3a4cc330d7651935f345a4588c0263f5",
+    "audit:unit:given.patterns",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.expressions",
+    "audit:unit:given.typing.statements",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Expression typing and binding typing both link directly in the introductory explanation. Both premises link their defining judgments, while the Let conclusion defines statement typing here.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "c2b314f74cb54b6cf2c92032e31dbb9e59f22a2cae35ce46d07617d56bd9de2c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Expression typing and binding typing both link directly in the introductory explanation.",
+    "mathematics": "Both premises link their defining judgments, while the Let conclusion defines statement typing here.",
+    "links": [
+      {
+        "occurrence": "given.typing.statements:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'types the expression' refers to md/given-typing.md#claim-given.typing.expressions for the concept or example setup used by this unit. Expression typing and binding typing both link directly in the introductory explanation."
+      },
+      {
+        "occurrence": "given.typing.statements:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'its binding pattern' refers to md/given-typing.md#claim-given.typing.bindings for the concept or example setup used by this unit. Expression typing and binding typing both link directly in the introductory explanation."
+      },
+      {
+        "occurrence": "given.typing.statements:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\triangleright' refers to md/given-typing.md#claim-given.typing.expressions for the concept or example setup used by this unit. Expression typing and binding typing both link directly in the introductory explanation."
+      },
+      {
+        "occurrence": "given.typing.statements:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma_1\\\\vdash b:T\\\\Rightarrow\\\\Gamma_2' refers to md/given-typing.md#claim-given.typing.bindings for the concept or example setup used by this unit. Expression typing and binding typing both link directly in the introductory explanation."
+      }
+    ]
+  }
+}

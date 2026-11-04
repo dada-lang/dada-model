@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "8e6f7c4740f05246d045a4d16e27191eb6a6383725c3030bf9904e691e45d143",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:df2da7caa3d89bc04ce4d503cad0e61b7f1272ee7dabab94f8f5a29def49bc73",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.classes directly introduces Shared class declarations. Links nominal kind while introducing class/field name categories and ordered fields. Source field typing is explicitly distinguished from its erased operational representation. C, f and natural arity n are introduced locally; operational Class retains kind and field names, including zero fields. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "ed6ea7d70ede7c3f6f4a23a38b1e49dea2b480517718b02deee50b3aad08d710"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared class declarations",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 4966,
+      "end": 5414
+    },
+    "clarity": "The landing md/shared.md#claim-shared.classes directly introduces Shared class declarations. Links nominal kind while introducing class/field name categories and ordered fields. Source field typing is explicitly distinguished from its erased operational representation.",
+    "independence": "C, f and natural arity n are introduced locally; operational Class retains kind and field names, including zero fields. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

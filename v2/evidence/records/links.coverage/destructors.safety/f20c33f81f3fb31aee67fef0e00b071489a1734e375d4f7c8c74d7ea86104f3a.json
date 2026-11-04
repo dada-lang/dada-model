@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "15b803c28ec9f4c6f0b99c94d0a1e2403c5f194b07e825b213ede06bb7fa6fa4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2948fd23e337d523facb0a0bd8446f0c73151a1b3773cee11a0866dd45cc1d0a",
+    "audit:target:c8cc0b8b6abef8a10509119d2140141701f58f8925ed109a7a9eb157fbf76014",
+    "audit:target:eeeaf9fbda37ca8ff670f396e78c8668da960396eb7978c2ccea392e172cde77",
+    "audit:unit:destructors.body_typing",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.heap_obligations",
+    "audit:unit:destructors.safety",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links proposed body typing, heap obligations and transitions. The text explicitly labels this a target, not a proved result. No separate equation is present; terminal/progress/preservation are explained as the proposed properties of those linked judgments.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links proposed body typing, heap obligations and transitions. The text explicitly labels this a target, not a proved result.",
+    "mathematics": "No separate equation is present; terminal/progress/preservation are explained as the proposed properties of those linked judgments.",
+    "links": [
+      {
+        "occurrence": "destructors.safety:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed program' refers to md/destructors.md#claim-destructors.body_typing for the concept or example setup used by this unit. Links proposed body typing, heap obligations and transitions. The text explicitly labels this a target, not a proved result."
+      },
+      {
+        "occurrence": "destructors.safety:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'heap invariant' refers to md/destructors.md#claim-destructors.heap_obligations for the concept or example setup used by this unit. Links proposed body typing, heap obligations and transitions. The text explicitly labels this a target, not a proved result."
+      },
+      {
+        "occurrence": "destructors.safety:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'take a step' refers to md/destructors.md#claim-destructors.execution for the concept or example setup used by this unit. Links proposed body typing, heap obligations and transitions. The text explicitly labels this a target, not a proved result."
+      }
+    ]
+  }
+}

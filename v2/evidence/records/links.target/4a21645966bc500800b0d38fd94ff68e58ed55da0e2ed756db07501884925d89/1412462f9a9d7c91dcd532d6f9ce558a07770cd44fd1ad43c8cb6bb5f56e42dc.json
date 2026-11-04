@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "a9f168b6a6a611bc6ae62ded029ac596f5521fac9942596dd82f4dee108f76ea",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4a21645966bc500800b0d38fd94ff68e58ed55da0e2ed756db07501884925d89",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/renderer-contracts.md#claim-meta.math.typesetting directly introduces Authored mathematics delimiters. This is the defining contract for authored math delimiters and preservation. The distinction between raw-TeX and Markdown bodies, escaped output and browser typesetting is stated locally. Delimiter samples and grammar rendering are syntax examples, not equations relying on model concepts. No mathematical reference needs an external definition. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b95be8b2a55ea2da3cf46741e934977f8b223b342453deadd8c137efc40a1c70"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Authored mathematics delimiters",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 6103,
+      "end": 6985
+    },
+    "clarity": "The landing md/repo/renderer-contracts.md#claim-meta.math.typesetting directly introduces Authored mathematics delimiters. This is the defining contract for authored math delimiters and preservation. The distinction between raw-TeX and Markdown bodies, escaped output and browser typesetting is stated locally.",
+    "independence": "Delimiter samples and grammar rendering are syntax examples, not equations relying on model concepts. No mathematical reference needs an external definition. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

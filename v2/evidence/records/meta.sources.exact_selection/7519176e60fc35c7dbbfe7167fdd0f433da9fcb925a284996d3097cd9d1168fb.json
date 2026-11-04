@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "c865a6030670c5069a4a71642509feab82773a48f40c14dc6335be1fdfa2596b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_case",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:scan",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:validate_mutual_groups",
+    "test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection",
+    "test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations",
+    "test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor",
+    "test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens",
+    "unit:meta.sources.exact_selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.sources.exact_selection against rust:mdbook-dada/src/lean.rs:select, rust:mdbook-dada/src/lean.rs:extract_declaration, rust:mdbook-dada/src/lean.rs:validate_mutual_groups, rust:mdbook-dada/src/lean.rs:extract_case, rust:mdbook-dada/src/lean.rs:scan, test:mdbook-dada/tests/units.rs:rule_citations_cannot_select_an_indented_siblings_constructor, test:mdbook-dada/tests/units.rs:rule_selections_preserve_final_literal_tokens, test:mdbook-dada/src/lean.rs:tests::selects_mutual_inductive_members_and_surrounding_declarations, test:mdbook-dada/src/lean.rs:tests::mutual_validation_ignores_comment_and_literal_decoys, test:mdbook-dada/src/lean.rs:tests::rejects_unsupported_or_incomplete_mutual_groups_before_any_selection. The scanner masks comments/literals while retaining original selected text; extract_declaration rejects sibling commands and validates restricted column-zero mutual inductives before selection; extract_case chooses the minimum-indent named constructor and excludes siblings. Tests exercise indented sibling attacks, final literal tokens, complete mutual members and malformed/comment-decoy mutual groups. This remains textual selection, not elaboration. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review. Implementation and test inspection does not establish universal correctness, browser appearance, CDN availability, or authenticated execution. Mechanical results are retained separately."
+  ],
+  "supersedes": [
+    "6f42499bd0f6e8592f97be0304a3c2cedf43bdfa4c1159f1792a73aecb1c311e",
+    "f476bd36f7d1eea69062bb352e1fa6822b4d3c69ec23d0a134d754f756ee817c"
+  ]
+}

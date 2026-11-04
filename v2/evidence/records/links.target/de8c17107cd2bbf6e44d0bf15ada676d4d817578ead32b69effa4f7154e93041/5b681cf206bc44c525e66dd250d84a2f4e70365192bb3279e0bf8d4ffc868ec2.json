@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "af40aeb0bdb375c4717a16f2edb9ebdba8e9c615f8d8166b0a0d7ed6c8656a09",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:de8c17107cd2bbf6e44d0bf15ada676d4d817578ead32b69effa4f7154e93041",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.realization directly introduces storage realization of an environment and pending values. Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here. The satisfaction clauses and erasure operator have direct mathematical links. The new realization relation, pending pair/list notation, and variable-domain equality are defined in this unit. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "1b83772ef4528d7c63ac854c5975022af871b4bae3c5ad68d50e201181b57c50"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "storage realization of an environment and pending values",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 29656,
+      "end": 31202
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.realization directly introduces storage realization of an environment and pending values. Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here.",
+    "independence": "The satisfaction clauses and erasure operator have direct mathematical links. The new realization relation, pending pair/list notation, and variable-domain equality are defined in this unit. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

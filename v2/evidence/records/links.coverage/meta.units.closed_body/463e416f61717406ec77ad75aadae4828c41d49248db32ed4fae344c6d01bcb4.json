@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "e8e4ca3c3d4e731106d9f38c827aea937be30bad5b56835b7cf1185f6b9082e1",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.units.closed_body",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This unit defines the closed-body/preprocessing contract itself and spells out all three prohibited expansion forms. Its original-source comparison and scope limitation are explained locally; it does not depend on another undisclosed predicate. There is no mathematical equation or inference rule. Directive names and raw unit IDs are authoring syntax, described here rather than reused model notation.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b01f301900372a97ab2f1b18ee17b860b7884c21f707b41cc9910ac8158901f7"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This unit defines the closed-body/preprocessing contract itself and spells out all three prohibited expansion forms. Its original-source comparison and scope limitation are explained locally; it does not depend on another undisclosed predicate.",
+    "mathematics": "There is no mathematical equation or inference rule. Directive names and raw unit IDs are authoring syntax, described here rather than reused model notation.",
+    "links": []
+  }
+}

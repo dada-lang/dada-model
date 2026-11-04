@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "34b47894eb408b226091a38c65ea7f70a2a999973f5c0fd1168ac0d1cf8e8bd0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:target:ff3e7738076ec20cf83e1713f8a2f88cd97eba66768aa681e849e215d51fcdbe",
+    "audit:unit:shared.lookup",
+    "audit:unit:shared.references",
+    "audit:unit:shared.state",
+    "audit:unit:shared.storage_places",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones. S[x] and S[α.f] are defined by the two partial equations. Storage decomposition and defined-slot conditions are local; q and references are linked.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "736ebf75afeef3b58067353eac843e8726071eb5c83d077eb190c434b0ff9470"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones.",
+    "mathematics": "S[x] and S[α.f] are defined by the two partial equations. Storage decomposition and defined-slot conditions are local; q and references are linked.",
+    "links": [
+      {
+        "occurrence": "shared.lookup:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage place' refers to md/shared.md#claim-shared.storage_places for the concept or example setup used by this unit. Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones."
+      },
+      {
+        "occurrence": "shared.lookup:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage' refers to md/shared.md#claim-shared.state for the concept or example setup used by this unit. Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones."
+      },
+      {
+        "occurrence": "shared.lookup:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reference' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones."
+      }
+    ]
+  }
+}

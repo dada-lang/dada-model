@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "b7d3397a91acdd6deb1536700540debd196071c77ba35dfa33e50d5cb29b7d81",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b20705f3e353f94b364e5cbddd1eb281eec7a3997129b64ea696b10fd0a0febf",
+    "audit:unit:meta.math.source_view",
+    "audit:unit:meta.syntax.heap.rendering",
+    "audit:unit:meta.syntax.heap.validation",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Stored-reference syntax links its direct slot definition. This unit then defines SVG-edge behavior, lease junctions, retained facts and deterministic layout limitations. There are no model equations; the graph arrows being described are diagram edges rather than semantic judgments.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "01281e2067e3dcad4e36087931e01e87d507487aa6c40bd02ddef699107fb1ae"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Stored-reference syntax links its direct slot definition. This unit then defines SVG-edge behavior, lease junctions, retained facts and deterministic layout limitations.",
+    "mathematics": "There are no model equations; the graph arrows being described are diagram edges rather than semantic judgments.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.heap.rendering:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stored reference' refers to md/repo/renderer-contracts.md#claim-meta.syntax.heap.slots for the concept or example setup used by this unit. Stored-reference syntax links its direct slot definition. This unit then defines SVG-edge behavior, lease junctions, retained facts and deterministic layout limitations."
+      }
+    ]
+  }
+}

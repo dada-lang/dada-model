@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "059b9e8e14ddb9f2ae9186a8dc3d9782da1debdc514311558b82c55318a5d4d6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:unit:given.identities",
+    "audit:unit:given.storage_places",
+    "audit:unit:given.syntax",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines q directly and links the distinction from a routed place expression. Object-number examples instantiate the preceding identity definition. The q grammar has variable and object-field alternatives. Its x/α/f components are previously introduced name/identity categories.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "9f19b52a4123c1a01e04a372e52c7399ddbb51e53abf1abbfdf9f546c79529e5"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines q directly and links the distinction from a routed place expression. Object-number examples instantiate the preceding identity definition.",
+    "mathematics": "The q grammar has variable and object-field alternatives. Its x/α/f components are previously introduced name/identity categories.",
+    "links": [
+      {
+        "occurrence": "given.storage_places:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'place expression' refers to md/given.md#claim-given.syntax for the concept or example setup used by this unit. Defines q directly and links the distinction from a routed place expression. Object-number examples instantiate the preceding identity definition."
+      }
+    ]
+  }
+}

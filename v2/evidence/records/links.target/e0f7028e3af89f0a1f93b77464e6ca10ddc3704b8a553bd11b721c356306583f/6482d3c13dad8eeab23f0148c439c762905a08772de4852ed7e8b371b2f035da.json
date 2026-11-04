@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "7f1d7108e2471e517de0a2de912892e9ecaafa35253571062c3e9fda23a6b013",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e0f7028e3af89f0a1f93b77464e6ca10ddc3704b8a553bd11b721c356306583f",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces navigation summary of inherited Shared rules. Every behavior row links its defining Shared unit. New call syntax and absent later features are distinguished. No independent mathematics: the table is an inherited-definition summary, including whole constructor types and uniquely owned unpacking. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "navigation summary of inherited Shared rules",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 39219,
+      "end": 40628
+    },
+    "clarity": "The named landing directly introduces navigation summary of inherited Shared rules. Every behavior row links its defining Shared unit. New call syntax and absent later features are distinguished.",
+    "independence": "No independent mathematics: the table is an inherited-definition summary, including whole constructor types and uniquely owned unpacking. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

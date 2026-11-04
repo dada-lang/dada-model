@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "0b0ba3bf0fd294eead3736de1cea196eaec17e787509f0b9635b7dbb2fe72872",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.observations directly introduces known-initialized and known-empty path observations. The type and valid-descendant concepts link directly. The four bullets define positive/negative observations and explain the negative-slot boundary. pos and neg are introduced as the two observations of one view; epsilon, entries, and prefix relations are the view grammar components explained in the bullets. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "61ee7ec257108f4641898bd4fabe26bb917f46fffbe71480df263a93ef3ad368"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "known-initialized and known-empty path observations",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 6084,
+      "end": 6850
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.observations directly introduces known-initialized and known-empty path observations. The type and valid-descendant concepts link directly. The four bullets define positive/negative observations and explain the negative-slot boundary.",
+    "independence": "pos and neg are introduced as the two observations of one view; epsilon, entries, and prefix relations are the view grammar components explained in the bullets. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

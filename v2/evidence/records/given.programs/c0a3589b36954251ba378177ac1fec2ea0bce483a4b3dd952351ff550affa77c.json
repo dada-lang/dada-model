@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "5deec05c5ea4d97b2cbb9798f59bd0a8299dfe0352118ede6131abe6f232d3e5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.programs",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.programs against lean:Unique/Syntax:Classes, lean:Unique/Syntax:Program, lean:Unique/Soundness:ClassesWellFormed. Program pairs Classes with a List Statement. ClassesWellFormed requires both distinct class names and distinct ordered field names, matching the partial-map convention introduced in this unit. Empty code and empty field lists are admitted. Notation and judgment context was checked in unit:given.classes, unit:given.syntax.",
+  "limitations": [
+    "Author self-review, not an independent review. Proof correctness is checked separately by Lean; the correspondence review compares statements, definitions and example propositions.",
+    "Abstract syntax and mathematical GC are modeled; no parser or executable collector is certified. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "7b4ba6f2645e64f78b0cf91bc8b5415f30b5c66414bd20c9c06156eac01d2549",
+    "01f53488ef6e1d44e125f7023f7e34f8620367cbbcaecd92dec1b4ed15f0ed84"
+  ]
+}

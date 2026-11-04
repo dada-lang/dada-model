@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "d02177db731c83d4994685a869aae1ec3cc5a0999998ed98c383672cea145d95",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e7e0f8b9dd7a01deb04577dbf0ca6cde46937da80276da4055e44d628d562b56",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.emptying directly introduces shared.typing.emptying. Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. emptyPath maps Given.emptyPath while retaining ty.permission. The empty-path exclusion and positive-path side condition describe the domain, and normalization of the resulting nominal view is inherited from Given. No sharing conversion occurs in this operation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "94ae62daf63105bec1a9215bfc69c743eeb051c0dbb96dd97aa490af03f3c4ae"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.emptying",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 13506,
+      "end": 14136
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.emptying directly introduces shared.typing.emptying. Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. emptyPath maps Given.emptyPath while retaining ty.permission. The empty-path exclusion and positive-path side condition describe the domain, and normalization of the resulting nominal view is inherited from Given. No sharing conversion occurs in this operation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

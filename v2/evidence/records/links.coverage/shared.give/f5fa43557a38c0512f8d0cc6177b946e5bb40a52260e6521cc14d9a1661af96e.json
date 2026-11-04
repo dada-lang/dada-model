@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "aa7cbcb5943314b832f203ef5b1ef6fab0a4efa919e5d56dd880d44c48378b45",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:given.syntax",
+    "audit:unit:shared.give",
+    "audit:unit:shared.references",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the unchanged place concept and the preceding reference definition. Its table itself defines move/copy/final-slot conversion; it is not an implicit forward invocation of Resolve. The table is the definition of giving behavior at this level. It uses the preceding reference modes and linked place concept; it does not invoke the later Resolve judgment.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "57261a16ac7657cf94cfb38312244f073fbee227605a4db202db560dd30d4e1f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the unchanged place concept and the preceding reference definition. Its table itself defines move/copy/final-slot conversion; it is not an implicit forward invocation of Resolve.",
+    "mathematics": "The table is the definition of giving behavior at this level. It uses the preceding reference modes and linked place concept; it does not invoke the later Resolve judgment.",
+    "links": [
+      {
+        "occurrence": "shared.give:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'place expression' refers to md/given.md#claim-given.syntax for the concept or example setup used by this unit. Links the unchanged place concept and the preceding reference definition. Its table itself defines move/copy/final-slot conversion; it is not an implicit forward invocation of Resolve."
+      },
+      {
+        "occurrence": "shared.give:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reference' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links the unchanged place concept and the preceding reference definition. Its table itself defines move/copy/final-slot conversion; it is not an implicit forward invocation of Resolve."
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "bundle": "b772150685b2dde9c5a96c2743da6c262cf6979b299ecb4871bf88af11dd2e08",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:shared.evaluation",
+    "audit:unit:shared.finished",
+    "audit:unit:shared.gc",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.steps",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The sole subject is Let stepping. Links the machine and complete Eval premise; local V′ extension and freshness are explained beside the rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation. The Let premise links Eval directly. The resulting V′ extension and the absence check are local binding/freshness notation for this one transition. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "a9e1eb97131d50f6445d072e51b1d86d578ebb9f60cc8fc955d8844b679ff320"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The sole subject is Let stepping. Links the machine and complete Eval premise; local V′ extension and freshness are explained beside the rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation.",
+    "mathematics": "The Let premise links Eval directly. The resulting V′ extension and the absence check are local binding/freshness notation for this one transition. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place.",
+    "links": [
+      {
+        "occurrence": "shared.steps:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'frame' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. The sole subject is Let stepping. Links the machine and complete Eval premise; local V′ extension and freshness are explained beside the rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      },
+      {
+        "occurrence": "shared.steps:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression evaluation' refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. The sole subject is Let stepping. Links the machine and complete Eval premise; local V′ extension and freshness are explained beside the rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      },
+      {
+        "occurrence": "shared.steps:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash\\\\langle S,e\\\\rangle\\\\Downarrow\\\\langle S',r\\\\rangle\" refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. The sole subject is Let stepping. Links the machine and complete Eval premise; local V′ extension and freshness are explained beside the rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      },
+      {
+        "occurrence": "shared.steps:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. The sole subject is Let stepping. Links the machine and complete Eval premise; local V′ extension and freshness are explained beside the rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation."
+      }
+    ]
+  }
+}

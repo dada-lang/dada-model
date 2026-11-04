@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "0637c3c69a652f639dffb44a3c43b0c7b1f5c205fdacb2327a371b2de8497872",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c8ead969bed74ef79c463fa37a326d2236f51323ed159506774205ac0abfe848",
+    "audit:target:fb8728223f67267611c2c2583e138750a3de2c9dbffaf47cc6477356589bd987",
+    "audit:unit:given.example.empty_field",
+    "audit:unit:given.example.field",
+    "audit:unit:given.executions",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded. Δ and K_bad are introduced from the linked predecessor example. The starred arrow and Finished in the no-completion formula are linked.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "3ca88256137d39f8d09f60e2b499e59f426c1dc1fe6af4560adcfcfc72e4980d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded.",
+    "mathematics": "Δ and K_bad are introduced from the linked predecessor example. The starred arrow and Finished in the no-completion formula are linked.",
+    "links": [
+      {
+        "occurrence": "given.example.empty_field:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'given.example.field' refers to md/given.md#claim-given.example.field for the concept or example setup used by this unit. Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded."
+      },
+      {
+        "occurrence": "given.example.empty_field:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck' refers to md/given.md#claim-given.stuck for the concept or example setup used by this unit. Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded."
+      }
+    ]
+  }
+}

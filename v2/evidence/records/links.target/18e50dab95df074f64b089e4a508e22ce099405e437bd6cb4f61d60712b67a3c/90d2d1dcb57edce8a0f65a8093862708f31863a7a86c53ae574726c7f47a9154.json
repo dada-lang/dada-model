@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "7b51ae0d99aaf5a56e7f54497b7f462274ae46c9dd66d856d3cd3c843467100d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:18e50dab95df074f64b089e4a508e22ce099405e437bd6cb4f61d60712b67a3c",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces the public Shared-to-Functions embedding and step correspondence. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse. The translation is defined in prose here; no unintroduced relation or restriction to already-embedded endpoints weakens the claim. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "the public Shared-to-Functions embedding and step correspondence",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 27219,
+      "end": 28029
+    },
+    "clarity": "The named landing directly introduces the public Shared-to-Functions embedding and step correspondence. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse.",
+    "independence": "The translation is defined in prose here; no unintroduced relation or restriction to already-embedded endpoints weakens the claim. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

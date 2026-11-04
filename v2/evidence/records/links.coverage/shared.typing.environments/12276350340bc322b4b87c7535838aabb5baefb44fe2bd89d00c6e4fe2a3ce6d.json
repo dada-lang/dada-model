@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "570cd631825c839378d9134e34bd1c008f904f2d9d01c5be439d609ed8469595",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7a4e714d94614dfcf82ae12cf39b0fc48783107cffa0afff778a59a28df6719d",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:given.typing.environments",
+    "audit:unit:shared.typing.environments",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.types",
+    "audit:unit:shared.typing.well_formed_types",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SlotDescription is Option ValueType, distinguishing empty from absent lookup; Environment is a list with distinct variable keys. Environment.WellFormed requires Admissible (well-formed and normalized) inhabited descriptions. Replacement retains allocated variable keys, matching the freshness explanation.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "f054a58789feb7bb1f447dec71358723f85148b64edc2167a6a5acd5d3ff834c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SlotDescription is Option ValueType, distinguishing empty from absent lookup; Environment is a list with distinct variable keys. Environment.WellFormed requires Admissible (well-formed and normalized) inhabited descriptions. Replacement retains allocated variable keys, matching the freshness explanation.",
+    "links": [
+      {
+        "occurrence": "shared.typing.environments:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well formed' refers to md/shared-typing.md#claim-shared.typing.well_formed_types for the concept or example setup used by this unit. Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here."
+      },
+      {
+        "occurrence": "shared.typing.environments:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalized' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here."
+      }
+    ]
+  }
+}

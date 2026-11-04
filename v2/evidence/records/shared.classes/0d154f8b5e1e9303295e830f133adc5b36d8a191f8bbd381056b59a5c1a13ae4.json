@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "753a8e7d817c6ee78e9ace58087667c273374ad34c4ea9b820e52ff1e9c69023",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Shared/State:Kind.mode",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Reference.owned",
+    "lean:Shared/State:Reference.shared",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:ClassName",
+    "lean:Shared/Syntax:FieldName",
+    "lean:Shared/Syntax:Kind",
+    "lean:Shared/Syntax:ObjectId",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.classes",
+    "unit:shared.declarations",
+    "unit:shared.references"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "ClassName and FieldName are nominal String name categories; Class records kind and ordered field names. The prose distinguishes source field types from their erased operational representation, preserves zero-field declarations and ordered constructor arguments, and links kind to its preceding definition.",
+  "limitations": [
+    "Author self-review, not an independent review. Proof correctness is checked separately by Lean; the correspondence review compares statements, definitions and example propositions.",
+    "Abstract syntax and mathematical GC are modeled; no parser or executable collector is certified. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "c04aa53039c3c31f8f86828a2b003aa83fa1b0cd23f505b8f4343d465b3214d8"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "264218c7854d2a84de87de78898c0ecaae74e12e8cde8028e7ba6a0f529dc9c6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ea88350f35acf3dbe92ab2a6eee84184c0fb823f75907318dc522380864a6084",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "audit:unit:given.classes",
+    "audit:unit:given.identities",
+    "audit:unit:given.slots",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together. The s/o grammar defines empty/reference contents and object fields. α is connected to the identity definition and C to class names.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "333fef321d0bdf60b81397f1786f88420895e1f2587e042cf874eb75e9559345"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together.",
+    "mathematics": "The s/o grammar defines empty/reference contents and object fields. α is connected to the identity definition and C to class names.",
+    "links": [
+      {
+        "occurrence": "given.slots:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'object identity' refers to md/given.md#claim-given.identities for the concept or example setup used by this unit. Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together."
+      },
+      {
+        "occurrence": "given.slots:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class name' refers to md/given.md#claim-given.classes for the concept or example setup used by this unit. Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together."
+      }
+    ]
+  }
+}

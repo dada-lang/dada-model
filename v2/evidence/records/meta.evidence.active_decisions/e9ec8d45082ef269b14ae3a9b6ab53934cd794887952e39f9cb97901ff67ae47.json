@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "689e9f0293f995354c5390970b20e51e4ba6912e9f8a91c89ad7a4b27f155109",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/evidence.rs:record",
+    "test:mdbook-dada/tests/evidence_validation.rs:mismatch_and_inconclusive_reviews_never_count_as_correspondence",
+    "test:mdbook-dada/tests/evidence_validation.rs:recording_rechecks_sources_even_with_an_existing_inventory",
+    "test:mdbook-dada/tests/evidence_validation.rs:revised_review_can_supersede_same_unit_after_consulting_more_context",
+    "test:mdbook-dada/tests/evidence_validation.rs:stale_supersession_cannot_fall_back_to_an_independent_positive_review",
+    "unit:meta.evidence.active_decisions"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.evidence.active_decisions against rust:mdbook-dada/src/evidence.rs:record, rust:mdbook-dada/src/evidence.rs:check, test:mdbook-dada/tests/evidence_validation.rs:recording_rechecks_sources_even_with_an_existing_inventory, test:mdbook-dada/tests/evidence_validation.rs:mismatch_and_inconclusive_reviews_never_count_as_correspondence, test:mdbook-dada/tests/evidence_validation.rs:revised_review_can_supersede_same_unit_after_consulting_more_context, test:mdbook-dada/tests/evidence_validation.rs:stale_supersession_cannot_fall_back_to_an_independent_positive_review. record reloads Inventory and validates current sources, rejects future notes/drafts, and requires same-unit existing superseded records. check computes active records and fails on any stale active decision or active mismatch/inconclusive outcome. The cited tests exercise cached-inventory changes, negative decisions alongside positive ones, same-unit supersession with added context and stale replacement without fallback. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review. Implementation and test inspection does not establish universal correctness, browser appearance, CDN availability, or authenticated execution. Mechanical results are retained separately."
+  ],
+  "supersedes": [
+    "a3d99fa275459b0e70b6ef3292d0f29021fa0241e8b1350b928ed6a108de6038",
+    "c500322e5c9a5914f5a40d6ffb7cd14ec067e1c5b55ca35f803bc9300aec6424"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "0717c21dfb5a508ddfd2a65872e939f70b3ca044430f2221badfc48327aefda5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:486cb05457ebcad15bab1c76ab655c1f301c2a8be2a2eb137d9138cf04969718",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.well_formed_classes directly introduces Shared class-table well-formedness. Direct target for distinct class keys and distinct fields; links the operational table instead of hiding validity in storage or syntax. No separate formula is used: distinct class keys and distinct listed fields are the complete local definition. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "6203b933e115ddfcc239fbe463e3605ea07fe04b98e2b33ad7689148c4adf2fc"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared class-table well-formedness",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 7566,
+      "end": 7701
+    },
+    "clarity": "The landing md/shared.md#claim-shared.well_formed_classes directly introduces Shared class-table well-formedness. Direct target for distinct class keys and distinct fields; links the operational table instead of hiding validity in storage or syntax.",
+    "independence": "No separate formula is used: distinct class keys and distinct listed fields are the complete local definition. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

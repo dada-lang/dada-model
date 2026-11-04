@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "35613ec98a0e07f99d394f74c9e4be4ec28a3480e0cbbd04b895823df626bb2c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:theorem_source",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections",
+    "test:mdbook-dada/src/lean.rs:tests::selects_complete_named_theorems_without_comment_or_string_decoys",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_reject_wrong_kinds_and_malformed_directives",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_select_literal_qualified_names",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_show_the_exact_named_statement_and_proof",
+    "test:mdbook-dada/tests/book.rs:markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds",
+    "unit:meta.math.theorem.selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.theorem.selection against rust:mdbook-dada/src/lean.rs:select, rust:mdbook-dada/src/lean.rs:extract_declaration, rust:mdbook-dada/src/lean.rs:theorem_source, rust:mdbook-dada/src/lib.rs:chapter_roles, test:mdbook-dada/tests/book.rs:authored_theorems_show_the_exact_named_statement_and_proof, test:mdbook-dada/tests/book.rs:authored_theorems_select_literal_qualified_names, test:mdbook-dada/tests/book.rs:authored_theorems_reject_wrong_kinds_and_malformed_directives, test:mdbook-dada/tests/book.rs:markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds, test:mdbook-dada/src/lean.rs:tests::selects_complete_named_theorems_without_comment_or_string_decoys, test:mdbook-dada/src/lean.rs:tests::rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections. Theorem/lemma selection requires a named theorem with := body; the extractor rejects wrong kinds, duplicate/unsupported declarations and indented sibling commands. Rendering retains the exact selected statement/proof and forbids nested proof/definition/example blocks. Tests cover literal qualified names, comments/string decoys, complete proof output and every nested block-kind combination. Lean proof correctness remains a separate check. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review. Implementation and test inspection does not establish universal correctness, browser appearance, CDN availability, or authenticated execution. Mechanical results are retained separately."
+  ],
+  "supersedes": [
+    "98d1aaf4323edabe53157baf9f3cc46d43f972196532e80cff50d57fb6234ae2",
+    "49ed579dad1bf68736537d022ef076b375042cc3150c6a26b9b0b21e743abea7"
+  ]
+}

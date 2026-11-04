@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "7a52dc1214e426ae20e43aefc68258dade36da91c9b62bb97d6a131bbc4ab336",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4fbc8d894e68d4383b58ceae09ec533638f4d56e8e7e70e873de2949841887dd",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.execution directly introduces shared.typing.execution. The shared.typing.execution unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame. The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "c7cbe21f8d456f77eff42c3b3f11ecee08f069a3694435e95e995c0f496588d6"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.execution",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 25028,
+      "end": 25244
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.execution directly introduces shared.typing.execution. The shared.typing.execution unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame.",
+    "independence": "The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

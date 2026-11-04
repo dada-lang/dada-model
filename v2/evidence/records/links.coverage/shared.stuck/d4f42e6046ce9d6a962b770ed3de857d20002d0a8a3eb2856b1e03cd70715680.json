@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "bundle": "f82e4685ccf06d54d66302d4c87cd6abb41f809f815e41d49dd84cefd725f540",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "audit:target:8132c92fa5f747ccdf2fbc59a0936de31747623e06e98e9afada9d4d962dc8b4",
+    "audit:unit:shared.finished",
+    "audit:unit:shared.give",
+    "audit:unit:shared.steps",
+    "audit:unit:shared.stuck",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation. The equation links both Finished and Step. The prose counterexample refers back to giving rather than assuming static initialization typing.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "2b672a16285089407217fd7b0bc2985670e328af7fe3688ae3c06c6e84031833"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation.",
+    "mathematics": "The equation links both Finished and Step. The prose counterexample refers back to giving rather than assuming static initialization typing.",
+    "links": [
+      {
+        "occurrence": "shared.stuck:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation."
+      },
+      {
+        "occurrence": "shared.stuck:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{Finished}(K)' refers to md/shared.md#claim-shared.finished for the concept or example setup used by this unit. Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation."
+      },
+      {
+        "occurrence": "shared.stuck:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash K\\\\longrightarrow K'\" refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation."
+      },
+      {
+        "occurrence": "shared.stuck:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'giving' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation."
+      }
+    ]
+  }
+}

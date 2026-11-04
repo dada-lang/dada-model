@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "17d54403fa295d3a495ebfc370d0c42126b01540bc6aeb4a4d48ee235b0f58d5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:88a0c68272e833cbda1fa2978a4dd8727681d82a2bef9b7df637febb6f999b8f",
+    "audit:unit:given.classes",
+    "audit:unit:given.example.token",
+    "audit:unit:given.machine",
+    "audit:unit:given.programs",
+    "audit:unit:given.steps",
+    "audit:unit:given.syntax",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The complete Token program is local; empty storage, step, and Finished each link backwards. The example does not refer to later liveness theorems. The source program is local and uses previously introduced syntax. No additional equation or external predicate is assumed beyond the linked step/finished concepts.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "1f4a4b2d8249efce6b0dc5f7904bb1cf8ff9f9103249c318bc5b9c0f5bce7c8c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The complete Token program is local; empty storage, step, and Finished each link backwards. The example does not refer to later liveness theorems.",
+    "mathematics": "The source program is local and uses previously introduced syntax. No additional equation or external predicate is assumed beyond the linked step/finished concepts.",
+    "links": [
+      {
+        "occurrence": "given.example.token:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty storage' refers to md/given.md#claim-given.empty_state for the concept or example setup used by this unit. The complete Token program is local; empty storage, step, and Finished each link backwards. The example does not refer to later liveness theorems."
+      },
+      {
+        "occurrence": "given.example.token:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. The complete Token program is local; empty storage, step, and Finished each link backwards. The example does not refer to later liveness theorems."
+      }
+    ]
+  }
+}

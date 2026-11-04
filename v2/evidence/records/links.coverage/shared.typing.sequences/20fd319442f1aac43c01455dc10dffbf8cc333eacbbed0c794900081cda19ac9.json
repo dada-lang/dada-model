@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "c81f87ed22fb5836ac5699ec5eb5cb898696ad9dfda09527bbcf032f3b476c66",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:58f17a684fc230b323ae8c0c0a29e40b2208af121a7764998e534a69fd23250c",
+    "audit:unit:shared.typing.sequences",
+    "audit:unit:shared.typing.statements",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links head-statement typing in prose/math; empty/cons rules define sequence typing recursively. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SequenceTyped.nil retains a well-formed environment and cons threads StatementTyped into the tail. The two rules use the same intermediate and final environments, preserving the earlier environment convention.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "cc49385f0102904cb0f9851b7e7f0fb84829a89d2c37228a8c4d8ddad828904d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links head-statement typing in prose/math; empty/cons rules define sequence typing recursively.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SequenceTyped.nil retains a well-formed environment and cons threads StatementTyped into the tail. The two rules use the same intermediate and final environments, preserving the earlier environment convention.",
+    "links": [
+      {
+        "occurrence": "shared.typing.sequences:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"statement's\" refers to md/shared-typing.md#claim-shared.typing.statements for the concept or example setup used by this unit. Links head-statement typing in prose/math; empty/cons rules define sequence typing recursively."
+      },
+      {
+        "occurrence": "shared.typing.sequences:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma\\\\vdash t\\\\Rightarrow\\\\Gamma_1' refers to md/shared-typing.md#claim-shared.typing.statements for the concept or example setup used by this unit. Links head-statement typing in prose/math; empty/cons rules define sequence typing recursively."
+      }
+    ]
+  }
+}

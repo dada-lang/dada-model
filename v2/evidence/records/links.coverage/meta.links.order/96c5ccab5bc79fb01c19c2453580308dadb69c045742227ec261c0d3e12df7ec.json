@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "242224016f3cb298362c55ca93e1c8917e9138547fd8da13349399b49a823795",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a3fa21c5aa94e56b5c016eb821fbbcb248b4ac5a8136ebf7c4bb75e96c18874f",
+    "audit:target:e2a8996e1d48de8e7921a6bfb09f14a9fa9f213b2d19363568752083dc6c81c7",
+    "audit:target:ff0a789b2ecb06589ed5db3dd8a9f86c491709eb81a4abe737f911eff4c6d6d0",
+    "audit:unit:meta.links.order",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "All three reused audit concepts link their earlier definitions: inventory, coverage and target passage. Necessity, signposting and minimal use are each explained in this unit, including examples/cycles not being automatic exemptions. No object-language formula appears. Reading order is explicitly tied to the reviewed passage rather than an implicit mathematical relation.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "4ce977196a05aa7fe6c39b29eafdd2e05c1664be9b34ab44830038c59166218f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "All three reused audit concepts link their earlier definitions: inventory, coverage and target passage. Necessity, signposting and minimal use are each explained in this unit, including examples/cycles not being automatic exemptions.",
+    "mathematics": "No object-language formula appears. Reading order is explicitly tied to the reviewed passage rather than an implicit mathematical relation.",
+    "links": [
+      {
+        "occurrence": "meta.links.order:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'link inventory' refers to md/repo/link-audits.md#claim-meta.links.inventory for the concept or example setup used by this unit. All three reused audit concepts link their earlier definitions: inventory, coverage and target passage. Necessity, signposting and minimal use are each explained in this unit, including examples/cycles not being automatic exemptions."
+      },
+      {
+        "occurrence": "meta.links.order:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'coverage classification' refers to md/repo/link-audits.md#claim-meta.links.coverage for the concept or example setup used by this unit. All three reused audit concepts link their earlier definitions: inventory, coverage and target passage. Necessity, signposting and minimal use are each explained in this unit, including examples/cycles not being automatic exemptions."
+      },
+      {
+        "occurrence": "meta.links.order:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reviewed defining passage' refers to md/repo/link-audits.md#claim-meta.links.targets for the concept or example setup used by this unit. All three reused audit concepts link their earlier definitions: inventory, coverage and target passage. Necessity, signposting and minimal use are each explained in this unit, including examples/cycles not being automatic exemptions."
+      }
+    ]
+  }
+}

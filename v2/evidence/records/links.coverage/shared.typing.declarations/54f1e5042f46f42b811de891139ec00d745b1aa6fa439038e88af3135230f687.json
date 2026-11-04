@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "e031ba3e10b4de06bc78e25849c58ff20b3584ff0512beb49be14be938b39b9b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:shared.declarations",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.types",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The shared.typing.declarations unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types. The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "5c6c368bd3098ab09a69bbb9aef2b053d6748c1c33df9be33161108fc65390fa"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The shared.typing.declarations unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types.",
+    "mathematics": "The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions.",
+    "links": [
+      {
+        "occurrence": "shared.typing.declarations:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declaration kind' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. The shared.typing.declarations unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.declarations:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'permission' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. The shared.typing.declarations unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.declarations:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalized' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. The shared.typing.declarations unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      }
+    ]
+  }
+}

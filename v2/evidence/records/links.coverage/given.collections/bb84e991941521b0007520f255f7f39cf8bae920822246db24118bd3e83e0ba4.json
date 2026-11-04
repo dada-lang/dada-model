@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "37075d6c7d5b19b2a4ae483c199e8b49b42eafc6ca2c025bd2605d35d556cf3c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.collections",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Finite-map and finite-list notation now has its own direct unit before programs. A and B are explicitly the domain/codomain; the named FiniteMap structure supplies finite entries with distinct keys. The two inline constructors A↛B and List(A) are the defined notation. A and B are locally identified domains rather than unlinked operations.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "912c40fcb33d5b2d6b56adb5c9d8f7a64d31272b1ca24ff44f77d39a813386cb"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Finite-map and finite-list notation now has its own direct unit before programs. A and B are explicitly the domain/codomain; the named FiniteMap structure supplies finite entries with distinct keys.",
+    "mathematics": "The two inline constructors A↛B and List(A) are the defined notation. A and B are locally identified domains rather than unlinked operations.",
+    "links": []
+  }
+}

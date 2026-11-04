@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "3f97800fe22ecd825e355aa6bd25904f3fa5fab5a2faac7f7b5669e988137bb5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.steps directly introduces shared.typing.steps. Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Step evaluates the expression then applies Bind. Variable binding accepts either reference mode at a fresh variable; unpack requires an owned reference, declared class/field shape, exhaustive Transfer and fresh distinct destinations, then removes the container. Transfer preserves empty slots and reference values, matching the prose. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "8fc1a2e0677138c813c8642aace5a421618efbc76a8f725ff8ab29e21dc1c417"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.steps",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 23667,
+      "end": 24900
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.steps directly introduces shared.typing.steps. Links configuration, pattern syntax, Shared expression evaluation and allocation. Describes unique-only consumption and transfer without hiding any new typing predicate. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Step evaluates the expression then applies Bind. Variable binding accepts either reference mode at a fresh variable; unpack requires an owned reference, declared class/field shape, exhaustive Transfer and fresh distinct destinations, then removes the container. Transfer preserves empty slots and reference values, matching the prose. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

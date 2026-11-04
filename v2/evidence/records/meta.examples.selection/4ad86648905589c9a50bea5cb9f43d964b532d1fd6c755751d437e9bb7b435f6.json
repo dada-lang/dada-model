@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "f1837df1ccef5909decfc5fe03334f54e58cb3fc1b6c4570fb5fe07eb7f38825",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:example_source",
+    "rust:mdbook-dada/src/lean.rs:extract_example",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "test:mdbook-dada/src/lean.rs:tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_end_markers_that_cut_off_a_proof_continuation",
+    "test:mdbook-dada/src/lean.rs:tests::requires_one_complete_anonymous_example",
+    "test:mdbook-dada/tests/book.rs:linked_example_bodies_index_anchors_and_scope_nested_selectors",
+    "test:mdbook-dada/tests/book.rs:linked_examples_fail_on_invalid_citations_bodies_or_nesting",
+    "test:mdbook-dada/tests/book.rs:linked_examples_preserve_native_markdown_and_select_one_lean_test",
+    "unit:meta.examples.selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.examples.selection against rust:mdbook-dada/src/lean.rs:extract_example, rust:mdbook-dada/src/lean.rs:example_source, rust:mdbook-dada/src/lib.rs:render, rust:mdbook-dada/src/lib.rs:chapter_roles, test:mdbook-dada/tests/book.rs:linked_examples_preserve_native_markdown_and_select_one_lean_test, test:mdbook-dada/tests/book.rs:linked_example_bodies_index_anchors_and_scope_nested_selectors, test:mdbook-dada/tests/book.rs:linked_examples_fail_on_invalid_citations_bodies_or_nesting, test:mdbook-dada/src/lean.rs:tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments, test:mdbook-dada/src/lean.rs:tests::requires_one_complete_anonymous_example, test:mdbook-dada/src/lean.rs:tests::rejects_end_markers_that_cut_off_a_proof_continuation. extract_example recognizes standalone comment markers, enforces one complete column-zero anonymous example with a body, excludes nested/sibling commands and rejects end markers before an indented continuation. Rendering retains Markdown and scoped nested diagrams. Tests cover decoy markers, malformed ranges, citation/nesting failures and body markup; they do not execute the selected Lean test. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review. Implementation and test inspection does not establish universal correctness, browser appearance, CDN availability, or authenticated execution. Mechanical results are retained separately."
+  ],
+  "supersedes": [
+    "bb14e9fc904f149e04d90a3682b2875ad122adfc393767825495e5ed8818ab48",
+    "b81f000a01066e68be46a7881d007dd97a74f57dc6834b8f2a2593edf4301b38"
+  ]
+}

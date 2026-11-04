@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "0c7f7d7f36c87c99ad8d07c7a0465a3e4c5fb74fc36e649899ea161a9472b488",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.judgment.selection",
+    "audit:unit:meta.sources.exact_selection",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Judgment and rule citation semantics are the defining subjects, each given a direct introductory sentence and separate rule anchor. Their limits, including lack of Prop-result checking, are stated locally. The only form Judgment.constructor is literal citation notation defined here; no unstated mathematical judgment is used.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "8d6b05a5ac85a3f46475e8aca1f483418eac3f8a62f88f5be486874dffc79387"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Judgment and rule citation semantics are the defining subjects, each given a direct introductory sentence and separate rule anchor. Their limits, including lack of Prop-result checking, are stated locally.",
+    "mathematics": "The only form Judgment.constructor is literal citation notation defined here; no unstated mathematical judgment is used.",
+    "links": []
+  }
+}

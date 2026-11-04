@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "e10cdb42b0640440c9095e196daa377c950aaa43e37836d7c722b86eb8cbcd45",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:79283484adee6a2142c00e38e1f1accde4d861bb79aa4ecbf735a13e187ee7c9",
+    "audit:target:985201bc93a5266f348c3a476dcf079ac55befb8aeed7289dd70aee7694c722c",
+    "audit:unit:shared.typing.programs",
+    "audit:unit:shared.typing.sequences",
+    "audit:unit:shared.typing.well_formed_classes",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The shared.typing.programs unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame. The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "bb537cd1c052ba1909434eedc2650cfde53b8afb47a6387b4f8753b5f880cc55"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The shared.typing.programs unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame.",
+    "mathematics": "The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+    "links": [
+      {
+        "occurrence": "shared.typing.programs:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed typed class table' refers to md/shared-typing.md#claim-shared.typing.well_formed_classes for the concept or example setup used by this unit. The shared.typing.programs unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "shared.typing.programs:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'typechecks' refers to md/shared-typing.md#claim-shared.typing.sequences for the concept or example setup used by this unit. The shared.typing.programs unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "shared.typing.programs:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\varnothing\\\\vdash P\\\\Rightarrow\\\\Gamma_f' refers to md/shared-typing.md#claim-shared.typing.sequences for the concept or example setup used by this unit. The shared.typing.programs unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      }
+    ]
+  }
+}

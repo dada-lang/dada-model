@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "b498ba78d3837f1754a1a2800ffa1e07e0336cabee83b0e5bdb93a84084340f1",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2f4fae6642af15eee453aa7a85b451f092126af505d334ad49884a5cd4d2688a",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.machine_finished",
+    "audit:unit:functions.stuck",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links configuration, finishedness and successor. The definition is exactly not-finished/no-successor; no new mathematical notation is imported.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links configuration, finishedness and successor.",
+    "mathematics": "The definition is exactly not-finished/no-successor; no new mathematical notation is imported.",
+    "links": [
+      {
+        "occurrence": "functions.stuck:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links configuration, finishedness and successor."
+      },
+      {
+        "occurrence": "functions.stuck:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/functions.md#claim-functions.machine_finished for the concept or example setup used by this unit. Links configuration, finishedness and successor."
+      },
+      {
+        "occurrence": "functions.stuck:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'successor' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links configuration, finishedness and successor."
+      }
+    ]
+  }
+}

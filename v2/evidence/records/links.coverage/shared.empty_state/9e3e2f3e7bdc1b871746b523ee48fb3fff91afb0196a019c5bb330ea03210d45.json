@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "a8af0345c146f9d396c2c87cd315ec13fee8df094feed55de0d99a72eb03aef1",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:shared.empty_state",
+    "audit:unit:shared.state",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Empty storage has its own formula, with no variables, no objects and zero counter. Initial-state and empty-storage links land directly here. The empty-state tuple and empty-map notation are explicitly defined here, independently of later machine initialization.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b24cc55944c41461f470ab7e6bfda0706496c63a759f90b0a9da4d14b9f2ec7e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Empty storage has its own formula, with no variables, no objects and zero counter. Initial-state and empty-storage links land directly here.",
+    "mathematics": "The empty-state tuple and empty-map notation are explicitly defined here, independently of later machine initialization.",
+    "links": []
+  }
+}

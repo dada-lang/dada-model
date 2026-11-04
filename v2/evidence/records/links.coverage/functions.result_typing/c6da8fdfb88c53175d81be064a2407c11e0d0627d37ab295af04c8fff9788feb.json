@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "f2af0b7967b0c5ca337236ca42c55fdf54b5d5892b4b56cd6fd428eebd3ed047",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:unit:functions.environments",
+    "audit:unit:functions.result_typing",
+    "audit:unit:shared.typing.expressions",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links environment WF and Shared expression typing. Defines no-result and present-result checking. Both rules have exactly those linked premises; optional expression/result syntax comes from calls, and the return judgment is defined here.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links environment WF and Shared expression typing. Defines no-result and present-result checking.",
+    "mathematics": "Both rules have exactly those linked premises; optional expression/result syntax comes from calls, and the return judgment is defined here.",
+    "links": [
+      {
+        "occurrence": "functions.result_typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'environment condition' refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links environment WF and Shared expression typing. Defines no-result and present-result checking."
+      },
+      {
+        "occurrence": "functions.result_typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"expression judgment in the second rule is Shared's\" refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links environment WF and Shared expression typing. Defines no-result and present-result checking."
+      }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "9b3230ee9febd8638d9c419fb9bb06ab2246e0677b2c5963615625b25fc44548",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:unit:given.typing.views",
+    "audit:unit:shared.typing.types",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines π, N and raw T together, with a direct link to signed views. Bare C uses the previously established whole-view convention. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm has exactly given/shared; RawType distinguishes a nominal view from recursive permission application. Nominal aliases Given's ViewType and ValueType.whole uses its epsilon-positive whole shorthand. The prose does not ascribe a mode to objects.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b1168d6aa6d9d865d7a6dcee6376f424577663fb46c9364c47e535d12ce228af"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines π, N and raw T together, with a direct link to signed views. Bare C uses the previously established whole-view convention.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm has exactly given/shared; RawType distinguishes a nominal view from recursive permission application. Nominal aliases Given's ViewType and ValueType.whole uses its epsilon-positive whole shorthand. The prose does not ascribe a mode to objects.",
+    "links": [
+      {
+        "occurrence": "shared.typing.types:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'signed view' refers to md/given-typing.md#claim-given.typing.views for the concept or example setup used by this unit. Defines π, N and raw T together, with a direct link to signed views. Bare C uses the previously established whole-view convention."
+      }
+    ]
+  }
+}

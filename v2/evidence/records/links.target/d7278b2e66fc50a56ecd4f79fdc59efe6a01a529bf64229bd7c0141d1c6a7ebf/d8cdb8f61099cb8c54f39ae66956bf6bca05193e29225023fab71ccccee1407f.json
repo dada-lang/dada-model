@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "1ededb009c00488e9768b8cce1321885daa135bb3d7e9b9ab648eece0309a3ce",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d7278b2e66fc50a56ecd4f79fdc59efe6a01a529bf64229bd7c0141d1c6a7ebf",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.nesting directly introduces Semantic block nesting restriction. The selected theorem shape, complete proof display and citation exclusions are introduced here. Source-check versus proof-check responsibilities are explicit; nesting has its own precise anchor. No theorem of the language is assumed. Terms assumptions, quantifiers and conclusion describe what correspondence reviews inspect, not an unlinked object-level equation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "9f15fba45fc6f4992c30ecb9659fb2a0c1c697fee489148e3cfdd991ffd50a88"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Semantic block nesting restriction",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 13943,
+      "end": 14066
+    },
+    "clarity": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.nesting directly introduces Semantic block nesting restriction. The selected theorem shape, complete proof display and citation exclusions are introduced here. Source-check versus proof-check responsibilities are explicit; nesting has its own precise anchor.",
+    "independence": "No theorem of the language is assumed. Terms assumptions, quantifiers and conclusion describe what correspondence reviews inspect, not an unlinked object-level equation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

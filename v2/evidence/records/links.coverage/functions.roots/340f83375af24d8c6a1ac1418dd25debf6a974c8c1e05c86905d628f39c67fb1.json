@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "24429c811790992d8a9ea8a622d7070cd13260bce388ea6882ac6ca2aa85d541",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.roots",
+    "audit:unit:shared.live",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links all live frames and Shared reachability. Explains concatenation for membership, not name-based lookup. No formula beyond helper names; occurrence identity across frames is explicitly retained.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links all live frames and Shared reachability. Explains concatenation for membership, not name-based lookup.",
+    "mathematics": "No formula beyond helper names; occurrence identity across frames is explicitly retained.",
+    "links": [
+      {
+        "occurrence": "functions.roots:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'frames' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links all live frames and Shared reachability. Explains concatenation for membership, not name-based lookup."
+      },
+      {
+        "occurrence": "functions.roots:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reachability relation' refers to md/shared.md#claim-shared.live for the concept or example setup used by this unit. Links all live frames and Shared reachability. Explains concatenation for membership, not name-based lookup."
+      }
+    ]
+  }
+}

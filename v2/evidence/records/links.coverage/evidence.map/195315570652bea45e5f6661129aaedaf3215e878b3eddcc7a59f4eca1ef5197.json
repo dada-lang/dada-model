@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "36bfd64606fd168079718652ad8a5b331cabf265618c0b814f3f960e926c92b6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:evidence.map",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit introduces finite maps directly, with the key uniqueness condition and a separate empty-map anchor; it does not invoke another language operation. M, K, T and entry components k,v are introduced in the same sentences; the map arrow and empty-map symbol are defining occurrences.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "196e5aaaec19b1bb33aa5d59ab5b27b330de23eb438a704390af14a98ab244eb"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit introduces finite maps directly, with the key uniqueness condition and a separate empty-map anchor; it does not invoke another language operation.",
+    "mathematics": "M, K, T and entry components k,v are introduced in the same sentences; the map arrow and empty-map symbol are defining occurrences.",
+    "links": []
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "df37c5f2c5bddeeec5bc24bd02efc1498f941eb88e47d7a7a21468b1f3192f94",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:unit:given.lookup",
+    "audit:unit:given.state",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.read",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly. read is introduced here; alpha and rho are the input object/path, bot is the existing empty-slot notation. No unlinked auxiliary equation is used.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b1888c070100e5e49fe091afebbc16a72fef01f9ad2a2600bca23f94e9cad208"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly.",
+    "mathematics": "read is introduced here; alpha and rho are the input object/path, bot is the existing empty-slot notation. No unlinked auxiliary equation is used.",
+    "links": [
+      {
+        "occurrence": "given.typing.read:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative path' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly."
+      }
+    ]
+  }
+}

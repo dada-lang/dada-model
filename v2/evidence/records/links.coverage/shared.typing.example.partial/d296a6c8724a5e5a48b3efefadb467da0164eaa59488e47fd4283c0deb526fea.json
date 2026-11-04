@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "43a65a9a89aac919d2016c0c926a6ff883dee2e487bdd193b23919b8c2f04526",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e0e30b85b0197fab44a8ae02cdee7f7f84182b2175ddfdff24c007254c4a47e",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:shared.typing.example.partial",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.weakening",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Give-share and weakening, with its classes local. The concrete sequence retains known-empty left and accessible right information. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. sharing_partial_views establishes the five-step execution, partialPair.shared description, empty p, two shared right-field results, retained empty left slot, and rejection of a subsequent left give. The prose preserves the hole and does not infer it can be recovered by weakening.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "d9d001f2a8fe099e04ea3655e45b964497ce0353b86429176839ef7101d0e92f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Give-share and weakening, with its classes local. The concrete sequence retains known-empty left and accessible right information.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. sharing_partial_views establishes the five-step execution, partialPair.shared description, empty p, two shared right-field results, retained empty left slot, and rejection of a subsequent left give. The prose preserves the hole and does not infer it can be recovered by weakening.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.partial:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Give-share' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links Give-share and weakening, with its classes local. The concrete sequence retains known-empty left and accessible right information."
+      },
+      {
+        "occurrence": "shared.typing.example.partial:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Weakening' refers to md/shared-typing.md#claim-shared.typing.weakening for the concept or example setup used by this unit. Links Give-share and weakening, with its classes local. The concrete sequence retains known-empty left and accessible right information."
+      }
+    ]
+  }
+}

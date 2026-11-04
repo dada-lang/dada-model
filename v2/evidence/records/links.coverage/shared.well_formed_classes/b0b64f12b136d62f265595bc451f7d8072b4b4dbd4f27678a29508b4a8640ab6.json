@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "6cd8b9bdeb8bb23263c57293baee1cbb61e528267143e17e224197bb6aea7603",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f0800758e25ea7ee9fd903ee7d59491b9696d69585d50197192201ce0604d301",
+    "audit:unit:shared.programs",
+    "audit:unit:shared.well_formed_classes",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Direct target for distinct class keys and distinct fields; links the operational table instead of hiding validity in storage or syntax. No separate formula is used: distinct class keys and distinct listed fields are the complete local definition.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "5f0025795468c212f77ba69028ff9da8ca2bde42d03bb4e6f16953960117eca3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Direct target for distinct class keys and distinct fields; links the operational table instead of hiding validity in storage or syntax.",
+    "mathematics": "No separate formula is used: distinct class keys and distinct listed fields are the complete local definition.",
+    "links": [
+      {
+        "occurrence": "shared.well_formed_classes:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class table' refers to md/shared.md#claim-shared.programs for the concept or example setup used by this unit. Direct target for distinct class keys and distinct fields; links the operational table instead of hiding validity in storage or syntax."
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "3c0d2e72adc859ef13a3c14466a56252f874ee9a6eef117bf3feb72f05655d0d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:eeeaf9fbda37ca8ff670f396e78c8668da960396eb7978c2ccea392e172cde77",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces proposed body consumption checks. Links destructor declarations, finished environments, Functions signatures and droppability. The appendix is a summary navigation link; the actual obligations have direct links. self: given C is the locally scoped receiver type. No current theorem is asserted; the new completion condition is explicitly proposed. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "proposed body consumption checks",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 9215,
+      "end": 10337
+    },
+    "clarity": "The named landing directly introduces proposed body consumption checks. Links destructor declarations, finished environments, Functions signatures and droppability. The appendix is a summary navigation link; the actual obligations have direct links.",
+    "independence": "self: given C is the locally scoped receiver type. No current theorem is asserted; the new completion condition is explicitly proposed. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

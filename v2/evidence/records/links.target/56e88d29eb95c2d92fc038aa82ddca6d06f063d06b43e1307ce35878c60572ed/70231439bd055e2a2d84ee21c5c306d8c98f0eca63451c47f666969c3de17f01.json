@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "536eb1cb5d1567bcb03cb0a5231c41af39184fca65da5ee8fe636a2c9cd66ded",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:56e88d29eb95c2d92fc038aa82ddca6d06f063d06b43e1307ce35878c60572ed",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.live directly introduces Given liveness through owning edges. The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference. Each lookup premise links its definition. Live recursion defines this judgment rather than referring to another result. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b2fbb1162e3aa9ca77f54687bf66e76e0de9eb2aa560546bb104112cdcadfce5"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given liveness through owning edges",
+    "definition": {
+      "path": "md/given.md",
+      "start": 20075,
+      "end": 20599
+    },
+    "clarity": "The landing md/given.md#claim-given.live directly introduces Given liveness through owning edges. The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference.",
+    "independence": "Each lookup premise links its definition. Live recursion defines this judgment rather than referring to another result. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

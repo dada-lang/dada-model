@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "dc832b6b5071f23f1980d4262f37976909c0d0875eb0c9e520e9dda031ee19c5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.declarations directly introduces typed class declarations and the typed class table Sigma. The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language. The d/Sigma grammar introduces its metavariables and domains locally. Field and class names are syntax categories, and the ordered pair/list/map notation carries no additional language judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "62ce067f39a64f4cac80d50af46b49fd766439cd6461cb2577533935f657c7c3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "typed class declarations and the typed class table Sigma",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 213,
+      "end": 1051
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.declarations directly introduces typed class declarations and the typed class table Sigma. The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language.",
+    "independence": "The d/Sigma grammar introduces its metavariables and domains locally. Field and class names are syntax categories, and the ordered pair/list/map notation carries no additional language judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

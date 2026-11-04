@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "7b3371208391d75371c3ba72079ad94e5c825e4154d60a44cfe94cefe7f9fcef",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:33809897369fd4607384d07eadc60386712478a8b6088571abb3604e50110c5c",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:unit:functions.calls",
+    "audit:unit:functions.machine",
+    "audit:unit:shared.state",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links remaining bodies and Shared evaluation storage. Defines frames, their order, common heap/counter and initialization locally. phi, V, B, d, K, H, n and M are introduced before their tuple equations; running is explained without invoking later step rules.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links remaining bodies and Shared evaluation storage. Defines frames, their order, common heap/counter and initialization locally.",
+    "mathematics": "phi, V, B, d, K, H, n and M are introduced before their tuple equations; running is explained without invoking later step rules.",
+    "links": [
+      {
+        "occurrence": "functions.machine:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'remainingbody' refers to md/functions.md#claim-functions.calls for the concept or example setup used by this unit. Links remaining bodies and Shared evaluation storage. Defines frames, their order, common heap/counter and initialization locally."
+      },
+      {
+        "occurrence": "functions.machine:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Shared's state\" refers to md/shared.md#claim-shared.state for the concept or example setup used by this unit. Links remaining bodies and Shared evaluation storage. Defines frames, their order, common heap/counter and initialization locally."
+      }
+    ]
+  }
+}

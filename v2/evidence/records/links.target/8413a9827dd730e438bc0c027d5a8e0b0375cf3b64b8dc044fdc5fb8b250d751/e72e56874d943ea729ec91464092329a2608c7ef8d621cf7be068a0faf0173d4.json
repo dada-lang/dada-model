@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "06cbf286de749d74a6099eefb15d764f85ff276ef7b846810a55d9fbbd7009a8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8413a9827dd730e438bc0c027d5a8e0b0375cf3b64b8dc044fdc5fb8b250d751",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.focus directly introduces focusing a nominal view at an initialized relative place. Relative place and example declarations link directly; the complete case analysis defines focusing in this unit. Every reused mathematical operator has a direct href: pos, normalization, class-at, and base. The downarrow operation and concrete result equation are defining/example uses. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "a88e9c17f4fc9d1c398c18cf8cec544a2812ffc4cc66329b6350c24fccac1734"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "focusing a nominal view at an initialized relative place",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 11763,
+      "end": 12946
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.focus directly introduces focusing a nominal view at an initialized relative place. Relative place and example declarations link directly; the complete case analysis defines focusing in this unit.",
+    "independence": "Every reused mathematical operator has a direct href: pos, normalization, class-at, and base. The downarrow operation and concrete result equation are defining/example uses. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

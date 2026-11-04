@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "bundle": "4dc276e870515dd7309fa7863711426258197f7775d1186e2562ea9d190e68e5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.classes against lean:Unique/Syntax:ClassName, lean:Unique/Syntax:FieldName, lean:Unique/Syntax:Class. ClassName and FieldName are String abbreviations and Class retains an ordered List FieldName. Distinct fields are a well-formed-table convention established in given.programs, rather than a claim that the raw Class constructor enforces it. Empty lists give the zero-field case. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review. Proof correctness is checked separately by Lean; the correspondence review compares statements, definitions and example propositions.",
+    "Abstract syntax and mathematical GC are modeled; no parser or executable collector is certified. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "0dc030fff0a74ac9a60bdae9cf26fe39329d8ccfa2b781c2c9c38fb5a9267032",
+    "9ef9087431b7106f06e5031cfc94613f95857d6009a73babe7d646ccd369e854"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "46ae809a9599085c5d2a0a943dc52e9820a37a5e652a7285656603dbabe7c4e9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:d117653630a0c005c713ca2ab7601fe8b51be1b2003b16c196ec6dff075471ce",
+    "audit:unit:shared.example.declarations",
+    "audit:unit:shared.example.immediately_shared",
+    "audit:unit:shared.give",
+    "audit:unit:shared.steps",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links shared-struct construction and the existing declarations; distinguishes result mode from stored field mode. Concrete source names come from the linked setup; the example invokes no independent permission algebra.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links shared-struct construction and the existing declarations; distinguishes result mode from stored field mode.",
+    "mathematics": "Concrete source names come from the linked setup; the example invokes no independent permission algebra.",
+    "links": [
+      {
+        "occurrence": "shared.example.immediately_shared:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declarations above' refers to md/shared.md#claim-shared.example.declarations for the concept or example setup used by this unit. Links shared-struct construction and the existing declarations; distinguishes result mode from stored field mode."
+      },
+      {
+        "occurrence": "shared.example.immediately_shared:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'shared reference immediately' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links shared-struct construction and the existing declarations; distinguishes result mode from stored field mode."
+      },
+      {
+        "occurrence": "shared.example.immediately_shared:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'promotes' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links shared-struct construction and the existing declarations; distinguishes result mode from stored field mode."
+      }
+    ]
+  }
+}

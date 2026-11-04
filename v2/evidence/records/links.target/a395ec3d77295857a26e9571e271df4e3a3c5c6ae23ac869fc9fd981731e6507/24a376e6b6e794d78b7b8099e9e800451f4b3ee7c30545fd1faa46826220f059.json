@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "eecdaa48c0b11856cd8bb7b9a928073b5893c7e3a16aa80ba527ad1de8262298",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a395ec3d77295857a26e9571e271df4e3a3c5c6ae23ac869fc9fd981731e6507",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.state directly introduces Given storage and its component tables/counter. Defines only the storage tuple, table domains and allocation counter. The finite-map convention links to given.collections; empty storage has been extracted into its own definition. S/O/V/ν are locally introduced storage components. The displayed map domains use the prior identity/slot categories; the finite-map convention has its own direct link. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "d779a867ae7d3f2cc376c8e85510b338571810d8ee8324b3845fe63902d11991"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given storage and its component tables/counter",
+    "definition": {
+      "path": "md/given.md",
+      "start": 4688,
+      "end": 5256
+    },
+    "clarity": "The landing md/given.md#claim-given.state directly introduces Given storage and its component tables/counter. Defines only the storage tuple, table domains and allocation counter. The finite-map convention links to given.collections; empty storage has been extracted into its own definition.",
+    "independence": "S/O/V/ν are locally introduced storage components. The displayed map domains use the prior identity/slot categories; the finite-map convention has its own direct link. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

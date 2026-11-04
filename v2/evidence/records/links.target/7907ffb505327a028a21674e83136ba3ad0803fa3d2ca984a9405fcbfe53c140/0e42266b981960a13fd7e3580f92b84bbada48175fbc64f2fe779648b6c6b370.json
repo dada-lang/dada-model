@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "18117f3eb913003086afdbe389ca00f9a633b718a7f147354e1a604d9e042c4c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.live directly introduces Shared liveness through owning edges. The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition. Both occupied-slot premises link lookup and κ is grounded by the reference link. Recursive Live defines the relation independent of mode. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "ab1dd57badd6253ed7d6677f0eca3803855d7f4b69571fd4aaa235b691f52d35"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared liveness through owning edges",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 25488,
+      "end": 25916
+    },
+    "clarity": "The landing md/shared.md#claim-shared.live directly introduces Shared liveness through owning edges. The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition.",
+    "independence": "Both occupied-slot premises link lookup and κ is grounded by the reference link. Recursive Live defines the relation independent of mode. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

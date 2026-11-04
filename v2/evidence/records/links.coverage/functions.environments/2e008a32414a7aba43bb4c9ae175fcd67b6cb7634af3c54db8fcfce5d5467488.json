@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "e845fa7485567d46a5a49dae4043a7fd419ae14e19dca86b7b401598aada69c1",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "audit:unit:functions.environments",
+    "audit:unit:functions.signatures",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.environments",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Shared environments and Functions signatures. Introduces WF, env, params and result projections in one short signature-environment explanation. Each operator is defined here; Gamma maps local slots and sigma is a signature from the linked grammar. No later return judgment is required.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Shared environments and Functions signatures. Introduces WF, env, params and result projections in one short signature-environment explanation.",
+    "mathematics": "Each operator is defined here; Gamma maps local slots and sigma is a signature from the linked grammar. No later return judgment is required.",
+    "links": [
+      {
+        "occurrence": "functions.environments:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'environment' refers to md/shared-typing.md#claim-shared.typing.environments for the concept or example setup used by this unit. Links Shared environments and Functions signatures. Introduces WF, env, params and result projections in one short signature-environment explanation."
+      },
+      {
+        "occurrence": "functions.environments:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"signature's parameter environment\" refers to md/functions.md#claim-functions.signatures for the concept or example setup used by this unit. Links Shared environments and Functions signatures. Introduces WF, env, params and result projections in one short signature-environment explanation."
+      }
+    ]
+  }
+}

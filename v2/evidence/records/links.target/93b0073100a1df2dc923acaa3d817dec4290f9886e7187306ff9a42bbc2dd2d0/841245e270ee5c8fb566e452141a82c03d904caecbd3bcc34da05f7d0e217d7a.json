@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "55684966d45420b5a427108d7554f6d2becafd24473d4555abf768b2b02583ea",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.base directly introduces the base-class projection from a nominal view. This is the defining occurrence of base itself; C.A denotes the locally destructured class/view pair, with no separate external prose predicate invoked. The sole equation projects C from C.A and introduces base. C and A are the components of its argument rather than operations needing self-links. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b6e304b089701d3503642c737288375308902dff1014c9c8311b17463fa3d0fc"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the base-class projection from a nominal view",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 4042,
+      "end": 4095
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.base directly introduces the base-class projection from a nominal view. This is the defining occurrence of base itself; C.A denotes the locally destructured class/view pair, with no separate external prose predicate invoked.",
+    "independence": "The sole equation projects C from C.A and introduces base. C and A are the components of its argument rather than operations needing self-links. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "4e0e59f29d0a08affc3a3a7ac09592caa1e877d8be81e8983b85e18c58608f82",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c06f361df57d349bc9196f76826fc1003e0906e16dcf0c94d3361d5b9113bc8a",
+    "audit:unit:meta.evidence.active_decisions",
+    "context:link-chapter:md/repo/authoring.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit states recording freshness and active/superseded decision behavior directly. The exception for Future notes links their defining section. Mismatch, inconclusive and stale outcomes are distinguished in the contract itself. No formal equations or mathematical notation are used; the described operations are the locally introduced review lifecycle.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b92ede73bc2278fabc6e293766ae84cd5c6d98484d3967a2d5e628283038713d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit states recording freshness and active/superseded decision behavior directly. The exception for Future notes links their defining section. Mismatch, inconclusive and stale outcomes are distinguished in the contract itself.",
+    "mathematics": "No formal equations or mathematical notation are used; the described operations are the locally introduced review lifecycle.",
+    "links": [
+      {
+        "occurrence": "meta.evidence.active_decisions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Future notes' refers to md/repo/authoring.md#future-notes for the concept or example setup used by this unit. The unit states recording freshness and active/superseded decision behavior directly. The exception for Future notes links their defining section. Mismatch, inconclusive and stale outcomes are distinguished in the contract itself."
+      }
+    ]
+  }
+}

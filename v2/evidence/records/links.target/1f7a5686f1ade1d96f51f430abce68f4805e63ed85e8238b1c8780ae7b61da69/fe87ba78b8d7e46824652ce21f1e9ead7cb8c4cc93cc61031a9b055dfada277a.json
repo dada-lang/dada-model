@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "2025d7d3e8d320d6638d0717d521657a107bdeb2904699addd273d1e98bdbfe6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1f7a5686f1ade1d96f51f430abce68f4805e63ed85e8238b1c8780ae7b61da69",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.anchors.roles directly introduces Legacy defining and reference roles. The unit defines identity syntax, namespace, defining roles, reference roles, shields and literal contexts in individually marked passages. No language-level permission or heap concept is needed. No mathematical block or reused equation occurs; all backtick text is authoring syntax. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "ebc42f58a96b7af96533441e3da6ca9b5e6cce34949c5966b5c58593f9019e7a"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Legacy defining and reference roles",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 993,
+      "end": 1259
+    },
+    "clarity": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.anchors.roles directly introduces Legacy defining and reference roles. The unit defines identity syntax, namespace, defining roles, reference roles, shields and literal contexts in individually marked passages. No language-level permission or heap concept is needed.",
+    "independence": "No mathematical block or reused equation occurs; all backtick text is authoring syntax. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

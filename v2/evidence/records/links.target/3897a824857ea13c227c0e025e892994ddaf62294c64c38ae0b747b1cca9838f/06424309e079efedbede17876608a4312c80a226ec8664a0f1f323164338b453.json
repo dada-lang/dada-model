@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "2980b1a469e05b4d7b6f8f1977a7cfb5fcc34d861d5afb4a438bd599a90ec70b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.example.views directly introduces the Token/Pair/Box declarations and their view examples. The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses. The table contains literal view notation, not an unlinked equation or inference judgment. Full versus partial is explained before the table and formally linked. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b813ade5c0989e1f10aa690afb3c3d802aacd15212dfbe77a3d5617d8e5c132b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the Token/Pair/Box declarations and their view examples",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 4927,
+      "end": 5901
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.example.views directly introduces the Token/Pair/Box declarations and their view examples. The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses.",
+    "independence": "The table contains literal view notation, not an unlinked equation or inference judgment. Full versus partial is explained before the table and formally linked. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

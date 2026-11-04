@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "9fe97a0afb846a0801fd0d2c169b6e0950216358a3725b3328e6b5c9addcb34a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "audit:unit:given.identities",
+    "audit:unit:shared.references",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Introduces reference mode and pair representation before give uses them. Tagged object identities link back to their standalone Given definition; no object-level ownership flag is implied. κ/r/s are defined by their local grammar. ObjectId and obj(n) use the tagged-number convention linked to Given, not a mode attached to the object record.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "e20df8840dd52701ed4cb4efcb17fd12db1eb3ff1369a11e3dde1c05da29b6e0"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Introduces reference mode and pair representation before give uses them. Tagged object identities link back to their standalone Given definition; no object-level ownership flag is implied.",
+    "mathematics": "κ/r/s are defined by their local grammar. ObjectId and obj(n) use the tagged-number convention linked to Given, not a mode attached to the object record.",
+    "links": [
+      {
+        "occurrence": "shared.references:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'tagged natural numbers' refers to md/given.md#claim-given.identities for the concept or example setup used by this unit. Introduces reference mode and pair representation before give uses them. Tagged object identities link back to their standalone Given definition; no object-level ownership flag is implied."
+      }
+    ]
+  }
+}

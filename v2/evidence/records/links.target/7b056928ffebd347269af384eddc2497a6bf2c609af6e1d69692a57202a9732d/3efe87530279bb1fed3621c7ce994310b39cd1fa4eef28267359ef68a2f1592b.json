@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "76928d92dc8bba8667766487a77dbf5423fd92305ba2a2abf4944760afe4e980",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.steps directly introduces Shared statement stepping. The sole subject is Let stepping. Links the machine and complete Eval premise; local V′ extension and freshness are explained beside the rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation. The Let premise links Eval directly. The resulting V′ extension and the absence check are local binding/freshness notation for this one transition. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "6e02c8cae4717d5fe8d06e8e4dade6a6e991223c99e3abcb7f27c571417b6404"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared statement stepping",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 18407,
+      "end": 20207
+    },
+    "clarity": "The landing md/shared.md#claim-shared.steps directly introduces Shared statement stepping. The sole subject is Let stepping. Links the machine and complete Eval premise; local V′ extension and freshness are explained beside the rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation.",
+    "independence": "The Let premise links Eval directly. The resulting V′ extension and the absence check are local binding/freshness notation for this one transition. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "21b7699c7e504f212edbe4635981a3a9178b5eb357f72506e4f354c58efa3872",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:dbbdd07e0a2707183096cf819219485180c2fe4f0c682ce83ffe0a5ff7577a8f",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces stuckness of the unpacking-capable Shared machine. Links the extended configuration, finishedness and extended steps; defines only stuckness, with completion separately targeted. The not-finished/no-successor clauses define the predicate directly. The exhausted-live-frame example uses the exit rule already linked. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "511438ee1e733f72d3cd8baf6b55e23c66f07b46d7d9ab48432fe94050e69e71"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "stuckness of the unpacking-capable Shared machine",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 25746,
+      "end": 26002
+    },
+    "clarity": "The named landing directly introduces stuckness of the unpacking-capable Shared machine. Links the extended configuration, finishedness and extended steps; defines only stuckness, with completion separately targeted.",
+    "independence": "The not-finished/no-successor clauses define the predicate directly. The exhausted-live-frame example uses the exit rule already linked. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "813480fbc031030b4eae95f6ab828fe6712f48fceb1ac802d8a179b39e6f3beb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7a4e714d94614dfcf82ae12cf39b0fc48783107cffa0afff778a59a28df6719d",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:unit:functions.signatures",
+    "audit:unit:shared.struct",
+    "audit:unit:shared.typing.types",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions. a,f,m,C,Q,T,P,R,sigma have domains in the adjacent grammar/explanation. No default or generic permission is silently imported.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions.",
+    "mathematics": "a,f,m,C,Q,T,P,R,sigma have domains in the adjacent grammar/explanation. No default or generic permission is silently imported.",
+    "links": [
+      {
+        "occurrence": "functions.signatures:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'whole nominal type' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions."
+      },
+      {
+        "occurrence": "functions.signatures:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'admissible parameterand result types' refers to md/shared-typing.md#claim-shared.typing.well_formed_types for the concept or example setup used by this unit. Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions."
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "18340172b76a6d2a3f8ff5553b041ceea25a913aec099b2cdb30c8332ea1e5df",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.views",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This is the defining occurrence of base itself; C.A denotes the locally destructured class/view pair, with no separate external prose predicate invoked. The sole equation projects C from C.A and introduces base. C and A are the components of its argument rather than operations needing self-links.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "3f989179a77845fbcf31b903c64a6fdb7040a3e3049321a4ae46cd6f426d6c8b"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This is the defining occurrence of base itself; C.A denotes the locally destructured class/view pair, with no separate external prose predicate invoked.",
+    "mathematics": "The sole equation projects C from C.A and introduces base. C and A are the components of its argument rather than operations needing self-links.",
+    "links": []
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "4e16f871407b1494d94e33e9429a5a082315340ec88c7afe8858d56275f47f90",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b50fba7e62f9aaf161a6e1aaec2b60ca9f8ca33678e15facd8c24af1d87648a9",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:shared.path_exclusivity",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.well_formed",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The formula links WF and both Resolve occurrences; it states the all-unique/shared-route exclusion rather than inventing a new path judgment. WF and each unique/shared Resolve occurrence have definition links. The formula quantifies over both paths to the same α.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "dbdfd42aac4f5f1355bc9c8beca682f2b57467b64bd8c6c44f27d35b613040a9"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The formula links WF and both Resolve occurrences; it states the all-unique/shared-route exclusion rather than inventing a new path judgment.",
+    "mathematics": "WF and each unique/shared Resolve occurrence have definition links. The formula quantifies over both paths to the same α.",
+    "links": [
+      {
+        "occurrence": "shared.path_exclusivity:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed state' refers to md/shared.md#claim-shared.well_formed for the concept or example setup used by this unit. The formula links WF and both Resolve occurrences; it states the all-unique/shared-route exclusion rather than inventing a new path judgment."
+      },
+      {
+        "occurrence": "shared.path_exclusivity:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S\\\\vdash p\\\\Downarrow q:\\\\alpha@\\\\mathsf{unique}' refers to md/shared.md#claim-shared.resolution for the concept or example setup used by this unit. The formula links WF and both Resolve occurrences; it states the all-unique/shared-route exclusion rather than inventing a new path judgment."
+      },
+      {
+        "occurrence": "shared.path_exclusivity:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"S\\\\vdash p'\\\\Downarrow q':\\\\alpha@\\\\mathsf{shared}\" refers to md/shared.md#claim-shared.resolution for the concept or example setup used by this unit. The formula links WF and both Resolve occurrences; it states the all-unique/shared-route exclusion rather than inventing a new path judgment."
+      }
+    ]
+  }
+}

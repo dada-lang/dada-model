@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "ea7c74a31bc6f3b3746b9b2ae4c897120d57425757f8ba3c7c3962eee786ff68",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d7a4e8940ecceee98134469b8995cce9e8285a49108151e7d7cfbb7f6afb5aa0",
+    "audit:unit:evidence.map",
+    "audit:unit:evidence.map.value_unique",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The lemma links the finite-map definition, then states all membership premises and its equality conclusion explicitly. M, k, v and w are introduced with their domains in the sentence; equality and pair membership are ordinary mathematical notation, and map structure comes through the definition link.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "2adcfdf752d1c58cefe78a91ae749daf5f8dfc371d72cb9d44f8b93298577971"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The lemma links the finite-map definition, then states all membership premises and its equality conclusion explicitly.",
+    "mathematics": "M, k, v and w are introduced with their domains in the sentence; equality and pair membership are ordinary mathematical notation, and map structure comes through the definition link.",
+    "links": [
+      {
+        "occurrence": "evidence.map.value_unique:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'evidence.map' refers to md/repo/evidence-pilot.md#claim-evidence.map for the concept or example setup used by this unit. The lemma links the finite-map definition, then states all membership premises and its equality conclusion explicitly."
+      }
+    ]
+  }
+}

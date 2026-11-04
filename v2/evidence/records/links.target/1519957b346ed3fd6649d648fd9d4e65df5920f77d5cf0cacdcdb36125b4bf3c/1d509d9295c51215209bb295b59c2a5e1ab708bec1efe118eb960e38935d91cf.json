@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "de65fc7758d5da8195ed15665b94c32c315b12a94fce596795f22bc73eb15443",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces callable names and signatures. Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions. a,f,m,C,Q,T,P,R,sigma have domains in the adjacent grammar/explanation. No default or generic permission is silently imported. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "callable names and signatures",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 5152,
+      "end": 6633
+    },
+    "clarity": "The named landing directly introduces callable names and signatures. Links whole nominal types and admissible signature types. Introduces callable names, parameter/result shapes and receiver conventions.",
+    "independence": "a,f,m,C,Q,T,P,R,sigma have domains in the adjacent grammar/explanation. No default or generic permission is silently imported. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

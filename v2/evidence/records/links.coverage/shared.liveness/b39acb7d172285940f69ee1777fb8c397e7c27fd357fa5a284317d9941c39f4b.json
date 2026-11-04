@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "293a8d2e6634be5b065531afa08751926e0899bf4cccf77cdf3e05ab1418c6ed",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:01136db71db4cfa667c6e3740ce6232362099005c519039ee87981eda09ab977",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:shared.liveness",
+    "audit:unit:shared.well_formed",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "WF, Live and Allocated each link to their standalone definitions in the equivalence. WF, Live and Allocated are individually linked in the equivalence formula.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "f07c4e9c5648f93c95964f0131c9750f63759b7038a2211dc1f60a16194ceb4e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "WF, Live and Allocated each link to their standalone definitions in the equivalence.",
+    "mathematics": "WF, Live and Allocated are individually linked in the equivalence formula.",
+    "links": [
+      {
+        "occurrence": "shared.liveness:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed state' refers to md/shared.md#claim-shared.well_formed for the concept or example setup used by this unit. WF, Live and Allocated each link to their standalone definitions in the equivalence."
+      },
+      {
+        "occurrence": "shared.liveness:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{Live}_S(\\\\alpha)' refers to md/shared.md#claim-shared.live for the concept or example setup used by this unit. WF, Live and Allocated each link to their standalone definitions in the equivalence."
+      },
+      {
+        "occurrence": "shared.liveness:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{Allocated}_S(\\\\alpha)' refers to md/shared.md#claim-shared.allocated for the concept or example setup used by this unit. WF, Live and Allocated each link to their standalone definitions in the equivalence."
+      }
+    ]
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "bundle": "384e742ee9d68bfa320ae126e990ad42ed8f0fa98ba7f2962696da4a58efae29",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:034fca959e031c3624784f688113964c8c0e08ff896e1f66ce03e89144fbd75d",
+    "audit:target:7182ffe25a84f5fbb71fc4b99d76d34d5086f0b0437229df2fdd4106cd7c96b7",
+    "audit:target:837551691616f7856e5628608f269668034d86818f25ff4e307500ffcff69cb3",
+    "audit:target:9706361cb1416b8b1c72f68388e43e6c094bdc6596edd42a0dfa82b82f58194d",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.expressions",
+    "audit:unit:given.typing.forgetting",
+    "audit:unit:given.typing.take",
+    "context:link-chapter:md/dada/future-extensions.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule. Give links static take, Construct links Sigma(C), and Weaken links the subtype relation. The expression-typing judgments in conclusions and recursive premises are defined in this unit.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "5b699f1e129da85dcac8fe025df2d81d35a42b6a6e8ef3a358e6816eedde602f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule.",
+    "mathematics": "Give links static take, Construct links Sigma(C), and Weaken links the subtype relation. The expression-typing judgments in conclusions and recursive premises are defined in this unit.",
+    "links": [
+      {
+        "occurrence": "given.typing.expressions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'environment' refers to md/given-typing.md#claim-given.typing.environments for the concept or example setup used by this unit. Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule."
+      },
+      {
+        "occurrence": "given.typing.expressions:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{take}' refers to md/given-typing.md#claim-given.typing.take for the concept or example setup used by this unit. Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule."
+      },
+      {
+        "occurrence": "given.typing.expressions:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma(C)' refers to md/given-typing.md#claim-given.typing.declarations for the concept or example setup used by this unit. Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule."
+      },
+      {
+        "occurrence": "given.typing.expressions:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'less information' refers to md/given-typing.md#claim-given.typing.forgetting for the concept or example setup used by this unit. Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule."
+      },
+      {
+        "occurrence": "given.typing.expressions:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\preceq' refers to md/given-typing.md#claim-given.typing.forgetting for the concept or example setup used by this unit. Environment and view weakening link directly. The constructor restriction is stated completely; Future extensions is a proposal-navigation link and is unnecessary to understand the current rule."
+      },
+      {
+        "occurrence": "given.typing.expressions:6",
+        "role": "navigation",
+        "rationale": "Optional future-design navigation: the current whole-argument constructor restriction is fully stated before this link; proposed generic views are not needed to apply it."
+      }
+    ]
+  }
+}

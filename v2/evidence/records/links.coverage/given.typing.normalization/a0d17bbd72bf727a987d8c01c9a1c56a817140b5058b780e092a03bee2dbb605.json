@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "b96b070b24e16ad196865ef02c0f8e8d15d82b0c3fbfb906dc367c4b91466fa4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.example.normalization",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.observations",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here. The rewrite is a defining rule for normalization, with A, rho, and the complete nonempty field list specified in adjacent prose. N is introduced here and requires no self-link.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "669f8547e9c4c5dc6820d50082aa136ceccca0f99d40523ccef66454dbdd3a67"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here.",
+    "mathematics": "The rewrite is a defining rule for normalization, with A, rho, and the complete nonempty field list specified in adjacent prose. N is introduced here and requires no self-link.",
+    "links": [
+      {
+        "occurrence": "given.typing.normalization:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class at' refers to md/given-typing.md#claim-given.typing.class_at for the concept or example setup used by this unit. The class-at prerequisite links directly. The recursive collapse algorithm, finite-path termination intuition, and empty-class exception are all stated here."
+      }
+    ]
+  }
+}

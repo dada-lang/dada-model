@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "8dd200566318776bb94be94e7ee5caee7d19c7f6ca5b8f0b5d4e47140b3c88d7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/graph.rs:args",
+    "rust:mdbook-dada/src/graph.rs:identifier",
+    "rust:mdbook-dada/src/graph.rs:label",
+    "rust:mdbook-dada/src/graph.rs:parse",
+    "test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices",
+    "test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds",
+    "test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved",
+    "test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges",
+    "unit:meta.syntax.heap.nodes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.heap.nodes against rust:mdbook-dada/src/graph.rs:identifier, rust:mdbook-dada/src/graph.rs:args, rust:mdbook-dada/src/graph.rs:label, rust:mdbook-dada/src/graph.rs:parse, test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds, test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices, test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target, test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved, test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges. parse records nodes before resolving assignments, permits the listed object/primitive/array/variable constructors and distinguishes owner, showned, lease and shared-lease edges. args preserves quoted commas and label uses JSON escapes. Tests cover Unicode fields, forward references, aliases, one variable group, empty array slots and label escaping; the unit explicitly treats this as diagram syntax rather than language semantics. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review. Implementation and test inspection does not establish universal correctness, browser appearance, CDN availability, or authenticated execution. Mechanical results are retained separately."
+  ],
+  "supersedes": [
+    "263befe3954d1aeb689a9efc7720d8e3f0ecf4e0106cd1f77be9fb158c306293",
+    "d70c461eced470b13d116691747d029f4e2ce3484a6428d71d21605dfbff33e7"
+  ]
+}

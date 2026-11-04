@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "2a10801efac8cc9522826809ce5d87e9c9404f36eb01f184dad53d9e38adfdae",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.struct directly introduces The predicate  struct(T)  means that the nominal type underlying  T  is [declared](#claim-shared.declarations) as either  struct  or  shared struct . It does no. Links nominal declaration kinds and signed views. Defines struct(T) independently of permission/view, then states the field and kind restrictions. struct(T) is the defining predicate; the empty/hidden-field cases are explained explicitly rather than importing another judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "The predicate  struct(T)  means that the nominal type underlying  T  is [declared](#claim-shared.declarations) as either  struct  or  shared struct . It does no",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 3027,
+      "end": 3935
+    },
+    "clarity": "The landing md/shared.md#claim-shared.struct directly introduces The predicate  struct(T)  means that the nominal type underlying  T  is [declared](#claim-shared.declarations) as either  struct  or  shared struct . It does no. Links nominal declaration kinds and signed views. Defines struct(T) independently of permission/view, then states the field and kind restrictions.",
+    "independence": "struct(T) is the defining predicate; the empty/hidden-field cases are explained explicitly rather than importing another judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

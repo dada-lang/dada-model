@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "509c0f97bc67174c00a6c91e3fba38230830a47bc16e608f0aabfd81b382fe79",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:83be7fbcf36059917cb21e26e5a9bdcd7b053305236cec331e30f20d2fee917b",
+    "audit:target:bcbf7b2e6e35008f601cfc25ccf052cb44486c1ce12214fa55a4362b1030db7a",
+    "audit:unit:meta.math.source_view",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Header identity and Draft status each link the exact earlier subject. The present unit introduces source-view selectors, defaults, ownership of nested controls and leading-anchor placement. No mathematical judgment is assumed; Lean/Rust/Facts labels are the interface choices being defined.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "93e4ec4067459f470e1a61a8a266d70daca81e6be376c17764894cbdf3fc3365"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Header identity and Draft status each link the exact earlier subject. The present unit introduces source-view selectors, defaults, ownership of nested controls and leading-anchor placement.",
+    "mathematics": "No mathematical judgment is assumed; Lean/Rust/Facts labels are the interface choices being defined.",
+    "links": [
+      {
+        "occurrence": "meta.math.source_view:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'identity' refers to md/repo/renderer-contracts.md#claim-meta.syntax.anchors.identity for the concept or example setup used by this unit. Header identity and Draft status each link the exact earlier subject. The present unit introduces source-view selectors, defaults, ownership of nested controls and leading-anchor placement."
+      },
+      {
+        "occurrence": "meta.math.source_view:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Draft status' refers to md/repo/renderer-contracts.md#claim-meta.syntax.draft for the concept or example setup used by this unit. Header identity and Draft status each link the exact earlier subject. The present unit introduces source-view selectors, defaults, ownership of nested controls and leading-anchor placement."
+      }
+    ]
+  }
+}

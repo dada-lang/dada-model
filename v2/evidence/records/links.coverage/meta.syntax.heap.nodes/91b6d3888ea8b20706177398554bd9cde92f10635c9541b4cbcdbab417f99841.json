@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "a2ecc5d56d430219c90d8f626f40de7731001bb78f7db92fbec5e3e15f6ec45e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.syntax.heap.nodes",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The diagram vocabulary is introduced here: graph facts, nodes and slots each have clear named passages. Aliases, initial empty slots and the boundary from language semantics are stated locally. No language formula is used. α or edge-style examples elsewhere are diagram identifiers, while this unit defines the available fact constructors.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "9d6590455e91f6b7388e95cd94edab3dcbaddf8326742eed7067f41697363236"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The diagram vocabulary is introduced here: graph facts, nodes and slots each have clear named passages. Aliases, initial empty slots and the boundary from language semantics are stated locally.",
+    "mathematics": "No language formula is used. α or edge-style examples elsewhere are diagram identifiers, while this unit defines the available fact constructors.",
+    "links": []
+  }
+}

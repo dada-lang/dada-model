@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "4dd8b0dff7a3b21bad6aa89c80ae32bf58909b804231692642b2f0521e541dea",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d117653630a0c005c713ca2ab7601fe8b51be1b2003b16c196ec6dff075471ce",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.example.declarations directly introduces These declarations distinguish the [three forms](#claim-shared.declarations) without requiring primitive types:. Links kinds and the struct-field restriction. All accepted and rejected nominal declarations are local. No mathematical judgment is reused without a link; the empty-view observation restates that the restriction is nominal. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "These declarations distinguish the [three forms](#claim-shared.declarations) without requiring primitive types:",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 4065,
+      "end": 4793
+    },
+    "clarity": "The landing md/shared.md#claim-shared.example.declarations directly introduces These declarations distinguish the [three forms](#claim-shared.declarations) without requiring primitive types:. Links kinds and the struct-field restriction. All accepted and rejected nominal declarations are local.",
+    "independence": "No mathematical judgment is reused without a link; the empty-view observation restates that the restriction is nominal. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

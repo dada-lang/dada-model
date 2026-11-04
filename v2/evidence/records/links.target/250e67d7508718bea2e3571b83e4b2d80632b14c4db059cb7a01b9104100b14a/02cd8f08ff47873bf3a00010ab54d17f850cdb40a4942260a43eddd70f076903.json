@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "cb95ff74c4267feb357d17bce63bdc9c1c128e5ce137d3ddfbfb2525ada2f875",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:250e67d7508718bea2e3571b83e4b2d80632b14c4db059cb7a01b9104100b14a",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.field directly introduces shared.typing.field. Links pattern context, pos/neg and focus; defines the one direct-field-description operator. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. fieldDescription returns an existing empty description when the single-field path is negative, otherwise maps successful focus to an inhabited description. The cases distinguish unknown from empty, and shared focusing preserves the effective permission. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "383aad276e60ba1a19dc14ec8a0d661d4f7461e0342cda4e692b3489246cedcb"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.field",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 26187,
+      "end": 26676
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.field directly introduces shared.typing.field. Links pattern context, pos/neg and focus; defines the one direct-field-description operator.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. fieldDescription returns an existing empty description when the single-field path is negative, otherwise maps successful focus to an inhabited description. The cases distinguish unknown from empty, and shared focusing preserves the effective permission. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

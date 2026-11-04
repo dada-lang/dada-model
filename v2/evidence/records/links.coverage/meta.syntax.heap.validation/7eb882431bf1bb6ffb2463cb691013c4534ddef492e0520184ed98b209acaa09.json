@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "d29cab6c9216e35d52d3c0ab5797b862cfe5aaeeeb0c50b7b358488deeb8e726",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:594ea809f0d04ba629b1de28589abf9e58c62a74c0f0c2c381cc09175e201d33",
+    "audit:target:b20705f3e353f94b364e5cbddd1eb281eec7a3997129b64ea696b10fd0a0febf",
+    "audit:unit:meta.syntax.heap.nodes",
+    "audit:unit:meta.syntax.heap.validation",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Node declarations and slot assignments now link separate precise passages. Validation conditions and allowed cyclic/conflicting graphs are stated directly, so readers are not asked to infer language ownership invariants. The α.f, vars.p and items[0] fragments illustrate the slot syntax supplied by the links; there is no mathematical inference relation.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "d8da8b898645346db75a5a6f4fb958e9f03037d0d5f7f23c9c4c3fc0b5826efc"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Node declarations and slot assignments now link separate precise passages. Validation conditions and allowed cyclic/conflicting graphs are stated directly, so readers are not asked to infer language ownership invariants.",
+    "mathematics": "The α.f, vars.p and items[0] fragments illustrate the slot syntax supplied by the links; there is no mathematical inference relation.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.heap.validation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'node' refers to md/repo/renderer-contracts.md#claim-meta.syntax.heap.constructors for the concept or example setup used by this unit. Node declarations and slot assignments now link separate precise passages. Validation conditions and allowed cyclic/conflicting graphs are stated directly, so readers are not asked to infer language ownership invariants."
+      },
+      {
+        "occurrence": "meta.syntax.heap.validation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'explicitly assigned slot' refers to md/repo/renderer-contracts.md#claim-meta.syntax.heap.slots for the concept or example setup used by this unit. Node declarations and slot assignments now link separate precise passages. Validation conditions and allowed cyclic/conflicting graphs are stated directly, so readers are not asked to infer language ownership invariants."
+      }
+    ]
+  }
+}

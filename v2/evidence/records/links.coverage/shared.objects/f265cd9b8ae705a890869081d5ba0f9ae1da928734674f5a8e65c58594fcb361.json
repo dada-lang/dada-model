@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "2df635999622b723aeba31b69fb7d481a2bdb0b4828db9965999a84b163bcc7a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:df2da7caa3d89bc04ce4d503cad0e61b7f1272ee7dabab94f8f5a29def49bc73",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:shared.classes",
+    "audit:unit:shared.objects",
+    "audit:unit:shared.references",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Object data now has its own o grammar, with direct class and slot-contents links. Storage no longer starts with a different data-type definition. o and its field-slot form are locally defined; the linked class/slot definitions supply C and s.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "d178e17807a2230fe6f5cc9c42f9e902dd2e35557069127486f6d1c0316e98d1"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Object data now has its own o grammar, with direct class and slot-contents links. Storage no longer starts with a different data-type definition.",
+    "mathematics": "o and its field-slot form are locally defined; the linked class/slot definitions supply C and s.",
+    "links": [
+      {
+        "occurrence": "shared.objects:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class name' refers to md/shared.md#claim-shared.classes for the concept or example setup used by this unit. Object data now has its own o grammar, with direct class and slot-contents links. Storage no longer starts with a different data-type definition."
+      },
+      {
+        "occurrence": "shared.objects:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'contents' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Object data now has its own o grammar, with direct class and slot-contents links. Storage no longer starts with a different data-type definition."
+      }
+    ]
+  }
+}

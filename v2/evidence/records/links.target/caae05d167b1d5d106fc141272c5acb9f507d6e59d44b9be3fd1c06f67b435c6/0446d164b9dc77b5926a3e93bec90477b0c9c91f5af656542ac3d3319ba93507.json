@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "a0291cb14fd0abdcc6741c878de3e9c2214db83f2a8d1abf23580012e88164ca",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.environments directly introduces shared.typing.environments. Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SlotDescription is Option ValueType, distinguishing empty from absent lookup; Environment is a list with distinct variable keys. Environment.WellFormed requires Admissible (well-formed and normalized) inhabited descriptions. Replacement retains allocated variable keys, matching the freshness explanation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "4b30ddc4812241422c23af216304489458bb130e1f5e333e257af37ec6c1e26f"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.environments",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 14496,
+      "end": 14917
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.environments directly introduces shared.typing.environments. Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SlotDescription is Option ValueType, distinguishing empty from absent lookup; Environment is a list with distinct variable keys. Environment.WellFormed requires Admissible (well-formed and normalized) inhabited descriptions. Replacement retains allocated variable keys, matching the freshness explanation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

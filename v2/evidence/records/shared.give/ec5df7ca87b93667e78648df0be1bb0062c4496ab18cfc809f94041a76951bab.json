@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "3ffbd858af6b5aef9211199016f45c689f322e23ca6b15b434e8b46f02b9f12d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Reference.owned",
+    "lean:Shared/State:Reference.shared",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:ObjectId",
+    "lean:Shared/Syntax:Place",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.give",
+    "unit:shared.references"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Resolve carries the effective access mode of a place. Take empties a uniquely owned selected slot. Promote replaces just a unique final stored reference by a shared one. Give.move requires unique route access; Give.copy uses an already-shared final reference without mutation; Give.promote handles a unique final reference reached through shared access. All three preserve the object identity. These are precisely the behavior table and its source-slot effects; reference modes are introduced by the preceding linked unit.",
+  "limitations": [
+    "Author self-review, not an independent review. Proof correctness is checked separately by Lean; the correspondence review compares statements, definitions and example propositions.",
+    "Abstract syntax and mathematical GC are modeled; no parser or executable collector is certified. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "4afed4556ac590db68dd727f954479b03a3117618af56c020af7665cb07605ad",
+    "909768e68a42cab63aa1e23a2a9fd24f19c3a3e6ea0a52607cd76dda590c195e"
+  ]
+}

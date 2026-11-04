@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "64ffc6bd9c99f26575f71fc5cac6c44385887c9d6613cb3d7cb863e192f785c2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:9cc9154e3592cdc44cca3510ac58cfa325b84ffa766de384bb8a62113e702254",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.gc directly introduces Reachability  starts at an initialized slot of the [live frame](#claim-shared.machine) and follows [initialized object fields](#claim-shared.objects). Write \\\\(. Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop. S_K, D and the filtered heap are scoped in the text; gc retains the counter/frame and surviving object data. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Reachability  starts at an initialized slot of the [live frame](#claim-shared.machine) and follows [initialized object fields](#claim-shared.objects). Write \\\\(",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 14220,
+      "end": 15191
+    },
+    "clarity": "The landing md/shared.md#claim-shared.gc directly introduces Reachability  starts at an initialized slot of the [live frame](#claim-shared.machine) and follows [initialized object fields](#claim-shared.objects). Write \\\\(. Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop.",
+    "independence": "S_K, D and the filtered heap are scoped in the text; gc retains the counter/frame and surviving object data. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

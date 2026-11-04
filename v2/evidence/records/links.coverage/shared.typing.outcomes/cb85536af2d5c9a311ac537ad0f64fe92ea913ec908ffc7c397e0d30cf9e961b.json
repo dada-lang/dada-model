@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "d474fe516c76fe28222cd48a6079d8919fb1851e5c4ec5988000a21f0d9bf0bb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:target:7b9572fe001e266c185e795f8b2fb6d9e4095389cfc90d0fae7eb97acf562bca",
+    "audit:target:c606944c55fcc1af8071d20ef9cfffd91dabf71226ad1a2eab085091751daee3",
+    "audit:unit:shared.typing.finished",
+    "audit:unit:shared.typing.machine",
+    "audit:unit:shared.typing.outcomes",
+    "audit:unit:shared.typing.steps",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the extended configuration, finishedness and extended steps; defines only stuckness, with completion separately targeted. The not-finished/no-successor clauses define the predicate directly. The exhausted-live-frame example uses the exit rule already linked.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "87ff9ece882037c1c1248ac4a0870e18bac3bf8742c0469ef83fb6d8932daf44"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the extended configuration, finishedness and extended steps; defines only stuckness, with completion separately targeted.",
+    "mathematics": "The not-finished/no-successor clauses define the predicate directly. The exhausted-live-frame example uses the exit rule already linked.",
+    "links": [
+      {
+        "occurrence": "shared.typing.outcomes:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/shared-typing.md#claim-shared.typing.machine for the concept or example setup used by this unit. Links the extended configuration, finishedness and extended steps; defines only stuckness, with completion separately targeted."
+      },
+      {
+        "occurrence": "shared.typing.outcomes:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/shared-typing.md#claim-shared.typing.finished for the concept or example setup used by this unit. Links the extended configuration, finishedness and extended steps; defines only stuckness, with completion separately targeted."
+      },
+      {
+        "occurrence": "shared.typing.outcomes:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'successor' refers to md/shared-typing.md#claim-shared.typing.steps for the concept or example setup used by this unit. Links the extended configuration, finishedness and extended steps; defines only stuckness, with completion separately targeted."
+      }
+    ]
+  }
+}

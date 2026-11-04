@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "bundle": "4d2f87addc96f849623bb6d9dd559af79a14f08bac01ea5bcf634bf2170eb00d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2eb211ed1af6e33db9da6c78ac0c0d04580e44a1e68ee2ae9c068c83be977c96",
+    "audit:target:69b3d55447d920253867baf2a85e8926fb42f26962b21ba3fe0049eb1951e922",
+    "audit:target:90551fc1b4acbc85cd0af545697c9e6593adef6b426431e751cb7e9684fbc7b8",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:target:ac85c564dc457ba585dd4c12afa6ab2e4d9772e96e37c160d63281e8a19edb08",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.state",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.erasure",
+    "audit:unit:given.typing.realization",
+    "audit:unit:given.typing.satisfaction",
+    "audit:unit:given.typing.well_formed_classes",
+    "audit:unit:given.typing.well_formed_types",
+    "audit:unit:given.well_formed",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here. The satisfaction clauses and erasure operator have direct mathematical links. The new realization relation, pending pair/list notation, and variable-domain equality are defined in this unit.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "95f0f665017a5101a72fbc374bb4f014fe7a55b8e4b208f9e98d69a9ca5484c0"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here.",
+    "mathematics": "The satisfaction clauses and erasure operator have direct mathematical links. The new realization relation, pending pair/list notation, and variable-domain equality are defined in this unit.",
+    "links": [
+      {
+        "occurrence": "given.typing.realization:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'given.well_formed' refers to md/given.md#claim-given.well_formed for the concept or example setup used by this unit. Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here."
+      },
+      {
+        "occurrence": "given.typing.realization:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;S\\\\models\\\\alpha:T' refers to md/given-typing.md#claim-given.typing.satisfaction for the concept or example setup used by this unit. Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here."
+      },
+      {
+        "occurrence": "given.typing.realization:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;S\\\\models\\\\alpha:T' refers to md/given-typing.md#claim-given.typing.satisfaction for the concept or example setup used by this unit. Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here."
+      },
+      {
+        "occurrence": "given.typing.realization:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed typed class table' refers to md/given-typing.md#claim-given.typing.well_formed_classes for the concept or example setup used by this unit. Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here."
+      },
+      {
+        "occurrence": "given.typing.realization:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\lfloor\\\\Sigma\\\\rfloor' refers to md/given-typing.md#claim-given.typing.erasure for the concept or example setup used by this unit. Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here."
+      },
+      {
+        "occurrence": "given.typing.realization:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well formed' refers to md/given-typing.md#claim-given.typing.well_formed_types for the concept or example setup used by this unit. Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here."
+      },
+      {
+        "occurrence": "given.typing.realization:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalized' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Storage well-formedness, type satisfaction, well-formed class tables, well-formed types, and normalization link directly. Pending values and their ownership role are introduced here."
+      }
+    ]
+  }
+}

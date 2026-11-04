@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "17f2ceb48330b92bc55d89c8df56f1f8a0180874821ea6172d9c285e86707209",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f518fc51a45f1599c96e5cca147f3048043bee6a5718ef54dd66d238eb0b8dcf",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.executions directly introduces Shared zero-or-more-step execution. Links Step in prose and the transitive rule; defines finite traces with recursive occurrences kept local. The Step premise links its definition; recursive starred arrows and reflexivity define the closure here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "0aa94403f83a439f969d0088937b8319948e20193aeab8fadfea6753a7b2f98d"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared zero-or-more-step execution",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 22054,
+      "end": 22392
+    },
+    "clarity": "The landing md/shared.md#claim-shared.executions directly introduces Shared zero-or-more-step execution. Links Step in prose and the transitive rule; defines finite traces with recursive occurrences kept local.",
+    "independence": "The Step premise links its definition; recursive starred arrows and reflexivity define the closure here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

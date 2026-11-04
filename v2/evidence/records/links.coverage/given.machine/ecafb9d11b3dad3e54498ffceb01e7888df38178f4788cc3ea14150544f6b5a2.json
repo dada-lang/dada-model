@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "c9d7e68397865829cffcc7c7386390be4b5be167c3980d3c8e1e956e6e4970d2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:a395ec3d77295857a26e9571e271df4e3a3c5c6ae23ac869fc9fd981731e6507",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:unit:given.machine",
+    "audit:unit:given.state",
+    "audit:unit:given.syntax",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations. The frame tuple and optional-frame alternatives are introduced here. Initialization uses the linked empty state; no later transition judgment is needed to understand the representation.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "0200a50fde1d4815640fcd05aa93066cfc8f15f08c2855eba8fd301ac01bda4f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations.",
+    "mathematics": "The frame tuple and optional-frame alternatives are introduced here. Initialization uses the linked empty state; no later transition judgment is needed to understand the representation.",
+    "links": [
+      {
+        "occurrence": "given.machine:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statements' refers to md/given.md#claim-given.syntax for the concept or example setup used by this unit. Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations."
+      },
+      {
+        "occurrence": "given.machine:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'program' refers to md/given.md#claim-given.programs for the concept or example setup used by this unit. Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations."
+      },
+      {
+        "occurrence": "given.machine:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage' refers to md/given.md#claim-given.state for the concept or example setup used by this unit. Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations."
+      }
+    ]
+  }
+}

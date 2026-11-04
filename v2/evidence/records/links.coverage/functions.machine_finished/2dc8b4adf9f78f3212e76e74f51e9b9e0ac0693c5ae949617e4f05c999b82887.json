@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "0685fb86e3030e16336975d7cd571607dbf04ec2103482a04198da6145ce15fd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.machine_finished",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The configuration link supplies the frame stack; this unit directly defines completion as empty stack. No hidden predicate or storage retention claim. Empty code is explicitly distinguished from an absent frame.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The configuration link supplies the frame stack; this unit directly defines completion as empty stack.",
+    "mathematics": "No hidden predicate or storage retention claim. Empty code is explicitly distinguished from an absent frame.",
+    "links": [
+      {
+        "occurrence": "functions.machine_finished:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. The configuration link supplies the frame stack; this unit directly defines completion as empty stack."
+      }
+    ]
+  }
+}

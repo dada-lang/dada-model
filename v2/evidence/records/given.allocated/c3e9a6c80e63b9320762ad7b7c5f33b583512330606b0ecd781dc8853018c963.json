@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "43980c255ac5bf391ab54aed7a7078075ef314b350641ccd0839c52fe3059036",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/State:Allocated",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.allocated",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Allocated is membership in state.objects.map Prod.fst, precisely membership of α in the domain of O. Notation and premises are supplied by the examined units given.classes, given.collections, given.identities, given.programs, given.slots, given.state, given.syntax.",
+  "limitations": [
+    "Author self-review, not an independent review. Proof correctness is checked separately by Lean; the correspondence review compares statements, definitions and example propositions.",
+    "Abstract syntax and mathematical GC are modeled; no parser or executable collector is certified. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "55337c0ccf1b0b402f0907c67ac88a98ecb0092603da3b957904440a9b4072b7"
+  ]
+}

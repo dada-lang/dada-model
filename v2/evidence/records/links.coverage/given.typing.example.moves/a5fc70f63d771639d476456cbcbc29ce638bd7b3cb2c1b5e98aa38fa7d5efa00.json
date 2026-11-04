@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "17ce8e3675badc052d9b1204b00047a2b7f0fb4f56484695fb43d2402837144e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:3897a824857ea13c227c0e025e892994ddaf62294c64c38ae0b747b1cca9838f",
+    "audit:target:c04103a1d651b8b9ae272310c435e218a3c69ad8ef05bf3d1f49e157898c6ce6",
+    "audit:unit:given.typing.example.moves",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.statements",
+    "audit:unit:given.unpacking",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The Token/Pair/Box setup, statement rules, and operational unpacking each link to their definitions. The example table supplies all intermediate updated and fresh variable types. There is no inference-rule mathematics here. The table uses literal source/type notation from its linked declarations and rules, and defines 0 in prose.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "bdd851af0439ae66a2d24732832a8507d0a27cca9d18f06fdec397cd4126f8ef"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The Token/Pair/Box setup, statement rules, and operational unpacking each link to their definitions. The example table supplies all intermediate updated and fresh variable types.",
+    "mathematics": "There is no inference-rule mathematics here. The table uses literal source/type notation from its linked declarations and rules, and defines 0 in prose.",
+    "links": [
+      {
+        "occurrence": "given.typing.example.moves:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declarations above' refers to md/given-typing.md#claim-given.typing.example.views for the concept or example setup used by this unit. The Token/Pair/Box setup, statement rules, and operational unpacking each link to their definitions. The example table supplies all intermediate updated and fresh variable types."
+      },
+      {
+        "occurrence": "given.typing.example.moves:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statement rules' refers to md/given-typing.md#claim-given.typing.statements for the concept or example setup used by this unit. The Token/Pair/Box setup, statement rules, and operational unpacking each link to their definitions. The example table supplies all intermediate updated and fresh variable types."
+      },
+      {
+        "occurrence": "given.typing.example.moves:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Unpacking' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. The Token/Pair/Box setup, statement rules, and operational unpacking each link to their definitions. The example table supplies all intermediate updated and fresh variable types."
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "2e3903ac31a618eb50bb18ecb82750a80414dc9fd1bcec670d102e0d4cb5d0c4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e2a8996e1d48de8e7921a6bfb09f14a9fa9f213b2d19363568752083dc6c81c7",
+    "audit:unit:meta.links.targets",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Target clarity is introduced here and its source inventory is linked. The paragraph states both the landing requirement and the limit of choosing an interior span, preventing span validity from replacing readability. There is no formal mathematics; byte spans and UTF-8 are input representations rather than undefined model operations.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "a44eb56f641aa2e19122ae598506df5e32f6e8b4e63321a3b98a361f88bc011b"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Target clarity is introduced here and its source inventory is linked. The paragraph states both the landing requirement and the limit of choosing an interior span, preventing span validity from replacing readability.",
+    "mathematics": "There is no formal mathematics; byte spans and UTF-8 are input representations rather than undefined model operations.",
+    "links": [
+      {
+        "occurrence": "meta.links.targets:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'link inventory' refers to md/repo/link-audits.md#claim-meta.links.inventory for the concept or example setup used by this unit. Target clarity is introduced here and its source inventory is linked. The paragraph states both the landing requirement and the limit of choosing an interior span, preventing span validity from replacing readability."
+      }
+    ]
+  }
+}

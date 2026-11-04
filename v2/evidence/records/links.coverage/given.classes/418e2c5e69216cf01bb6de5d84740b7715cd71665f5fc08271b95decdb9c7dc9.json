@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "72b4179c1538b020a96d2021d4ca95453204a84617fe4c2c8b2b74389558fa0b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.classes",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Introduces ownership transfer and class/field names locally. The declaration grammar binds C, f, n and d; no later judgment is needed for this intent-level introduction. The displayed d/C/f declaration grammar binds its class/field categories and arity locally; it is an introduction, not a use of a later judgment.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "874f230e09b862e1de56e9d8841d060e459c0fd917f7e5853dd544d8441b3bb9"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Introduces ownership transfer and class/field names locally. The declaration grammar binds C, f, n and d; no later judgment is needed for this intent-level introduction.",
+    "mathematics": "The displayed d/C/f declaration grammar binds its class/field categories and arity locally; it is an introduction, not a use of a later judgment.",
+    "links": []
+  }
+}

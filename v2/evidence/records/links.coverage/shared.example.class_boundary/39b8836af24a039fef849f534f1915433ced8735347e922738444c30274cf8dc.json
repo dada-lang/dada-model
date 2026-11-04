@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "ea338e003fd04bfa116aa5f16b93475f26bdc2a6bd76aee647bdb689ad9edc4f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:shared.example.class_boundary",
+    "audit:unit:shared.example.declarations",
+    "audit:unit:shared.give",
+    "audit:unit:shared.steps",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing. The source code uses locally supplied declarations and tests the giveShare boundary, not an undeclared permission conversion.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing.",
+    "mathematics": "The source code uses locally supplied declarations and tests the giveShare boundary, not an undeclared permission conversion.",
+    "links": [
+      {
+        "occurrence": "shared.example.class_boundary:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class reference' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing."
+      },
+      {
+        "occurrence": "shared.example.class_boundary:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'rejected' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing."
+      },
+      {
+        "occurrence": "shared.example.class_boundary:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'move' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing."
+      }
+    ]
+  }
+}

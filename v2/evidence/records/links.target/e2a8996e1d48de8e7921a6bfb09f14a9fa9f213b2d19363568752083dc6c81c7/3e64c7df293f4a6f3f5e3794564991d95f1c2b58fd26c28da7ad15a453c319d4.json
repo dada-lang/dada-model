@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "185bd8adc6ba870e50abf5b2749657ed2a0f51cb5d9323970be2b9b12802e1eb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e2a8996e1d48de8e7921a6bfb09f14a9fa9f213b2d19363568752083dc6c81c7",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/link-audits.md#claim-meta.links.inventory directly introduces Link inventory. The inventory is introduced here with its data, supported syntaxes, target resolution and book-order rules. Future notes are included explicitly. This is the defining contract for the link graph, not a use of an unintroduced semantic relation. Literal href and SUMMARY names are syntax examples. No equation or inference judgment requires a separate math link. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "10fc4864e802ca56b3b02fab37e65f6881136200b43427ba8e8ca602104c82e7"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Link inventory",
+    "definition": {
+      "path": "md/repo/link-audits.md",
+      "start": 1258,
+      "end": 2447
+    },
+    "clarity": "The landing md/repo/link-audits.md#claim-meta.links.inventory directly introduces Link inventory. The inventory is introduced here with its data, supported syntaxes, target resolution and book-order rules. Future notes are included explicitly. This is the defining contract for the link graph, not a use of an unintroduced semantic relation.",
+    "independence": "Literal href and SUMMARY names are syntax examples. No equation or inference judgment requires a separate math link. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -244,7 +244,7 @@ this layer; Functions will extend this single-frame lifetime to a stack.
 :uses: given.machine given.state
 
 *Reachability* starts at an initialized slot of the [live frame](#claim-given.machine) and follows
-[initialized object fields](#claim-given.state). Write \\(\mathsf{Live}_S(\alpha)\\) when this reaches
+[initialized object fields](#claim-given.slots). Write \\(\mathsf{Live}_S(\alpha)\\) when this reaches
 object \\(\alpha\\). An absent frame has no roots.
 
 *Eager collection* retains exactly reachable object entries. For object data

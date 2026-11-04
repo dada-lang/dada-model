@@ -351,7 +351,7 @@ an empty slot prevents resolution.
 :uses: shared.state shared.syntax
 
 A *frame* \\(f=(V,P)\\) owns its local variable store \\(V\\) and remaining
-statements \\(P\\). The program has one initial frame; after its exit there is
+[statements](#claim-shared.syntax) \\(P\\). The [program](#claim-shared.programs) has one initial frame; after its exit there is
 no frame. Heap objects \\(O\\) and the allocation counter \\(\nu\\) live outside it:
 
 \\[
@@ -728,9 +728,9 @@ path and by a path containing a shared reference:
 \\[
 \begin{aligned}
 &\mathsf{WF}_{\Delta}(S)\;\land\;
-  (S\vdash p\Downarrow q:\alpha@\mathsf{unique})\\
+  (\href{#claim-shared.resolution}{S\vdash p\Downarrow q:\alpha@\mathsf{unique}})\\
 &\quad\Longrightarrow\quad
-  \neg\exists p',q'.\ S\vdash p'\Downarrow q':\alpha@\mathsf{shared}.
+  \neg\exists p',q'.\ \href{#claim-shared.resolution}{S\vdash p'\Downarrow q':\alpha@\mathsf{shared}}.
 \end{aligned}
 \\]
 
@@ -748,7 +748,7 @@ In a [well-formed state](#claim-shared.well_formed), an object is live exactly w
 \\[
 \mathsf{WF}_{\Delta}(S)
 \quad\Longrightarrow\quad
-\bigl(\mathsf{Live}_S(\alpha)\iff\mathsf{Allocated}_S(\alpha)\bigr).
+\bigl(\href{#claim-shared.live}{\mathsf{Live}_S(\alpha)}\iff\href{#claim-shared.allocated}{\mathsf{Allocated}_S(\alpha)}\bigr).
 \\]
 
 Every allocated object therefore has an owning path from a variable. Sharing
@@ -816,10 +816,10 @@ unique mode tags in the Shared state.
 For every class table \\(\Delta\\) and configuration \\(c\\) of this Given
 fragment, the [embedding](#claim-shared.embedding) matches steps in both directions:
 
-- If \\(\Delta\vdash c\longrightarrow c'\\), then
-  \\(E(\Delta)\vdash E(c)\longrightarrow E(c')\\).
-- If \\(E(\Delta)\vdash E(c)\longrightarrow d\\), then there is a Given
-  successor \\(c'\\) with \\(\Delta\vdash c\longrightarrow c'\\) and
+- If \\(\href{given.html#claim-given.steps}{\Delta\vdash c\longrightarrow c'}\\), then
+  \\(\href{#claim-shared.steps}{E(\Delta)\vdash E(c)\longrightarrow E(c')}\\).
+- If \\(\href{#claim-shared.steps}{E(\Delta)\vdash E(c)\longrightarrow d}\\), then there is a Given
+  successor \\(c'\\) with \\(\href{given.html#claim-given.steps}{\Delta\vdash c\longrightarrow c'}\\) and
   \\(d=E(c')\\).
 
 The second statement covers every Shared successor \\(d\\); it does not
@@ -837,8 +837,8 @@ For every program in the Given fragment with single-variable bindings,
 of its translated Shared program.
 
 For every configuration in this fragment, the translated configuration is [finished](#claim-shared.finished) exactly
-when the original is finished. Using the program's class table, the translated
-configuration is [stuck](#claim-shared.stuck) exactly when the original is stuck. The correspondence
+when the original is [finished](given.md#claim-given.finished). Using the program's class table, the translated
+configuration is [stuck](#claim-shared.stuck) exactly when the original is [stuck](given.md#claim-given.stuck). The correspondence
 therefore agrees on how execution starts, on successful completion, and on the
 absence of an available step before completion.
 ```

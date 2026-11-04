@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "0984e0d007cd5c5341e5812e83bed8864ae5f2c7d4adf38ad5ce0c00a4ce598e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:79283484adee6a2142c00e38e1f1accde4d861bb79aa4ecbf735a13e187ee7c9",
+    "audit:target:7dc073f30dfdeb7c8e9599d8a935c9ddd6bc39f688b2ff9fd1a3dd55453c75d7",
+    "audit:target:939f180934edf65d84a072aad2dd778c3a2dc532ce0e9d8b312e9d65b1b4483b",
+    "audit:unit:functions.declaration_typing",
+    "audit:unit:functions.program_typing",
+    "audit:unit:functions.typing",
+    "audit:unit:shared.typing.well_formed_classes",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nominal-table validity, declaration-table checking and top-level sequence typing. The empty initial environment and existential final environment are explicit, with no extra terminal-consumption condition.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nominal-table validity, declaration-table checking and top-level sequence typing.",
+    "mathematics": "The empty initial environment and existential final environment are explicit, with no extra terminal-consumption condition.",
+    "links": [
+      {
+        "occurrence": "functions.program_typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal table' refers to md/shared-typing.md#claim-shared.typing.well_formed_classes for the concept or example setup used by this unit. Links nominal-table validity, declaration-table checking and top-level sequence typing."
+      },
+      {
+        "occurrence": "functions.program_typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declaration table' refers to md/functions.md#claim-functions.declaration_typing for the concept or example setup used by this unit. Links nominal-table validity, declaration-table checking and top-level sequence typing."
+      },
+      {
+        "occurrence": "functions.program_typing:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'top-level statements check' refers to md/functions.md#claim-functions.typing for the concept or example setup used by this unit. Links nominal-table validity, declaration-table checking and top-level sequence typing."
+      }
+    ]
+  }
+}

@@ -233,7 +233,7 @@ each parameter is initially present at its declared whole type. Write
 :uses: functions.environments functions.calls shared.typing.bindings
 
 The judgment \\(\Delta\vdash\Gamma;d:R\Rightarrow\Gamma'\\) installs a call's
-result. An absent destination requires an absent result; a present one uses
+result in a [well-formed environment](#claim-functions.environments). An absent destination requires an absent result; a present one uses
 [Shared's fresh-variable binding judgment](shared-typing.md#claim-shared.typing.bindings), written
 \\(\Delta\vdash\Gamma;x:T\Rightarrow_{\mathrm{bind}}\Gamma'\\).
 
@@ -258,6 +258,9 @@ typing. [Shared's argument judgment](shared-typing.md#claim-shared.typing.expres
 \\(\Delta\vdash\Gamma;{\overline e}:{\overline T}\Rightarrow\Gamma_e\\)
 checks arguments left to right and threads their effects through the environment.
 The receiver, when present, is the first argument.
+
+The [destination judgment](#claim-functions.destination_typing) installs the result
+after argument evaluation.
 
 \\[
 \frac{
@@ -492,6 +495,10 @@ and \\(S_e=(H_e,V_e,n_e)\\) is its result. Write
 left-to-right argument evaluation](shared.md#claim-shared.evaluation), and \\(S\vdash t\Downarrow S_e\\) for one
 [Shared binding or unpacking statement](shared-typing.md#claim-shared.typing.steps). Write \\(B_r=({\overline t};\mathsf{return}\ r)\\)
 for the [remaining body](#claim-functions.calls) and \\(d_0\\) for the current frame's own return destination.
+
+The [parameter operations](#claim-functions.parameters) define \\(d\sim R\\)
+and \\(\operatorname{bind}\\). The return premises use
+[optional-result evaluation and delivery](#claim-functions.return).
 
 **Local statement**
 
@@ -851,7 +858,8 @@ by the example, despite the growing stack.
 
 ````{future-note} functions.future_permissions
 
-The intended permission design has two independent distinctions:
+The intended permission design extends the current
+[owned permissions](shared-typing.md#claim-shared.typing.types) with two independent distinctions:
 
 | | Unique | Shared |
 | --- | --- | --- |

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "615af16f89517e6f7ae0ed75666514d3a57d0864fab4c234cf879633f7f56b0e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4eb4444f47c2cf800acfe57f1fe74d9c78d8e7427cc5203d9959826b200440ca",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.sequences directly introduces typing finite statement sequences. The statement-typing prerequisite links directly. The sequence environment threading is the one subject introduced. The cons rule links the per-statement premise; the recursive sequence premise and empty-sequence conclusion define the new judgment locally. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "c131a0a016929c77e1f2202b522d89c2f6e26648490d01d51b20b6947e7b0448"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "typing finite statement sequences",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 24045,
+      "end": 24466
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.sequences directly introduces typing finite statement sequences. The statement-typing prerequisite links directly. The sequence environment threading is the one subject introduced.",
+    "independence": "The cons rule links the per-statement premise; the recursive sequence premise and empty-sequence conclusion define the new judgment locally. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

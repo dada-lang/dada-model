@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "056ee66b0434f14e993b624c2aac23d8f5745881484e2360a3f2ccd6c79165c9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c06f361df57d349bc9196f76826fc1003e0906e16dcf0c94d3361d5b9113bc8a",
+    "context:link-chapter:md/repo/authoring.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/authoring.md#future-notes identifies Future note at the named paragraph or section. This is the explicitly named paragraph/section selected by the link. Its surrounding chapter supplies the authoring or navigation context; it is not represented as a formal language judgment.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "a89810dd8c9ae3c5f0ab14981674d1125d39000830c719911f034c1ae896c95b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Future note",
+    "definition": {
+      "path": "md/repo/authoring.md",
+      "start": 4125,
+      "end": 4316
+    },
+    "clarity": "The landing md/repo/authoring.md#future-notes identifies Future note at the named paragraph or section.",
+    "independence": "This is the explicitly named paragraph/section selected by the link. Its surrounding chapter supplies the authoring or navigation context; it is not represented as a formal language judgment."
+  }
+}

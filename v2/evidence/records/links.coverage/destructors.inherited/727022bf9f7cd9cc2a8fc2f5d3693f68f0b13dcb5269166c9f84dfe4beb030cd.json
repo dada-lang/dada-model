@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "bundle": "599bbf9e8052b9e2360651aae47f62a1338b2585840db7492d0143d73d22b38a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:828c2e9a592d1b90f2650b6136e24abe27a4c6886c1c3487d5a24c9e3f96fcf7",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:destructors.inherited",
+    "audit:unit:shared.declarations",
+    "audit:unit:shared.give",
+    "audit:unit:shared.state",
+    "audit:unit:shared.struct",
+    "audit:unit:shared.syntax",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.giving",
+    "audit:unit:shared.typing.patterns",
+    "audit:unit:shared.typing.statements",
+    "audit:unit:shared.typing.types",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules. The only predicate spelling struct(T) links its definition; remaining syntax forms are concrete inherited examples.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules.",
+    "mathematics": "The only predicate spelling struct(T) links its definition; remaining syntax forms are concrete inherited examples.",
+    "links": [
+      {
+        "occurrence": "destructors.inherited:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'completion condition' refers to md/destructors.md#claim-destructors.finished_environment for the concept or example setup used by this unit. Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules."
+      },
+      {
+        "occurrence": "destructors.inherited:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Declarations and kinds' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules."
+      },
+      {
+        "occurrence": "destructors.inherited:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'struct(T)' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules."
+      },
+      {
+        "occurrence": "destructors.inherited:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Syntax' refers to md/shared.md#claim-shared.syntax for the concept or example setup used by this unit. Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules."
+      },
+      {
+        "occurrence": "destructors.inherited:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Storage' refers to md/shared.md#claim-shared.state for the concept or example setup used by this unit. Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules."
+      },
+      {
+        "occurrence": "destructors.inherited:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Types and views' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules."
+      },
+      {
+        "occurrence": "destructors.inherited:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Ordinary give' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules."
+      },
+      {
+        "occurrence": "destructors.inherited:8",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Static give' refers to md/shared-typing.md#claim-shared.typing.giving for the concept or example setup used by this unit. Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules."
+      },
+      {
+        "occurrence": "destructors.inherited:9",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Construction' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules."
+      },
+      {
+        "occurrence": "destructors.inherited:10",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Unpacking' refers to md/shared-typing.md#claim-shared.typing.patterns for the concept or example setup used by this unit. Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules."
+      }
+    ]
+  }
+}

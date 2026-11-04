@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "1e1815a320dec822d5f01706922c99ef2a9ab0d5e3fd1a5b2d08f53c5a3312fb",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7ea3722fb38b69215437903009c22a0940e840a03133abb2cace53fb606d2c60",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.resolution directly introduces Given place resolution. Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment. The lookup symbols in both inference-rule premises link to given.lookup. Resolve occurrences in premise/conclusion recursively define this same judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b3726d3897d7f620b173d23cad11ae1d8028d1b7d7c5e32e5bd2336847544471"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given place resolution",
+    "definition": {
+      "path": "md/given.md",
+      "start": 10025,
+      "end": 10713
+    },
+    "clarity": "The landing md/given.md#claim-given.resolution directly introduces Given place resolution. Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment.",
+    "independence": "The lookup symbols in both inference-rule premises link to given.lookup. Resolve occurrences in premise/conclusion recursively define this same judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

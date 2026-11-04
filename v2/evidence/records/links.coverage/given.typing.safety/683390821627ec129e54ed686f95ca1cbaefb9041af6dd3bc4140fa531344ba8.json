@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "3a9405f2c92b44bedebfaa5a5c0cc4a10848674ce81b05d00d01cc9ef0823ad3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:57daa4bbb00f516581417950097fd38b2c7cf06564570a82daa059b2701ea541",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:target:90551fc1b4acbc85cd0af545697c9e6593adef6b426431e751cb7e9684fbc7b8",
+    "audit:unit:given.typing.configurations",
+    "audit:unit:given.typing.preservation",
+    "audit:unit:given.typing.progress",
+    "audit:unit:given.typing.safety",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The given.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame. The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "7792a0fcff2d815f29ec64e631d6c15b8a954db4ae5ca0a21ba07b94539f85ae"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The given.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame.",
+    "mathematics": "The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+    "links": [
+      {
+        "occurrence": "given.typing.safety:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed' refers to md/given-typing.md#claim-given.typing.well_formed_classes for the concept or example setup used by this unit. The given.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "given.typing.safety:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck configuration' refers to md/given-typing.md#claim-given.typing.stuck for the concept or example setup used by this unit. The given.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "given.typing.safety:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/given.md#claim-given.finished for the concept or example setup used by this unit. The given.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      }
+    ]
+  }
+}

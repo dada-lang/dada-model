@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "8bfdfec5e56b3d435387309588f1682432f981429eb17390803a2dffc6c4b430",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:cb3e7f137fa264d756a4ce07ced53774f9fec6337e518a0dd5f5f0e263b368b4",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.heap.rendering directly introduces Diagram edges. Stored-reference syntax links its direct slot definition. This unit then defines SVG-edge behavior, lease junctions, retained facts and deterministic layout limitations. There are no model equations; the graph arrows being described are diagram edges rather than semantic judgments. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "4a6c8a47f7826dd904ce19444bd71238e4067c468163a72be175560a16a03a1c"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Diagram edges",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 21896,
+      "end": 22399
+    },
+    "clarity": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.heap.rendering directly introduces Diagram edges. Stored-reference syntax links its direct slot definition. This unit then defines SVG-edge behavior, lease junctions, retained facts and deterministic layout limitations.",
+    "independence": "There are no model equations; the graph arrows being described are diagram edges rather than semantic judgments. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

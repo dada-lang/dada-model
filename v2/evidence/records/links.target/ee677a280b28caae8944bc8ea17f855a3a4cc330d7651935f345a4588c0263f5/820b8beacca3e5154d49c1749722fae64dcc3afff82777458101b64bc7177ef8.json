@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "b4c378c09255ab661a8deda9a11ea32ce66e71649bfcaeca997ba413cb741aaa",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ee677a280b28caae8944bc8ea17f855a3a4cc330d7651935f345a4588c0263f5",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.bindings directly introduces the variable and unpacking binding-typing rules. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally. The Unpack premises link base, the typed class table, and field descriptions. The conclusions define binding typing here; dom and freshness are ordinary finite-map conditions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "bddee1ce43634ba57d4e81c80c6976b803e1c1bedfd512068df0bc30352ff178"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the variable and unpacking binding-typing rules",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 21762,
+      "end": 23290
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.bindings directly introduces the variable and unpacking binding-typing rules. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally.",
+    "independence": "The Unpack premises link base, the typed class table, and field descriptions. The conclusions define binding typing here; dom and freshness are ordinary finite-map conditions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

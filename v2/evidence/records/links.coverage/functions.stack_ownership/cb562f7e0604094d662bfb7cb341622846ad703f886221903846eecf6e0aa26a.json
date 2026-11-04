@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "d4e48bd2c5d180b588ec5e581b8ff7ae50f84f7b1cbd7ab1adc4489a5c8161dd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.stack_ownership",
+    "audit:unit:functions.stack_typing",
+    "audit:unit:shared.well_formed",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names. No separate path uniqueness formula is assumed: pairwise occurrence compatibility and allocated incoming targets are spelled out.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names.",
+    "mathematics": "No separate path uniqueness formula is assumed: pairwise occurrence compatibility and allocated incoming targets are spelled out.",
+    "links": [
+      {
+        "occurrence": "functions.stack_ownership:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names."
+      },
+      {
+        "occurrence": "functions.stack_ownership:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'owning occurrences' refers to md/shared.md#claim-shared.well_formed for the concept or example setup used by this unit. Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names."
+      }
+    ]
+  }
+}

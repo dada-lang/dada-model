@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "8fcef4c3b101c8cad1e658d20141867d491e576b43b83395a345e8e260d33b02",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:85bba34d7493853d754e20469c6b70e7fc1ff7e55767b2f552cf9f47ed2e9102",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.path_exclusivity directly introduces the unique/shared route exclusion theorem. The formula links WF and both Resolve occurrences; it states the all-unique/shared-route exclusion rather than inventing a new path judgment. WF and each unique/shared Resolve occurrence have definition links. The formula quantifies over both paths to the same α. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "728b39b106bc61560c2b606e6cb74dacd785c96083b3f5d9101cd59620d9958f"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the unique/shared route exclusion theorem",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 28212,
+      "end": 28840
+    },
+    "clarity": "The landing md/shared.md#claim-shared.path_exclusivity directly introduces the unique/shared route exclusion theorem. The formula links WF and both Resolve occurrences; it states the all-unique/shared-route exclusion rather than inventing a new path judgment.",
+    "independence": "WF and each unique/shared Resolve occurrence have definition links. The formula quantifies over both paths to the same α. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

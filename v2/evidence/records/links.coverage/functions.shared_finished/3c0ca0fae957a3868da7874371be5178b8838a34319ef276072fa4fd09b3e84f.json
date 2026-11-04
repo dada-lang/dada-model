@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "53ac8fba179730fabc93794b2cff571f17d2abf2368a701a91eab3bc2d349cdc",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:18e50dab95df074f64b089e4a508e22ce099405e437bd6cb4f61d60712b67a3c",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:8132c92fa5f747ccdf2fbc59a0936de31747623e06e98e9afada9d4d962dc8b4",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.shared_correspondence",
+    "audit:unit:functions.shared_finished",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Shared configurations/completion and the Functions embedding. Both sides use absent initial frame as the defined boundary; no separate math operator is introduced.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Shared configurations/completion and the Functions embedding.",
+    "mathematics": "Both sides use absent initial frame as the defined boundary; no separate math operator is introduced.",
+    "links": [
+      {
+        "occurrence": "functions.shared_finished:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared program configuration' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links Shared configurations/completion and the Functions embedding."
+      },
+      {
+        "occurrence": "functions.shared_finished:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/shared.md#claim-shared.finished for the concept or example setup used by this unit. Links Shared configurations/completion and the Functions embedding."
+      },
+      {
+        "occurrence": "functions.shared_finished:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Functions embedding' refers to md/functions.md#claim-functions.shared_correspondence for the concept or example setup used by this unit. Links Shared configurations/completion and the Functions embedding."
+      }
+    ]
+  }
+}

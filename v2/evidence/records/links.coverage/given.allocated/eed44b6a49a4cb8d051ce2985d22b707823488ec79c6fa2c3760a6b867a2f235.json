@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "d4578ef7f5e1422a7885e2f717098b5659e8c809a67122277e31e29dca0236fd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a395ec3d77295857a26e9571e271df4e3a3c5c6ae23ac869fc9fd981731e6507",
+    "audit:unit:given.allocated",
+    "audit:unit:given.state",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table. Allocated is the predicate being defined; O and dom are identified by the local S decomposition and the linked object table.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "3e5b92503da61f53adf11b0747bba65852900f3ec731c06b361a94cec6bced1a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table.",
+    "mathematics": "Allocated is the predicate being defined; O and dom are identified by the local S decomposition and the linked object table.",
+    "links": [
+      {
+        "occurrence": "given.allocated:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'object table' refers to md/given.md#claim-given.state for the concept or example setup used by this unit. Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table."
+      }
+    ]
+  }
+}

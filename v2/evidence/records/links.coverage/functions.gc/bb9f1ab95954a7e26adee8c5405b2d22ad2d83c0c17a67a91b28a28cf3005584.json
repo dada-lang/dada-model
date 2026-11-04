@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "af1b0c461868a3fdd90b9d0f13efc6a8471003c0f5848a716b7715e4a37f0395",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:46b87442b2a166f122a5a89139201f085f76501494495f034924f41118680d6c",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "audit:target:9cc9154e3592cdc44cca3510ac58cfa325b84ffa766de384bb8a62113e702254",
+    "audit:unit:functions.gc",
+    "audit:unit:functions.machine",
+    "audit:unit:shared.gc",
+    "audit:unit:shared.liveness",
+    "audit:unit:shared.well_formed",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Shared collection, all-frame roots and Live. Defines gc on the common heap and states its noncomputable mathematical scope. o and h are bound locally; live_M is explicitly the linked Shared Live with all frame stores. The filter equation defines gc rather than invoking another algorithm.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Shared collection, all-frame roots and Live. Defines gc on the common heap and states its noncomputable mathematical scope.",
+    "mathematics": "o and h are bound locally; live_M is explicitly the linked Shared Live with all frame stores. The filter equation defines gc rather than invoking another algorithm.",
+    "links": [
+      {
+        "occurrence": "functions.gc:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'As in Shared' refers to md/shared.md#claim-shared.gc for the concept or example setup used by this unit. Links Shared collection, all-frame roots and Live. Defines gc on the common heap and states its noncomputable mathematical scope."
+      },
+      {
+        "occurrence": "functions.gc:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"live frames' roots\" refers to md/functions.md#claim-functions.roots for the concept or example setup used by this unit. Links Shared collection, all-frame roots and Live. Defines gc on the common heap and states its noncomputable mathematical scope."
+      },
+      {
+        "occurrence": "functions.gc:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Shared's Live relation\" refers to md/shared.md#claim-shared.live for the concept or example setup used by this unit. Links Shared collection, all-frame roots and Live. Defines gc on the common heap and states its noncomputable mathematical scope."
+      }
+    ]
+  }
+}

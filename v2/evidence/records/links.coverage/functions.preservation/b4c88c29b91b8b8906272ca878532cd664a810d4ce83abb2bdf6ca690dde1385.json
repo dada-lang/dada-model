@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "5ce8a82d2fa84a82a7731f277c94210c984cc2ea2bee43d4ac37d06c4433bf3f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.gc",
+    "audit:unit:functions.preservation",
+    "audit:unit:functions.stack_typing",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links machine typing and public steps, explaining all frames and eager collection. Both typing judgments and the step premise use the linked definitions. Delta/F/M/M-prime are scoped by the theorem; every successor is covered.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links machine typing and public steps, explaining all frames and eager collection.",
+    "mathematics": "Both typing judgments and the step premise use the linked definitions. Delta/F/M/M-prime are scoped by the theorem; every successor is covered.",
+    "links": [
+      {
+        "occurrence": "functions.preservation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links machine typing and public steps, explaining all frames and eager collection."
+      },
+      {
+        "occurrence": "functions.preservation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'machine typing' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links machine typing and public steps, explaining all frames and eager collection."
+      }
+    ]
+  }
+}

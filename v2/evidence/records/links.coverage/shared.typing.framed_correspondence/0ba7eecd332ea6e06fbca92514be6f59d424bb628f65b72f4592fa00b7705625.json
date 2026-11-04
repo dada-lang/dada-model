@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "d2727cebda7eea2e1cc8ce645a44421f7d3d599e7be89281ae8cf8d1ad3c12ef",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1351e1c6cc8ff51db610855b1d6e4c1572ca7e99bf1cc523d1aba6d737c4b45f",
+    "audit:target:4fbc8d894e68d4383b58ceae09ec533638f4d56e8e7e70e873de2949841887dd",
+    "audit:target:6da213a18937e4126d7e96483f8007dabd404477df24caffc5a0862001bcce8b",
+    "audit:unit:given.machine",
+    "audit:unit:shared.gc",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.typing.framed_correspondence",
+    "audit:unit:shared.typing.given_fragment",
+    "audit:unit:shared.typing.steps",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the Given/Shared embedding and public framed machines. Separates this lifetime theorem from local observations. The quantified public-step correspondence includes collection and initial-frame exit; both directions use the linked embedding.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the Given/Shared embedding and public framed machines. Separates this lifetime theorem from local observations.",
+    "mathematics": "The quantified public-step correspondence includes collection and initial-frame exit; both directions use the linked embedding.",
+    "links": [
+      {
+        "occurrence": "shared.typing.framed_correspondence:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Given' refers to md/given-typing.md#claim-given.typing.execution for the concept or example setup used by this unit. Links the Given/Shared embedding and public framed machines. Separates this lifetime theorem from local observations."
+      },
+      {
+        "occurrence": "shared.typing.framed_correspondence:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared' refers to md/shared-typing.md#claim-shared.typing.execution for the concept or example setup used by this unit. Links the Given/Shared embedding and public framed machines. Separates this lifetime theorem from local observations."
+      },
+      {
+        "occurrence": "shared.typing.framed_correspondence:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'embedding' refers to md/shared.md#claim-shared.embedding for the concept or example setup used by this unit. Links the Given/Shared embedding and public framed machines. Separates this lifetime theorem from local observations."
+      }
+    ]
+  }
+}

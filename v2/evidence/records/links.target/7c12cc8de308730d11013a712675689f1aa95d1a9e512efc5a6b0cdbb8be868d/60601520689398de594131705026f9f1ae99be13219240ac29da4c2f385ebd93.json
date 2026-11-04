@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "d10ef944d643562d4e7683432088921d057ed22a11f663d685ca65be7f948a8b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.bindings directly introduces shared.typing.bindings. Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. BindingTyped.variable preserves the value type in a fresh entry. unpack requires given permission, matching base/class declaration, a permutation of all declared fields, distinct fresh destination names and FieldBindings. The displayed declaration-order rule is equivalent under the stated reordering convention and transfers empty descriptions explicitly. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "583f5e42b2643edf79fe82394bd66cc00fa202f5f42ca8b668bad97fbc897e78"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.bindings",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 26948,
+      "end": 28296
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.bindings directly introduces shared.typing.bindings. Links environment, field-description, perm, base, typed Σ and Given binding behavior. Bind/Unpack introduce only the binding judgment.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. BindingTyped.variable preserves the value type in a fresh entry. unpack requires given permission, matching base/class declaration, a permutation of all declared fields, distinct fresh destination names and FieldBindings. The displayed declaration-order rule is equivalent under the stated reordering convention and transfers empty descriptions explicitly. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "68a260a6eac097297bbef4c6c54e2ab8f4cff04ff1ac77d355cb437d8b43c025",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:unit:given.classes",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.patterns",
+    "audit:unit:given.programs",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.unpacking",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language. The d/Sigma grammar introduces its metavariables and domains locally. Field and class names are syntax categories, and the ordered pair/list/map notation carries no additional language judgment.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "85b1ddf1b831540bbcccb6bab4f2a71c1e53e0cf7a09a574b817cb13928e049b"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language.",
+    "mathematics": "The d/Sigma grammar introduces its metavariables and domains locally. Field and class names are syntax categories, and the ordered pair/list/map notation carries no additional language judgment.",
+    "links": [
+      {
+        "occurrence": "given.typing.declarations:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'given.unpacking' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language."
+      },
+      {
+        "occurrence": "given.typing.declarations:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression evaluation' refers to md/given.md#claim-given.evaluation for the concept or example setup used by this unit. The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language."
+      }
+    ]
+  }
+}

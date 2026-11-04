@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "c855d2c706d27d87a23bed32e3e0d96bebe8b8626224ed8d094956b31f930ab2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "audit:unit:shared.executions",
+    "audit:unit:shared.steps",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Step in prose and the transitive rule; defines finite traces with recursive occurrences kept local. The Step premise links its definition; recursive starred arrows and reflexivity define the closure here.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "3f3a705f0997e9f872151844169e9decf72a40b47783db3bb3911bcba092383c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Step in prose and the transitive rule; defines finite traces with recursive occurrences kept local.",
+    "mathematics": "The Step premise links its definition; recursive starred arrows and reflexivity define the closure here.",
+    "links": [
+      {
+        "occurrence": "shared.executions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statement steps' refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links Step in prose and the transitive rule; defines finite traces with recursive occurrences kept local."
+      },
+      {
+        "occurrence": "shared.executions:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash K\\\\longrightarrow K'\" refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links Step in prose and the transitive rule; defines finite traces with recursive occurrences kept local."
+      }
+    ]
+  }
+}

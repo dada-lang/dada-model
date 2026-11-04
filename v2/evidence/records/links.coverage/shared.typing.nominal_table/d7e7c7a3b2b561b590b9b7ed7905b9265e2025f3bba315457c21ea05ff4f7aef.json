@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "bundle": "033d2f2301c4eb4da75828847bf6e7c7cdb21e71ee41855fdfc2a53f34f8c2c4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:11aed29a6b82dfc70e7df19c3fad999a9f8fa3cfb7d1b2ebf35e0b7a63f92a16",
+    "audit:target:8413a9827dd730e438bc0c027d5a8e0b0375cf3b64b8dc044fdc5fb8b250d751",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:target:b525b2193e0c35e677269ca5a180c068848ebca97990c0e69502745a2fc78704",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.emptying",
+    "audit:unit:given.typing.focus",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.views",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.nominal_table",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The shared.typing.nominal_table unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types. The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "47012280e5771eb0b0e13b1070599ca45da6f4946bd68e6517557cc30d3361f1"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The shared.typing.nominal_table unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types.",
+    "mathematics": "The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions.",
+    "links": [
+      {
+        "occurrence": "shared.typing.nominal_table:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's typed class table\" refers to md/given-typing.md#claim-given.typing.declarations for the concept or example setup used by this unit. The shared.typing.nominal_table unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.nominal_table:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma(C)' refers to md/shared-typing.md#claim-shared.typing.declarations for the concept or example setup used by this unit. The shared.typing.nominal_table unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.nominal_table:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative paths and views' refers to md/given-typing.md#claim-given.typing.views for the concept or example setup used by this unit. The shared.typing.nominal_table unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.nominal_table:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'view normalization' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. The shared.typing.nominal_table unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.nominal_table:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal focusing' refers to md/given-typing.md#claim-given.typing.focus for the concept or example setup used by this unit. The shared.typing.nominal_table unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.nominal_table:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'emptying' refers to md/given-typing.md#claim-given.typing.emptying for the concept or example setup used by this unit. The shared.typing.nominal_table unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      }
+    ]
+  }
+}

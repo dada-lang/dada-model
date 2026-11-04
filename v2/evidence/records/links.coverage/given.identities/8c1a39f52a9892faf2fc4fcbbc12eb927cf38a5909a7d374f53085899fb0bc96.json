@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "2fc9582d28ac6f6865556ddb8cbd40f455e8f17e6b2161bcd1ab97eca9a33357",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.identities",
+    "audit:unit:given.programs",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines tagged object identities and index in the displayed representation. n is locally quantified over natural numbers; it is not an unlinked object identifier or future semantic concept. obj(n), index and the Nat domain are defined here; α and β are explicitly introduced as object identities.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "707aa63102fb84ec151d1642c83d9f9e3034821ee95cf68ad55747e1eaf090ac"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines tagged object identities and index in the displayed representation. n is locally quantified over natural numbers; it is not an unlinked object identifier or future semantic concept.",
+    "mathematics": "obj(n), index and the Nat domain are defined here; α and β are explicitly introduced as object identities.",
+    "links": []
+  }
+}

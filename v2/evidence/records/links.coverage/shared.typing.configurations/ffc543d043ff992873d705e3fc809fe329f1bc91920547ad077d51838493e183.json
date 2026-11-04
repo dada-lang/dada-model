@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "bundle": "e5941fac4827d3ae1a6e7251b2fadfb5821f2e582f56f245c5fe5a390973f735",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4fbc8d894e68d4383b58ceae09ec533638f4d56e8e7e70e873de2949841887dd",
+    "audit:target:985201bc93a5266f348c3a476dcf079ac55befb8aeed7289dd70aee7694c722c",
+    "audit:target:c606944c55fcc1af8071d20ef9cfffd91dabf71226ad1a2eab085091751daee3",
+    "audit:target:dbbdd07e0a2707183096cf819219485180c2fe4f0c682ce83ffe0a5ff7577a8f",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:unit:shared.gc",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.typing.configurations",
+    "audit:unit:shared.typing.realization",
+    "audit:unit:shared.typing.sequences",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The shared.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame. The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "5e7dc15eb57c6d96264e836e3fbe35e16a418dc21f693e4d9c97f58a21403a9d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The shared.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame.",
+    "mathematics": "The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+    "links": [
+      {
+        "occurrence": "shared.typing.configurations:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'realizes an environment' refers to md/shared-typing.md#claim-shared.typing.realization for the concept or example setup used by this unit. The shared.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "shared.typing.configurations:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statements typecheck' refers to md/shared-typing.md#claim-shared.typing.sequences for the concept or example setup used by this unit. The shared.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "shared.typing.configurations:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/shared-typing.md#claim-shared.typing.machine for the concept or example setup used by this unit. The shared.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "shared.typing.configurations:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Finite executions' refers to md/shared-typing.md#claim-shared.typing.execution for the concept or example setup used by this unit. The shared.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "shared.typing.configurations:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuckness' refers to md/shared-typing.md#claim-shared.typing.outcomes for the concept or example setup used by this unit. The shared.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      }
+    ]
+  }
+}

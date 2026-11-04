@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "1d7ad8959e1f6b50e21446cb3a28010728822f4adc3fa8085c3c87d03c8e018a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:unit:shared.allocated",
+    "audit:unit:shared.state",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Direct object-table-membership definition; storage target supplies O. The defining equation uses O from the linked object table; Allocated itself is the subject introduced here.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "1fd406c5238e92ad8886b6d74913d820b35be55a28f4d844782bfba1f208aa5b"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Direct object-table-membership definition; storage target supplies O.",
+    "mathematics": "The defining equation uses O from the linked object table; Allocated itself is the subject introduced here.",
+    "links": [
+      {
+        "occurrence": "shared.allocated:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'object table' refers to md/shared.md#claim-shared.state for the concept or example setup used by this unit. Direct object-table-membership definition; storage target supplies O."
+      }
+    ]
+  }
+}

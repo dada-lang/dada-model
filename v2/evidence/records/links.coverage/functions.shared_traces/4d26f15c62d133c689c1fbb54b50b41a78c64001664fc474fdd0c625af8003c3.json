@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "49e1b49ce038b02925a5c190098e6a09340d51668b10f68dd913cb2052d28b98",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:18e50dab95df074f64b089e4a508e22ce099405e437bd6cb4f61d60712b67a3c",
+    "audit:target:ef7aedb66f188b157bd66e467ed07f4ec8f3366639a1a82c26fc4370ae9980d8",
+    "audit:target:f518fc51a45f1599c96e5cca147f3048043bee6a5718ef54dd66d238eb0b8dcf",
+    "audit:unit:functions.shared_correspondence",
+    "audit:unit:functions.shared_traces",
+    "audit:unit:functions.traces",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Functions traces, the embedding, and Shared traces. The endpoint equality and arbitrary starting configurations are explicit. No extra well-formedness premise is silently assumed.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Functions traces, the embedding, and Shared traces.",
+    "mathematics": "The endpoint equality and arbitrary starting configurations are explicit. No extra well-formedness premise is silently assumed.",
+    "links": [
+      {
+        "occurrence": "functions.shared_traces:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Functions trace' refers to md/functions.md#claim-functions.traces for the concept or example setup used by this unit. Links Functions traces, the embedding, and Shared traces."
+      },
+      {
+        "occurrence": "functions.shared_traces:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'embedded Shared program configuration' refers to md/functions.md#claim-functions.shared_correspondence for the concept or example setup used by this unit. Links Functions traces, the embedding, and Shared traces."
+      },
+      {
+        "occurrence": "functions.shared_traces:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared trace' refers to md/shared.md#claim-shared.executions for the concept or example setup used by this unit. Links Functions traces, the embedding, and Shared traces."
+      }
+    ]
+  }
+}

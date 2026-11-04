@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "0f3ba1741e29732a144c18cf2567a051a6a2fbd7bcb4c436059c2bd21659c0be",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0cdbf42c41e7e944b7cfdecf7bb762ce6c2d75970d563b592d053b10c0002f94",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces proposed Droppable predicate. Links permissions/views, destructor declarations, normalization and unknown omissions. The table defines the proposed droppability predicate directly. Droppable(T) is the defining occurrence. Whole-view normalization and the distinction from full knowledge are explicit, not an assumption that hidden fields are empty. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "proposed Droppable predicate",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 5676,
+      "end": 6544
+    },
+    "clarity": "The named landing directly introduces proposed Droppable predicate. Links permissions/views, destructor declarations, normalization and unknown omissions. The table defines the proposed droppability predicate directly.",
+    "independence": "Droppable(T) is the defining occurrence. Whole-view normalization and the distinction from full knowledge are explicit, not an assumption that hidden fields are empty. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "e50da95b5a1c01d71ab3d0528d1c1caa63761fb6b59605477a8bb50deaf0a465",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c8ead969bed74ef79c463fa37a326d2236f51323ed159506774205ac0abfe848",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.stuck directly introduces Given stuck configurations. Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links. Both Finished and the excluded Step in the iff formula link directly to their defining blocks. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "7b9b7714f93e63e312bc041f389656763a794d78494dbc82b5711161b83bc221"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given stuck configurations",
+    "definition": {
+      "path": "md/given.md",
+      "start": 16001,
+      "end": 16642
+    },
+    "clarity": "The landing md/given.md#claim-given.stuck directly introduces Given stuck configurations. Defines stuckness separately from finite execution; Finished and the forbidden successor both link to their exact definitions. Explains lookup/evaluation failure with backwards links.",
+    "independence": "Both Finished and the excluded Step in the iff formula link directly to their defining blocks. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "bundle": "41d2d9e5d2c63f0a6630d30d8a0788786b9c7485e1c5d4da83e5d8c921bd0f85",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2eb211ed1af6e33db9da6c78ac0c0d04580e44a1e68ee2ae9c068c83be977c96",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:target:90551fc1b4acbc85cd0af545697c9e6593adef6b426431e751cb7e9684fbc7b8",
+    "audit:target:a65eb6e25dc5992af74682e3ee7637608f951cbca91ff863784472c2c21591a9",
+    "audit:target:de8c17107cd2bbf6e44d0bf15ada676d4d817578ead32b69effa4f7154e93041",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.typing.erasure",
+    "audit:unit:given.typing.expression_soundness",
+    "audit:unit:given.typing.expressions",
+    "audit:unit:given.typing.realization",
+    "audit:unit:given.typing.well_formed_classes",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Typing, class-table well-formedness, and pending-value realization link to their definitions. The quantified roots and universal postcondition are explained explicitly. The premises and result link expression typing and realization; the evaluation formula links class-table erasure and operational evaluation. List append is defined immediately below.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "9c6e36d5a544341823189c6f8d6ec8d8010ab4d5cedd200938cd03b9091559d6"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Typing, class-table well-formedness, and pending-value realization link to their definitions. The quantified roots and universal postcondition are explained explicitly.",
+    "mathematics": "The premises and result link expression typing and realization; the evaluation formula links class-table erasure and operational evaluation. List append is defined immediately below.",
+    "links": [
+      {
+        "occurrence": "given.typing.expression_soundness:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Expression typing' refers to md/given-typing.md#claim-given.typing.expressions for the concept or example setup used by this unit. Typing, class-table well-formedness, and pending-value realization link to their definitions. The quantified roots and universal postcondition are explained explicitly."
+      },
+      {
+        "occurrence": "given.typing.expression_soundness:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed' refers to md/given-typing.md#claim-given.typing.well_formed_classes for the concept or example setup used by this unit. Typing, class-table well-formedness, and pending-value realization link to their definitions. The quantified roots and universal postcondition are explained explicitly."
+      },
+      {
+        "occurrence": "given.typing.expression_soundness:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'pending-value list' refers to md/given-typing.md#claim-given.typing.realization for the concept or example setup used by this unit. Typing, class-table well-formedness, and pending-value realization link to their definitions. The quantified roots and universal postcondition are explained explicitly."
+      },
+      {
+        "occurrence": "given.typing.expression_soundness:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\triangleright' refers to md/given-typing.md#claim-given.typing.expressions for the concept or example setup used by this unit. Typing, class-table well-formedness, and pending-value realization link to their definitions. The quantified roots and universal postcondition are explained explicitly."
+      },
+      {
+        "occurrence": "given.typing.expression_soundness:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma\\\\models(S;R)' refers to md/given-typing.md#claim-given.typing.realization for the concept or example setup used by this unit. Typing, class-table well-formedness, and pending-value realization link to their definitions. The quantified roots and universal postcondition are explained explicitly."
+      },
+      {
+        "occurrence": "given.typing.expression_soundness:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\lfloor\\\\Sigma\\\\rfloor' refers to md/given-typing.md#claim-given.typing.erasure for the concept or example setup used by this unit. Typing, class-table well-formedness, and pending-value realization link to their definitions. The quantified roots and universal postcondition are explained explicitly."
+      },
+      {
+        "occurrence": "given.typing.expression_soundness:7",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Downarrow' refers to md/given.md#claim-given.evaluation for the concept or example setup used by this unit. Typing, class-table well-formedness, and pending-value realization link to their definitions. The quantified roots and universal postcondition are explained explicitly."
+      },
+      {
+        "occurrence": "given.typing.expression_soundness:8",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Sigma;\\\\Gamma'\\\\models(S';R\\\\mathbin{+\\\\!\\\\!+}[(\\\\alpha:T)])\" refers to md/given-typing.md#claim-given.typing.realization for the concept or example setup used by this unit. Typing, class-table well-formedness, and pending-value realization link to their definitions. The quantified roots and universal postcondition are explained explicitly."
+      }
+    ]
+  }
+}

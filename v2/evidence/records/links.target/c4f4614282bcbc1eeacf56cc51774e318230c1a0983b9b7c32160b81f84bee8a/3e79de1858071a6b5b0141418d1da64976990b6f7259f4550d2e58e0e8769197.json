@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "d532cd904246a7a821da7d93f9c266ef8a441d8f50fa03516081aaa6585e1691",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c4f4614282bcbc1eeacf56cc51774e318230c1a0983b9b7c32160b81f84bee8a",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/evidence-pilot.md#claim-evidence.map.empty_definition directly introduces Empty finite map. The unit introduces finite maps directly, with the key uniqueness condition and a separate empty-map anchor; it does not invoke another language operation. M, K, T and entry components k,v are introduced in the same sentences; the map arrow and empty-map symbol are defining occurrences. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "0a98c24ceb71b5137845b3974dc0efd799ed0d0dc0b6bd1784517859cafd354c"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Empty finite map",
+    "definition": {
+      "path": "md/repo/evidence-pilot.md",
+      "start": 7215,
+      "end": 7306
+    },
+    "clarity": "The landing md/repo/evidence-pilot.md#claim-evidence.map.empty_definition directly introduces Empty finite map. The unit introduces finite maps directly, with the key uniqueness condition and a separate empty-map anchor; it does not invoke another language operation.",
+    "independence": "M, K, T and entry components k,v are introduced in the same sentences; the map arrow and empty-map symbol are defining occurrences. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

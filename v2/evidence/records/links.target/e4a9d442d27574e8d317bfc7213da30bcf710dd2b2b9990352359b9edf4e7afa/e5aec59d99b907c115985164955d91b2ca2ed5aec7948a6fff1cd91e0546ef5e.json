@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "6de49d830143f12675ab833626e0f687a7785213e5de799e29b989155e535654",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces signature environments and projections. Links Shared environments and Functions signatures. Introduces WF, env, params and result projections in one short signature-environment explanation. Each operator is defined here; Gamma maps local slots and sigma is a signature from the linked grammar. No later return judgment is required. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "signature environments and projections",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 8652,
+      "end": 9218
+    },
+    "clarity": "The named landing directly introduces signature environments and projections. Links Shared environments and Functions signatures. Introduces WF, env, params and result projections in one short signature-environment explanation.",
+    "independence": "Each operator is defined here; Gamma maps local slots and sigma is a signature from the linked grammar. No later return judgment is required. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "82224e151a0014d96a8dd9e1a1ebedf850287fe741cf59a105ba9e66d4e65bff",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d7278b2e66fc50a56ecd4f79fdc59efe6a01a529bf64229bd7c0141d1c6a7ebf",
+    "audit:unit:meta.examples.selection",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Example marker syntax and selection are defined here. The reused nesting restriction links directly to its dedicated restriction paragraph; other local anchors introduce structured examples and authored-body support. There is no mathematics beyond literal source syntax. The example directive is being specified, not used to assert an uncited language example.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "73e3495d60f58cbfcb47c70281ceea9bc04f719878499d7f7f33b8fb5de95f3c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Example marker syntax and selection are defined here. The reused nesting restriction links directly to its dedicated restriction paragraph; other local anchors introduce structured examples and authored-body support.",
+    "mathematics": "There is no mathematics beyond literal source syntax. The example directive is being specified, not used to assert an uncited language example.",
+    "links": [
+      {
+        "occurrence": "meta.examples.selection:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nesting restrictions' refers to md/repo/renderer-contracts.md#claim-meta.syntax.nesting for the concept or example setup used by this unit. Example marker syntax and selection are defined here. The reused nesting restriction links directly to its dedicated restriction paragraph; other local anchors introduce structured examples and authored-body support."
+      }
+    ]
+  }
+}

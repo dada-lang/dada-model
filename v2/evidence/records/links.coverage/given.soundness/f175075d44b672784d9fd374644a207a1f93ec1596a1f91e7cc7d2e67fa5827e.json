@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "bundle": "c68b9eef35aa0ec8f860a13e83471d3fce7737675651d09852ec6819a254ca27",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:025eb69ae010e6afd03fc4dff2a24fcaaf19c82fd385e19f4166d9ebbe774429",
+    "audit:target:472873be00917a4ebf8d69e3b338f3e2a17aa6e7d92d58a52bc513ef0d20f263",
+    "audit:target:56968a0b61d069156a3c6cf55db5ba12bcfdf730847f49c102707a617d46863b",
+    "audit:target:6a677ac22a7333f883a5bbe3ea1f985b201e8e1dfa34eb7895adb06760dc2928",
+    "audit:target:947af4db243fa71cc6d47052431fa51f5bbbfedb0bcb714543f9ba10f451b42a",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:unit:given.executions",
+    "audit:unit:given.liveness",
+    "audit:unit:given.programs",
+    "audit:unit:given.single_owner",
+    "audit:unit:given.soundness",
+    "audit:unit:given.well_formed",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise. The result is expressed in prose with links for each premise/consequence; no unlinked extra formula or static typing hypothesis is introduced.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "acd6f3d0c948c8d251dbaf9c60ba92d9f6dd87b4d7eb2cfe02f5e045a68abca4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise.",
+    "mathematics": "The result is expressed in prose with links for each premise/consequence; no unlinked extra formula or static typing hypothesis is introduced.",
+    "links": [
+      {
+        "occurrence": "given.soundness:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed class table' refers to md/given.md#claim-given.well_formed_classes for the concept or example setup used by this unit. Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise."
+      },
+      {
+        "occurrence": "given.soundness:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finite execution' refers to md/given.md#claim-given.executions for the concept or example setup used by this unit. Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise."
+      },
+      {
+        "occurrence": "given.soundness:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty initial state' refers to md/given.md#claim-given.machine for the concept or example setup used by this unit. Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise."
+      },
+      {
+        "occurrence": "given.soundness:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed state' refers to md/given.md#claim-given.well_formed for the concept or example setup used by this unit. Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise."
+      },
+      {
+        "occurrence": "given.soundness:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'live' refers to md/given.md#claim-given.liveness for the concept or example setup used by this unit. Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise."
+      },
+      {
+        "occurrence": "given.soundness:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'exactly one owningreference' refers to md/given.md#claim-given.single_owner for the concept or example setup used by this unit. Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise."
+      }
+    ]
+  }
+}

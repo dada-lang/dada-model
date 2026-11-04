@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "bundle": "6a6a43cc86724f0da405234d1360a8ccc132035dbaa570b9b0707c80c6719793",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.collections"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Common/FiniteMap.FiniteMap consists of a finite List of key/value entries with a Nodup key proof. This supplies finite partial-map notation; List is the same finite ordered-sequence constructor used in that definition. This unit specifies notation, not a new operational representation invariant.",
+  "limitations": [
+    "Author self-review, not an independent review. Proof correctness is checked separately by Lean; the correspondence review compares statements, definitions and example propositions.",
+    "Abstract syntax and mathematical GC are modeled; no parser or executable collector is certified. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "5f2b84623b79f0e79689dfebb36d5b5e723f9746e30787f6402a1cb709fc344b"
+  ]
+}

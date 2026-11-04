@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "41d7471f200cdfd03abe9cbc6373f70a073238d3222104091eb24f2fcc8d7437",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:shared.typing.base",
+    "audit:unit:shared.typing.normalization",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The direct equation extracts C independent of permission/view and links normalized form. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.base projects nominal.className, ignoring the outer permission and view entries. The displayed equation has the same domain (normalized types) and result.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "25f00ad1277d442c04f644da171de243d518fedd3d702f4785651b7cb2a066cb"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The direct equation extracts C independent of permission/view and links normalized form.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.base projects nominal.className, ignoring the outer permission and view entries. The displayed equation has the same domain (normalized types) and result.",
+    "links": [
+      {
+        "occurrence": "shared.typing.base:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalized type' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. The direct equation extracts C independent of permission/view and links normalized form."
+      }
+    ]
+  }
+}

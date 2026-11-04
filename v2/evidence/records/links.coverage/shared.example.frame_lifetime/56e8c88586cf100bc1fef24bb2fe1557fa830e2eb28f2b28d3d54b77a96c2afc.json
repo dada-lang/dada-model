@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "2d17b914a759a34482cf64d3cc4c0bacdbb18f0deecfe1a1d3c2f383e005cc92",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "audit:target:9cc9154e3592cdc44cca3510ac58cfa325b84ffa766de384bb8a62113e702254",
+    "audit:unit:shared.example.frame_lifetime",
+    "audit:unit:shared.gc",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.steps",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links frame execution/collection and follows the local declaration through initial-frame exit. Object allocation and the retained counter are concrete observations of the linked lifetime, not code-exhaustion completion.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links frame execution/collection and follows the local declaration through initial-frame exit.",
+    "mathematics": "Object allocation and the retained counter are concrete observations of the linked lifetime, not code-exhaustion completion.",
+    "links": [
+      {
+        "occurrence": "shared.example.frame_lifetime:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links frame execution/collection and follows the local declaration through initial-frame exit."
+      },
+      {
+        "occurrence": "shared.example.frame_lifetime:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'initial frame' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links frame execution/collection and follows the local declaration through initial-frame exit."
+      },
+      {
+        "occurrence": "shared.example.frame_lifetime:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'collects' refers to md/shared.md#claim-shared.gc for the concept or example setup used by this unit. Links frame execution/collection and follows the local declaration through initial-frame exit."
+      }
+    ]
+  }
+}

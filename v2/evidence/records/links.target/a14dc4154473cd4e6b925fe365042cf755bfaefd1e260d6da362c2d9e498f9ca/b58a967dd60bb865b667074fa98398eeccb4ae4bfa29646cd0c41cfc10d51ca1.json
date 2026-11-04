@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "0d6deada2ecc6bc9aa68a40227f262c86d72a9df93e062dd2837ce6fe08b3fcd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a14dc4154473cd4e6b925fe365042cf755bfaefd1e260d6da362c2d9e498f9ca",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.read directly introduces reading a relative field path from an object. Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly. read is introduced here; alpha and rho are the input object/path, bot is the existing empty-slot notation. No unlinked auxiliary equation is used. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "2118c6555cde804a2cd9053a98f5177323e121df9550bf0e9e13e9640ee9d4f6"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "reading a relative field path from an object",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 27651,
+      "end": 28200
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.read directly introduces reading a relative field path from an object. Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly.",
+    "independence": "read is introduced here; alpha and rho are the input object/path, bot is the existing empty-slot notation. No unlinked auxiliary equation is used. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

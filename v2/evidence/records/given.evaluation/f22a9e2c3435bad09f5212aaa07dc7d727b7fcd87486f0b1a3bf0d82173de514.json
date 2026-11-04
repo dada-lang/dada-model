@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "909b5323fbfcd4e581d3c8a898c0a55a595323e742752650bb92ce64a335ff8f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/State:Updated",
+    "lean:Unique/Step:Eval",
+    "lean:Unique/Step:EvalArgs",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Step:State.allocate",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.evaluation",
+    "unit:given.identities",
+    "unit:given.lookup",
+    "unit:given.programs",
+    "unit:given.resolution",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax",
+    "unit:given.update"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.evaluation against lean:Unique/Step:Eval, lean:Unique/Step:EvalArgs, lean:Unique/Step:State.allocate. Eval.give resolves and takes an owner, while Eval.new threads EvalArgs left to right, checks arity and fresh nextId, then zips results with declared fields and increments the counter. The empty-argument constructor is covered by EvalArgs.nil. No recovery state is exposed for a failed argument, and a repeated unique give loses its source on the first argument. Notation and judgment context was checked in unit:given.classes, unit:given.syntax, unit:given.programs, unit:given.state, unit:given.storage_places, unit:given.resolution.",
+  "limitations": [
+    "Author self-review, not an independent review. Proof correctness is checked separately by Lean; the correspondence review compares statements, definitions and example propositions.",
+    "Abstract syntax and mathematical GC are modeled; no parser or executable collector is certified. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "17c3e3fd3751d70eb7b962017bc156b1df426ec8eb04e39e9dd0698e6a7145da",
+    "3b07d01e754b3384f9a806b7571edfe298ca9f3c04c0d2851afd7eb48b9e5cbc"
+  ]
+}

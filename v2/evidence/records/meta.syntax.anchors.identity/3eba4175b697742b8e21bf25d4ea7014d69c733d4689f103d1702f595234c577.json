@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "3c4208c6ff2e8a5301744fe0ef2e1955f325bc82c91ceb6020b558fe18be1e7f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "unit:meta.syntax.anchors.identity"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.anchors.identity against rust:mdbook-dada/src/lib.rs:roles, rust:mdbook-dada/src/lib.rs:chapter_roles, rust:mdbook-dada/src/lib.rs:process_with_roots, rust:mdbook-dada/src/lib.rs:relative_html, rust:mdbook-dada/src/lib.rs:render_role, test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters, test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail, test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors, test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs. roles validates the documented ASCII ID shape and excludes literal contexts; chapter_roles adds structured IDs to the shared namespace; process_with_roots indexes all chapters before rendering and rejects duplicates. relative_html and render_role build local/relative shield links. Tests cover forward/nested/parent references, missing/duplicate IDs, literal examples and neutral/definition role labels without proof implications. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review. Implementation and test inspection does not establish universal correctness, browser appearance, CDN availability, or authenticated execution. Mechanical results are retained separately."
+  ],
+  "supersedes": [
+    "967bd8081b0f940bbe7ffa67bce1124de99580afef05c1aba3d33149346df9d3",
+    "8c52a088ddb5d3ce21bdc827a19e305d0bbc794df49ea066e7e8662c825ca971"
+  ]
+}

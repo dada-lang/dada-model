@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "38883a27af7affe592c5dbda4ee5943fe4f0264ff0915b63ae7ed29a9236f2f4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c606944c55fcc1af8071d20ef9cfffd91dabf71226ad1a2eab085091751daee3",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.machine directly introduces shared.typing.machine. Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations. The frame tuple and optional-frame alternatives are introduced here. Initialization uses the linked empty state; no later transition judgment is needed to understand the representation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "092936f05e046ca8658c98463b575f4dd06fcb25b6f7ea125446dbc101381121"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.machine",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 23024,
+      "end": 23445
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.machine directly introduces shared.typing.machine. Links storage and syntax while defining the optional frame outside the heap/counter. Auxiliary local observations are explicitly distinguished from complete program configurations.",
+    "independence": "The frame tuple and optional-frame alternatives are introduced here. Initialization uses the linked empty state; no later transition judgment is needed to understand the representation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

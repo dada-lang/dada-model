@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "bundle": "30ddae4fb0a2eea69c704bc0f70d48773e99f8b1842c7db5d7a1ef41361f9cff",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0cdbf42c41e7e944b7cfdecf7bb762ce6c2d75970d563b592d053b10c0002f94",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:2ad9184ea8f87bf25aa062eee2e8605a4933189e40f6aa461d5c7a04418b8674",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:unit:destructors.body_typing",
+    "audit:unit:destructors.declarations",
+    "audit:unit:destructors.drop_typing",
+    "audit:unit:destructors.finished_environment",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links destructor declarations, finished environments, Functions signatures and droppability. The appendix is a summary navigation link; the actual obligations have direct links. self: given C is the locally scoped receiver type. No current theorem is asserted; the new completion condition is explicitly proposed.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links destructor declarations, finished environments, Functions signatures and droppability. The appendix is a summary navigation link; the actual obligations have direct links.",
+    "mathematics": "self: given C is the locally scoped receiver type. No current theorem is asserted; the new completion condition is explicitly proposed.",
+    "links": [
+      {
+        "occurrence": "destructors.body_typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declared destructor body' refers to md/destructors.md#claim-destructors.declarations for the concept or example setup used by this unit. Links destructor declarations, finished environments, Functions signatures and droppability. The appendix is a summary navigation link; the actual obligations have direct links."
+      },
+      {
+        "occurrence": "destructors.body_typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished environment' refers to md/destructors.md#claim-destructors.finished_environment for the concept or example setup used by this unit. Links destructor declarations, finished environments, Functions signatures and droppability. The appendix is a summary navigation link; the actual obligations have direct links."
+      },
+      {
+        "occurrence": "destructors.body_typing:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Functions signatures' refers to md/functions.md#claim-functions.signatures for the concept or example setup used by this unit. Links destructor declarations, finished environments, Functions signatures and droppability. The appendix is a summary navigation link; the actual obligations have direct links."
+      },
+      {
+        "occurrence": "destructors.body_typing:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'droppability' refers to md/destructors.md#claim-destructors.droppable for the concept or example setup used by this unit. Links destructor declarations, finished environments, Functions signatures and droppability. The appendix is a summary navigation link; the actual obligations have direct links."
+      },
+      {
+        "occurrence": "destructors.body_typing:5",
+        "role": "navigation",
+        "rationale": "Optional appendix navigation: the source already links the inherited definitions it actually uses; this appendix gathers those same rules in one summary without supplying a missing premise."
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "d202890ba4759b000fad0e3ec112ca6c995fa9b12cb99b42efb9281c433e4c7d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.syntax directly introduces Shared place, value and statement syntax. Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar. p/e/t introduce the extended grammar; the give operation has a direct link and give-share is explained as its result conversion. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "03875f928fbf31b6a5435f65ce8c4905a0b4736699602fe649f54b8b4ae040ef"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared place, value and statement syntax",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 5594,
+      "end": 6727
+    },
+    "clarity": "The landing md/shared.md#claim-shared.syntax directly introduces Shared place, value and statement syntax. Links unchanged places and the give definition; gives, give-share, nested constructors and fresh lets are the locally defined grammar.",
+    "independence": "p/e/t introduce the extended grammar; the give operation has a direct link and give-share is explained as its result conversion. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

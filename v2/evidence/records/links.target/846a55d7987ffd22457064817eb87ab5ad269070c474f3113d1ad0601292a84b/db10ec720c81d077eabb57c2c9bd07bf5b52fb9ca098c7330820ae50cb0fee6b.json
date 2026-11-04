@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "076733c71898c38f9ec8907661ebb4d394a91beda936e95e5d34ec4585c3e451",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:846a55d7987ffd22457064817eb87ab5ad269070c474f3113d1ad0601292a84b",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.stuck directly introduces Shared stuck configurations. Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation. The equation links both Finished and Step. The prose counterexample refers back to giving rather than assuming static initialization typing. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "cb6fee877bd1bcb75a5575c1289c4bc73f6d3feb20cdc67b2ad294425f708249"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared stuck configurations",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 22503,
+      "end": 23009
+    },
+    "clarity": "The landing md/shared.md#claim-shared.stuck directly introduces Shared stuck configurations. Links Finished and next-step exclusion; the second-unique-give example links the earlier give operation. Stuckness no longer hides with evaluation.",
+    "independence": "The equation links both Finished and Step. The prose counterexample refers back to giving rather than assuming static initialization typing. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

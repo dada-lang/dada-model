@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "7595e0c30c32817e1e72067d464a51f8a445409fc9b138a41bf0b2d1ca7ea389",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:functions.example.gc",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The table supplies the three lifetime boundaries and roots directly. The forward frame/collector links are explicitly marked below and reviewed separately. All object names are declared in the code; the table defines the concrete states, including spent identifiers. It does not require a future symbolic transition derivation to read the observation.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The table supplies the three lifetime boundaries and roots directly. The forward frame/collector links are explicitly marked below and reviewed separately.",
+    "mathematics": "All object names are declared in the code; the table defines the concrete states, including spent identifiers. It does not require a future symbolic transition derivation to read the observation.",
+    "links": [
+      {
+        "occurrence": "functions.example.gc:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'frame rules' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. The table supplies the three lifetime boundaries and roots directly. The forward frame/collector links are explicitly marked below and reviewed separately."
+      },
+      {
+        "occurrence": "functions.example.gc:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'collector definition' refers to md/functions.md#claim-functions.gc for the concept or example setup used by this unit. The table supplies the three lifetime boundaries and roots directly. The forward frame/collector links are explicitly marked below and reviewed separately."
+      }
+    ]
+  }
+}

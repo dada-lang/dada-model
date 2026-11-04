@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "bundle": "f91307929e66b591ffc84547fddd571728ff5b307bdad0d310c8830372ea0511",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/links.rs:LinkInventory::build",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_renderer_rejects_a_correct_claim_in_the_wrong_chapter",
+    "test:mdbook-dada/tests/links.rs:inventory_reads_markdown_reference_roles_and_math_with_exact_ranges",
+    "test:mdbook-dada/tests/links.rs:order_comes_from_summary_and_byte_position_not_filename_or_unit_id",
+    "test:mdbook-dada/tests/links.rs:reference_definitions_outside_unit_and_bare_math_directives_are_inventoried",
+    "test:mdbook-dada/tests/links.rs:relative_paths_preserve_target_chapter_and_wrong_path_does_not_match_global_id",
+    "unit:meta.links.inventory"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "LinkInventory::build derives chapters from SUMMARY order and resolves exact chapter/fragment identity, retains source spans and distinguishes local containing targets. document extracts Markdown/reference links, roles and literal MathJax hrefs while excluding code/comments and rejecting unsupported HTML/URL forms. Tests cover all named syntaxes, external reference definitions, wrong-chapter global IDs and source-order differences. All SourceLinks, including future notes, require audit generation; cycles remain candidates rather than automatic exemptions.",
+  "limitations": [
+    "Author self-review, not an independent review. Implementation and test inspection does not establish universal correctness, browser appearance, CDN availability, or authenticated execution. Mechanical results are retained separately."
+  ],
+  "supersedes": [
+    "2a8e07e997274c6f2b116e155cb8dc14495feefa7eddd2c7b6bce17d24e0669b"
+  ]
+}

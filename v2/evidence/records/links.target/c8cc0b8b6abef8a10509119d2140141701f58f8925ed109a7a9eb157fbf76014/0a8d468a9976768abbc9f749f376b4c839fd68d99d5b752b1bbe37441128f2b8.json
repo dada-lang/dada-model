@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "589705f544ca3c627858b1f7c8a2ccaa9a7b070e086d56d55855e53dd2e2d8e4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c8cc0b8b6abef8a10509119d2140141701f58f8925ed109a7a9eb157fbf76014",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces proposed all-frame ownership and class-liveness obligations. Links structural/kind restrictions, all live frames, class obligations, GC, path exclusivity and signed views. The exact new realization relation remains explicitly unformalized. This is a proposed invariant stated in prose; the reachable-class obligation is defined here, not imported as an established result. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "proposed all-frame ownership and class-liveness obligations",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 15138,
+      "end": 16369
+    },
+    "clarity": "The named landing directly introduces proposed all-frame ownership and class-liveness obligations. Links structural/kind restrictions, all live frames, class obligations, GC, path exclusivity and signed views. The exact new realization relation remains explicitly unformalized.",
+    "independence": "This is a proposed invariant stated in prose; the reachable-class obligation is defined here, not imported as an established result. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

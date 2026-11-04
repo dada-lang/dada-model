@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "dd97efaeda7d5638e08bc2e51de7e34c464deebe6f3aa246a741f44d89bd4839",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:ca14680f9125a36fd78068c76b0489c10f2e57376ae1804ee0628deb5ff977c6",
+    "audit:unit:shared.gc",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.state",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop. S_K, D and the filtered heap are scoped in the text; gc retains the counter/frame and surviving object data.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop.",
+    "mathematics": "S_K, D and the filtered heap are scoped in the text; gc retains the counter/frame and surviving object data.",
+    "links": [
+      {
+        "occurrence": "shared.gc:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'live frame' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop."
+      },
+      {
+        "occurrence": "shared.gc:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'initialized object fields' refers to md/shared.md#claim-shared.objects for the concept or example setup used by this unit. Links frame roots and initialized object fields. Defines collection over reachable entries with no roots after frame-pop."
+      }
+    ]
+  }
+}

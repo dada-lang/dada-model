@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "6402896c3688c27fb54dcf9542451ea15f23c2c5acfe9da5295e289c39173dec",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6ae020898c20f3d892b21e9251af69ba2058cb06a104349ed5e92d1e155dc6f0",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.declared_permission directly introduces shared.typing.declared_permission. Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. declaredPermission returns given at the empty path and recursively looks up a field's permission/class, composing its permission with the suffix. Lookup failure makes the result absent. The recursive equations and validity condition use the same nominal path domain. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "3cff6561a41a1db0abb8a6368b9471f460c3302345183a5feb89294d5800abf0"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.declared_permission",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 11071,
+      "end": 11767
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.declared_permission directly introduces shared.typing.declared_permission. Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. declaredPermission returns given at the empty path and recursively looks up a field's permission/class, composing its permission with the suffix. Lookup failure makes the result absent. The recursive equations and validity condition use the same nominal path domain. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

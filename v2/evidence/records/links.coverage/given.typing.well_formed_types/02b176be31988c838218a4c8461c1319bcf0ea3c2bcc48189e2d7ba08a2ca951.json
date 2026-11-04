@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "c6020b5e4d36eead905f4a80fee3d1f56d7ef48ee5b92bcde86b4c6910c29ac5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.views",
+    "audit:unit:given.typing.well_formed_types",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here. C is the locally named base class; the C.{f,-f.g} notation is a literal counterexample to the condition, not a new operation.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "ccd9d65302cbe6486093c6a6e20996f5c1bd652435856cd34d2d5e709d0a52d3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here.",
+    "mathematics": "C is the locally named base class; the C.{f,-f.g} notation is a literal counterexample to the condition, not a new operation.",
+    "links": [
+      {
+        "occurrence": "given.typing.well_formed_types:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'base class' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here."
+      },
+      {
+        "occurrence": "given.typing.well_formed_types:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'valid from' refers to md/given-typing.md#claim-given.typing.class_at for the concept or example setup used by this unit. Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here."
+      }
+    ]
+  }
+}

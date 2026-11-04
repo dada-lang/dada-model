@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "7334b4ddee57dcf7c636ab830b0cfe64abcd600ad3ecb124a3c32ea697a3c34d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/link_audit.rs:AuditInventory::build",
+    "rust:mdbook-dada/src/link_audit.rs:cross_validate",
+    "rust:mdbook-dada/src/link_audit.rs:validate_review",
+    "rust:mdbook-dada/src/links.rs:LinkInventory::build",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_renderer_rejects_a_correct_claim_in_the_wrong_chapter",
+    "test:mdbook-dada/tests/link_audit.rs:a_local_link_before_its_actual_definition_cannot_be_called_backward",
+    "test:mdbook-dada/tests/link_audit.rs:complete_link_audits_pass_but_preparation_alone_does_not",
+    "test:mdbook-dada/tests/link_audit.rs:conceptual_external_links_require_an_inspectable_local_definition",
+    "test:mdbook-dada/tests/link_audit.rs:coverage_requires_each_occurrence_once_and_both_prose_and_math_rationales",
+    "test:mdbook-dada/tests/link_audit.rs:forward_exceptions_require_all_three_reasons_and_a_real_source_span",
+    "test:mdbook-dada/tests/link_audit.rs:independent_positive_reviews_cannot_disagree_on_backward_links_or_target_spans",
+    "test:mdbook-dada/tests/link_audit.rs:navigation_exemption_must_agree_with_current_coverage",
+    "test:mdbook-dada/tests/link_audit.rs:source_movement_summary_order_and_reference_definitions_invalidate_inputs",
+    "test:mdbook-dada/tests/link_audit.rs:target_spans_cannot_escape_or_select_empty_text",
+    "test:mdbook-dada/tests/links.rs:inventory_reads_markdown_reference_roles_and_math_with_exact_ranges",
+    "test:mdbook-dada/tests/links.rs:order_comes_from_summary_and_byte_position_not_filename_or_unit_id",
+    "test:mdbook-dada/tests/links.rs:reference_definitions_outside_unit_and_bare_math_directives_are_inventoried",
+    "test:mdbook-dada/tests/links.rs:relative_paths_preserve_target_chapter_and_wrong_path_does_not_match_global_id",
+    "unit:meta.links.coverage",
+    "unit:meta.links.inventory",
+    "unit:meta.links.order",
+    "unit:meta.links.targets"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "AuditInventory creates candidates for forward/local/unordered internal occurrences. validate_review requires necessity, signposting with a real source span, and minimal-use rationale for exceptions; cross_validate compares current coverage roles and target-definition positions, rejecting false backward or navigation dispositions and disagreement. Tests exercise these cases and freshness after source/order movement. The prose distinguishes a justified review from a detected candidate or cycle and accurately describes all three required reasons.",
+  "limitations": [
+    "Author self-review, not an independent review. Implementation and test inspection does not establish universal correctness, browser appearance, CDN availability, or authenticated execution. Mechanical results are retained separately."
+  ],
+  "supersedes": [
+    "feaaa6a570dfd6f020f1f64b21244223cb8576ec5ed3ddcff9efc8fbece12071"
+  ]
+}

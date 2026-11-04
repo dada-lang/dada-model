@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "bundle": "f1de8e21c3e33a2850ec4535ec5bf8e41c85a0906a122843a7a2c1c7d470107b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2ad9184ea8f87bf25aa062eee2e8605a4933189e40f6aa461d5c7a04418b8674",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:destructors.declarations",
+    "audit:unit:shared.declarations",
+    "audit:unit:shared.struct",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nominal kinds, whole receiver types, unpacking and struct-field restrictions. Defines the optional destructor locally; the appendix only gathers already linked rules. The literal drop body and self type are proposed syntax, not unnamed formal judgments.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nominal kinds, whole receiver types, unpacking and struct-field restrictions. Defines the optional destructor locally; the appendix only gathers already linked rules.",
+    "mathematics": "The literal drop body and self type are proposed syntax, not unnamed formal judgments.",
+    "links": [
+      {
+        "occurrence": "destructors.declarations:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Shared's name, kind, and ordered fields\" refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links nominal kinds, whole receiver types, unpacking and struct-field restrictions. Defines the optional destructor locally; the appendix only gathers already linked rules."
+      },
+      {
+        "occurrence": "destructors.declarations:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'uniquely owned whole instance' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links nominal kinds, whole receiver types, unpacking and struct-field restrictions. Defines the optional destructor locally; the appendix only gathers already linked rules."
+      },
+      {
+        "occurrence": "destructors.declarations:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'explicit unpacking' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links nominal kinds, whole receiver types, unpacking and struct-field restrictions. Defines the optional destructor locally; the appendix only gathers already linked rules."
+      },
+      {
+        "occurrence": "destructors.declarations:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Struct fields still have only struct types' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. Links nominal kinds, whole receiver types, unpacking and struct-field restrictions. Defines the optional destructor locally; the appendix only gathers already linked rules."
+      },
+      {
+        "occurrence": "destructors.declarations:5",
+        "role": "navigation",
+        "rationale": "Optional appendix navigation: the source already links the inherited definitions it actually uses; this appendix gathers those same rules in one summary without supplying a missing premise."
+      }
+    ]
+  }
+}

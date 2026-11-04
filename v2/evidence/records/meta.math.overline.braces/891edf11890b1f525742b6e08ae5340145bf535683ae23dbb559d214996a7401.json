@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "4761fb3249cd33a46b50b8b69d9bd966ac6a01ea8f01f0cc605ad518a9a8097a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lint.rs:check_latex",
+    "test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions",
+    "test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex",
+    "test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf",
+    "test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed",
+    "test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space",
+    "unit:meta.math.overline.braces"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.overline.braces against rust:mdbook-dada/src/lint.rs:check_latex, test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space, test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed, test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf, test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex, test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions. check_latex uses a raw-source regex for the exact control word, requiring an immediately preceding brace and literal ASCII space after it. Tests distinguish tabs/newlines/nonbreaking spaces and longer names, verify Unicode/CRLF line counts, apply the lint in nested book chapters/literal samples and scan all md files recursively. The prose correctly limits this to adjacency rather than TeX parsing. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review. Implementation and test inspection does not establish universal correctness, browser appearance, CDN availability, or authenticated execution. Mechanical results are retained separately."
+  ],
+  "supersedes": [
+    "73a500285aa9281cc41f7d9b0e3bdb7164f83c01da085b261a816c911e3c0d14",
+    "c2febf675f68bb841707046c41dd84732bdf9b7c86d62036c0ab6589673fb05f"
+  ]
+}

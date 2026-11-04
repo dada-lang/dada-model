@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "f34117392b07345f2ec351ad7f70d5ecb754d73d091b363e6cd48d02952a1694",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.views directly introduces signed view entries and nominal view types. Relative place links to its grammar. Positive and negative entries, unknown omissions, whole-class shorthand, and empty view are explained locally. The a/A/T productions define the grammar. The negative-epsilon exclusion is explicit, and bare C is defined as a view spelling rather than a second constructor. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "944bad7a4781a0cea02876ce4a0e0b71a33c2d78062a9f896d7f5d8e585e774c"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "signed view entries and nominal view types",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 2800,
+      "end": 3946
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.views directly introduces signed view entries and nominal view types. Relative place links to its grammar. Positive and negative entries, unknown omissions, whole-class shorthand, and empty view are explained locally.",
+    "independence": "The a/A/T productions define the grammar. The negative-epsilon exclusion is explicit, and bare C is defined as a view spelling rather than a second constructor. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

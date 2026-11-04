@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "8617740dd2a42cb87fad72a366ae3ae6525ee3cb1b4a3eb983ffafa8e5dc73a0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.perm",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The direct equation extracts the outer permission and links normalized form. No grammar or unrelated operation precedes it in this unit. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.perm projects permission from the already normalized ValueType record. The equation perm(pi C.A)=pi and the printed implicit given case identify precisely that projection.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "ab9bab64b5c8a3753a8acb2a9df07e27634d08f0acab4b543f81326bc18c31e2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The direct equation extracts the outer permission and links normalized form. No grammar or unrelated operation precedes it in this unit.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.perm projects permission from the already normalized ValueType record. The equation perm(pi C.A)=pi and the printed implicit given case identify precisely that projection.",
+    "links": [
+      {
+        "occurrence": "shared.typing.perm:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalized form' refers to md/shared-typing.md#claim-shared.typing.normalization for the concept or example setup used by this unit. The direct equation extracts the outer permission and links normalized form. No grammar or unrelated operation precedes it in this unit."
+      }
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "0963a42af61297aa813f3c9c18c2ed651fe6c35979f8f119925ffbc655964a05",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:e0f7028e3af89f0a1f93b77464e6ca10ddc3704b8a553bd11b721c356306583f",
+    "audit:unit:functions.example.identity",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program. The Unicode arrow is explained as the signature permission and as the give operation; no symbolic judgment beyond the example is assumed.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program.",
+    "mathematics": "The Unicode arrow is explained as the signature permission and as the give operation; no symbolic judgment beyond the example is assumed.",
+    "links": [
+      {
+        "occurrence": "functions.example.identity:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'uniquely owned Token' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program."
+      },
+      {
+        "occurrence": "functions.example.identity:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empties original' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program."
+      },
+      {
+        "occurrence": "functions.example.identity:3",
+        "role": "navigation",
+        "rationale": "Optional appendix navigation: the source already links the inherited definitions it actually uses; this appendix gathers those same rules in one summary without supplying a missing premise."
+      }
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "bundle": "e3d9543a9287fe7ff7cf68cd5ceed3aadf5639dcb49bd9f28c36bc8664039817",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2125be554c01949722a01b484938c16897339c8d6ac2c317a9fc821a16faeeaa",
+    "audit:target:4fbc8d894e68d4383b58ceae09ec533638f4d56e8e7e70e873de2949841887dd",
+    "audit:target:c8516104fc1674d15869cc1933d40e82e643211b67246f3c71d9b8fe0a5b28c3",
+    "audit:target:dbbdd07e0a2707183096cf819219485180c2fe4f0c682ce83ffe0a5ff7577a8f",
+    "audit:unit:shared.typing.configurations",
+    "audit:unit:shared.typing.preservation",
+    "audit:unit:shared.typing.progress",
+    "audit:unit:shared.typing.safety",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The shared.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame. The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "8a8d958d37ea5b895def04f6f9840907c63e04665d94aac9503cd9e47fa18476"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The shared.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame.",
+    "mathematics": "The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+    "links": [
+      {
+        "occurrence": "shared.typing.safety:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed program' refers to md/shared-typing.md#claim-shared.typing.programs for the concept or example setup used by this unit. The shared.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "shared.typing.safety:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finite execution' refers to md/shared-typing.md#claim-shared.typing.execution for the concept or example setup used by this unit. The shared.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "shared.typing.safety:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck configuration' refers to md/shared-typing.md#claim-shared.typing.outcomes for the concept or example setup used by this unit. The shared.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "shared.typing.safety:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well typed' refers to md/shared-typing.md#claim-shared.typing.configurations for the concept or example setup used by this unit. The shared.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      }
+    ]
+  }
+}

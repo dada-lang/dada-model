@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "0396946930457febca982aa8ef70294e63e5fd854affc7f3b56dd0a129ea1fc9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.allocated directly introduces Given allocation as object-table membership. Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table. Allocated is the predicate being defined; O and dom are identified by the local S decomposition and the linked object table. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "f04a80a0c8c9314fdff5808eca094c79d23a465729d5ec0deb3a28e6e5984e63"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given allocation as object-table membership",
+    "definition": {
+      "path": "md/given.md",
+      "start": 19779,
+      "end": 19980
+    },
+    "clarity": "The landing md/given.md#claim-given.allocated directly introduces Given allocation as object-table membership. Allocation is isolated as object-table membership and links to storage. The local O decomposition defines the equation’s map, not a new program table.",
+    "independence": "Allocated is the predicate being defined; O and dom are identified by the local S decomposition and the linked object table. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

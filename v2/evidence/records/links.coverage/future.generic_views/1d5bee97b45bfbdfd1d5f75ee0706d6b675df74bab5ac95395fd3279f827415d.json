@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "fe727c1f0192f6b0df92ff3f19a2ead967bdc27e0cf76b7771159cfe2007578d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:target:a65eb6e25dc5992af74682e3ee7637608f951cbca91ff863784472c2c21591a9",
+    "audit:unit:future.generic_views",
+    "audit:unit:given.typing.expressions",
+    "audit:unit:given.typing.views",
+    "context:link-chapter:md/dada/future-extensions.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The proposal introduces the view parameter V and prefixing notation locally. Existing signed views and the current whole-argument Construct restriction have direct backward links; the empty-view caveat is part of the proposed design rather than a current theorem. The quantified signature is explicitly proposed, binds V, and explains c.V immediately. Its referenced current view notion is linked; no claim of a current Lean derivation is made.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "78600916c3a4f63c07d4fc102a86fd36b27c8e6554659757f26778761b0454c8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The proposal introduces the view parameter V and prefixing notation locally. Existing signed views and the current whole-argument Construct restriction have direct backward links; the empty-view caveat is part of the proposed design rather than a current theorem.",
+    "mathematics": "The quantified signature is explicitly proposed, binds V, and explains c.V immediately. Its referenced current view notion is linked; no claim of a current Lean derivation is made.",
+    "links": [
+      {
+        "occurrence": "future.generic_views:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'view' refers to md/given-typing.md#claim-given.typing.views for the concept or example setup used by this unit. The proposal introduces the view parameter V and prefixing notation locally. Existing signed views and the current whole-argument Construct restriction have direct backward links; the empty-view caveat is part of the proposed design rather than a current theorem."
+      },
+      {
+        "occurrence": "future.generic_views:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Construct rule' refers to md/given-typing.md#claim-given.typing.expressions for the concept or example setup used by this unit. The proposal introduces the view parameter V and prefixing notation locally. Existing signed views and the current whole-argument Construct restriction have direct backward links; the empty-view caveat is part of the proposed design rather than a current theorem."
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "1e3c5d0a7db6aa7114db61775c79abc48641c0c786042623ad66e0f85104afe8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:87f4db0fb5ffac0232ba636a7b725d3d49798dc0561864d9f86bc65fc3fa676b",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces parameter binding and destination/result presence matching. Links signatures, runtime references and optional destination/result syntax. Defines ordered binding and presence matching. bind, d~R, and list arity are introduced locally; equal lengths are the operation's stated domain, not a hidden zip truncation assumption. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "parameter binding and destination/result presence matching",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 18771,
+      "end": 19394
+    },
+    "clarity": "The named landing directly introduces parameter binding and destination/result presence matching. Links signatures, runtime references and optional destination/result syntax. Defines ordered binding and presence matching.",
+    "independence": "bind, d~R, and list arity are introduced locally; equal lengths are the operation's stated domain, not a hidden zip truncation assumption. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

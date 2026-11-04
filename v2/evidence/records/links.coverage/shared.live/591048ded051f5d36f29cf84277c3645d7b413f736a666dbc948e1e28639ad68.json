@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "14d8f99a32e5886f877a6e5d501de987ee67b5f03c680e5568b56b27a8847fcd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:target:fc2b9cd2551cefd6e370454f733eeb9560ca3149a815add8716a368b41fd25af",
+    "audit:unit:shared.live",
+    "audit:unit:shared.lookup",
+    "audit:unit:shared.references",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition. Both occupied-slot premises link lookup and κ is grounded by the reference link. Recursive Live defines the relation independent of mode.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "90c14dd15fa4f272c63f9dfb5560bf8273e6f48d641e368a03c7deba0a47529f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition.",
+    "mathematics": "Both occupied-slot premises link lookup and κ is grounded by the reference link. Recursive Live defines the relation independent of mode.",
+    "links": [
+      {
+        "occurrence": "shared.live:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'references' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition."
+      },
+      {
+        "occurrence": "shared.live:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S[x]' refers to md/shared.md#claim-shared.lookup for the concept or example setup used by this unit. The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition."
+      },
+      {
+        "occurrence": "shared.live:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S[\\\\beta.f]' refers to md/shared.md#claim-shared.lookup for the concept or example setup used by this unit. The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition."
+      }
+    ]
+  }
+}

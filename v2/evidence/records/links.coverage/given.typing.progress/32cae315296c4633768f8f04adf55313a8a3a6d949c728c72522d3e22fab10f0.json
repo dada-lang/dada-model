@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "ee88bcecacd06781e3aee84e105df17eddbd568e5e6ab0e3c9579341e46c9b89",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:target:9152f90a41f757fc02cb545765b11e8fad2e3801166666165f01b88d1a383bb0",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.configurations",
+    "audit:unit:given.typing.expression_soundness",
+    "audit:unit:given.typing.progress",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Typed configurations, finishedness, and operational extended steps all link directly. The displayed premise and disjunction link configuration typing, Finished, erasure, and the step arrow.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "28e72738acfc351f6cc6cf193072682c5f11b6aae4819157693b629003fb143f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Typed configurations, finishedness, and operational extended steps all link directly.",
+    "mathematics": "The displayed premise and disjunction link configuration typing, Finished, erasure, and the step arrow.",
+    "links": [
+      {
+        "occurrence": "given.typing.progress:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed configuration' refers to md/given-typing.md#claim-given.typing.configurations for the concept or example setup used by this unit. Typed configurations, finishedness, and operational extended steps all link directly."
+      },
+      {
+        "occurrence": "given.typing.progress:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/given.md#claim-given.finished for the concept or example setup used by this unit. Typed configurations, finishedness, and operational extended steps all link directly."
+      },
+      {
+        "occurrence": "given.typing.progress:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. Typed configurations, finishedness, and operational extended steps all link directly."
+      }
+    ]
+  }
+}

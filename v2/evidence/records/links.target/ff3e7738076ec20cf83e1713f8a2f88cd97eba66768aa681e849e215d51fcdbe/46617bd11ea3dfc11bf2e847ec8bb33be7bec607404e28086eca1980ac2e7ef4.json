@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "335656f224d236fb3b5fac46d505bb88c8b83aa8c42bd8159f779ee872b2c442",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ff3e7738076ec20cf83e1713f8a2f88cd97eba66768aa681e849e215d51fcdbe",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.storage_places directly introduces direct Shared storage places. Gives q grammar and links routed places for the distinction; no lookup equation is buried here. q has the local x/α.f grammar and is distinguished from a linked recursive place expression. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "f80ffea6d942a1c7f8d67a78ef3e6caffb3a93f555e86727aa5603e8debc2223"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "direct Shared storage places",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 10164,
+      "end": 10405
+    },
+    "clarity": "The landing md/shared.md#claim-shared.storage_places directly introduces direct Shared storage places. Gives q grammar and links routed places for the distinction; no lookup equation is buried here.",
+    "independence": "q has the local x/α.f grammar and is distinguished from a linked recursive place expression. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

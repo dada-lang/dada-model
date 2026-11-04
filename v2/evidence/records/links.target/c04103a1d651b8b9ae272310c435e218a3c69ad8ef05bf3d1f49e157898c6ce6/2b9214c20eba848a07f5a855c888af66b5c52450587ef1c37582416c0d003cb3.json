@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "e902074da215647f46270ab2bd6f4eb3a302ca846c0cb21d874430f22df4350d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c04103a1d651b8b9ae272310c435e218a3c69ad8ef05bf3d1f49e157898c6ce6",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.statements directly introduces typing a let statement by expression and binding composition. Expression typing and binding typing both link directly in the introductory explanation. Both premises link their defining judgments, while the Let conclusion defines statement typing here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "c2778c84231cff60e293807363fd485e5a34e11917033318a7733b4a12955a9c"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "typing a let statement by expression and binding composition",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 23442,
+      "end": 23918
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.statements directly introduces typing a let statement by expression and binding composition. Expression typing and binding typing both link directly in the introductory explanation.",
+    "independence": "Both premises link their defining judgments, while the Let conclusion defines statement typing here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

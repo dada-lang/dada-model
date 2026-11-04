@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "e635631b0ac29577ca3edf7d2cc8abff732aa5c49e32010de219e1c49297b4d8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d6c2319422bc09f8bd5db42388b5e094818d235328c57f2f2ed44355c8fd76d1",
+    "audit:unit:given.patterns",
+    "audit:unit:shared.typing.patterns",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Given flat patterns; defines the Shared pattern grammar and fresh/distinct/all-fields constraints locally. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Pattern provides variable and flat named unpack forms; Unpacking.Statement pairs a pattern with a value expression. Distinct fresh destinations and exhaustive fields are enforced by binding, as the accompanying scope paragraph states. No wildcard or remainder form is admitted.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "11ca13cd4488dee30ac4f71bff7dfa2a9f53b1c6eb2a0dc957e194f837f185d2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Given flat patterns; defines the Shared pattern grammar and fresh/distinct/all-fields constraints locally.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Pattern provides variable and flat named unpack forms; Unpacking.Statement pairs a pattern with a value expression. Distinct fresh destinations and exhaustive fields are enforced by binding, as the accompanying scope paragraph states. No wildcard or remainder form is admitted.",
+    "links": [
+      {
+        "occurrence": "shared.typing.patterns:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's flat binding patterns\" refers to md/given.md#claim-given.patterns for the concept or example setup used by this unit. Links Given flat patterns; defines the Shared pattern grammar and fresh/distinct/all-fields constraints locally."
+      }
+    ]
+  }
+}

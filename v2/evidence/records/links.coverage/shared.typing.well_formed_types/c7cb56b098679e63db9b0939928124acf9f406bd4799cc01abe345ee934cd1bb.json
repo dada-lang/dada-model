@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "bundle": "5dbc74b081e5aefe7c094c8c916eb3372c6a13808d5ab9c9dab9bd357f74f04d",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:69b3d55447d920253867baf2a85e8926fb42f26962b21ba3fe0049eb1951e922",
+    "audit:target:96c9b9b5cd25895c1a9810c7ca3007a977353f311c7ff2e268efd415d4833cca",
+    "audit:target:aa210780e33166914e582e1f2aa597e7876855cb4a8137adc65a043a6c43be2f",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:given.typing.views",
+    "audit:unit:shared.struct",
+    "audit:unit:shared.typing.base",
+    "audit:unit:shared.typing.nominal_table",
+    "audit:unit:shared.typing.well_formed_types",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The shared.typing.well_formed_types unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types. The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b6d684720cc2329bd72aad1aec87b0d458ac43bb36382c0948623a2aa0e0a4e5"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The shared.typing.well_formed_types unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types.",
+    "mathematics": "The current equations and clauses preserve nominal kinds in operational erasure, discard kinds only for the Given view projection, and use the linked struct predicate when sharing. Locally defined grammar/projections need no self-links; typing side conditions follow the explicit admissibility conventions.",
+    "links": [
+      {
+        "occurrence": "shared.typing.well_formed_types:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'base class' refers to md/shared-typing.md#claim-shared.typing.base for the concept or example setup used by this unit. The shared.typing.well_formed_types unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.well_formed_types:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's view conditions\" refers to md/given-typing.md#claim-given.typing.well_formed_types for the concept or example setup used by this unit. The shared.typing.well_formed_types unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.well_formed_types:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal class table' refers to md/shared-typing.md#claim-shared.typing.nominal_table for the concept or example setup used by this unit. The shared.typing.well_formed_types unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      },
+      {
+        "occurrence": "shared.typing.well_formed_types:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'struct(T)' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. The shared.typing.well_formed_types unit links the relevant nominal declarations, struct restrictions and inherited view/typing prerequisites. Kind restrictions are preserved explicitly: classes permit given, shared structs shared, and all struct fields have struct nominal types."
+      }
+    ]
+  }
+}

@@ -174,10 +174,10 @@ These checks inspect nominal declarations, not field accessibility in a view.
 
 ```{definition} shared.typing.erasure
 :lean: Shared/TypingViews:ClassTable.erase
-:uses: shared.typing.declarations shared.syntax
+:uses: shared.typing.declarations shared.programs
 
 *Class-table erasure* \\(\lfloor\Sigma\rfloor\\) supplies the
-[operational class table](shared.md#claim-shared.syntax) by removing field
+[operational class table](shared.md#claim-shared.programs) by removing field
 types. It retains every nominal name, declaration kind, and field order:
 
 \\[
@@ -212,7 +212,7 @@ Use this table for Given's [relative paths and views](given-typing.md#claim-give
 
 A type is *well formed* when its [base class](#claim-shared.typing.base) is
 declared and its view satisfies
-[Given's view conditions](given-typing.md#claim-given.typing.views) under
+[Given's view conditions](given-typing.md#claim-given.typing.well_formed_types) under
 the [nominal class table](#claim-shared.typing.nominal_table): paths are valid,
 distinct, and pairwise prefix-incomparable. In addition, a shared permission
 requires [`struct(T)`](shared.md#claim-shared.struct). A shared struct has shared permission after normalization;
@@ -603,11 +603,11 @@ initial frame has been popped, as in [Shared completion](shared.md#claim-shared.
 Exhausted statements alone do not finish the program.
 ```
 ```{definition} shared.typing.outcomes
-:lean: Shared/Frames:Configuration.finished Shared/Frames:Stuck
-:uses: shared.typing.steps shared.machine
+:lean: Shared/Frames:Stuck
+:uses: shared.typing.steps shared.typing.finished shared.typing.machine
 
-A [configuration](#claim-shared.typing.machine) is *finished* exactly when its initial frame has been popped.
-It is *stuck* if unfinished and without a successor. An exhausted live frame
+A [configuration](#claim-shared.typing.machine) is *stuck* if it is not
+[finished](#claim-shared.typing.finished) and has no [successor](#claim-shared.typing.steps). An exhausted live frame
 can still take its exit step, so it is neither finished nor stuck.
 ```
 
@@ -859,7 +859,7 @@ a move preserves the types of the other owning roots.
 :uses: shared.typing.realization shared.typing.sequences shared.machine shared.gc
 
 A live frame is *well typed with final environment* \\(\Gamma_f\\) when its
-storage realizes an environment under which its remaining statements typecheck:
+storage [realizes an environment](#claim-shared.typing.realization) under which its remaining [statements typecheck](#claim-shared.typing.sequences):
 
 \\[
 \Sigma\vdash\operatorname{run}(S,P):\Gamma_f
@@ -873,8 +873,8 @@ it does not assert that terminal storage still contains those bindings.
 For a live frame, realization requires a well-formed class table.
 
 Write \\(K\longrightarrow_u^k K'\\) for exactly \\(k\\) program steps using
-unpacking-capable local operations. Finite executions existentially quantify
-\\(k\\); stuckness means an unfinished configuration with no successor.
+unpacking-capable local operations. [Finite executions](#claim-shared.typing.execution) existentially quantify
+\\(k\\); [stuckness](#claim-shared.typing.outcomes) means an unfinished configuration with no successor.
 The frame-pop step is included in this count.
 ```
 
@@ -885,13 +885,13 @@ The frame-pop step is included in this count.
 :uses: shared.typing.configurations shared.typing.expression_soundness shared.typing.bindings shared.typing.outcomes shared.typing.steps shared.typing.erasure
 
 A [well-typed configuration](#claim-shared.typing.configurations) has
-[finished](#claim-shared.typing.outcomes) or can take a
+[finished](#claim-shared.typing.finished) or can take a
 [step](#claim-shared.typing.steps):
 
 \\[
 \href{#claim-shared.typing.configurations}{\Sigma\vdash K:\Gamma_f}
 \quad\Longrightarrow\quad
-\href{#claim-shared.typing.outcomes}{\mathsf{Finished}(K)}\ \lor\
+\href{#claim-shared.typing.finished}{\mathsf{Finished}(K)}\ \lor\
 \exists K'.\;\href{#claim-shared.typing.erasure}{\lfloor\Sigma\rfloor}\vdash K\href{#claim-shared.typing.steps}{\longrightarrow_u} K'.
 \\]
 ```
@@ -919,9 +919,9 @@ reference changes mode; binding its result then adds a fresh variable.
 :lean: Shared/FrameSafety:program_safety
 :uses: shared.typing.configurations shared.typing.progress shared.typing.preservation
 
-For a well-formed class table, a program whose statements check from the empty
-environment cannot reach a [stuck configuration](#claim-shared.typing.outcomes). Every execution prefix remains
-well typed and can be completed.
+For a [well-typed program](#claim-shared.typing.programs), no
+[finite execution](#claim-shared.typing.execution) reaches a [stuck configuration](#claim-shared.typing.outcomes). Every execution prefix remains
+[well typed](#claim-shared.typing.configurations) and can be completed.
 
 If the original program has \\(n\\) statements, every such prefix extends to
 completion after exactly \\(n+1\\) steps in total: one per statement, followed

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "cb2b0798d6e1a5c332c24585615a9a22f41bf8fc8bee076927dd71b8c3d41f92",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.links.inventory",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The inventory is introduced here with its data, supported syntaxes, target resolution and book-order rules. Future notes are included explicitly. This is the defining contract for the link graph, not a use of an unintroduced semantic relation. Literal href and SUMMARY names are syntax examples. No equation or inference judgment requires a separate math link.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "1103e0818cf08bfe8621ddd433ad05365ebee74ec438282d9deb8add7185f253"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The inventory is introduced here with its data, supported syntaxes, target resolution and book-order rules. Future notes are included explicitly. This is the defining contract for the link graph, not a use of an unintroduced semantic relation.",
+    "mathematics": "Literal href and SUMMARY names are syntax examples. No equation or inference judgment requires a separate math link.",
+    "links": []
+  }
+}

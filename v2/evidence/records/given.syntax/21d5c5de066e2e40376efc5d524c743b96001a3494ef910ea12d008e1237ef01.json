@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "29d787d855c38cdc5aaf4cc839aa857078690e59b3b4c0ee346075a4fadd09aa",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.syntax against lean:Unique/Syntax:VariableId, lean:Unique/Syntax:Place, lean:Unique/Syntax:Value, lean:Unique/Syntax:Statement. Place has variable/field constructors; Value has only give/new, with recursive argument lists; Statement contains a destination and value. These match the grammars and distinguish place syntax from value production. Freshness is an operational condition, not encoded in String variable names. Notation and judgment context was checked in unit:given.classes.",
+  "limitations": [
+    "Author self-review, not an independent review. Proof correctness is checked separately by Lean; the correspondence review compares statements, definitions and example propositions.",
+    "Abstract syntax and mathematical GC are modeled; no parser or executable collector is certified. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "61d30063a77e5d42fb0c6d56fd3a77cdedc18d9abb233307959d65dd5a71c0c7",
+    "9282a74eee40671d1fd3a94d95dd712fc05657a781e68847f0bf2eac26ce38fe"
+  ]
+}

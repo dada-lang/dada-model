@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "07ec7c26c4b930610b7696cdcb4003277e58c2aeda1b637ccd91ded61258482b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:30846f25dcc13bb8ac2e31bafade18aabeadf7be174a0cd94b2aa2882f083558",
+    "audit:unit:shared.typing.example.arguments",
+    "audit:unit:shared.typing.example.paths",
+    "audit:unit:shared.typing.expressions",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. constructor_permissions checks the entire argumentProgram execution, final t/h/a/b descriptions, and universally rejects both a given Token argument to Holder and a shared argument to Box. This supports the stated successful example and both rejection variants rather than only a helper operation.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "469c8e506969067f54011784bbee3effb2f41f9c51d826352aa2ccb931a05cc3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. constructor_permissions checks the entire argumentProgram execution, final t/h/a/b descriptions, and universally rejects both a given Token argument to Holder and a shared argument to Box. This supports the stated successful example and both rejection variants rather than only a helper operation.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.arguments:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declared above' refers to md/shared-typing.md#claim-shared.typing.example.paths for the concept or example setup used by this unit. Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules."
+      },
+      {
+        "occurrence": "shared.typing.example.arguments:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'constructor rule' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules."
+      }
+    ]
+  }
+}

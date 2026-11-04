@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "cfe2a1d7f939de6c45c31dabf24494f30709d5a719e9f3ec8ff95b5fed95341b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8132c92fa5f747ccdf2fbc59a0936de31747623e06e98e9afada9d4d962dc8b4",
+    "audit:target:c606944c55fcc1af8071d20ef9cfffd91dabf71226ad1a2eab085091751daee3",
+    "audit:unit:shared.finished",
+    "audit:unit:shared.typing.finished",
+    "audit:unit:shared.typing.machine",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit. The no-frame condition defines Finished. It makes no claim that a live frame with empty code is already terminal.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "dd54059cf443214b28af43a1db65caac00b1b107ff2af9672e6e154fe9c6dc18"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit.",
+    "mathematics": "The no-frame condition defines Finished. It makes no claim that a live frame with empty code is already terminal.",
+    "links": [
+      {
+        "occurrence": "shared.typing.finished:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configuration' refers to md/shared-typing.md#claim-shared.typing.machine for the concept or example setup used by this unit. Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit."
+      },
+      {
+        "occurrence": "shared.typing.finished:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared completion' refers to md/shared.md#claim-shared.finished for the concept or example setup used by this unit. Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit."
+      }
+    ]
+  }
+}

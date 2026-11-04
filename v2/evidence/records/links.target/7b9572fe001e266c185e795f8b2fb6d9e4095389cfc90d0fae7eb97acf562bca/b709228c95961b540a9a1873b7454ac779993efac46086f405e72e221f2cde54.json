@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "9e9d1bbf87f69dea9e113c452ce361271b034bb3d9c9c7a6ca1cbdd24238d6c0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7b9572fe001e266c185e795f8b2fb6d9e4095389cfc90d0fae7eb97acf562bca",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces completion of the unpacking-capable Shared machine. Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit. The no-frame condition defines Finished. It makes no claim that a live frame with empty code is already terminal. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "21d10ed5e915e9c5189775029ea0fc6f3bd9915be04e742f10baf4dcbc701bec"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "completion of the unpacking-capable Shared machine",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 25379,
+      "end": 25602
+    },
+    "clarity": "The named landing directly introduces completion of the unpacking-capable Shared machine. Links its frame configuration and defines completion as absence of the initial frame, explicitly distinguishing exhausted statements from exit.",
+    "independence": "The no-frame condition defines Finished. It makes no claim that a live frame with empty code is already terminal. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

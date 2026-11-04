@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "dbaefcfac294430ba29344c26373daf3eea828321dc6450f44bfe727d7043c21",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ef7aedb66f188b157bd66e467ed07f4ec8f3366639a1a82c26fc4370ae9980d8",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces finite public execution traces. Links public steps and introduces their reflexive/transitive closure. The starred arrow is the defining occurrence, with M and M-prime from the machine grammar. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "finite public execution traces",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 25239,
+      "end": 25416
+    },
+    "clarity": "The named landing directly introduces finite public execution traces. Links public steps and introduces their reflexive/transitive closure.",
+    "independence": "The starred arrow is the defining occurrence, with M and M-prime from the machine grammar. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

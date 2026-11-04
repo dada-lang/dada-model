@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "bundle": "c97591c7d70f83f1af0425798eb84f850d4ef794d10dc1a1ae70ff4cab4b0a50",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:618a1876c5e0f6e3d1a2e97b63b37ddf0cf4e48511e0f1a25626a9ec0ece535f",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:functions.bodies",
+    "audit:unit:functions.example.completion",
+    "audit:unit:functions.return",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally. The code demonstrates permissive final locals in this layer, and distinguishes full execution of leave from body typing of consume.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally.",
+    "mathematics": "The code demonstrates permissive final locals in this layer, and distinguishes full execution of leave from body typing of consume.",
+    "links": [
+      {
+        "occurrence": "functions.example.completion:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'accepts a function' refers to md/functions.md#claim-functions.bodies for the concept or example setup used by this unit. Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally."
+      },
+      {
+        "occurrence": "functions.example.completion:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'pops its frame' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally."
+      },
+      {
+        "occurrence": "functions.example.completion:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'eager GC' refers to md/functions.md#claim-functions.gc for the concept or example setup used by this unit. Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally."
+      },
+      {
+        "occurrence": "functions.example.completion:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Explicit unpacking' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links body acceptance, frame-pop execution, eager GC and explicit unpacking. Token/leave/consume are declared locally."
+      }
+    ]
+  }
+}

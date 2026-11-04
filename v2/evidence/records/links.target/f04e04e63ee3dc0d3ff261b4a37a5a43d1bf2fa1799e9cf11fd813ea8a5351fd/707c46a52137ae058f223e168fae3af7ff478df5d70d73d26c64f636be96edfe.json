@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "8be3c745813e21008204022bc1f82d15e8c652df72337585473d28cf42d1f90a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f04e04e63ee3dc0d3ff261b4a37a5a43d1bf2fa1799e9cf11fd813ea8a5351fd",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces explicit class-consumption example. Links unpacking, moving and struct kinds. Token/Pair and all local bindings are introduced in the example; dropping is introduced as the new proposed action. The code uses the already linked give/unpack syntax and declares every nominal name. This is a future example with no claimed checked derivation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "explicit class-consumption example",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 106,
+      "end": 1597
+    },
+    "clarity": "The named landing directly introduces explicit class-consumption example. Links unpacking, moving and struct kinds. Token/Pair and all local bindings are introduced in the example; dropping is introduced as the new proposed action.",
+    "independence": "The code uses the already linked give/unpack syntax and declares every nominal name. This is a future example with no claimed checked derivation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

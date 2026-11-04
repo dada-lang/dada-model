@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "47223d5bf7f2d2bf0f3da33b1e1f73b8ffe74d562e3d5d2f2412d945259b35b9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ba52408cfe251de2b0bcae9486e2e319984ef3dec0422c8ca16247b93f3c4818",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.safety directly introduces For a [well-typed program](#claim-shared.typing.programs), no [finite execution](#claim-shared.typing.execution) reaches a [stuck configuration](#claim-shared.t. The shared.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame. The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "For a [well-typed program](#claim-shared.typing.programs), no [finite execution](#claim-shared.typing.execution) reaches a [stuck configuration](#claim-shared.t",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 40160,
+      "end": 40836
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.safety directly introduces For a [well-typed program](#claim-shared.typing.programs), no [finite execution](#claim-shared.typing.execution) reaches a [stuck configuration](#claim-shared.t. The shared.typing.safety unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame.",
+    "independence": "The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "3cfb63ba7257faf0b346815593af894365c9040813d74b7cf01284c310b16678",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c72617e2e092741fb75d1f15cd59a10e3c8c772581b4f5c204a64f9733998f34",
+    "audit:unit:meta.lean.definitions.navigation",
+    "audit:unit:meta.sources.configuration",
+    "audit:unit:meta.sources.exact_selection",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The configured Lean source root is linked at the first use; literal qualification, retained context and rejected source forms are explained directly. The section does not ask the reader to infer namespace resolution. No mathematical content is reused; file/citation forms are the locally discussed navigation interface.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "7fa2508c942b469adc71616727f6911e71d032bee6c777263b537308b83fd1f4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The configured Lean source root is linked at the first use; literal qualification, retained context and rejected source forms are explained directly. The section does not ask the reader to infer namespace resolution.",
+    "mathematics": "No mathematical content is reused; file/citation forms are the locally discussed navigation interface.",
+    "links": [
+      {
+        "occurrence": "meta.lean.definitions.navigation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'configured Lean source root' refers to md/repo/evidence-pilot.md#claim-meta.sources.configuration for the concept or example setup used by this unit. The configured Lean source root is linked at the first use; literal qualification, retained context and rejected source forms are explained directly. The section does not ask the reader to infer namespace resolution."
+      }
+    ]
+  }
+}

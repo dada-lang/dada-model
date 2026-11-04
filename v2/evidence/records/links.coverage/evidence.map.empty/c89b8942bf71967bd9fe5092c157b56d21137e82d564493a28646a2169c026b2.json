@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "f07f85af5a49561776d16b996063210aa515271f0b760b33104a1030fbc15619",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c4f4614282bcbc1eeacf56cc51774e318230c1a0983b9b7c32160b81f84bee8a",
+    "audit:unit:evidence.map",
+    "audit:unit:evidence.map.empty",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The example links the exact empty-map definition before specifying Nat keys/values and an empty list. No other model concept is needed. The only mathematical value is [], explicitly described as the entry list; Nat is explained as natural numbers, not an undeclared model type.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "34f8f1a3e6ba64d43555b33fc575b33b3327a78207d62a559ac8fbf75d732227"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The example links the exact empty-map definition before specifying Nat keys/values and an empty list. No other model concept is needed.",
+    "mathematics": "The only mathematical value is [], explicitly described as the entry list; Nat is explained as natural numbers, not an undeclared model type.",
+    "links": [
+      {
+        "occurrence": "evidence.map.empty:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty map' refers to md/repo/evidence-pilot.md#claim-evidence.map.empty_definition for the concept or example setup used by this unit. The example links the exact empty-map definition before specifying Nat keys/values and an empty list. No other model concept is needed."
+      }
+    ]
+  }
+}

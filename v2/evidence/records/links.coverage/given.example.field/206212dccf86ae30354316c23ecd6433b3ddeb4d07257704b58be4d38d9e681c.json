@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "ee37adca1949a897e00efbb5e07c86a8b0c828681faf4964b20483b861a7c875",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:88a0c68272e833cbda1fa2978a4dd8727681d82a2bef9b7df637febb6f999b8f",
+    "audit:unit:given.classes",
+    "audit:unit:given.example.field",
+    "audit:unit:given.machine",
+    "audit:unit:given.programs",
+    "audit:unit:given.steps",
+    "audit:unit:given.syntax",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations. The Token/Box declarations bind example names; the source code uses known give syntax, and its execution/completion references link to the corresponding definitions.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "aa97294aa8ba1ea4afa6f62955e0dd34276857bf54bbd4254b005e12501e0049"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations.",
+    "mathematics": "The Token/Box declarations bind example names; the source code uses known give syntax, and its execution/completion references link to the corresponding definitions.",
+    "links": [
+      {
+        "occurrence": "given.example.field:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty storage' refers to md/given.md#claim-given.empty_state for the concept or example setup used by this unit. The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations."
+      },
+      {
+        "occurrence": "given.example.field:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'steps' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations."
+      }
+    ]
+  }
+}

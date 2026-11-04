@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "cfc39040df878d68f83e6d27f8b31450901b2b460a07681ff2e00095289bbfc0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.state directly introduces Shared storage and its component tables/counter. Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets. S/O/V/ν are introduced with their map domains; identity tagging and finite-map notation link backwards. The allocation counter is part of this representation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "5b5eca28aee1d9a7f2a85a4229e5b1f0868dd62814c52b77de1faabc4bb2e215"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared storage and its component tables/counter",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 9271,
+      "end": 9772
+    },
+    "clarity": "The landing md/shared.md#claim-shared.state directly introduces Shared storage and its component tables/counter. Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets.",
+    "independence": "S/O/V/ν are introduced with their map domains; identity tagging and finite-map notation link backwards. The allocation counter is part of this representation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

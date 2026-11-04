@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "f1d75177521ac3f0f2899201537e45104a5cf41f1cac27eb5c5c783dafd6fef2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces proposed optional class destructors. Links nominal kinds, whole receiver types, unpacking and struct-field restrictions. Defines the optional destructor locally; the appendix only gathers already linked rules. The literal drop body and self type are proposed syntax, not unnamed formal judgments. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "proposed optional class destructors",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 4669,
+      "end": 5564
+    },
+    "clarity": "The named landing directly introduces proposed optional class destructors. Links nominal kinds, whole receiver types, unpacking and struct-field restrictions. Defines the optional destructor locally; the appendix only gathers already linked rules.",
+    "independence": "The literal drop body and self type are proposed syntax, not unnamed formal judgments. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

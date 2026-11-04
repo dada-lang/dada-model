@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "49dfc539c98a46629f2594182d98c21aba26bfb23664ce810ff3f5ba681d8f4f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7182ffe25a84f5fbb71fc4b99d76d34d5086f0b0437229df2fdd4106cd7c96b7",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.environments directly introduces slot descriptions and typing environments. Well-formedness and normalization link to their definitions. Slot descriptions, environment, empty marker, and retained variable domain are introduced in this compact paired grammar. The B and Gamma productions bind their symbols; 0 is explained as empty rather than a value type. dom is ordinary finite-map notation, not another language predicate. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "675e02ca9a3c4d8821d6b16dc5d3bf80fd6f0d1ed7ed43d9fc422abb224b6102"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "slot descriptions and typing environments",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 16093,
+      "end": 16804
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.environments directly introduces slot descriptions and typing environments. Well-formedness and normalization link to their definitions. Slot descriptions, environment, empty marker, and retained variable domain are introduced in this compact paired grammar.",
+    "independence": "The B and Gamma productions bind their symbols; 0 is explained as empty rather than a value type. dom is ordinary finite-map notation, not another language predicate. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

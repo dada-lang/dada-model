@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "14ff64b6762886a2752acff25fd8bb755385a5f13c1eadece8d7a43484b39dc1",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:19005780920305ce2edfef53fc5a5693afa3fb5fb7b312b33450cdfbe885221b",
+    "audit:target:56e88d29eb95c2d92fc038aa82ddca6d06f063d06b43e1307ce35878c60572ed",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:unit:given.gc",
+    "audit:unit:given.gc_inert",
+    "audit:unit:given.liveness",
+    "audit:unit:given.well_formed",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links GC and well-formed storage; the theorem applies only while a frame is live. Collection identity is the stated result under WF, not a claim that exit is inert.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links GC and well-formed storage; the theorem applies only while a frame is live.",
+    "mathematics": "Collection identity is the stated result under WF, not a claim that exit is inert.",
+    "links": [
+      {
+        "occurrence": "given.gc_inert:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Collection' refers to md/given.md#claim-given.gc for the concept or example setup used by this unit. Links GC and well-formed storage; the theorem applies only while a frame is live."
+      },
+      {
+        "occurrence": "given.gc_inert:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed evaluation storage' refers to md/given.md#claim-given.well_formed for the concept or example setup used by this unit. Links GC and well-formed storage; the theorem applies only while a frame is live."
+      },
+      {
+        "occurrence": "given.gc_inert:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reachable' refers to md/given.md#claim-given.live for the concept or example setup used by this unit. Links GC and well-formed storage; the theorem applies only while a frame is live."
+      }
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "42f780c6aafc217603cca7a849e2e6ac07890acd1e35a19ad26b878d3e376e43",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1f7a5686f1ade1d96f51f430abce68f4805e63ed85e8238b1c8780ae7b61da69",
+    "audit:target:83be7fbcf36059917cb21e26e5a9bdcd7b053305236cec331e30f20d2fee917b",
+    "audit:unit:meta.syntax.inline_and_block",
+    "audit:unit:meta.units.closed_body",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker. The unit has no formulas; braced directive names are explicitly introduced literal authoring syntax.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "c0ae75d9e8bc449de995cc945c61de7f1a88c58ebcc8d8a2c45ab32d28dd59b3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker.",
+    "mathematics": "The unit has no formulas; braced directive names are explicitly introduced literal authoring syntax.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.inline_and_block:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Inline roles' refers to md/repo/renderer-contracts.md#claim-meta.syntax.anchors.roles for the concept or example setup used by this unit. Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker."
+      },
+      {
+        "occurrence": "meta.syntax.inline_and_block:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stable ID' refers to md/repo/renderer-contracts.md#claim-meta.syntax.anchors.identity for the concept or example setup used by this unit. Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker."
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "c25cca643824a723526e94f2ecf3e9517bcd0ed2769e5aaa1123231806e15f99",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2eb211ed1af6e33db9da6c78ac0c0d04580e44a1e68ee2ae9c068c83be977c96",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.erasure directly introduces erasing static field types from a class table. The target operational class table links to its grammar. The text says exactly which annotations erasure removes. The source Sigma(C) links to the typed-class-table definition; the floor operator is introduced by this equation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "1795ebb2b4f9adebfc49378aa812e821985443d8b3669916dcb583cad2e7dd1d"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "erasing static field types from a class table",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 1532,
+      "end": 1785
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.erasure directly introduces erasing static field types from a class table. The target operational class table links to its grammar. The text says exactly which annotations erasure removes.",
+    "independence": "The source Sigma(C) links to the typed-class-table definition; the floor operator is introduced by this equation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "6002d8f92d281d6a77fa4a876005e61bbae2778cbd1a1bfdcb6a7b40490909e8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e2a8996e1d48de8e7921a6bfb09f14a9fa9f213b2d19363568752083dc6c81c7",
+    "audit:unit:meta.links.coverage",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit defines a coverage review and links the link inventory it classifies. It explicitly distinguishes missing-link judgment from occurrence-set checking, and explains navigation versus conceptual roles. Inline/display math are included in review scope; no formula is invoked by this meta definition itself.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "6ee499ea34880b09402f936fe79557213ae70b752d252d189afda794445d20d6"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit defines a coverage review and links the link inventory it classifies. It explicitly distinguishes missing-link judgment from occurrence-set checking, and explains navigation versus conceptual roles.",
+    "mathematics": "Inline/display math are included in review scope; no formula is invoked by this meta definition itself.",
+    "links": [
+      {
+        "occurrence": "meta.links.coverage:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'link inventory' refers to md/repo/link-audits.md#claim-meta.links.inventory for the concept or example setup used by this unit. The unit defines a coverage review and links the link inventory it classifies. It explicitly distinguishes missing-link judgment from occurrence-set checking, and explains navigation versus conceptual roles."
+      }
+    ]
+  }
+}

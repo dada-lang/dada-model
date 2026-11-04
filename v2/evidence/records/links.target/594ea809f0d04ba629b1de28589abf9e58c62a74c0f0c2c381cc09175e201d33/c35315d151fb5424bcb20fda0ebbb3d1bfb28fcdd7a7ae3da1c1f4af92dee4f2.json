@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "178199d21f9c66895debe300c4843e73a383c9ee76719831e35f6d6de608312b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:594ea809f0d04ba629b1de28589abf9e58c62a74c0f0c2c381cc09175e201d33",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.heap.constructors directly introduces Diagram node constructors. The diagram vocabulary is introduced here: graph facts, nodes and slots each have clear named passages. Aliases, initial empty slots and the boundary from language semantics are stated locally. No language formula is used. α or edge-style examples elsewhere are diagram identifiers, while this unit defines the available fact constructors. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "20c59576a1db47c971e714416773a4540b197a87e71f7b46ed14224476e2ed0f"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Diagram node constructors",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 19153,
+      "end": 19487
+    },
+    "clarity": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.heap.constructors directly introduces Diagram node constructors. The diagram vocabulary is introduced here: graph facts, nodes and slots each have clear named passages. Aliases, initial empty slots and the boundary from language semantics are stated locally.",
+    "independence": "No language formula is used. α or edge-style examples elsewhere are diagram identifiers, while this unit defines the available fact constructors. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

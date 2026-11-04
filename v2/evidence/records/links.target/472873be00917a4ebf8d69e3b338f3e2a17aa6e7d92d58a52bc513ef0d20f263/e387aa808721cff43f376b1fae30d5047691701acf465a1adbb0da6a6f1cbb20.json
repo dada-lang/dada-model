@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "e48a5eb1b972aceeebeaecd08af5cd7f703a45b2131a428216a291504ca4d2a7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:472873be00917a4ebf8d69e3b338f3e2a17aa6e7d92d58a52bc513ef0d20f263",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.executions directly introduces Given zero-or-more-step execution. Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined. The one-step premise links the Step definition. Reflexivity and recursion define the starred execution relation in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "5a1070dd3bbb583651302fd49a29962dc02215016a582aa72b91b6c4333e347a"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given zero-or-more-step execution",
+    "definition": {
+      "path": "md/given.md",
+      "start": 15485,
+      "end": 15861
+    },
+    "clarity": "The landing md/given.md#claim-given.executions directly introduces Given zero-or-more-step execution. Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined.",
+    "independence": "The one-step premise links the Step definition. Reflexivity and recursion define the starred execution relation in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

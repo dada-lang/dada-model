@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "0332e2fa211e1a1fc954ef4b136c828cd08676a4607643954e383a25d52ce19b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.class_at directly introduces valid relative paths and their final declared class. The relative-path and typed-declaration prerequisites both link to their introducing units. Validity and the final declared class are introduced together because they are the domain and output of this lookup. class_Sigma(C,rho) and its epsilon equation are defining occurrences. C, rho, and Sigma are bound by the preceding sentence and linked prerequisites. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "72753c87b567490d260de2bcf105de01a876f49409d9541747fdb215e126b855"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "valid relative paths and their final declared class",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 2310,
+      "end": 2634
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.class_at directly introduces valid relative paths and their final declared class. The relative-path and typed-declaration prerequisites both link to their introducing units. Validity and the final declared class are introduced together because they are the domain and output of this lookup.",
+    "independence": "class_Sigma(C,rho) and its epsilon equation are defining occurrences. C, rho, and Sigma are bound by the preceding sentence and linked prerequisites. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

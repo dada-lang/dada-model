@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "24b8575d97845012370902c4013faade1dc573f480140e68af79c45a1966255e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3e4d50612007d6c6a5604a2b81222e88270e78922e73195442049d92573c2bda",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces Resource and Wrapper destructor example. Wrapper/Resource and their destructors are introduced locally. Unpacking links backward; the forward appendix link is optional recap rather than the source of the new behavior. self and resource are locally bound in the proposed source. The execution account explicitly introduces drop behavior without invoking an undefined mathematical operator. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Resource and Wrapper destructor example",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 1694,
+      "end": 3045
+    },
+    "clarity": "The named landing directly introduces Resource and Wrapper destructor example. Wrapper/Resource and their destructors are introduced locally. Unpacking links backward; the forward appendix link is optional recap rather than the source of the new behavior.",
+    "independence": "self and resource are locally bound in the proposed source. The execution account explicitly introduces drop behavior without invoking an undefined mathematical operator. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

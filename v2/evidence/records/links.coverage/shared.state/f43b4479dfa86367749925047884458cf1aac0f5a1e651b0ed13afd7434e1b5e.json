@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "1f261578bbc50f91d37c0183cf05b5adcaf5bd6c8cd9feb4340504db3a21b9ef",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6b62588dc91e02fb002f06c49a255ee88f8214c8d7ccbfa6ccf50802d1e5930a",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:unit:given.collections",
+    "audit:unit:shared.objects",
+    "audit:unit:shared.programs",
+    "audit:unit:shared.references",
+    "audit:unit:shared.state",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets. S/O/V/ν are introduced with their map domains; identity tagging and finite-map notation link backwards. The allocation counter is part of this representation.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b62f189ff5ed799d8f17e906f049d9910bdb7e76e71dd266ba9cacec59eb7cc2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets.",
+    "mathematics": "S/O/V/ν are introduced with their map domains; identity tagging and finite-map notation link backwards. The allocation counter is part of this representation.",
+    "links": [
+      {
+        "occurrence": "shared.state:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'tagged numbers' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets."
+      },
+      {
+        "occurrence": "shared.state:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finite-map notation' refers to md/given.md#claim-given.collections for the concept or example setup used by this unit. Defines only the storage tuple, domains and allocation counter. Tagged identities and finite maps link backwards; object data and empty storage now have separate targets."
+      }
+    ]
+  }
+}

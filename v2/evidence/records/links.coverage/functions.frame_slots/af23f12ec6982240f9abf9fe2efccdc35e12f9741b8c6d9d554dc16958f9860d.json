@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "df44479e14ec1f3e7573998e800156c97ed35e9bf06fea1c2877abf2610f35e4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:unit:functions.environments",
+    "audit:unit:functions.frame_slots",
+    "audit:unit:functions.machine",
+    "audit:unit:shared.typing.realization",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names. R is introduced as the list of reference/type pairs; repeated occurrences are retained explicitly.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names.",
+    "mathematics": "R is introduced as the list of reference/type pairs; repeated occurrences are retained explicitly.",
+    "links": [
+      {
+        "occurrence": "functions.frame_slots:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"frame's environment\" refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names."
+      },
+      {
+        "occurrence": "functions.frame_slots:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'runtime locals' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names."
+      },
+      {
+        "occurrence": "functions.frame_slots:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reference/type pairs' refers to md/shared-typing.md#claim-shared.typing.realization for the concept or example setup used by this unit. Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names."
+      }
+    ]
+  }
+}

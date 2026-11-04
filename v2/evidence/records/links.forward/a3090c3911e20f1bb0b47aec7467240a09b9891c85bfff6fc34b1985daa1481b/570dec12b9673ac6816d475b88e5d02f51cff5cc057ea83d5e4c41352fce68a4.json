@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "b775fdb256a4ab0a6bc91ce256450fd046b7becfdb02d1955030e67b9b53020b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.example.normalization",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Reviewed the source, destination and book order: {\"kind\": \"forward\", \"necessity\": \"The Foo/Bar/Baz example makes subtree collapse concrete before introducing its general normalization algorithm. Moving that algorithm earlier would put path manipulation and the empty-class exception before the concrete redundancy they resolve; moving the example later would remove the explanation of why these different view spellings should coincide. Splitting off the collapse would leave only declarations with no purpose. Retain just the concrete collapse preview.\", \"signposting\": \"The selected source passage explicitly identifies the following definition and limits the current preview: The [normalization procedure defined next](#claim-given.typing.normalization)\", \"signpost\": {\"path\": \"md/given-typing.md\", \"start\": 8409, \"end\": 8486}, \"minimal_use\": \"The example declares every class/field and shows that exposing all children makes their parent subtree whole. It invokes no algorithmic theorem or general canonical-form result before the definition.\"}",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "5e75783a367cd6756ef2a0b57e756d948c6aa56fef5d873153daf7a9d350b1d6"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The Foo/Bar/Baz example makes subtree collapse concrete before introducing its general normalization algorithm. Moving that algorithm earlier would put path manipulation and the empty-class exception before the concrete redundancy they resolve; moving the example later would remove the explanation of why these different view spellings should coincide. Splitting off the collapse would leave only declarations with no purpose. Retain just the concrete collapse preview.",
+      "signposting": "The selected source passage explicitly identifies the following definition and limits the current preview: The [normalization procedure defined next](#claim-given.typing.normalization)",
+      "signpost": {
+        "path": "md/given-typing.md",
+        "start": 8409,
+        "end": 8486
+      },
+      "minimal_use": "The example declares every class/field and shows that exposing all children makes their parent subtree whole. It invokes no algorithmic theorem or general canonical-form result before the definition."
+    }
+  }
+}

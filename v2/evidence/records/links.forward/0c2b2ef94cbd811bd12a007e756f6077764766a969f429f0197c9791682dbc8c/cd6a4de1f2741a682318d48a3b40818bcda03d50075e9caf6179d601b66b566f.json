@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "50b188fc99017585bcbe3cb0d236e764343684847a1942d5d7dbe7fe6b181cf9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:034fca959e031c3624784f688113964c8c0e08ff896e1f66ce03e89144fbd75d",
+    "audit:unit:given.typing.expressions",
+    "context:link-chapter:md/dada/future-extensions.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Reviewed the source, destination and book order: {\"kind\": \"navigation\", \"rationale\": \"Optional future-design navigation: the current whole-argument constructor restriction is fully stated before this link; proposed generic views are not needed to apply it.\"}",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "3fdefff5310d00a2ac1e6827d405f8e2985f5a2d98dacaeb72e9d9eea6e8d89b"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "navigation",
+      "rationale": "Optional future-design navigation: the current whole-argument constructor restriction is fully stated before this link; proposed generic views are not needed to apply it."
+    }
+  }
+}

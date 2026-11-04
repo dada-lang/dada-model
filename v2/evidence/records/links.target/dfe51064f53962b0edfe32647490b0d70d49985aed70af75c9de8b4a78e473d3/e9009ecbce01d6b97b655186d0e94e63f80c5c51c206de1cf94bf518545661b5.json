@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "a3aae80eeffcccc04680ea4844c520f636ceb326bd5f0e7051c3fd458bc56c61",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.references directly introduces Shared reference modes and reference/slot representation. Introduces reference mode and pair representation before give uses them. Tagged object identities link back to their standalone Given definition; no object-level ownership flag is implied. κ/r/s are defined by their local grammar. ObjectId and obj(n) use the tagged-number convention linked to Given, not a mode attached to the object record. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "e6b9cfec300122184b8f569bc0cccae34383f471f0481b05901571947da5dd54"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared reference modes and reference/slot representation",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 240,
+      "end": 826
+    },
+    "clarity": "The landing md/shared.md#claim-shared.references directly introduces Shared reference modes and reference/slot representation. Introduces reference mode and pair representation before give uses them. Tagged object identities link back to their standalone Given definition; no object-level ownership flag is implied.",
+    "independence": "κ/r/s are defined by their local grammar. ObjectId and obj(n) use the tagged-number convention linked to Given, not a mode attached to the object record. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

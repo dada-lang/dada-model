@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "40677ec3ca931f566712a68e90c1409e5c11303d790ddfe2604b396f5946fbe2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.views",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Relative place links to its grammar. Positive and negative entries, unknown omissions, whole-class shorthand, and empty view are explained locally. The a/A/T productions define the grammar. The negative-epsilon exclusion is explicit, and bare C is defined as a view spelling rather than a second constructor.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "4c74c6b3a9e78c08f5b44741d175405099dd0aba773e6efcf59ae2fd8baad66c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Relative place links to its grammar. Positive and negative entries, unknown omissions, whole-class shorthand, and empty view are explained locally.",
+    "mathematics": "The a/A/T productions define the grammar. The negative-epsilon exclusion is explicit, and bare C is defined as a view spelling rather than a second constructor.",
+    "links": [
+      {
+        "occurrence": "given.typing.views:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative place' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. Relative place links to its grammar. Positive and negative entries, unknown omissions, whole-class shorthand, and empty view are explained locally."
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "c9f9b347e62060dbb88357ae53093bc4b38836d9bd5737da1277349260f05fe2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:27b635e54c096761d195bd023a2b9ff0f50da07131758a43c3e240e9dc3b2ab7",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.storage_places directly introduces direct Given storage places. Defines q directly and links the distinction from a routed place expression. Object-number examples instantiate the preceding identity definition. The q grammar has variable and object-field alternatives. Its x/α/f components are previously introduced name/identity categories. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "43646efcd90282ab01e7f23723b0992793e75decb9ae380b8ef17ab49c847b02"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "direct Given storage places",
+    "definition": {
+      "path": "md/given.md",
+      "start": 5661,
+      "end": 5977
+    },
+    "clarity": "The landing md/given.md#claim-given.storage_places directly introduces direct Given storage places. Defines q directly and links the distinction from a routed place expression. Object-number examples instantiate the preceding identity definition.",
+    "independence": "The q grammar has variable and object-field alternatives. Its x/α/f components are previously introduced name/identity categories. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

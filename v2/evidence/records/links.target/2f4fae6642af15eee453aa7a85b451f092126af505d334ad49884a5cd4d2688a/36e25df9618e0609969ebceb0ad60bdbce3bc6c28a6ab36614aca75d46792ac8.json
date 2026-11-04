@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "780c221dc8e2516b83775719cf684f31a16d3c2bb2135a28a64ee868bc4e41b7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2f4fae6642af15eee453aa7a85b451f092126af505d334ad49884a5cd4d2688a",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces completion as an empty frame stack. The configuration link supplies the frame stack; this unit directly defines completion as empty stack. No hidden predicate or storage retention claim. Empty code is explicitly distinguished from an absent frame. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "completion as an empty frame stack",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 16707,
+      "end": 16881
+    },
+    "clarity": "The named landing directly introduces completion as an empty frame stack. The configuration link supplies the frame stack; this unit directly defines completion as empty stack.",
+    "independence": "No hidden predicate or storage retention claim. Empty code is explicitly distinguished from an absent frame. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

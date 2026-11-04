@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "562c6e14d87461ce7c09a04159dfb6ebbff65c5e266fd2ece40a91bad4cba8d6",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:49d19d3e6321b8309608988f0dba1cb54f8a069b5a7946d9f117d0fb274166d9",
+    "audit:unit:given.lookup",
+    "audit:unit:given.state",
+    "audit:unit:given.update",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit only defines the slot replacement operation; its defined-slot premise links to lookup. No auxiliary judgment is buried in this target. S[q←s] is introduced here and its lookup prerequisite is linked. It has no hidden auxiliary predicate or notation for deleting a slot.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "3d481bb8ef0815d54208658d7ba499af6beb94de6e3f6405aaaef7673f858353"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit only defines the slot replacement operation; its defined-slot premise links to lookup. No auxiliary judgment is buried in this target.",
+    "mathematics": "S[q←s] is introduced here and its lookup prerequisite is linked. It has no hidden auxiliary predicate or notation for deleting a slot.",
+    "links": [
+      {
+        "occurrence": "given.update:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'defined lookup' refers to md/given.md#claim-given.lookup for the concept or example setup used by this unit. The unit only defines the slot replacement operation; its defined-slot premise links to lookup. No auxiliary judgment is buried in this target."
+      }
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "5b1f950b838d6cb51f4c0d6759f6f7a0676f60782ab754da7d3941244b63c3fe",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7182ffe25a84f5fbb71fc4b99d76d34d5086f0b0437229df2fdd4106cd7c96b7",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:81ccfd540968c8bf6b777cea484df57e5dff4b61517968758cc9d5c6f20e3b23",
+    "audit:unit:future.path_permissions",
+    "audit:unit:future.permission_unions",
+    "audit:unit:given.typing.environments",
+    "audit:unit:shared.give",
+    "context:link-chapter:md/dada/future-extensions.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The example links the proposed path-dependent permission to its preceding note, move/copy behavior to the current give semantics, and known-empty variable descriptions to Given environments. Function/branch/union syntax is explicitly exploratory and locally explained. Code demonstrates the two possible modes without claiming a current typing derivation. P|Q and T|U are introduced as proposed unions, and the distinction between empty and no-longer-usable slots is stated rather than assuming an undefined operator.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "ca388b8369965784ba67c16f208deeb929aa1258ab4e8f27849b82e74c0f98f4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The example links the proposed path-dependent permission to its preceding note, move/copy behavior to the current give semantics, and known-empty variable descriptions to Given environments. Function/branch/union syntax is explicitly exploratory and locally explained.",
+    "mathematics": "Code demonstrates the two possible modes without claiming a current typing derivation. P|Q and T|U are introduced as proposed unions, and the distinction between empty and no-longer-usable slots is stated rather than assuming an undefined operator.",
+    "links": [
+      {
+        "occurrence": "future.permission_unions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'path-dependent permission' refers to md/dada/future-extensions.md#claim-future.path_permissions for the concept or example setup used by this unit. The example links the proposed path-dependent permission to its preceding note, move/copy behavior to the current give semantics, and known-empty variable descriptions to Given environments. Function/branch/union syntax is explicitly exploratory and locally explained."
+      },
+      {
+        "occurrence": "future.permission_unions:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'machine' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. The example links the proposed path-dependent permission to its preceding note, move/copy behavior to the current give semantics, and known-empty variable descriptions to Given environments. Function/branch/union syntax is explicitly exploratory and locally explained."
+      },
+      {
+        "occurrence": "future.permission_unions:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'variable marker 0' refers to md/given-typing.md#claim-given.typing.environments for the concept or example setup used by this unit. The example links the proposed path-dependent permission to its preceding note, move/copy behavior to the current give semantics, and known-empty variable descriptions to Given environments. Function/branch/union syntax is explicitly exploratory and locally explained."
+      }
+    ]
+  }
+}

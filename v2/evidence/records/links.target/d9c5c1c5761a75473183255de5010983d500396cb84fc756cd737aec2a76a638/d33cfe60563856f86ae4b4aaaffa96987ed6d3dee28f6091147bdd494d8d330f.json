@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "a77e95264f3f9efa403d1185becad6907587a9895aa4c784685e5eab9ec0dd76",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.normalization directly introduces shared.typing.normalization. Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. RawType.normalize supplies given at a nominal leaf and composes each outer permission with the normalized inner permission. normalize changes only the nominal view using Given normalization. This matches the two equations and the single outer-permission representation; nested shared is absorbed. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "8827ec1a7aacd177b1607b64da41888dd175d20198c8565cbc8c20917c3bc7a5"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.normalization",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 2938,
+      "end": 3721
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.normalization directly introduces shared.typing.normalization. Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. RawType.normalize supplies given at a nominal leaf and composes each outer permission with the normalized inner permission. normalize changes only the nominal view using Given normalization. This matches the two equations and the single outer-permission representation; nested shared is absorbed. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

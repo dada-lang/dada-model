@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "d5f8165feb4ecab6db0c8aa317a251b67a05b1482f2bbd4bb31263b94163329f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e35657bf769f399f71a289ab97c3d64f55d9f44be732a34633b1c76ef237a49c",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.field directly introduces the direct-field slot description. The empty-slot description links to the environment grammar. The current-field description is the single subject being introduced. The case split links neg, pos, and focusing. The outer field operator is its defining occurrence. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "93324b80005777800817cac18b82f95f79ffe506ccd81dd21b1e3f4875df5d28"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the direct-field slot description",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 21078,
+      "end": 21544
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.field directly introduces the direct-field slot description. The empty-slot description links to the environment grammar. The current-field description is the single subject being introduced.",
+    "independence": "The case split links neg, pos, and focusing. The outer field operator is its defining occurrence. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

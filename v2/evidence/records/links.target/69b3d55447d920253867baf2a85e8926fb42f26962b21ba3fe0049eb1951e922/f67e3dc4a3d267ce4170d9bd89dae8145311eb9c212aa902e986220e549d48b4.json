@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "7ea16e7deb484f07d878af5f52e0b0dc1f78496691a2cd209c447890cbaf083c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:69b3d55447d920253867baf2a85e8926fb42f26962b21ba3fe0049eb1951e922",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.well_formed_types directly introduces well-formed nominal views with nonoverlapping valid entries. Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here. C is the locally named base class; the C.{f,-f.g} notation is a literal counterexample to the condition, not a new operation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "90365f52efee43e078eba348b4c591d2a1a95db16d99f3824d8e922525e8c742"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "well-formed nominal views with nonoverlapping valid entries",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 4309,
+      "end": 4793
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.well_formed_types directly introduces well-formed nominal views with nonoverlapping valid entries. Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here.",
+    "independence": "C is the locally named base class; the C.{f,-f.g} notation is a literal counterexample to the condition, not a new operation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

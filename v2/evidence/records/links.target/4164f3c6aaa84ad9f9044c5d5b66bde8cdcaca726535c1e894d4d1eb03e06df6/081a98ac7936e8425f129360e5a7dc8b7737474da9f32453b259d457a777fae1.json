@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "52f62ce3b803c3b7d0933951212456f9e0b1e9ce1ee597af26ca756c784ac4a4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4164f3c6aaa84ad9f9044c5d5b66bde8cdcaca726535c1e894d4d1eb03e06df6",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.example.arguments directly introduces shared.typing.example.arguments. Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. constructor_permissions checks the entire argumentProgram execution, final t/h/a/b descriptions, and universally rejects both a given Token argument to Holder and a shared argument to Box. This supports the stated successful example and both rejection variants rather than only a helper operation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "bf4dff409e97ece23817700d41fcbe7e557288b0ad1dcac1f1ef8c7dbbd31781"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.example.arguments",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 20579,
+      "end": 21251
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.example.arguments directly introduces shared.typing.example.arguments. Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. constructor_permissions checks the entire argumentProgram execution, final t/h/a/b descriptions, and universally rejects both a given Token argument to Holder and a shared argument to Box. This supports the stated successful example and both rejection variants rather than only a helper operation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

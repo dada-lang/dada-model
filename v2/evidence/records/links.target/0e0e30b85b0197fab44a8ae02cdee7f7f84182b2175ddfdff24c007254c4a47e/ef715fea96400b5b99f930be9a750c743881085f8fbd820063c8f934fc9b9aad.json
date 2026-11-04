@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "f97c0903743eea29b56ec16b4677e2e0a6abd7f48d113503b56c634705ddc115",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e0e30b85b0197fab44a8ae02cdee7f7f84182b2175ddfdff24c007254c4a47e",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.weakening directly introduces shared.typing.weakening. Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Subtype requires equal permissions and the Given nominal subtype relation. For normalized types that relation is equal base class plus inclusion of the target's positive and negative observations in the source. Thus weakening cannot silently convert given into shared. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b18d6496332489457a750e58f96aaf4fdcb4fc7efce61ec31a72f33dc34198e7"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.weakening",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 16881,
+      "end": 17830
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.weakening directly introduces shared.typing.weakening. Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Subtype requires equal permissions and the Given nominal subtype relation. For normalized types that relation is equal base class plus inclusion of the target's positive and negative observations in the source. Thus weakening cannot silently convert given into shared. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

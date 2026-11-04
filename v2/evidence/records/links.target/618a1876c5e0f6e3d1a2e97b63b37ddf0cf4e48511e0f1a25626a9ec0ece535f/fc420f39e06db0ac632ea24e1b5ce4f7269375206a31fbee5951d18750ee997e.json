@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "123c571540dab6b1e86f4e78361b37a6c77f9fc32649b7ae932e42b4449e87be",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:618a1876c5e0f6e3d1a2e97b63b37ddf0cf4e48511e0f1a25626a9ec0ece535f",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces body typing against a signature. Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation. Both premises reuse exactly the linked sequence/result judgments. env and result are the projections introduced by the environment/signature definitions; middle/final environments are scoped to this rule. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "body typing against a signature",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 12943,
+      "end": 13525
+    },
+    "clarity": "The named landing directly introduces body typing against a signature. Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation.",
+    "independence": "Both premises reuse exactly the linked sequence/result judgments. env and result are the projections introduced by the environment/signature definitions; middle/final environments are scoped to this rule. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

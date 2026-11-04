@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "1be437c7cee771fed43491d2d28f83fe4ddb888f12c93e7cc53c290301e60de2",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.typesetting",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This is the defining contract for authored math delimiters and preservation. The distinction between raw-TeX and Markdown bodies, escaped output and browser typesetting is stated locally. Delimiter samples and grammar rendering are syntax examples, not equations relying on model concepts. No mathematical reference needs an external definition.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "2657880d7a0235bed3db456b3b6be88739eacb1f074f56430d7abb38bb4d3821"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This is the defining contract for authored math delimiters and preservation. The distinction between raw-TeX and Markdown bodies, escaped output and browser typesetting is stated locally.",
+    "mathematics": "Delimiter samples and grammar rendering are syntax examples, not equations relying on model concepts. No mathematical reference needs an external definition.",
+    "links": []
+  }
+}

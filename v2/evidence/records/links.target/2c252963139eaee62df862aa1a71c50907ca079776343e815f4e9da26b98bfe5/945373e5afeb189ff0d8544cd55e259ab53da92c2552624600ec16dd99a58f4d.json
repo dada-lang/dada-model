@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "ca3d4482c1f08b7cd94d2dd27badc70689a4bd8dc281d3c22271ebe1b9571ff0",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.syntax directly introduces Given place, value and statement syntax. Links field names back to class declarations; defines p, e, t, fresh variables, gives, and constructors together as the syntax grammar. The explanatory operation words here do not invoke a later formal judgment. The p/e/t grammar defines the syntactic categories together; x is introduced as a variable name, and field names have the preceding class link. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "a2a927c0d8f4d821131d23d7b8488276ddda87a4c36b2b6626f4fbf4f5f6cdb2"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given place, value and statement syntax",
+    "definition": {
+      "path": "md/given.md",
+      "start": 1100,
+      "end": 2108
+    },
+    "clarity": "The landing md/given.md#claim-given.syntax directly introduces Given place, value and statement syntax. Links field names back to class declarations; defines p, e, t, fresh variables, gives, and constructors together as the syntax grammar. The explanatory operation words here do not invoke a later formal judgment.",
+    "independence": "The p/e/t grammar defines the syntactic categories together; x is introduced as a variable name, and field names have the preceding class link. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

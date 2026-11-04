@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "140f032e933b4d2087120e8b9eaba63092d9be15d1b11eb72a60a0088b698e5a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.realization directly introduces shared.typing.realization. Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Realizes includes well-formed classes/environment, Admissible pending types, WellFormedWith ownership including pending roots, FieldsMatchClasses even on hidden fields, exact variable domains and per-variable/pending Satisfies. The revised prose explicitly requires normalized as well as well-formed types and keeps shared aliases' views independent. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "1dcede97e9cc2fbfb2551476dc6be448ed20370cfba733e3a31fd3a5dc3ea0f2"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.realization",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 34280,
+      "end": 35837
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.realization directly introduces shared.typing.realization. Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Realizes includes well-formed classes/environment, Admissible pending types, WellFormedWith ownership including pending roots, FieldsMatchClasses even on hidden fields, exact variable domains and per-variable/pending Satisfies. The revised prose explicitly requires normalized as well as well-formed types and keeps shared aliases' views independent. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

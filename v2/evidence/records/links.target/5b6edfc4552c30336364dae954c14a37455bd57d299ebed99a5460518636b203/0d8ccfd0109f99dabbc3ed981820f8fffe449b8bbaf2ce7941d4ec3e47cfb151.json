@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "55581b1e39214a122afc806720d4bc6f9f0661b2858a0e6d6f0a8fc3ec008a96",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5b6edfc4552c30336364dae954c14a37455bd57d299ebed99a5460518636b203",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces ordered typed local slots and roots. Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names. R is introduced as the list of reference/type pairs; repeated occurrences are retained explicitly. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "ordered typed local slots and roots",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 30837,
+      "end": 31471
+    },
+    "clarity": "The named landing directly introduces ordered typed local slots and roots. Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names.",
+    "independence": "R is introduced as the list of reference/type pairs; repeated occurrences are retained explicitly. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

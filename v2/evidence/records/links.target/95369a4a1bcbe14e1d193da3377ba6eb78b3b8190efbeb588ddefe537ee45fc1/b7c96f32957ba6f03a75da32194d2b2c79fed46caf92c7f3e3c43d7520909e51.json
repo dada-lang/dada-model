@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "2d430e9f34349e51e42e0c8554592ed331bfb90fb10176d3ba3433d5cb535e45",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.well_formed directly introduces Given structural storage well-formedness. Links evaluation for pending references, class declarations, allocated identities, and index. The remaining conditions jointly define one storage invariant rather than separate unintroduced predicates. WF and its component conditions are introduced here; the numeric projection index links identities and allocation links domain membership. Pending expression references are explained with the evaluation link. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "0f47dfdee92b899b9c39f1d6e7a486b6ea6dc89e20f71fcb85416afdbd67e00b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given structural storage well-formedness",
+    "definition": {
+      "path": "md/given.md",
+      "start": 20815,
+      "end": 22201
+    },
+    "clarity": "The landing md/given.md#claim-given.well_formed directly introduces Given structural storage well-formedness. Links evaluation for pending references, class declarations, allocated identities, and index. The remaining conditions jointly define one storage invariant rather than separate unintroduced predicates.",
+    "independence": "WF and its component conditions are introduced here; the numeric projection index links identities and allocation links domain membership. Pending expression references are explained with the evaluation link. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "fb5cfc7e913b263536766815e482babc895ff0d67ee0b814f56faf416d36e402",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:unit:given.programs",
+    "audit:unit:given.well_formed_classes",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly. There is no separate formula: the two distinctness conditions directly define the named property.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "f4e5d585f3630fc7ac86fa29a108cd4b4e85cbc1e1dacd031c4bf3beaaf33ac8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly.",
+    "mathematics": "There is no separate formula: the two distinctness conditions directly define the named property.",
+    "links": [
+      {
+        "occurrence": "given.well_formed_classes:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class table' refers to md/given.md#claim-given.programs for the concept or example setup used by this unit. The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly."
+      }
+    ]
+  }
+}

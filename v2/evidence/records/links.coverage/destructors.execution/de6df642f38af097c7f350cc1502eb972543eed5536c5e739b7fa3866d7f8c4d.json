@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "bundle": "be636022f4455c69b2fef77fe233acbbb91d8833340942aa16e9677431f4306f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:destructors.body_typing",
+    "audit:unit:destructors.drop_typing",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.machine",
+    "audit:unit:shared.give",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Functions call/return machinery, stricter completion, Shared unpacking, ordinary give, GC and destructor declarations. The transition table supplies the proposed differences. There are no displayed inference formulas; whole-instance and initialized-class conditions are explained in the table and following paragraph.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Functions call/return machinery, stricter completion, Shared unpacking, ordinary give, GC and destructor declarations. The transition table supplies the proposed differences.",
+    "mathematics": "There are no displayed inference formulas; whole-instance and initialized-class conditions are explained in the table and following paragraph.",
+    "links": [
+      {
+        "occurrence": "destructors.execution:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Functions' ordinary call and returnmachinery\" refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links Functions call/return machinery, stricter completion, Shared unpacking, ordinary give, GC and destructor declarations. The transition table supplies the proposed differences."
+      },
+      {
+        "occurrence": "destructors.execution:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stricter completion' refers to md/destructors.md#claim-destructors.finished_environment for the concept or example setup used by this unit. Links Functions call/return machinery, stricter completion, Shared unpacking, ordinary give, GC and destructor declarations. The transition table supplies the proposed differences."
+      },
+      {
+        "occurrence": "destructors.execution:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'unpacking statement' refers to md/shared-typing.md#claim-shared.typing.steps for the concept or example setup used by this unit. Links Functions call/return machinery, stricter completion, Shared unpacking, ordinary give, GC and destructor declarations. The transition table supplies the proposed differences."
+      },
+      {
+        "occurrence": "destructors.execution:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'ordinary give' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links Functions call/return machinery, stricter completion, Shared unpacking, ordinary give, GC and destructor declarations. The transition table supplies the proposed differences."
+      },
+      {
+        "occurrence": "destructors.execution:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'eager GC' refers to md/functions.md#claim-functions.gc for the concept or example setup used by this unit. Links Functions call/return machinery, stricter completion, Shared unpacking, ordinary give, GC and destructor declarations. The transition table supplies the proposed differences."
+      },
+      {
+        "occurrence": "destructors.execution:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declared destructor' refers to md/destructors.md#claim-destructors.declarations for the concept or example setup used by this unit. Links Functions call/return machinery, stricter completion, Shared unpacking, ordinary give, GC and destructor declarations. The transition table supplies the proposed differences."
+      }
+    ]
+  }
+}

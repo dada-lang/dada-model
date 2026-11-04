@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "95aafa933177afdbd0d74baf6b472d04c2f901d40689ee10ede186e6d4481fb1",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5b191b4ae73004553b8e41cc5f545f7c147cba689bcb49ef7849cef20bd54b19",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces typing installation of a call result. Links well-formed environments and Shared variable binding. It defines result installation and explicitly rejects discarding a value result. The none rule uses the linked WF check; the present rule uses the linked binding judgment. Gamma, d and R are already introduced by environments and call syntax. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "typing installation of a call result",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 9380,
+      "end": 10112
+    },
+    "clarity": "The named landing directly introduces typing installation of a call result. Links well-formed environments and Shared variable binding. It defines result installation and explicitly rejects discarding a value result.",
+    "independence": "The none rule uses the linked WF check; the present rule uses the linked binding judgment. Gamma, d and R are already introduced by environments and call syntax. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

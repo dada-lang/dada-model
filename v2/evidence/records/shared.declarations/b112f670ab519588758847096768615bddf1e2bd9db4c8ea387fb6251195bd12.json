@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "7ac956c81ac1effc33cd86585b09bc00ef763a7a330e5b2fdcc2f19b75fc13cf",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Shared/State:Kind.mode",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Reference.owned",
+    "lean:Shared/State:Reference.shared",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:Kind",
+    "lean:Shared/Syntax:ObjectId",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.declarations",
+    "unit:shared.references"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:shared.declarations against lean:Shared/Syntax:Kind, lean:Shared/Syntax:Class, lean:Shared/State:Kind.mode. Kind distinguishes classType, structType and sharedStruct. Kind.mode maps only sharedStruct to shared, and Kind.isStruct (in the following predicate definition) admits the latter two kinds. Class stores kind with ordered fields, while Reference stores the mode, supporting the table without introducing distinct object representations. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review. Proof correctness is checked separately by Lean; the correspondence review compares statements, definitions and example propositions.",
+    "Abstract syntax and mathematical GC are modeled; no parser or executable collector is certified. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "941bc0810721e3d779f121c62c74ab3c4da76ef39c825842a253fe39ef27689f"
+  ]
+}

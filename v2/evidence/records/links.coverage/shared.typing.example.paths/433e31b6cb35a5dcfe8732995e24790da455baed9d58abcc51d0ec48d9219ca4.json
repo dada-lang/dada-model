@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "76695729a47ea522f1b231166d71c25180a8cc198d71b500b55d0f1ef07d95ef",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.example.paths",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Uses the already-defined composition table and local declarations to explain whole-type permission routes. Does not require a forward call to the later focusing algorithm. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. The permission_paths example asserts the four static give results for b.item, s.item, o.box.item, h.item. The given case updates the source view; the three shared cases preserve the environment. Its classes and declared permissions match the displayed Box/Outer/Holder setup.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "d48af56df18a02c3812b666e76547d954f622cbbe75bc9d2864dc44724905c56"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Uses the already-defined composition table and local declarations to explain whole-type permission routes. Does not require a forward call to the later focusing algorithm.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. The permission_paths example asserts the four static give results for b.item, s.item, o.box.item, h.item. The given case updates the source view; the three shared cases preserve the environment. Its classes and declared permissions match the displayed Box/Outer/Holder setup.",
+    "links": []
+  }
+}

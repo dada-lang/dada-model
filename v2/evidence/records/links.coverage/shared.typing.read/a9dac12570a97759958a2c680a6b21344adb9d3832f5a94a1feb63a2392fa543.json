@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "9b8d59f3f9187cbbc654dd2d610948250f7c61de86cf7cba6b292f07a23c81c4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:b50fba7e62f9aaf161a6e1aaec2b60ca9f8ca33678e15facd8c24af1d87648a9",
+    "audit:unit:given.typing.paths",
+    "audit:unit:shared.references",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.typing.read",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links relative paths and runtime resolution; the standalone read defines mode accumulation and failure. Empty-path success explicitly requires the root object to exist. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. readPath checks that the root object exists, returns the effective root reference at epsilon, and traverses intermediate occupied slots; enter joins the carried mode with each stored reference mode. A final slot may be empty. The prose describes this read rather than prescribing one type per object.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "5b564734109e01c5c04ecac3718ad1e9f509b519a35895c20ba6e2c11157e07d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links relative paths and runtime resolution; the standalone read defines mode accumulation and failure. Empty-path success explicitly requires the root object to exist.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. readPath checks that the root object exists, returns the effective root reference at epsilon, and traverses intermediate occupied slots; enter joins the carried mode with each stored reference mode. A final slot may be empty. The prose describes this read rather than prescribing one type per object.",
+    "links": [
+      {
+        "occurrence": "shared.typing.read:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative path' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. Links relative paths and runtime resolution; the standalone read defines mode accumulation and failure. Empty-path success explicitly requires the root object to exist."
+      },
+      {
+        "occurrence": "shared.typing.read:2",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'shared.resolution' refers to md/shared.md#claim-shared.resolution for the concept or example setup used by this unit. Links relative paths and runtime resolution; the standalone read defines mode accumulation and failure. Empty-path success explicitly requires the root object to exist."
+      }
+    ]
+  }
+}

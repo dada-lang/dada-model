@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "53af4c18de92563e033c2b87fd8ac3610ab85ecdbaa4b722e3936d0f95b7a680",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d624ee0d5cd5657b31ab57c7b4683b005539b9d45e491bf03994c6837439d23e",
+    "audit:unit:meta.evidence.required_inputs",
+    "audit:unit:meta.sources.configuration",
+    "audit:unit:meta.sources.exact_selection",
+    "audit:unit:meta.units.closed_body",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The exact cited declaration requirement now links the opening definition of source selection. Other required input categories are listed directly, including fixture and theme snapshots and the non-oracle limitation. No mathematical rules are reused; hashes, source paths and bundle inputs are concrete tooling data described by this unit.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "ac4ddda7c9fb973635ac850b5569ddfeb9c2c3cee8f9a36793519ee00bb9f816"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The exact cited declaration requirement now links the opening definition of source selection. Other required input categories are listed directly, including fixture and theme snapshots and the non-oracle limitation.",
+    "mathematics": "No mathematical rules are reused; hashes, source paths and bundle inputs are concrete tooling data described by this unit.",
+    "links": [
+      {
+        "occurrence": "meta.evidence.required_inputs:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'exact cited Lean declaration' refers to md/repo/evidence-pilot.md#claim-meta.sources.exact_selection for the concept or example setup used by this unit. The exact cited declaration requirement now links the opening definition of source selection. Other required input categories are listed directly, including fixture and theme snapshots and the non-oracle limitation."
+      }
+    ]
+  }
+}

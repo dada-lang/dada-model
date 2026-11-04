@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "bce90cf2b122d028c65f0056a6a87c4541777b465268c23ee450d5aca231d9b8",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.steps directly introduces Given statement stepping. Links machine configurations, full expression evaluation in both prose and the Let premise, and finished configurations. State-binding notation is a local adjunct to this single Let rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation. The Let premise links expression evaluation. K is linked to machine configuration; the output binding and fresh-variable dom condition are explained as local rule notation. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "a6953dec7ff774047603f82fd1fc4ca40c46d1254d9f54de3fcb9e534ab605a8"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given statement stepping",
+    "definition": {
+      "path": "md/given.md",
+      "start": 13374,
+      "end": 15323
+    },
+    "clarity": "The landing md/given.md#claim-given.steps directly introduces Given statement stepping. Links machine configurations, full expression evaluation in both prose and the Let premise, and finished configurations. State-binding notation is a local adjunct to this single Let rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation.",
+    "independence": "The Let premise links expression evaluation. K is linked to machine configuration; the output binding and fresh-variable dom condition are explained as local rule notation. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

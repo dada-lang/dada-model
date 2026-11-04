@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "3eb17245bd29048afb7d9f3912d37725125110b1c2a3fa5f22a07756bb5d8972",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Functions/Checks:methods",
+    "lean:Shared/State:Kind.mode",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Reference.owned",
+    "lean:Shared/State:Reference.shared",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:Kind",
+    "lean:Shared/Syntax:ObjectId",
+    "lean:Shared/Syntax:Place",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:functions.example.methods",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.declarations",
+    "unit:shared.give",
+    "unit:shared.references"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "methodProgram and its declarations use qualified Point.take and Point.copy calls with explicit receiver arguments and the two prefix receiver permissions. The selected conjunction checks typing, execution, p empty and s/t shared aliases before initial exit, and the exit step to an empty terminal state. This covers the surface examples as abstract syntax, without claiming a parser or receiver-call sugar.",
+  "limitations": [
+    "Author self-review, not an independent review. Proof correctness is checked separately by Lean; the correspondence review compares statements, definitions and example propositions.",
+    "Abstract syntax and mathematical GC are modeled; no parser or executable collector is certified. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "5a93d093037f6285451f6a86716d7abfe80f82005e5dfc8bf31f5f6e27dccf61"
+  ]
+}

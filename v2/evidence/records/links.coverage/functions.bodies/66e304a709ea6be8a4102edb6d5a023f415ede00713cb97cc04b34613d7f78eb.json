@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "bundle": "101abdd5677a6c25d2180ebf7151431a3476143907540604d490d4ca625f85ff",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:462085c5c4c7eeff3ee20ed8cf1e031e6d0f49f7240fa319ee92937e94e6102b",
+    "audit:target:939f180934edf65d84a072aad2dd778c3a2dc532ce0e9d8b312e9d65b1b4483b",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:unit:functions.bodies",
+    "audit:unit:functions.result_typing",
+    "audit:unit:functions.signatures",
+    "audit:unit:functions.typing",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation. Both premises reuse exactly the linked sequence/result judgments. env and result are the projections introduced by the environment/signature definitions; middle/final environments are scoped to this rule.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation.",
+    "mathematics": "Both premises reuse exactly the linked sequence/result judgments. env and result are the projections introduced by the environment/signature definitions; middle/final environments are scoped to this rule.",
+    "links": [
+      {
+        "occurrence": "functions.bodies:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'its signature' refers to md/functions.md#claim-functions.signatures for the concept or example setup used by this unit. Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation."
+      },
+      {
+        "occurrence": "functions.bodies:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'typing its statements' refers to md/functions.md#claim-functions.typing for the concept or example setup used by this unit. Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation."
+      },
+      {
+        "occurrence": "functions.bodies:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'parameter environment' refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation."
+      },
+      {
+        "occurrence": "functions.bodies:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'return expression' refers to md/functions.md#claim-functions.result_typing for the concept or example setup used by this unit. Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation."
+      }
+    ]
+  }
+}

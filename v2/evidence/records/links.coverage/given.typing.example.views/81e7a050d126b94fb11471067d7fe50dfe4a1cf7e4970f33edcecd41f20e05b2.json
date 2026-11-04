@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "911dc52a86e5503c1f16e712d7d912d848f0269e979cf972c1e0511004a3747e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cce19ef6a71eb7d3cab3d2e2c78a524748e4bdf086d09a170c945dcbe7dcef9",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.full",
+    "audit:unit:given.typing.views",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses. The table contains literal view notation, not an unlinked equation or inference judgment. Full versus partial is explained before the table and formally linked.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "a688b079cbd41f1aea1876289057569a38db7a67c47dfea57268525cde8a8931"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses.",
+    "mathematics": "The table contains literal view notation, not an unlinked equation or inference judgment. Full versus partial is explained before the table and formally linked.",
+    "links": [
+      {
+        "occurrence": "given.typing.example.views:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'formal fullness predicate' refers to md/given-typing.md#claim-given.typing.full for the concept or example setup used by this unit. The declarations and all type examples are local. Fullness has a direct, explicitly forward link; the two-sentence explanation gives exactly the distinction the table uses."
+      }
+    ]
+  }
+}

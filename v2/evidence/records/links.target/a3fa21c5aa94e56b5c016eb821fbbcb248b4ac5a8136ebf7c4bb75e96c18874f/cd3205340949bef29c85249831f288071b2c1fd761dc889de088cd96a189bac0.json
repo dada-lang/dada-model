@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "da398424440158c2db691f08c1a2771cf44570b2c534230b91943e015aca8467",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a3fa21c5aa94e56b5c016eb821fbbcb248b4ac5a8136ebf7c4bb75e96c18874f",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/link-audits.md#claim-meta.links.targets directly introduces Target-clarity review. Target clarity is introduced here and its source inventory is linked. The paragraph states both the landing requirement and the limit of choosing an interior span, preventing span validity from replacing readability. There is no formal mathematics; byte spans and UTF-8 are input representations rather than undefined model operations. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "bb8c8ed7db553ff17a63ffbabbdf582a85067e5383425a7841645f52e338b6af"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Target-clarity review",
+    "definition": {
+      "path": "md/repo/link-audits.md",
+      "start": 4188,
+      "end": 4894
+    },
+    "clarity": "The landing md/repo/link-audits.md#claim-meta.links.targets directly introduces Target-clarity review. Target clarity is introduced here and its source inventory is linked. The paragraph states both the landing requirement and the limit of choosing an interior span, preventing span validity from replacing readability.",
+    "independence": "There is no formal mathematics; byte spans and UTF-8 are input representations rather than undefined model operations. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

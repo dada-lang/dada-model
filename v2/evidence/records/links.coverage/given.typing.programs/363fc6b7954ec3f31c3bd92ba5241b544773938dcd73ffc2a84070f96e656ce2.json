@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "b60982b109eb682b0261033c849a6dc53eae2f068331eb4aca6e53345bf1d827",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:4eb4444f47c2cf800acfe57f1fe74d9c78d8e7427cc5203d9959826b200440ca",
+    "audit:target:90551fc1b4acbc85cd0af545697c9e6593adef6b426431e751cb7e9684fbc7b8",
+    "audit:unit:given.typing.programs",
+    "audit:unit:given.typing.sequences",
+    "audit:unit:given.typing.well_formed_classes",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The given.typing.programs unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame. The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "0765ff204e5d151ea15e44a11a9020f4461fb39c83c4ccf03d75701a6414e102"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The given.typing.programs unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame.",
+    "mathematics": "The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added.",
+    "links": [
+      {
+        "occurrence": "given.typing.programs:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well formed' refers to md/given-typing.md#claim-given.typing.well_formed_classes for the concept or example setup used by this unit. The given.typing.programs unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "given.typing.programs:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\varnothing\\\\vdash P\\\\Rightarrow\\\\Gamma_f' refers to md/given-typing.md#claim-given.typing.sequences for the concept or example setup used by this unit. The given.typing.programs unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      },
+      {
+        "occurrence": "given.typing.programs:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Frame exit' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. The given.typing.programs unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame."
+      }
+    ]
+  }
+}

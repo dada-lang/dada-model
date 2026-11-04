@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "ec41628b67243a11a9d467d4956a600b09f6cb55c1b2c4bb3abf24e7726c004f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2ad9184ea8f87bf25aa062eee2e8605a4933189e40f6aa461d5c7a04418b8674",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces navigation summary of inherited machinery. Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules. The only predicate spelling struct(T) links its definition; remaining syntax forms are concrete inherited examples. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "navigation summary of inherited machinery",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 19529,
+      "end": 21921
+    },
+    "clarity": "The named landing directly introduces navigation summary of inherited machinery. Each table row links its actual Shared definition, including struct, static give and completion. This appendix is a navigation summary of previously linked rules.",
+    "independence": "The only predicate spelling struct(T) links its definition; remaining syntax forms are concrete inherited examples. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

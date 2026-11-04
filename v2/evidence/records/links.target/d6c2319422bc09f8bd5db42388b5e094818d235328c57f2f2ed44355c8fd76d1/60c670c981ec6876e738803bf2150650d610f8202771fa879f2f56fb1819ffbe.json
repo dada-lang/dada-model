@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "eff967f060e2372ff91e0ede457083d93bc67a95a1659c07c0ab1eba8bbb6db5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d6c2319422bc09f8bd5db42388b5e094818d235328c57f2f2ed44355c8fd76d1",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.patterns directly introduces Given unpacking-pattern syntax. Defines the binding-pattern extension locally and links unchanged expression evaluation. Removed the unnecessary forward announcement of the later preservation theorem. b/t/P are the locally defined syntax extension; e remains the linked original value evaluation. Ellipses in the illustrative form do not act as an omission pattern. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "781d842f769b00f9ac37998c347b239f25c97e05bee1eb14eaef549a72498a31"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given unpacking-pattern syntax",
+    "definition": {
+      "path": "md/given.md",
+      "start": 24680,
+      "end": 25685
+    },
+    "clarity": "The landing md/given.md#claim-given.patterns directly introduces Given unpacking-pattern syntax. Defines the binding-pattern extension locally and links unchanged expression evaluation. Removed the unnecessary forward announcement of the later preservation theorem.",
+    "independence": "b/t/P are the locally defined syntax extension; e remains the linked original value evaluation. Ellipses in the illustrative form do not act as an omission pattern. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

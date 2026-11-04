@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "853c83d308e49f5374633dce7cb903fdc1456f3375d8adfc9e88855f850ca2d7",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ebfba957e71355eb935d98a00e36f333b32109122d87727b953f4a40601942fe",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.mode directly introduces shared.typing.mode. Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.toMode maps given to unique and shared to shared. The displayed equations connect static permissions with reference modes, without placing modes on objects. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "bf5b0d0bd54934b7a8dcf98318f5bcac45b9f2223e3b95e856d51ed6edf7ab3c"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.mode",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 31108,
+      "end": 31434
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.mode directly introduces shared.typing.mode. Links type permission and runtime reference mode; its two equations define the static-to-runtime mapping directly.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.toMode maps given to unique and shared to shared. The displayed equations connect static permissions with reference modes, without placing modes on objects. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

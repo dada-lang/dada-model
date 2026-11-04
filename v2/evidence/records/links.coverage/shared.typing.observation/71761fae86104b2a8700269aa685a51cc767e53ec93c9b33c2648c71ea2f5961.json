@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "d18d1fdc95ecd61d291b8114b0f31f1c178bc50aa705f4fab3cdf1efba851440",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2125be554c01949722a01b484938c16897339c8d6ac2c317a9fc821a16faeeaa",
+    "audit:target:4fbc8d894e68d4383b58ceae09ec533638f4d56e8e7e70e873de2949841887dd",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:unit:shared.typing.configurations",
+    "audit:unit:shared.typing.observation",
+    "audit:unit:shared.typing.realization",
+    "audit:unit:shared.typing.safety",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links sequence typing and realization and distinguishes bindings before exit from terminal storage. The counted statement prefix preserves the final environment witness; the next exit has no local bindings.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links sequence typing and realization and distinguishes bindings before exit from terminal storage.",
+    "mathematics": "The counted statement prefix preserves the final environment witness; the next exit has no local bindings.",
+    "links": [
+      {
+        "occurrence": "shared.typing.observation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed live frame' refers to md/shared-typing.md#claim-shared.typing.configurations for the concept or example setup used by this unit. Links sequence typing and realization and distinguishes bindings before exit from terminal storage."
+      },
+      {
+        "occurrence": "shared.typing.observation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'program steps' refers to md/shared-typing.md#claim-shared.typing.execution for the concept or example setup used by this unit. Links sequence typing and realization and distinguishes bindings before exit from terminal storage."
+      },
+      {
+        "occurrence": "shared.typing.observation:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'realize the final environment' refers to md/shared-typing.md#claim-shared.typing.realization for the concept or example setup used by this unit. Links sequence typing and realization and distinguishes bindings before exit from terminal storage."
+      }
+    ]
+  }
+}

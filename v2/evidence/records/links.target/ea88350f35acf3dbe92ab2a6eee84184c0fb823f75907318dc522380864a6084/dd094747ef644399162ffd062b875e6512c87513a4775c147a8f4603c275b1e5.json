@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "7399da04dd6b6e0c43bdae2670351c58b497e2d03f3524298872831d5086f4ab",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ea88350f35acf3dbe92ab2a6eee84184c0fb823f75907318dc522380864a6084",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.classes directly introduces Given class declarations and their ordered field names. Introduces ownership transfer and class/field names locally. The declaration grammar binds C, f, n and d; no later judgment is needed for this intent-level introduction. The displayed d/C/f declaration grammar binds its class/field categories and arity locally; it is an introduction, not a use of a later judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "cba8b266895e9cc8645ad795ecfae26a1483a7ee1c3711f292d823ff70c777c0"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given class declarations and their ordered field names",
+    "definition": {
+      "path": "md/given.md",
+      "start": 138,
+      "end": 907
+    },
+    "clarity": "The landing md/given.md#claim-given.classes directly introduces Given class declarations and their ordered field names. Introduces ownership transfer and class/field names locally. The declaration grammar binds C, f, n and d; no later judgment is needed for this intent-level introduction.",
+    "independence": "The displayed d/C/f declaration grammar binds its class/field categories and arity locally; it is an introduction, not a use of a later judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

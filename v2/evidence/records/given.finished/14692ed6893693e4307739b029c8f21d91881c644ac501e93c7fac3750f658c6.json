@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "01a9e77cc26c8b534fa3745e8a1ae5ea10c19f6c3c8a820ae9eb5e4f38aab47c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Unique/Frames:Configuration",
+    "lean:Unique/Frames:Configuration.finished",
+    "lean:Unique/Frames:Configuration.initial",
+    "lean:Unique/Frames:Configuration.running",
+    "lean:Unique/Frames:Configuration.state",
+    "lean:Unique/Frames:Frame",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.finished",
+    "unit:given.identities",
+    "unit:given.machine",
+    "unit:given.programs",
+    "unit:given.slots",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Framed.Configuration.finished is frame = none. The equation and explanation distinguish absent initial frame from a live frame with empty code. Framed.Step.exit removes the latter and collection leaves no rooted heap, as the linked machine/step definitions specify.",
+  "limitations": [
+    "Author self-review, not an independent review. Proof correctness is checked separately by Lean; the correspondence review compares statements, definitions and example propositions.",
+    "Abstract syntax and mathematical GC are modeled; no parser or executable collector is certified. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "ae42277e3e9388e8818e524e049c6ebb0a03f74c6b8d0ffac060172892296ad1"
+  ]
+}

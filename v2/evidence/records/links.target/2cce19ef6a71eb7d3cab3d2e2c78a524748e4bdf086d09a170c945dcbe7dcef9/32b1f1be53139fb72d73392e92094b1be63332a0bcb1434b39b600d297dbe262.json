@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "968f55bee62028aed9d9a68dd9b51c50b318ada8525355c5b68d610478d84c82",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cce19ef6a71eb7d3cab3d2e2c78a524748e4bdf086d09a170c945dcbe7dcef9",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.full directly introduces the formal fullness predicate. Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation. The equation directly links pos, neg, class-at, and base. Quantified paths and fields are locally bound; Full is its defining occurrence. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "0b89e168117df0bd8d34f6c1a3a1527d09a4ac7c7aa665e7cf09016811bfaee0"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the formal fullness predicate",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 6989,
+      "end": 7649
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.full directly introduces the formal fullness predicate. Fullness is introduced here in one sentence, with the distinction from full initialization stated after its equation.",
+    "independence": "The equation directly links pos, neg, class-at, and base. Quantified paths and fields are locally bound; Full is its defining occurrence. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

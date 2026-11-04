@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "bundle": "1aa7e6faeb5df84f668e83ea43128ef007ee7dca9d420c91988f0d537e7a391f",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:241e787663abf5f9ca32f4fa137ed5a061f3b4d699bfbfe7cfffa6c8698505f0",
+    "audit:target:3e4d50612007d6c6a5604a2b81222e88270e78922e73195442049d92573c2bda",
+    "audit:target:8c93add9c0c83a776892d18710675ad1a169196ba74e7618d4b2ef28a872c904",
+    "audit:target:f04e04e63ee3dc0d3ff261b4a37a5a43d1bf2fa1799e9cf11fd813ea8a5351fd",
+    "audit:unit:destructors.example.consume",
+    "audit:unit:destructors.example.wrapper",
+    "audit:unit:destructors.function_example",
+    "audit:unit:functions.typing",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The Functions chapter link is navigation to the preceding layer; consumption and declaration links supply the actual example prerequisites. Return has a direct operation link. Wrapper/Resource are grounded in the linked example, and the alternative function bodies introduce their own parameters/locals. No unstated current typing judgment is invoked.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The Functions chapter link is navigation to the preceding layer; consumption and declaration links supply the actual example prerequisites. Return has a direct operation link.",
+    "mathematics": "Wrapper/Resource are grounded in the linked example, and the alternative function bodies introduce their own parameters/locals. No unstated current typing judgment is invoked.",
+    "links": [
+      {
+        "occurrence": "destructors.function_example:1",
+        "role": "navigation",
+        "rationale": "Navigation to the preceding Functions chapter; the source separately links its consumption condition, example declarations and return operation."
+      },
+      {
+        "occurrence": "destructors.function_example:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'consumption requirement' refers to md/destructors.md#claim-destructors.example.consume for the concept or example setup used by this unit. The Functions chapter link is navigation to the preceding layer; consumption and declaration links supply the actual example prerequisites. Return has a direct operation link."
+      },
+      {
+        "occurrence": "destructors.function_example:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declarations above' refers to md/destructors.md#claim-destructors.example.wrapper for the concept or example setup used by this unit. The Functions chapter link is navigation to the preceding layer; consumption and declaration links supply the actual example prerequisites. Return has a direct operation link."
+      },
+      {
+        "occurrence": "destructors.function_example:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'returning a value' refers to md/functions.md#claim-functions.return for the concept or example setup used by this unit. The Functions chapter link is navigation to the preceding layer; consumption and declaration links supply the actual example prerequisites. Return has a direct operation link."
+      }
+    ]
+  }
+}

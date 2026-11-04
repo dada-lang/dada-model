@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "c8acf5354ddb12b7e7cee20b045edf03ad2d705f46f3fec6f1d1cd85eaac8dda",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.programs directly introduces Given programs, class tables and statement sequences. Links class declarations and statements, then defines the program/class-table/statement-sequence grammar. Finite-map conventions and table well-formedness now have separate targets. Δ, P and Π are introduced by the local grammar; C/f/t come from linked class and statement syntax. Brackets, [] and cons are explained with this grammar. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "6d9cc4e49220b54086d2d80a99b17990519b7fbd726ae0175388a8dcd0de4371"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given programs, class tables and statement sequences",
+    "definition": {
+      "path": "md/given.md",
+      "start": 2514,
+      "end": 3224
+    },
+    "clarity": "The landing md/given.md#claim-given.programs directly introduces Given programs, class tables and statement sequences. Links class declarations and statements, then defines the program/class-table/statement-sequence grammar. Finite-map conventions and table well-formedness now have separate targets.",
+    "independence": "Δ, P and Π are introduced by the local grammar; C/f/t come from linked class and statement syntax. Brackets, [] and cons are explained with this grammar. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

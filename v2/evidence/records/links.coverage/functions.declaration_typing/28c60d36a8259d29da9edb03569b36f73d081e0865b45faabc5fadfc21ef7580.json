@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "304f7faf236e5c6a3044f69ee3ee821d1a8f9cde2c6aae019764580126aa3412",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:618a1876c5e0f6e3d1a2e97b63b37ddf0cf4e48511e0f1a25626a9ec0ece535f",
+    "audit:unit:functions.bodies",
+    "audit:unit:functions.declaration_typing",
+    "audit:unit:functions.signatures",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links well-formed signatures and body typing; distinct callable names and complete-table checking are spelled out. No display formula; mutual recursion follows the locally specified use of the complete declaration table rather than a termination premise.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links well-formed signatures and body typing; distinct callable names and complete-table checking are spelled out.",
+    "mathematics": "No display formula; mutual recursion follows the locally specified use of the complete declaration table rather than a termination premise.",
+    "links": [
+      {
+        "occurrence": "functions.declaration_typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'signature' refers to md/functions.md#claim-functions.signatures for the concept or example setup used by this unit. Links well-formed signatures and body typing; distinct callable names and complete-table checking are spelled out."
+      },
+      {
+        "occurrence": "functions.declaration_typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'body checks against its signature' refers to md/functions.md#claim-functions.bodies for the concept or example setup used by this unit. Links well-formed signatures and body typing; distinct callable names and complete-table checking are spelled out."
+      }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "abf759281a28f56554868959e21e09d2a634d010642c6aea05504456ffdda33e",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.theorem.selection",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected theorem shape, complete proof display and citation exclusions are introduced here. Source-check versus proof-check responsibilities are explicit; nesting has its own precise anchor. No theorem of the language is assumed. Terms assumptions, quantifiers and conclusion describe what correspondence reviews inspect, not an unlinked object-level equation.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "662d95b1ea48d5b75c3d98bea67a613d947b7c1612556cc1c2c98f288cfa3155"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The selected theorem shape, complete proof display and citation exclusions are introduced here. Source-check versus proof-check responsibilities are explicit; nesting has its own precise anchor.",
+    "mathematics": "No theorem of the language is assumed. Terms assumptions, quantifiers and conclusion describe what correspondence reviews inspect, not an unlinked object-level equation.",
+    "links": []
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "bundle": "a1845f3b4af741550a2bf39a57156d936433cf461515e78e403922f63022ccfe",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:6b62588dc91e02fb002f06c49a255ee88f8214c8d7ccbfa6ccf50802d1e5930a",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:df2da7caa3d89bc04ce4d503cad0e61b7f1272ee7dabab94f8f5a29def49bc73",
+    "audit:unit:given.collections",
+    "audit:unit:given.programs",
+    "audit:unit:shared.classes",
+    "audit:unit:shared.programs",
+    "audit:unit:shared.syntax",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links statements, class declarations and finite-map/list convention. Program/table/sequence grammar is here; table WF was separated for direct targeting. The Δ/P/Π grammar introduces its three syntactic components; finite maps/lists, statement syntax and class declarations each have links.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "ef680238f5b3e095fe2e714a6938f70957ed49ba1f9aaf027e415a3833219cd2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links statements, class declarations and finite-map/list convention. Program/table/sequence grammar is here; table WF was separated for direct targeting.",
+    "mathematics": "The Δ/P/Π grammar introduces its three syntactic components; finite maps/lists, statement syntax and class declarations each have links.",
+    "links": [
+      {
+        "occurrence": "shared.programs:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statements' refers to md/shared.md#claim-shared.syntax for the concept or example setup used by this unit. Links statements, class declarations and finite-map/list convention. Program/table/sequence grammar is here; table WF was separated for direct targeting."
+      },
+      {
+        "occurrence": "shared.programs:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finite-map and list notation' refers to md/given.md#claim-given.collections for the concept or example setup used by this unit. Links statements, class declarations and finite-map/list convention. Program/table/sequence grammar is here; table WF was separated for direct targeting."
+      },
+      {
+        "occurrence": "shared.programs:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal declaration' refers to md/shared.md#claim-shared.classes for the concept or example setup used by this unit. Links statements, class declarations and finite-map/list convention. Program/table/sequence grammar is here; table WF was separated for direct targeting."
+      },
+      {
+        "occurrence": "shared.programs:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'kind' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links statements, class declarations and finite-map/list convention. Program/table/sequence grammar is here; table WF was separated for direct targeting."
+      }
+    ]
+  }
+}

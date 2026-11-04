@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "bundle": "561d12d9f4d09b953f25d710e88e91bdf3f9295fae37fd8792c4174f304c0eff",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:target:a14dc4154473cd4e6b925fe365042cf755bfaefd1e260d6da362c2d9e498f9ca",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:unit:given.allocated",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.observations",
+    "audit:unit:given.typing.read",
+    "audit:unit:given.typing.satisfaction",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition. base, pos, neg, read, and class-at each link at their uses. The models judgment is the defining occurrence here.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "cab9d26f5199ceadb2bc54cf8855b31d5fab0eb232c46aa9d3459dd42378deda"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition.",
+    "mathematics": "base, pos, neg, read, and class-at each link at their uses. The models judgment is the defining occurrence here.",
+    "links": [
+      {
+        "occurrence": "given.typing.satisfaction:1",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{base}' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{read}' refers to md/given-typing.md#claim-given.typing.read for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'allocated object' refers to md/given.md#claim-given.allocated for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{class}' refers to md/given-typing.md#claim-given.typing.class_at for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{base}' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:7",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:8",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{read}' refers to md/given-typing.md#claim-given.typing.read for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      }
+    ]
+  }
+}

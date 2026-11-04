@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "2326474fe0738230489d1448312773cf13295ccb8b81699b37ce953e18f19b6b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:462085c5c4c7eeff3ee20ed8cf1e031e6d0f49f7240fa319ee92937e94e6102b",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces typing optional return results. Links environment WF and Shared expression typing. Defines no-result and present-result checking. Both rules have exactly those linked premises; optional expression/result syntax comes from calls, and the return judgment is defined here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "typing optional return results",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 12245,
+      "end": 12800
+    },
+    "clarity": "The named landing directly introduces typing optional return results. Links environment WF and Shared expression typing. Defines no-result and present-result checking.",
+    "independence": "Both rules have exactly those linked premises; optional expression/result syntax comes from calls, and the return judgment is defined here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "fb3c83d40a8a44f69843b82ec4e543e7bd192b3e72b45ad5a0259c02cc0645e3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:69b3d55447d920253867baf2a85e8926fb42f26962b21ba3fe0049eb1951e922",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.example.normalization",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:given.typing.observations",
+    "audit:unit:given.typing.well_formed_types",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The admissibility claim links well-formed views. Normalization is an explicitly forward preview; the concrete declarations and collapse reasoning stand on their own. The Foo collapse chain is an example, with every class and field declared in the same unit. It does not require an unlinked inference judgment.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "e66255404d76c37b4023f3b77e2f5f4822d5ab0afd79003cb82004d1764bed6d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The admissibility claim links well-formed views. Normalization is an explicitly forward preview; the concrete declarations and collapse reasoning stand on their own.",
+    "mathematics": "The Foo collapse chain is an example, with every class and field declared in the same unit. It does not require an unlinked inference judgment.",
+    "links": [
+      {
+        "occurrence": "given.typing.example.normalization:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well formed' refers to md/given-typing.md#claim-given.typing.well_formed_types for the concept or example setup used by this unit. The admissibility claim links well-formed views. Normalization is an explicitly forward preview; the concrete declarations and collapse reasoning stand on their own."
+      },
+      {
+        "occurrence": "given.typing.example.normalization:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'normalization procedure defined next' refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. The admissibility claim links well-formed views. Normalization is an explicitly forward preview; the concrete declarations and collapse reasoning stand on their own."
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "24e730a1aca5e464416e2a8079d6d8dc31b6bdeb5b60beeaef505a5f52f97d5c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f29489e967a6cadff5984ff843d6ff1c223b21d70b9274d19a823475227234f8",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.read directly introduces shared.typing.read. Links relative paths and runtime resolution; the standalone read defines mode accumulation and failure. Empty-path success explicitly requires the root object to exist. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. readPath checks that the root object exists, returns the effective root reference at epsilon, and traverses intermediate occupied slots; enter joins the carried mode with each stored reference mode. A final slot may be empty. The prose describes this read rather than prescribing one type per object. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "b35baf9b94c6a919728e5ed167567377949b921e2bd2e3ce93fa61ae0f885d94"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.read",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 31598,
+      "end": 32153
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.read directly introduces shared.typing.read. Links relative paths and runtime resolution; the standalone read defines mode accumulation and failure. Empty-path success explicitly requires the root object to exist.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. readPath checks that the root object exists, returns the effective root reference at epsilon, and traverses intermediate occupied slots; enter joins the carried mode with each stored reference mode. A final slot may be empty. The prose describes this read rather than prescribing one type per object. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

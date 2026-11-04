@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "208968a741a814a97b878c36a96b85cd5292d017a7783549defbdddf70034995",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:unit:shared.classes",
+    "audit:unit:shared.references",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nominal kind while introducing class/field name categories and ordered fields. Source field typing is explicitly distinguished from its erased operational representation. C, f and natural arity n are introduced locally; operational Class retains kind and field names, including zero fields.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "ca3118979987db5f08797f4e73bec62ed7614c50ab33ebb4ca1611c4fe812ee1"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nominal kind while introducing class/field name categories and ordered fields. Source field typing is explicitly distinguished from its erased operational representation.",
+    "mathematics": "C, f and natural arity n are introduced locally; operational Class retains kind and field names, including zero fields.",
+    "links": [
+      {
+        "occurrence": "shared.classes:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'kind' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links nominal kind while introducing class/field name categories and ordered fields. Source field typing is explicitly distinguished from its erased operational representation."
+      }
+    ]
+  }
+}

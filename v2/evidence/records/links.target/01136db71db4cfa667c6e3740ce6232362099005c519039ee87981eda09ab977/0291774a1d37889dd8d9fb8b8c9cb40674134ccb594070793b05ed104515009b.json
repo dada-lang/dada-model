@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "46c9f9915cac7b95fc5f147c429c6e2b2ac32a520985b8fa2dd40aaed8307b48",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:01136db71db4cfa667c6e3740ce6232362099005c519039ee87981eda09ab977",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.allocated directly introduces Shared allocation as object-table membership. Direct object-table-membership definition; storage target supplies O. The defining equation uses O from the linked object table; Allocated itself is the subject introduced here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "aa46551f482c1e344b2de8b2dc04b64c1ee5d6c703445d621d1e81e267a52963"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared allocation as object-table membership",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 25222,
+      "end": 25389
+    },
+    "clarity": "The landing md/shared.md#claim-shared.allocated directly introduces Shared allocation as object-table membership. Direct object-table-membership definition; storage target supplies O.",
+    "independence": "The defining equation uses O from the linked object table; Allocated itself is the subject introduced here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

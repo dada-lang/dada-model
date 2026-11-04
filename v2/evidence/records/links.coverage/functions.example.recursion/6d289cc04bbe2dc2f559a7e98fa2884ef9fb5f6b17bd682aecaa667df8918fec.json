@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "62ed69254b7ec3ba65d39f7923d2f20d2768e936677d23a51ac3c923e04adf08",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ba52408cfe251de2b0bcae9486e2e319984ef3dec0422c8ca16247b93f3c4818",
+    "audit:target:bd50ee157533d7842a1634a68112529d4e247a05098eebac486fab1dec1ef353",
+    "audit:target:ef7aedb66f188b157bd66e467ed07f4ec8f3366639a1a82c26fc4370ae9980d8",
+    "audit:unit:functions.bodies",
+    "audit:unit:functions.example.recursion",
+    "audit:unit:functions.traces",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links program typing, traces and the preceding Shared completion theorem. recur is declared locally. Infinite adjacent steps are described as an example rather than a new unlinked trace operator; the finite-state reachability and absence of completion are stated explicitly.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links program typing, traces and the preceding Shared completion theorem. recur is declared locally.",
+    "mathematics": "Infinite adjacent steps are described as an example rather than a new unlinked trace operator; the finite-state reachability and absence of completion are stated explicitly.",
+    "links": [
+      {
+        "occurrence": "functions.example.recursion:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'program checks' refers to md/functions.md#claim-functions.program_typing for the concept or example setup used by this unit. Links program typing, traces and the preceding Shared completion theorem. recur is declared locally."
+      },
+      {
+        "occurrence": "functions.example.recursion:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'sequence of adjacentsteps' refers to md/functions.md#claim-functions.traces for the concept or example setup used by this unit. Links program typing, traces and the preceding Shared completion theorem. recur is declared locally."
+      },
+      {
+        "occurrence": "functions.example.recursion:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared completion bound' refers to md/shared-typing.md#claim-shared.typing.safety for the concept or example setup used by this unit. Links program typing, traces and the preceding Shared completion theorem. recur is declared locally."
+      }
+    ]
+  }
+}

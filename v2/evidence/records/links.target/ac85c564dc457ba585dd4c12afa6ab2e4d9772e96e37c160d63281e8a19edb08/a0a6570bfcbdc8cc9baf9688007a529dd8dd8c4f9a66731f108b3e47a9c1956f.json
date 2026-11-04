@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "4c66aeacf2b9e5ee7876657fad07898eacd86b5fd08db1d78bbc60ee9ae2b097",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ac85c564dc457ba585dd4c12afa6ab2e4d9772e96e37c160d63281e8a19edb08",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.satisfaction directly introduces object satisfaction of a nominal view type. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition. base, pos, neg, read, and class-at each link at their uses. The models judgment is the defining occurrence here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "2415bbcf0181e3e3aba5304b7b90846f20bd69d996f78d3b65b5c3252d11d0c7"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "object satisfaction of a nominal view type",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 28398,
+      "end": 29310
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.satisfaction directly introduces object satisfaction of a nominal view type. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition.",
+    "independence": "base, pos, neg, read, and class-at each link at their uses. The models judgment is the defining occurrence here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

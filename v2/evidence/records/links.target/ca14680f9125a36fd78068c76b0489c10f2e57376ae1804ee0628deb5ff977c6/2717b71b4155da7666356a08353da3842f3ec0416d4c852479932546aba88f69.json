@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "273ab7574ee16f7fd6e97f68db40b59a8d05d4dc34a29999fc75a1db98a1b203",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ca14680f9125a36fd78068c76b0489c10f2e57376ae1804ee0628deb5ff977c6",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.objects directly introduces An  object  \\\\(o\\\\) has a [class name](#claim-shared.classes) and named field slots, whose [contents](#claim-shared.references) can be empty:. Object data now has its own o grammar, with direct class and slot-contents links. Storage no longer starts with a different data-type definition. o and its field-slot form are locally defined; the linked class/slot definitions supply C and s. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "An  object  \\\\(o\\\\) has a [class name](#claim-shared.classes) and named field slots, whose [contents](#claim-shared.references) can be empty:",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 8952,
+      "end": 9135
+    },
+    "clarity": "The landing md/shared.md#claim-shared.objects directly introduces An  object  \\\\(o\\\\) has a [class name](#claim-shared.classes) and named field slots, whose [contents](#claim-shared.references) can be empty:. Object data now has its own o grammar, with direct class and slot-contents links. Storage no longer starts with a different data-type definition.",
+    "independence": "o and its field-slot form are locally defined; the linked class/slot definitions supply C and s. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

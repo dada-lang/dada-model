@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "bundle": "d54dbdffd43e2ad859edd16c812a258bfae61cf0cd61d9e3acfbad5d695f8744",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:unit:given.executions",
+    "audit:unit:given.machine",
+    "audit:unit:given.steps",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined. The one-step premise links the Step definition. Reflexivity and recursion define the starred execution relation in place.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "e94581cf4760bdadc659dc4e01ade958905dcb5bce928421d40d8e2314d99797"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined.",
+    "mathematics": "The one-step premise links the Step definition. Reflexivity and recursion define the starred execution relation in place.",
+    "links": [
+      {
+        "occurrence": "given.executions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statement steps' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined."
+      },
+      {
+        "occurrence": "given.executions:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash K\\\\longrightarrow K'\" refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined."
+      }
+    ]
+  }
+}

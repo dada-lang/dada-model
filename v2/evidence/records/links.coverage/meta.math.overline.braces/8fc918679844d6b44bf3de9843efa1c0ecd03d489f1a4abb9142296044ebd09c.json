@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "f1cad8fda67a1d0bff72622c87716b8ffceb68e911b3ba78e9f5de4223bcbc40",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.overline.braces",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit introduces the overbar adjacency convention through its literal sample and states its raw-source scope and limits. No undefined custom concept is required. The only TeX fragment is the defining example for overline; f is a placeholder for its argument, not a model metavariable.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "9f784f7afe5d6e92397faa9999ee843ada0494142619093b55c57681caef8614"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit introduces the overbar adjacency convention through its literal sample and states its raw-source scope and limits. No undefined custom concept is required.",
+    "mathematics": "The only TeX fragment is the defining example for overline; f is a placeholder for its argument, not a model metavariable.",
+    "links": []
+  }
+}

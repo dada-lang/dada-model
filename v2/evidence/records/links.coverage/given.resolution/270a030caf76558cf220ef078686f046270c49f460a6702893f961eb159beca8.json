@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "bundle": "5881a334ff1113b0d5fe45947e4ab99200c68c418111c2a9a40f5de611052ef5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:27b635e54c096761d195bd023a2b9ff0f50da07131758a43c3e240e9dc3b2ab7",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:target:49d19d3e6321b8309608988f0dba1cb54f8a069b5a7946d9f117d0fb274166d9",
+    "audit:unit:given.lookup",
+    "audit:unit:given.resolution",
+    "audit:unit:given.storage_places",
+    "audit:unit:given.syntax",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment. The lookup symbols in both inference-rule premises link to given.lookup. Resolve occurrences in premise/conclusion recursively define this same judgment.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "bcf1ce28c8f51cd77424e2c1c2f7d3a9df5db5868383180c0a9c85cf1c7346b8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment.",
+    "mathematics": "The lookup symbols in both inference-rule premises link to given.lookup. Resolve occurrences in premise/conclusion recursively define this same judgment.",
+    "links": [
+      {
+        "occurrence": "given.resolution:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'route' refers to md/given.md#claim-given.syntax for the concept or example setup used by this unit. Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment."
+      },
+      {
+        "occurrence": "given.resolution:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage place' refers to md/given.md#claim-given.storage_places for the concept or example setup used by this unit. Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment."
+      },
+      {
+        "occurrence": "given.resolution:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S[x]' refers to md/given.md#claim-given.lookup for the concept or example setup used by this unit. Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment."
+      },
+      {
+        "occurrence": "given.resolution:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S[\\\\beta.f]' refers to md/given.md#claim-given.lookup for the concept or example setup used by this unit. Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment."
+      },
+      {
+        "occurrence": "given.resolution:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Undefined lookup' refers to md/given.md#claim-given.lookup for the concept or example setup used by this unit. Links place syntax, storage places, and both lookup premises. Recursive Resolve occurrences are the judgment being defined, rather than references to an unintroduced judgment."
+      }
+    ]
+  }
+}

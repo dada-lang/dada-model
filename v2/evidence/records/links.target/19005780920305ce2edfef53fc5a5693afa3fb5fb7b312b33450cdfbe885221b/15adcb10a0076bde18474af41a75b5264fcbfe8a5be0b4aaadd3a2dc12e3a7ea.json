@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "0a5819989309418359511eab797ee67e57650aa7718212137633070a6c25aa50",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:19005780920305ce2edfef53fc5a5693afa3fb5fb7b312b33450cdfbe885221b",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.gc directly introduces Reachability  starts at an initialized slot of the [live frame](#claim-given.machine) and follows [initialized object fields](#claim-given.slots). Write \\\\(\\mat. Links live-frame roots and initialized fields; defines reachability for collection with absent frames having no roots. The filter equation defines gc; S_K and D are explained locally, and the frame/counter are preserved. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Reachability  starts at an initialized slot of the [live frame](#claim-given.machine) and follows [initialized object fields](#claim-given.slots). Write \\\\(\\mat",
+    "definition": {
+      "path": "md/given.md",
+      "start": 8455,
+      "end": 9422
+    },
+    "clarity": "The landing md/given.md#claim-given.gc directly introduces Reachability  starts at an initialized slot of the [live frame](#claim-given.machine) and follows [initialized object fields](#claim-given.slots). Write \\\\(\\mat. Links live-frame roots and initialized fields; defines reachability for collection with absent frames having no roots.",
+    "independence": "The filter equation defines gc; S_K and D are explained locally, and the frame/counter are preserved. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

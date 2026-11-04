@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "4805704408068df1231680264ebad17a6e47b2ea871b4d10922692fafbe61d8b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:fb4a0a7c76309b32e5a213a669d711379cd8a6679fb9638296922e99112ebcb4",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.perm directly introduces shared.typing.perm. The direct equation extracts the outer permission and links normalized form. No grammar or unrelated operation precedes it in this unit. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.perm projects permission from the already normalized ValueType record. The equation perm(pi C.A)=pi and the printed implicit given case identify precisely that projection. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "44bc6921fd5c4d1fac91e2f05edcbba7cdf9dd61095e9fdbbb33f37725659b93"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.perm",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 3839,
+      "end": 4164
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.perm directly introduces shared.typing.perm. The direct equation extracts the outer permission and links normalized form. No grammar or unrelated operation precedes it in this unit.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.perm projects permission from the already normalized ValueType record. The equation perm(pi C.A)=pi and the printed implicit given case identify precisely that projection. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

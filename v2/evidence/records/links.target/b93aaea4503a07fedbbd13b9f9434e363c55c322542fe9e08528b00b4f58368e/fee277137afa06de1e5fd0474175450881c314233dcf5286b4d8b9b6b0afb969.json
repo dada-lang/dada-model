@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "1b9a9bf3e1ce3f0189f75d7afcc8ce459b7e33603376f818f0578d91c1e8339a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces raw transitions and collected public steps. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery. The linked judgments account for every raw-rule premise; H,V,n and evaluated variants are scoped immediately before the rules, B_r is defined there, and raw/public step symbols are the local definitions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "raw transitions and collected public steps",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 20207,
+      "end": 23255
+    },
+    "clarity": "The named landing directly introduces raw transitions and collected public steps. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery.",
+    "independence": "The linked judgments account for every raw-rule premise; H,V,n and evaluated variants are scoped immediately before the rules, B_r is defined there, and raw/public step symbols are the local definitions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

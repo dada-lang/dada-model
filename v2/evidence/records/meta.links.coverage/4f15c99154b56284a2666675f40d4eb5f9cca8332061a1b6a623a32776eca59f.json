@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "3be54554b379094c48351e6cb772ddaff3b57704c39bf2e86fc677e8b7bde3d3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/link_audit.rs:AuditInventory::build",
+    "rust:mdbook-dada/src/link_audit.rs:validate_review",
+    "rust:mdbook-dada/src/links.rs:LinkInventory::build",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_renderer_rejects_a_correct_claim_in_the_wrong_chapter",
+    "test:mdbook-dada/tests/link_audit.rs:complete_link_audits_pass_but_preparation_alone_does_not",
+    "test:mdbook-dada/tests/link_audit.rs:conceptual_external_links_require_an_inspectable_local_definition",
+    "test:mdbook-dada/tests/link_audit.rs:coverage_requires_each_occurrence_once_and_both_prose_and_math_rationales",
+    "test:mdbook-dada/tests/links.rs:inventory_reads_markdown_reference_roles_and_math_with_exact_ranges",
+    "test:mdbook-dada/tests/links.rs:order_comes_from_summary_and_byte_position_not_filename_or_unit_id",
+    "test:mdbook-dada/tests/links.rs:reference_definitions_outside_unit_and_bare_math_directives_are_inventoried",
+    "test:mdbook-dada/tests/links.rs:relative_paths_preserve_target_chapter_and_wrong_path_does_not_match_global_id",
+    "unit:meta.links.coverage",
+    "unit:meta.links.inventory"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "AuditInventory generates a coverage subject for each structured source; validate_review requires prose and math reasoning and one assessment for every exact occurrence, rejecting duplicates, omissions and extras. Conceptual external links are rejected without a local inspectable definition. The cited tests separate preparation from approval and exercise malformed coverage. The prose explicitly locates discovery of missing links and truth of the judgment in review, not in syntactic extraction.",
+  "limitations": [
+    "Author self-review, not an independent review. Implementation and test inspection does not establish universal correctness, browser appearance, CDN availability, or authenticated execution. Mechanical results are retained separately."
+  ],
+  "supersedes": [
+    "84ca00276e4ad75245877bbce4e9e90868da1c475a5ea70d5833016e00d1b06b"
+  ]
+}

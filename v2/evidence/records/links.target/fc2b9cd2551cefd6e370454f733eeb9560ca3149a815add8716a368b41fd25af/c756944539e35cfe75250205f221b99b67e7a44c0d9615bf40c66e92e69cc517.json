@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "9b3858af4f0f7ef5929979e7a58dbda7bb6eec048a4d41f3d4064cd943581046",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:fc2b9cd2551cefd6e370454f733eeb9560ca3149a815add8716a368b41fd25af",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.lookup directly introduces Shared partial slot lookup. Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones. S[x] and S[α.f] are defined by the two partial equations. Storage decomposition and defined-slot conditions are local; q and references are linked. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "f305c185ad9a377c5c1f2677164d5668ed86d34723988bbaa09de134812731a3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared partial slot lookup",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 10529,
+      "end": 11076
+    },
+    "clarity": "The landing md/shared.md#claim-shared.lookup directly introduces Shared partial slot lookup. Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones.",
+    "independence": "S[x] and S[α.f] are defined by the two partial equations. Storage decomposition and defined-slot conditions are local; q and references are linked. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

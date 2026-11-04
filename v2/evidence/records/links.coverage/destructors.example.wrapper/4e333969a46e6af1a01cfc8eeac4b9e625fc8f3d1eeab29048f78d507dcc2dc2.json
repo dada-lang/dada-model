@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "324d501f39b5b70d5292619a70243497c7f5efa7f7dd099135e1117e90238ed4",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2ad9184ea8f87bf25aa062eee2e8605a4933189e40f6aa461d5c7a04418b8674",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:destructors.example.wrapper",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Wrapper/Resource and their destructors are introduced locally. Unpacking links backward; the forward appendix link is optional recap rather than the source of the new behavior. self and resource are locally bound in the proposed source. The execution account explicitly introduces drop behavior without invoking an undefined mathematical operator.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Wrapper/Resource and their destructors are introduced locally. Unpacking links backward; the forward appendix link is optional recap rather than the source of the new behavior.",
+    "mathematics": "self and resource are locally bound in the proposed source. The execution account explicitly introduces drop behavior without invoking an undefined mathematical operator.",
+    "links": [
+      {
+        "occurrence": "destructors.example.wrapper:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Unpacking' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Wrapper/Resource and their destructors are introduced locally. Unpacking links backward; the forward appendix link is optional recap rather than the source of the new behavior."
+      },
+      {
+        "occurrence": "destructors.example.wrapper:2",
+        "role": "navigation",
+        "rationale": "Optional appendix navigation: the source already links the inherited definitions it actually uses; this appendix gathers those same rules in one summary without supplying a missing premise."
+      }
+    ]
+  }
+}

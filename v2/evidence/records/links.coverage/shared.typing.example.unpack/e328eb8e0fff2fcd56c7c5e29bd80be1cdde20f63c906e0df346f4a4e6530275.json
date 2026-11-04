@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "a1aa8f11bbb2b088ef1d5cde5277948a04f51a435250a89e4e19584bc30ea6ad",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4164f3c6aaa84ad9f9044c5d5b66bde8cdcaca726535c1e894d4d1eb03e06df6",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.example.arguments",
+    "audit:unit:shared.typing.example.unpack",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. unpacking_shared_fields proves the continuation typing and six-step execution, the Holder object's removal, preserved shared item/a/b/c descriptions, and universal rejection of unpacking holder.shared. It supports consuming the unique shell while retaining shared field owners.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "470f0869d8f0e07c7cd96ec64eeee183c58d07983a1f84fd5c7d12d20e1b7eee"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. unpacking_shared_fields proves the continuation typing and six-step execution, the Holder object's removal, preserved shared item/a/b/c descriptions, and universal rejection of unpacking holder.shared. It supports consuming the unique shell while retaining shared field owners.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.unpack:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Holder example' refers to md/shared-typing.md#claim-shared.typing.example.arguments for the concept or example setup used by this unit. Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined."
+      },
+      {
+        "occurrence": "shared.typing.example.unpack:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'unpacking rule' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined."
+      }
+    ]
+  }
+}

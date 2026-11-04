@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "4f40aff93c801038d19d0c6b4d785ae319a6eb9110db89c2f97cc1765e9a72ac",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:96c9b9b5cd25895c1a9810c7ca3007a977353f311c7ff2e268efd415d4833cca",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.base directly introduces shared.typing.base. The direct equation extracts C independent of permission/view and links normalized form. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.base projects nominal.className, ignoring the outer permission and view entries. The displayed equation has the same domain (normalized types) and result. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "18677d7e2743488c7e1d20f01170029d0f66a75cc358cf7a3fc13ed7d0a6d902"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.base",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 4282,
+      "end": 4500
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.base directly introduces shared.typing.base. The direct equation extracts C independent of permission/view and links normalized form.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. ValueType.base projects nominal.className, ignoring the outer permission and view entries. The displayed equation has the same domain (normalized types) and result. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

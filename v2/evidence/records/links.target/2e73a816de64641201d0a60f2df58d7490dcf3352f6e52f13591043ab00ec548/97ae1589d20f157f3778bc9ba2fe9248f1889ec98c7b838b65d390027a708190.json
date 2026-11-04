@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "4ca48703cd5a218bfbdaa8c82e69d775db3ac485802db2793bec5cbc5def717a",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2e73a816de64641201d0a60f2df58d7490dcf3352f6e52f13591043ab00ec548",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.focus directly introduces shared.typing.focus. Links declared field types, permission composition, Given focus, nominal grammar/table, pos and normalization. The equation’s two focus operations have distinct current/Given meanings made explicit. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. focus combines the outer permission with declaredPermission after successfully focusing the Given nominal view under classes.nominal. The formula carries that composed permission over the preserved nominal result; the pos side condition excludes empty or hidden paths. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "12853d269e7320fd85625ce01bfaa39fead50eef590a9bc76a56b50dc1ce5afb"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.focus",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 12105,
+      "end": 13312
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.focus directly introduces shared.typing.focus. Links declared field types, permission composition, Given focus, nominal grammar/table, pos and normalization. The equation’s two focus operations have distinct current/Given meanings made explicit.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. focus combines the outer permission with declaredPermission after successfully focusing the Given nominal view under classes.nominal. The formula carries that composed permission over the preserved nominal result; the pos side condition excludes empty or hidden paths. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

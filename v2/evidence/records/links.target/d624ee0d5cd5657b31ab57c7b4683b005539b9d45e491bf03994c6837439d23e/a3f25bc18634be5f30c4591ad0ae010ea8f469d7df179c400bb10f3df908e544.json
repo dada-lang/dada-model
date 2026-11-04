@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "66d9999d998dfe49c19428b18f69215316ddc3cf48766d7cc7905cb73a799d06",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d624ee0d5cd5657b31ab57c7b4683b005539b9d45e491bf03994c6837439d23e",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/evidence-pilot.md#claim-meta.sources.exact_selection directly introduces Exact source selection. The first paragraph now defines exact source selection; subsequent paragraphs explain rule and mutual-group special cases directly. This unit is the introduction of the extraction boundary, so no self-link is needed. There are no formulas. Constructor names, quoted identifiers and mutual are source-language syntax whose treatment is explained here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "45e588b6bf931c30086a76fea7999a03f61ad8ace6e7c11df04884588ea3078a"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Exact source selection",
+    "definition": {
+      "path": "md/repo/evidence-pilot.md",
+      "start": 3080,
+      "end": 4040
+    },
+    "clarity": "The landing md/repo/evidence-pilot.md#claim-meta.sources.exact_selection directly introduces Exact source selection. The first paragraph now defines exact source selection; subsequent paragraphs explain rule and mutual-group special cases directly. This unit is the introduction of the extraction boundary, so no self-link is needed.",
+    "independence": "There are no formulas. Constructor names, quoted identifiers and mutual are source-language syntax whose treatment is explained here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

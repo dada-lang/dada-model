@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "3b3c2b4f9c9b25555dfee45ba5a1998c81283ba5d09361d6696d56e700be36ca",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:83be7fbcf36059917cb21e26e5a9bdcd7b053305236cec331e30f20d2fee917b",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.anchors.identity directly introduces Book identity. The unit defines identity syntax, namespace, defining roles, reference roles, shields and literal contexts in individually marked passages. No language-level permission or heap concept is needed. No mathematical block or reused equation occurs; all backtick text is authoring syntax. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "ca48295b46b02d0fe0aa2cd2e2c8d8e82f6da4531c36b91150b6f0ac1fe4bd5e"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Book identity",
+    "definition": {
+      "path": "md/repo/renderer-contracts.md",
+      "start": 601,
+      "end": 1875
+    },
+    "clarity": "The landing md/repo/renderer-contracts.md#claim-meta.syntax.anchors.identity directly introduces Book identity. The unit defines identity syntax, namespace, defining roles, reference roles, shields and literal contexts in individually marked passages. No language-level permission or heap concept is needed.",
+    "independence": "No mathematical block or reused equation occurs; all backtick text is authoring syntax. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

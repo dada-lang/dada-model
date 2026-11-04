@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "a4c87428c257f46dcb5df0b6cae497b2aff0bc5387891efe0fc263633e41da96",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:814b7bb4e3d32eda0efafbf7230b7f13fb9b65f060cb74b4dfc52e767a1e1906",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.mode_join directly introduces Shared access-mode combination. Defines only mode combination, with a backwards link to reference modes and the exact unique/otherwise table. The sqcup case definition is introduced here. κ_0 and κ_1 range over the linked modes, with no latent type-level permission operator. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "7071519b4c52ade371a65ec24b67389d259b2d50b69dd5573540f15a833d1d8c"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared access-mode combination",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 11191,
+      "end": 11570
+    },
+    "clarity": "The landing md/shared.md#claim-shared.mode_join directly introduces Shared access-mode combination. Defines only mode combination, with a backwards link to reference modes and the exact unique/otherwise table.",
+    "independence": "The sqcup case definition is introduced here. κ_0 and κ_1 range over the linked modes, with no latent type-level permission operator. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

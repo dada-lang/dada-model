@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "781b8b89d6bfc732e35cf47b48eaa7acbc2a9ee8d7741a25cb24a17c5eef52ce",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a65eb6e25dc5992af74682e3ee7637608f951cbca91ff863784472c2c21591a9",
+    "audit:target:ee677a280b28caae8944bc8ea17f855a3a4cc330d7651935f345a4588c0263f5",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.example.rejections",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.expressions",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Expression and binding rules are linked, including the constructor-order use. The examples explicitly state each starting type, so no hidden runtime state is needed to understand rejection versus hidden initialization. No separate mathematical judgment is invoked without a link. The literal program and view spellings are examples under the linked typing rules; Two is declared locally.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "37d25e12831b839be7ea5793d7f883beb975a20fd77e999c549f3346de23bb37"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Expression and binding rules are linked, including the constructor-order use. The examples explicitly state each starting type, so no hidden runtime state is needed to understand rejection versus hidden initialization.",
+    "mathematics": "No separate mathematical judgment is invoked without a link. The literal program and view spellings are examples under the linked typing rules; Two is declared locally.",
+    "links": [
+      {
+        "occurrence": "given.typing.example.rejections:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression' refers to md/given-typing.md#claim-given.typing.expressions for the concept or example setup used by this unit. Expression and binding rules are linked, including the constructor-order use. The examples explicitly state each starting type, so no hidden runtime state is needed to understand rejection versus hidden initialization."
+      },
+      {
+        "occurrence": "given.typing.example.rejections:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'binding' refers to md/given-typing.md#claim-given.typing.bindings for the concept or example setup used by this unit. Expression and binding rules are linked, including the constructor-order use. The examples explicitly state each starting type, so no hidden runtime state is needed to understand rejection versus hidden initialization."
+      },
+      {
+        "occurrence": "given.typing.example.rejections:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Constructor argument order' refers to md/given-typing.md#claim-given.typing.expressions for the concept or example setup used by this unit. Expression and binding rules are linked, including the constructor-order use. The examples explicitly state each starting type, so no hidden runtime state is needed to understand rejection versus hidden initialization."
+      }
+    ]
+  }
+}

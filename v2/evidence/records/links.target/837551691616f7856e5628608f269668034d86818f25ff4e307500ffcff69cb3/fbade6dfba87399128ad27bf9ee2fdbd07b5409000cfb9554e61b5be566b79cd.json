@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "fd9c24379697777b3f2b0db923115e067d735afe6372105de32ef7b32a959634",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:837551691616f7856e5628608f269668034d86818f25ff4e307500ffcff69cb3",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.take directly introduces taking a source place and updating its root environment entry. Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations. The accessibility premise links pos; the result and update cases link focusing and emptying. The new take operator and root-empty case are defined here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "97278671593e46846abf6bcffc6062ad194473f47194ac87a74d0c089817fad9"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "taking a source place and updating its root environment entry",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 17028,
+      "end": 18061
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.take directly introduces taking a source place and updating its root environment entry. Relative place, source place expression, and environment description have direct links. The b.item.left intuition explains root/suffix decomposition before the equations.",
+    "independence": "The accessibility premise links pos; the result and update cases link focusing and emptying. The new take operator and root-empty case are defined here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

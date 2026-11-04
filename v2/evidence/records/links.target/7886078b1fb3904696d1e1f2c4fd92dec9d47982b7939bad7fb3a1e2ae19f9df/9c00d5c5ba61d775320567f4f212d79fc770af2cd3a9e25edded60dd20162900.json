@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "73a34030f1f18d0c2cc49ffc628f39e236356cebbf32f0986377209b10c46fce",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces call frames and machine configurations. Links remaining bodies and Shared evaluation storage. Defines frames, their order, common heap/counter and initialization locally. phi, V, B, d, K, H, n and M are introduced before their tuple equations; running is explained without invoking later step rules. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "call frames and machine configurations",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 15612,
+      "end": 16587
+    },
+    "clarity": "The named landing directly introduces call frames and machine configurations. Links remaining bodies and Shared evaluation storage. Defines frames, their order, common heap/counter and initialization locally.",
+    "independence": "phi, V, B, d, K, H, n and M are introduced before their tuple equations; running is explained without invoking later step rules. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

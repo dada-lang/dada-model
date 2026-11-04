@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "bundle": "16b16dd0b84db28bb2d7ac8d3c937d6228ffce013754cc146e341838caa84b67",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:56e88d29eb95c2d92fc038aa82ddca6d06f063d06b43e1307ce35878c60572ed",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:unit:given.allocated",
+    "audit:unit:given.live",
+    "audit:unit:given.liveness",
+    "audit:unit:given.well_formed",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence. Every nonlogical predicate in the theorem formula—WF, Live and Allocated—has a direct definition link.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "c4440b20fa59524380dcc9bcfe0671d97a921a8b0d5682eb3b8cb91816d2ea48"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence.",
+    "mathematics": "Every nonlogical predicate in the theorem formula—WF, Live and Allocated—has a direct definition link.",
+    "links": [
+      {
+        "occurrence": "given.liveness:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed state' refers to md/given.md#claim-given.well_formed for the concept or example setup used by this unit. WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence."
+      },
+      {
+        "occurrence": "given.liveness:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{WF}_{\\\\Delta}(S)' refers to md/given.md#claim-given.well_formed for the concept or example setup used by this unit. WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence."
+      },
+      {
+        "occurrence": "given.liveness:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{Live}_S(\\\\alpha)' refers to md/given.md#claim-given.live for the concept or example setup used by this unit. WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence."
+      },
+      {
+        "occurrence": "given.liveness:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{Allocated}_S(\\\\alpha)' refers to md/given.md#claim-given.allocated for the concept or example setup used by this unit. WF, Live and Allocated are each linked in the theorem formula to separate definition units. The prose conclusion restates that same equivalence."
+      }
+    ]
+  }
+}

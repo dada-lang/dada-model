@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "2ac372ef0c9e2daa5d8dae2b3f6011f409e9047510a63178b9398d8095fec443",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:unit:destructors.future",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The explicit pattern has a definition link. Assignment, inserted drops and borrowed struct destructors are marked future possibilities. The shorthand is a proposed equivalence to the written full pattern, not a currently formalized equation. No borrowing judgment is assumed.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The explicit pattern has a definition link. Assignment, inserted drops and borrowed struct destructors are marked future possibilities.",
+    "mathematics": "The shorthand is a proposed equivalence to the written full pattern, not a currently formalized equation. No borrowing judgment is assumed.",
+    "links": [
+      {
+        "occurrence": "destructors.future:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'explicit pattern' refers to md/shared-typing.md#claim-shared.typing.patterns for the concept or example setup used by this unit. The explicit pattern has a definition link. Assignment, inserted drops and borrowed struct destructors are marked future possibilities."
+      }
+    ]
+  }
+}

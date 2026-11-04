@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "8e014115bd8951d33af2988cf6dd42909166a5a934f2e89f6c863415172e5345",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.evidence.mechanical_execution",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Mechanical execution receipts are introduced by name and then their recording, success, validation and freshness criteria are spelled out. The Lean assumptions command is explicitly described as a separate limited observation rather than an unexplained theorem. There are no equations or model judgments. Command names and generated-directory names are literal execution-interface details.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "7e6281a74e84a7271bb5dde1def2551e372276991bcbeeccbf65c4ab5a79f67e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Mechanical execution receipts are introduced by name and then their recording, success, validation and freshness criteria are spelled out. The Lean assumptions command is explicitly described as a separate limited observation rather than an unexplained theorem.",
+    "mathematics": "There are no equations or model judgments. Command names and generated-directory names are literal execution-interface details.",
+    "links": []
+  }
+}

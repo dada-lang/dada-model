@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "fce93455d5f0e4b384c2c0077dd82afdfc139c214e05793e4bdf1d99db1ec9bc",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4ba614a624608047955c9ae8f552242a0a12fdc9b4cec2848e20eb9b3287e39c",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:given.typing.normalization",
+    "audit:unit:shared.declarations",
+    "audit:unit:shared.typing.composition",
+    "audit:unit:shared.typing.normalization",
+    "audit:unit:shared.typing.types",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. RawType.normalize supplies given at a nominal leaf and composes each outer permission with the normalized inner permission. normalize changes only the nominal view using Given normalization. This matches the two equations and the single outer-permission representation; nested shared is absorbed.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "cf9900c60765ba171d5dcb0afd3c9b7b59aaa245ca5b5f2f3c0c097ad9c9f369"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. RawType.normalize supplies given at a nominal leaf and composes each outer permission with the normalized inner permission. normalize changes only the nominal view using Given normalization. This matches the two equations and the single outer-permission representation; nested shared is absorbed.",
+    "links": [
+      {
+        "occurrence": "shared.typing.normalization:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'composition' refers to md/shared-typing.md#claim-shared.typing.composition for the concept or example setup used by this unit. Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base."
+      },
+      {
+        "occurrence": "shared.typing.normalization:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\pi\\\\pi'\" refers to md/shared-typing.md#claim-shared.typing.composition for the concept or example setup used by this unit. Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base."
+      },
+      {
+        "occurrence": "shared.typing.normalization:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's view normalization\" refers to md/given-typing.md#claim-given.typing.normalization for the concept or example setup used by this unit. Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base."
+      }
+    ]
+  }
+}

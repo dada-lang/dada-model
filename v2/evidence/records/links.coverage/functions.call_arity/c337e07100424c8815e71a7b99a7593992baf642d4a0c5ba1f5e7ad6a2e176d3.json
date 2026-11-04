@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "01a58ebd8aa039c1a8a108e24f861d8b7d2b2638412430b98120d0f8604de1f5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:939f180934edf65d84a072aad2dd778c3a2dc532ce0e9d8b312e9d65b1b4483b",
+    "audit:unit:functions.call_arity",
+    "audit:unit:functions.typing",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links call typing and parameters. The arity and optional-destination conclusions are stated directly. No additional formula or unlinked judgment; argument counts and destination presence are the theorem's explicit conclusions.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links call typing and parameters. The arity and optional-destination conclusions are stated directly.",
+    "mathematics": "No additional formula or unlinked judgment; argument counts and destination presence are the theorem's explicit conclusions.",
+    "links": [
+      {
+        "occurrence": "functions.call_arity:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'typed call' refers to md/functions.md#claim-functions.typing for the concept or example setup used by this unit. Links call typing and parameters. The arity and optional-destination conclusions are stated directly."
+      },
+      {
+        "occurrence": "functions.call_arity:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'parameters' refers to md/functions.md#claim-functions.signatures for the concept or example setup used by this unit. Links call typing and parameters. The arity and optional-destination conclusions are stated directly."
+      }
+    ]
+  }
+}

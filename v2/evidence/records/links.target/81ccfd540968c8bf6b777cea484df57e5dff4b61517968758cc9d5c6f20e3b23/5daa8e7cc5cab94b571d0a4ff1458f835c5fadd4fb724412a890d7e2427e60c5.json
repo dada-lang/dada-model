@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "bundle": "864a071184f188a7f7387f3d2287402277a1390569705560ca4a9a240691cff3",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:81ccfd540968c8bf6b777cea484df57e5dff4b61517968758cc9d5c6f20e3b23",
+    "context:link-chapter:md/dada/future-extensions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/dada/future-extensions.md#claim-future.path_permissions directly introduces future.path_permissions. The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation. P and T are locally bound; the displayed identity and absorption laws link through the preceding explanation to current normalization, while the path-dependent extension is explicitly unsettled. No later borrowing formalism is assumed. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "4b104cfe99a1d2b23a06ee8242255f836b6d99fd89d945cc539e27a75292e034"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "future.path_permissions",
+    "definition": {
+      "path": "md/dada/future-extensions.md",
+      "start": 1643,
+      "end": 3206
+    },
+    "clarity": "The landing md/dada/future-extensions.md#claim-future.path_permissions directly introduces future.path_permissions. The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation.",
+    "independence": "P and T are locally bound; the displayed identity and absorption laws link through the preceding explanation to current normalization, while the path-dependent extension is explicitly unsettled. No later borrowing formalism is assumed. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

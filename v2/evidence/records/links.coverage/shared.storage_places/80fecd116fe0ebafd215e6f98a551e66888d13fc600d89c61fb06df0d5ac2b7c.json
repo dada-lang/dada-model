@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "ac7e2837a6a4ae8a9c78e2f69675eff360aa9673deac7b0958732cb02247c1cc",
+  "reviewer": "Codex author self-review",
+  "provenance": "Integration review of the framed Given/Shared/Functions chapters and upstream link-audit changes. Read the changed raw units and exact selected declarations/tests, compared the previously reviewed unchanged material and unit-specific reasoning, and reviewed links, target passages and exceptional forward references against retained chapter context. Corrected stale local-completion descriptions and misplaced/missing definition links. No subagents or independent reviewers were used. Conservative full-source snapshots are freshness inputs, not a claim to have audited every proof tactic.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:unit:shared.references",
+    "audit:unit:shared.storage_places",
+    "audit:unit:shared.syntax",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Gives q grammar and links routed places for the distinction; no lookup equation is buried here. q has the local x/α.f grammar and is distinguished from a linked recursive place expression.",
+  "limitations": [
+    "Author editorial self-review, not an independent review. Link extraction and byte-range validation do not prove the coverage or clarity judgment. Future notes remain nonnormative and this audit does not assert formal correspondence."
+  ],
+  "supersedes": [
+    "c96449d1d61dc0fbec45e602cde7c7672e465f2f7fb59ea9e76a3395cbd21ff0"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Gives q grammar and links routed places for the distinction; no lookup equation is buried here.",
+    "mathematics": "q has the local x/α.f grammar and is distinguished from a linked recursive place expression.",
+    "links": [
+      {
+        "occurrence": "shared.storage_places:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'place expression' refers to md/shared.md#claim-shared.syntax for the concept or example setup used by this unit. Gives q grammar and links routed places for the distinction; no lookup equation is buried here."
+      }
+    ]
+  }
+}
