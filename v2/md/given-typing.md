@@ -531,8 +531,9 @@ threads these changes through the remaining code:
 
 A program is well typed when \\(\Sigma\\) is well formed and
 \\(\Sigma;\varnothing\vdash P\Rightarrow\Gamma_f\\) for some final environment
-\\(\Gamma_f\\). Finishing retains storage, so the final environment need not
-be empty. Scope exit and destruction are not part of this language.
+\\(\Gamma_f\\). The final environment describes locals before the initial frame exits, so it
+need not be empty. Frame exit discards those locals and collects the heap;
+user-defined destruction is not part of this language.
 ```
 
 ## A nested move followed by unpacking
@@ -645,32 +646,27 @@ class type. That would rule out the very field moves the views describe.
 ```
 
 ```{definition} given.typing.configurations
-:lean: Unique/TypedConfigurations:ConfigurationTyped Unique/Unpacking:Steps Unique/Unpacking:Stuck Unique/TypingSafety:StepsExactly
-:uses: given.typing.realization given.typing.statements given.machine given.unpacking given.executions
+:lean: Unique/FrameSafety:ConfigurationTyped Unique/Frames:StepsExactly Unique/Frames:Stuck Unique/TypedConfigurations:ConfigurationTyped
+:uses: given.typing.realization given.typing.statements given.machine given.gc
 
-A configuration is *well typed with final environment* \\(\Gamma_f\\) when its
+A live frame is *well typed with final environment* \\(\Gamma_f\\) when its
 storage realizes an environment under which its remaining statements typecheck:
 
 \\[
-\Sigma\vdash\langle S,P\rangle:\Gamma_f
-\iff
-\exists\Gamma.\;
-  \Sigma;\Gamma\models(S;[])
-  \;\land\;
-  \Sigma;\Gamma\vdash P\Rightarrow\Gamma_f.
+\Sigma\vdash\operatorname{run}(S,P):\Gamma_f
+\iff \exists\Gamma.\;\Sigma;\Gamma\models(S;[])
+ \land \Sigma;\Gamma\vdash P\Rightarrow\Gamma_f.
 \\]
 
-This judgment requires a well-formed \\(\Sigma\\). The current environment may
-change at each step; \\(\Gamma_f\\) describes the same final bindings throughout
-the execution.
+A configuration with no frame is well typed when its heap is empty. Its counter
+may be nonzero. The final environment describes the locals **before exit**;
+it does not assert that terminal storage still contains those bindings.
+For a live frame, realization requires a well-formed class table.
 
-Write \\(\longrightarrow_u^{*}\\) for zero or more extended steps, using the
-reflexive and transitive rules of {anchor-ref}`given.executions` with
-\\(\longrightarrow_u\\) in place of \\(\longrightarrow\\).
-Write \\(K\longrightarrow_u^k K'\\) for exactly \\(k\\) extended steps.
-A configuration is *stuck in the extended language* when it is not finished and
-has no \\(\longrightarrow_u\\) successor. Finishing still means that no
-statements remain.
+Write \\(K\longrightarrow_u^k K'\\) for exactly \\(k\\) program steps using
+unpacking-capable local operations. Finite executions existentially quantify
+\\(k\\); stuckness means an unfinished configuration with no successor.
+The frame-pop step is included in this count.
 ```
 
 ## Progress and preservation
@@ -710,7 +706,7 @@ the typing rules' freshness checks also hold at the point of runtime binding.
 ```
 
 ```{theorem} given.typing.progress
-:lean: Unique/TypingSafety:ConfigurationTyped.progress
+:lean: Unique/FrameSafety:ConfigurationTyped.progress
 :uses: given.typing.configurations given.typing.expression_soundness given.typing.bindings
 
 For every well-typed configuration, either execution has finished or a next
@@ -729,7 +725,7 @@ for an otherwise failing operation.
 ```
 
 ```{theorem} given.typing.preservation
-:lean: Unique/TypingSafety:ConfigurationTyped.preservation
+:lean: Unique/FrameSafety:ConfigurationTyped.preservation
 :uses: given.typing.configurations given.typing.expression_soundness given.typing.bindings
 
 Every step from a well-typed configuration preserves its typing:
@@ -749,23 +745,28 @@ every operational successor, including unpacking an object with empty fields.
 ```
 
 ```{theorem} given.typing.safety
-:lean: Unique/TypingSafety:program_safety
-:uses: given.typing.configurations given.typing.progress given.typing.preservation given.typing.statements
+:lean: Unique/FrameSafety:program_safety
+:uses: given.typing.configurations given.typing.progress given.typing.preservation
 
-A well-typed program cannot reach a stuck configuration. For a well-formed
-\\(\Sigma\\), if
+For a well-formed class table, a program whose statements check from the empty
+environment cannot reach a stuck configuration. Every execution prefix remains
+well typed and can be completed.
 
-\\[
-\Sigma;\varnothing\vdash P\Rightarrow\Gamma_f,
-\qquad
-\lfloor\Sigma\rfloor\vdash
-  \langle S_{\emptyset},P\rangle\longrightarrow_u^{*}K,
-\\]
+If the original program has \\(n\\) statements, every such prefix extends to
+completion after exactly \\(n+1\\) steps in total: one per statement, followed
+by one frame-pop step. A live frame's remaining work is its statement count plus
+one; a finished configuration has zero remaining work. Terminal storage has no
+locals and an empty heap; its allocation counter records the identifiers spent.
+```
 
-then \\(K\\) is finished or has a next step.
 
-In this straight-line language, each step removes one statement and adds none.
-Every execution of a well-typed program can therefore be extended to a finished
-one whose total length is exactly the initial statement count. The final storage
-still owns its remaining objects; this result does not require their destruction.
+```{theorem} given.typing.observation
+:lean: Unique/FrameSafety:completion
+:uses: given.typing.configurations given.typing.realization given.typing.safety
+
+From a well-typed live frame with \\(n\\) statements, there is an observation
+state \\(S_f\\) after exactly \\(n\\) program steps. Its frame has no statements
+left, and its locals still realize the final environment. One further step pops
+that frame, leaving no roots and an empty heap with counter \\(S_f.\nu\\).
+This separates inspection of the computed bindings from program completion.
 ```

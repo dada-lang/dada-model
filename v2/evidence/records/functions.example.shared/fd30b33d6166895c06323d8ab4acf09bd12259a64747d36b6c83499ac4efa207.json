@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "bundle": "5acba7b062a5d8e3e90001363158b0c4b63f330bd84a5d9c0b83714d9c212768",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Functions/Checks:shared",
+    "policy:md/repo/correspondence-review.md",
+    "unit:functions.example.shared"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected example proves typing, execution through allocation/share/copy, p empty and s/t shared aliases in sharedReturned, and a final step to empty heap/frames with counter 1. It also rejects shared Token. The copy declaration has a shared Point parameter and returns a give of that shared parameter, preserving the caller alias; no lease relation is asserted.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "131b8bace527eca25d209c683d02e6c0080ccba7f2b90b19cec98a557dbc1e2a"
+  ]
+}

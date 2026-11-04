@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "8a4e4d31c5dabe34390123cd2cfb75d6f3d13d0a1103f02719891187054b2179",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.programs against lean:Unique/Syntax:Classes, lean:Unique/Syntax:Program, lean:Unique/Soundness:ClassesWellFormed. Program pairs Classes with a List Statement. ClassesWellFormed requires both distinct class names and distinct ordered field names, matching the partial-map convention introduced in this unit. Empty code and empty field lists are admitted. Notation and judgment context was checked in unit:given.classes, unit:given.syntax.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "c0496661e74d6519b6e8a5d2b4441ec1d1480b9a862e46b2de79999e36e1aa11"
+  ]
+}

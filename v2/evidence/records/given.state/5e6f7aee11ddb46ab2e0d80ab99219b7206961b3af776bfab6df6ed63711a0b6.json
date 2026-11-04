@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "162ac5af5f7e48c1a64269054136de18717099fe5ff6b72f42e2f131b5c9d5cc",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.programs",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.state against lean:Unique/Syntax:ObjectId, lean:Unique/State:Slot, lean:Unique/State:Object, lean:Unique/State:State, lean:Unique/State:State.empty. The tagged ObjectId index, Option slot, named field list, and State objects/variables/nextId reproduce the displayed domains and empty state. Finite maps are represented by lists; the prose explicitly delegates distinct keys to well-formedness instead of claiming it for arbitrary raw values. Notation and judgment context was checked in unit:given.classes, unit:given.syntax, unit:given.programs.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "bb74d72cba522fceba09b42dbf6da95abee5a846bd8ff900addfcc1aa76c1000"
+  ]
+}

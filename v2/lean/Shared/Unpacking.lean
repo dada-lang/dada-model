@@ -17,11 +17,13 @@ structure Statement where
   value : Value
   deriving Repr
 
+-- Auxiliary observation for one frame, also used before the final frame-pop step.
 structure Configuration where
   state : State
   code : List Statement
   deriving Repr
 
+-- Local code exhaustion, not completion of the framed program machine.
 def Configuration.finished (configuration : Configuration) : Prop :=
   configuration.code = []
 

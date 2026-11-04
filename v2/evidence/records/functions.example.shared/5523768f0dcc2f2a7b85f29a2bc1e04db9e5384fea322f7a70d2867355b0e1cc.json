@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "f76ca90727cdcfb1dc37ec3648675688d44f73bab6b4a8162f24461c880e6f72",
+  "reviewer": "Codex author self-review",
+  "provenance": "Author self-review in the implementation conversation, after inspecting the full authored units, selected declarations, transitive Given/Shared context, and example setup. No independent reviewer or subagent was used.",
+  "examined": [
+    "context:lean/Correspondence/SharedFunctions.lean",
+    "context:lean/Functions/Checks.lean",
+    "context:lean/Functions/Step.lean",
+    "context:lean/Functions/Syntax.lean",
+    "context:lean/Functions/Typing.lean",
+    "context:lean/Shared/TypingViews.lean",
+    "lean:Functions/Checks:shared",
+    "policy:md/repo/correspondence-review.md",
+    "unit:functions.example.shared"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The shared example proves typing, the full allocation/share/call/return execution, final p empty and both s/t shared owners of object 0, and rejection of shared Token where Token is a class. Definitions of copy and sharedProgram use the same parameter, return give, and statements as the example. This covers owned shared aliasing without lease dependencies. The notation and scope were checked against functions.signatures/functions.calls where included and the listed inherited unit inputs; explicit inherited forward references are intentional chapter organization.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "The Lean model is abstract syntax; there is no source parser or elaborator being certified.",
+    "General progress/preservation for programs using calls remains the separate draft functions.safety; this review does not approve it."
+  ],
+  "supersedes": []
+}

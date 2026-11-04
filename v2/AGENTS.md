@@ -111,10 +111,32 @@ invariants, with `WellFormedState` combining them with structural well-formednes
 `Shared/KindChecks` checks declaration rejection, immediately shared construction,
 copying through its fields, and class-sharing rejection. Given declarations embed
 as classes in both the operational and typing correspondence.
-Destructors are the next planned layer, followed by Assignment, Branching,
+`md/functions.md` now has Lean-backed syntax, call/return and typing rules,
+examples, and Shared-fragment correspondence. `lean/Functions/` explicitly
+imports Shared's call-free storage, evaluation, and typing foundation; its call
+syntax, machine, and judgments are separate. `Correspondence/SharedFunctions`
+proves forward/backward steps (arbitrary successors), traces, typing, completion,
+and stuckness. Program execution correspondence in `SharedFunctionsFrames` matches all
+steps and boundaries exactly, including the shared initial-frame exit. The
+older `SharedFunctions` results describe auxiliary local-frame observations. The machine has an explicit
+frame stack and collects unreachable objects after every transition, including
+return and initial-frame exit. The collector is a noncomputable mathematical
+reachability filter, not an executable traversal. Completed frames retain no
+stores; a terminal step leaves an empty heap and preserves the allocation counter.
+`Functions/StackTyping` defines compatible frame/continuation typings and
+realization of all frame roots in the common heap. `Functions/Safety` proves
+progress, preservation for every successor, compatible ownership, empty typed
+completion, and safety of every finite execution prefix of a well-typed program.
+Recursion remains permitted without a termination claim. The proof uses
+`Shared/TypingBindingPending` for arbitrary additional roots and
+`Shared/TypingCollection` for collection after discarding roots.
+`Functions/SafetyChecks` applies the theorem to nested and recursive calls. `md/destructors.md` remains a nonnormative future-design sketch
+without a Lean model. Both chapters have inherited machinery appendices.
+Destructors are
+followed by Assignment, Branching,
 Looping explicit with declared invariants, and Looping natural with inference.
-Keep languages mostly independent and prove preservation and reflection of the
-preceding fragment; implementation reuse can be reconsidered after more layers.
+Reuse preceding-layer machinery when straightforward, with explicit imports
+and correspondence theorems stating the preserved fragment and changed boundaries.
 
 `lean/Unique/` defines the Given language; `lean/Shared/` independently defines
 the Shared language. Given uses classes; Shared adds structs and shared structs. Both support empty
@@ -147,7 +169,8 @@ views, typing judgments, and storage realization in `Unique/Views`,
 `Unique/ViewChecks`, `Unique/TypingChecks`, and `Unique/TypingExecutionChecks`
 check the linked examples, including their complete runtime executions.
 `Unique/TypingSafety` proves expression soundness, progress, preservation,
-and completion after exactly one step per statement. Expression soundness
+and completion after exactly one local step per statement, with frame-level completion
+after one additional exit step. Expression soundness
 includes evaluation existence and preservation for every evaluation, with
 arbitrary pending values. `Unique/TypingGiveSoundness` and
 `Unique/TypingBindingSoundness` connect the static rules to the operational
@@ -188,13 +211,16 @@ relates each reference to its view, including effective modes on hidden paths.
 well as stored roots: a unique route excludes other routes, while promotion
 through shared access preserves existing aliases.
 `Shared/TypingSafety` proves expression soundness for arbitrary pending values,
-progress, preservation, and completion in exactly one step per statement.
+progress, preservation, and completion in exactly one local step per statement; `Shared/FrameSafety`
+extends this to program completion after one additional exit step.
 `Shared/TypingChecks` and `Shared/UnpackingChecks` cover the chapter examples.
 Path-dependent permissions and permission/type unions remain future extensions
 in `md/dada/future-extensions.md`.
 
 The strict chapters are `md/given.md`, `md/given-typing.md`, `md/shared.md`,
-and `md/shared-typing.md`, plus future extensions and the evidence pilot.
+`md/shared-typing.md`, `md/functions.md`, and the nonnormative `md/destructors.md`, plus future extensions
+and the evidence pilot. Destructor notes preserve the proposed design for review
+before formalization; they do not claim established rules or results.
 The future notes are publishable without formalization; adding a formalization
 citation to a future note is an error. Changes to the evidence configuration and these instructions also
 invalidate earlier reviews; do not claim those records remain current or
@@ -219,3 +245,14 @@ when expanding the set of proof assumptions to report.
 Renderer contracts live in `md/repo/renderer-contracts.md`; source/test citations
 and checked-in theme JS/CSS are conservative correspondence inputs. A source
 change requires renewed review, not a manufactured positive receipt or verdict.
+
+Given and Shared expose their public program machines in `Unique/Frames` and
+`Shared/Frames`: one optional initial frame, eager reachability collection after
+every local statement, and an explicit frame-pop step. `Step`/`Unpacking.Step`
+in the older modules are auxiliary local-frame relations, not complete program
+lifetimes. `FrameSafety` proves progress, preservation and exactly n+1 total
+steps, retaining a pre-exit realization witness after n statement steps.
+`FrameChecks` covers empty-program exit and allocation followed by reclamation.
+`Correspondence/UniqueSharedFrames` relates framed steps and boundaries;
+`Correspondence/SharedFunctionsFrames` gives exact correspondence with Functions.
+Functions reuses the Shared storage collector with the roots of all live frames.

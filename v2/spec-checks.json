@@ -2,7 +2,7 @@
   "schema": 1,
   "checks": {
     "lean": {
-      "description": "Compile all Given, Shared, and correspondence modules, rejecting warnings.",
+      "description": "Compile all Given, Shared, Functions, and correspondence modules, rejecting warnings.",
       "cwd": "lean",
       "command": ["lake", "build", "--wfail"],
       "version": ["lake", "env", "lean", "--version"],

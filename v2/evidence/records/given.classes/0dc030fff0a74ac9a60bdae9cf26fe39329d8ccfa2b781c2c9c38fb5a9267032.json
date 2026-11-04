@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "bundle": "d6d0ad40da3dfeb26ea48a52e77ec1d57c5170bd034e16b4578c376647dfeb19",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.classes against lean:Unique/Syntax:ClassName, lean:Unique/Syntax:FieldName, lean:Unique/Syntax:Class. ClassName and FieldName are String abbreviations and Class retains an ordered List FieldName. Distinct fields are a well-formed-table convention established in given.programs, rather than a claim that the raw Class constructor enforces it. Empty lists give the zero-field case. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "640aa5a887c7d30770c129c36eff198b5adb5a8c1effff29902f457fb4541d03"
+  ]
+}

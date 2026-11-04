@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "f537235772402f792d199f50cb9ea50f327c349bee6ac1ec4b59280a65a7387c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/mechanical.rs:Execution::validate",
+    "rust:mdbook-dada/src/mechanical.rs:records",
+    "rust:mdbook-dada/src/mechanical.rs:run",
+    "rust:mdbook-dada/src/mechanical.rs:snapshot",
+    "rust:mdbook-dada/src/mechanical.rs:status",
+    "test:mdbook-dada/tests/evidence_validation.rs:workspace_validation_rejects_malformed_execution_receipts",
+    "test:mdbook-dada/tests/mechanical.rs:execution_preserves_success_failure_and_non_utf8_output",
+    "test:mdbook-dada/tests/mechanical.rs:execution_retains_source_mutations_additions_and_deletions",
+    "test:mdbook-dada/tests/mechanical.rs:failed_after_snapshot_and_launch_failures_are_retained",
+    "test:mdbook-dada/tests/mechanical.rs:later_failures_and_tied_failures_cannot_be_hidden_by_success",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_rejects_tampering_and_profile_substitution",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_requires_selected_sources_and_runner_snapshots",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_and_records_reject_symbolic_links",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_record_empty_directories_and_ignore_generated_outputs",
+    "test:mdbook-dada/tests/mechanical.rs:source_or_profile_changes_stale_receipts_without_corrupting_history",
+    "test:mdbook-dada/tests/mechanical.rs:status_and_record_validation_never_execute_profile_commands",
+    "unit:meta.evidence.mechanical_execution"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.evidence.mechanical_execution against rust:mdbook-dada/src/mechanical.rs:run, rust:mdbook-dada/src/mechanical.rs:snapshot, rust:mdbook-dada/src/mechanical.rs:Execution::validate, rust:mdbook-dada/src/mechanical.rs:status, rust:mdbook-dada/src/mechanical.rs:records, rust:mdbook-dada/src/evidence.rs:check, test:mdbook-dada/tests/mechanical.rs:execution_preserves_success_failure_and_non_utf8_output, test:mdbook-dada/tests/mechanical.rs:execution_retains_source_mutations_additions_and_deletions, test:mdbook-dada/tests/mechanical.rs:failed_after_snapshot_and_launch_failures_are_retained, test:mdbook-dada/tests/mechanical.rs:status_and_record_validation_never_execute_profile_commands, test:mdbook-dada/tests/mechanical.rs:source_or_profile_changes_stale_receipts_without_corrupting_history, test:mdbook-dada/tests/mechanical.rs:later_failures_and_tied_failures_cannot_be_hidden_by_success, test:mdbook-dada/tests/mechanical.rs:receipt_validation_rejects_tampering_and_profile_substitution, test:mdbook-dada/tests/mechanical.rs:receipt_validation_requires_selected_sources_and_runner_snapshots, test:mdbook-dada/tests/mechanical.rs:snapshots_record_empty_directories_and_ignore_generated_outputs, test:mdbook-dada/tests/mechanical.rs:snapshots_and_records_reject_symbolic_links, test:mdbook-dada/tests/evidence_validation.rs:workspace_validation_rejects_malformed_execution_receipts. run snapshots before/after, captures both version probes and command outputs, and retains failed launch/recapture results. succeeded requires identical version results and snapshots plus successful command. validate checks required directory membership and profile consistency; status uses the latest finish time and gives stale/failure precedence on ties. The tests cover source mutations, binary output, missing required snapshots, symlinks, tampering and nonexecution during validation; none authenticates the runner or a hermetic environment. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Implementation/test inspection is correspondence evidence; actual command results are recorded separately. Tests do not prove universal behavior, browser appearance, CDN availability, or authenticated execution."
+  ],
+  "supersedes": [
+    "c0804dbd93c590e2821bed053d142b8c031a0fb7c3921a32f0598869cc8fe73e"
+  ]
+}

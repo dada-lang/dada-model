@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "1560831464442767efeae41da999b38c55511ec464a6aa5dabb1214ef2643234",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Unique/Frames:Configuration",
+    "lean:Unique/Frames:Configuration.collect",
+    "lean:Unique/Frames:Configuration.finished",
+    "lean:Unique/Frames:Configuration.initial",
+    "lean:Unique/Frames:Configuration.running",
+    "lean:Unique/Frames:Configuration.state",
+    "lean:Unique/Frames:Frame",
+    "lean:Unique/Frames:State.collect",
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Live",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.gc",
+    "unit:given.machine",
+    "unit:given.programs",
+    "unit:given.state",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Live is inductively rooted at initialized local slots and closed through initialized fields of reached objects. State.collect filters existing entries by Live and Configuration.collect uses projected active locals or []. It changes only objects, preserving frame, counter and surviving entries. With no locals Live.has_variable excludes every live object, establishing empty-heap collection. The unit explicitly states whole-statement boundaries and noncomputability; these boundaries are specified by the following Step unit.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "c84937f1e6a6803123d64bb539338b9a264dc58c75dd66fd7334ebc8c8ee5e6f"
+  ]
+}

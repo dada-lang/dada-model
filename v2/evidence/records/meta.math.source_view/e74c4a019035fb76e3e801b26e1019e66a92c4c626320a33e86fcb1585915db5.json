@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "076b7012705892b452c027dc056452db4e63227b0040617ae35dce27f14a231c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lib.rs:markdown_heading",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "rust:mdbook-dada/src/lib.rs:selector_header",
+    "test:mdbook-dada/tests/book.rs:leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup",
+    "test:mdbook-dada/tests/book.rs:nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body",
+    "test:mdbook-dada/tests/book.rs:unanchored_rendered_blocks_share_named_headers_and_grouped_choices",
+    "test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent",
+    "test:mdbook-dada/tests/units.rs:meta_units_show_named_rust_implementation_and_test",
+    "test:mdbook-dada/tests/units.rs:structured_units_render_identified_headers_and_exact_lean_views",
+    "unit:meta.math.source_view"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.source_view against rust:mdbook-dada/src/lib.rs:selector_header, rust:mdbook-dada/src/lib.rs:markdown_heading, rust:mdbook-dada/src/lib.rs:render_unit, rust:mdbook-dada/src/lib.rs:render, test:mdbook-dada/tests/book.rs:leading_declaration_shields_move_to_headers_without_losing_ids_or_body_markup, test:mdbook-dada/tests/book.rs:nonheading_roles_and_nested_diagrams_stay_in_the_markdown_body, test:mdbook-dada/tests/book.rs:unanchored_rendered_blocks_share_named_headers_and_grouped_choices, test:mdbook-dada/tests/units.rs:structured_units_render_identified_headers_and_exact_lean_views, test:mdbook-dada/tests/units.rs:meta_units_show_named_rust_implementation_and_test, test:mdbook-dada/tests/renderer_contracts.rs:view_styles_keep_headers_and_nested_choices_independent. selector_header uses an identified left heading and shared-group Rendered/alternate radio controls with Rendered checked; render_unit emits exact cited source selections and draft badges. markdown_heading moves only leading defining roles. Tests verify IDs appear once, later anchors stay in bodies, nested controls have distinct names and CSS direct-child selectors isolate panes. CSS inspection is not claimed as browser execution. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Implementation/test inspection is correspondence evidence; actual command results are recorded separately. Tests do not prove universal behavior, browser appearance, CDN availability, or authenticated execution."
+  ],
+  "supersedes": [
+    "e252596af80c16ec3122be82cca0b0f037f9729cd4aa9b05b53b6c860f11d7e7"
+  ]
+}

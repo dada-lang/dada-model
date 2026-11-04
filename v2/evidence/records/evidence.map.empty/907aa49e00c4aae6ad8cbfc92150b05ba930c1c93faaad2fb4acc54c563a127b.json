@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "bundle": "d4dbe8cc8d66ec019c4085be995ff248e86599679246898abedc257c6ded1d1b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "lean:Common/FiniteMapExamples:empty_map",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map",
+    "unit:evidence.map.empty"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:evidence.map.empty against lean:Common/FiniteMapExamples:empty_map. The anonymous example instantiates both type parameters with Nat and asserts that the entry list of FiniteMap.empty is []. It covers the stated empty-map instance, with map notation introduced by evidence.map. Notation and judgment context was checked in unit:evidence.map.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "34c1b4571f7b38cc7502e4ab0a9e0d170b594713716baee6b2af96b6c4a09993"
+  ]
+}

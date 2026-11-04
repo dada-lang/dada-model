@@ -172,33 +172,59 @@ This update preserves the slot even when its new contents are \\(\bot\\).
 ## The machine
 
 ```{definition} given.machine
-:lean: Unique/State:Configuration Unique/State:Configuration.initial Unique/State:Configuration.finished Unique/Step:Step Unique/Step:Steps Unique/Step:Stuck
-:uses: given.programs given.state
+:lean: Unique/Frames:Frame Unique/Frames:Configuration Unique/Frames:Configuration.running Unique/Frames:Configuration.initial Unique/Frames:Configuration.state Unique/Frames:Configuration.finished
+:uses: given.state given.syntax
 
-A *machine configuration* \\(K\\) pairs its storage with the statements
-still to run:
-
-\\[
-K ::= \langle S,P\rangle.
-\\]
-
-For a program \\(\Pi=\langle\Delta,P\rangle\\), execution starts at
-\\(\langle S_{\emptyset},P\rangle\\). The class table \\(\Delta\\) stays
-fixed during execution.
-
-One *step*, written \\(\Delta\vdash K\longrightarrow K'\\), executes the
-first statement, updates storage, and removes that statement from the sequence.
-The operational rules below define this judgment. Expression evaluation completes
-within a step; the machine never exposes a partially evaluated expression.
-
-A configuration is *finished* exactly when no statements remain:
+A *frame* \\(f=(V,P)\\) owns its local variable store \\(V\\) and remaining
+statements \\(P\\). The program has one initial frame; after its exit there is
+no frame. Heap objects \\(O\\) and the allocation counter \\(\nu\\) live outside it:
 
 \\[
-\mathsf{Finished}(\langle S,P\rangle)\iff P=[].
+K=\langle O,\nu,F\rangle,\qquad F::=\mathsf{none}\mid\mathsf{some}(V,P).
 \\]
 
-The final storage remains available; finishing does not discard its objects or
-variables.
+For expression evaluation, combine the live frame's locals with the heap and
+counter as the storage \\(S=\langle O,V,\nu\rangle\\). Write
+\\(\operatorname{run}(S,P)=\langle O,\nu,\mathsf{some}(V,P)\rangle\\).
+The pair \\(\langle S,P\rangle\\) used by local statement rules is an
+observation of that live frame, not a terminal program state.
+
+Initially \\(K=\operatorname{run}(S_{\emptyset},P)\\), including when \\(P=[]\\).
+A configuration is *finished* exactly when its frame is absent:
+
+\\[
+\mathsf{Finished}(\langle O,\nu,F\rangle)\iff F=\mathsf{none}.
+\\]
+
+Exhausting the statements leaves a live frame whose bindings can still be
+inspected. A separate exit step pops it. There are no nested scopes or calls in
+this layer; Functions will extend this single-frame lifetime to a stack.
+```
+
+```{definition} given.gc
+:lean: Unique/State:Live Unique/Frames:State.collect Unique/Frames:Configuration.collect
+:uses: given.machine given.state
+
+*Reachability* starts at an initialized slot of the live frame and follows
+initialized object fields. Write \\(\mathsf{Live}_S(\alpha)\\) when this reaches
+object \\(\alpha\\). An absent frame has no roots.
+
+*Eager collection* retains exactly reachable object entries. For object data
+\\(D\\) (its class tag and field slots), define:
+
+\\[
+\operatorname{gc}(K)=\langle
+ [(\alpha,D)\in O\mid\mathsf{Live}_{S_K}(\alpha)],\nu,F\rangle.
+\\]
+
+Here \\(S_K\\) uses the frame's locals, or an empty variable store if the
+frame is absent. Collection preserves surviving objects and their identifiers,
+the allocation counter, and the frame. It invokes no user code. With no frame,
+it removes the entire heap.
+
+The Lean definition is a mathematical reachability filter, not an executable
+traversal. Collection runs after whole statements and frame exit, never between
+constructor operands or while an expression result awaits binding.
 ```
 
 ## Operational semantics
@@ -302,8 +328,8 @@ An expression runs within one statement transition, but it can still fail.
 ### Executing a statement
 
 ```{definition} given.steps
-:lean: Unique/Step:State.bind Unique/Step:Step
-:uses: given.machine given.evaluation
+:lean: Unique/Step:State.bind Unique/Step:Step Unique/Frames:Step Unique/Frames:baseOperation Unique/Frames:patternOperation
+:uses: given.machine given.evaluation given.gc
 
 To execute `let x = e`, evaluate the expression completely, then put its result
 in the new variable `x`. For the resulting storage
@@ -317,7 +343,7 @@ S'[x\mapsto\alpha]=\langle O',V'[x\mapsto\alpha],\nu'\rangle.
 The *domain* \\(\operatorname{dom}(V')\\) is the set of variable names already
 present.
 
-This is the only statement-transition rule:
+The local binding rule is:
 
 \\[
 \frac{
@@ -328,21 +354,39 @@ This is the only statement-transition rule:
   \end{gathered}
 }{
   \Delta\vdash\langle S,(\mathsf{let}\ x=e)::P\rangle
-  \longrightarrow\langle S'[x\mapsto\alpha],P\rangle
+  \rightsquigarrow\langle S'[x\mapsto\alpha],P\rangle
 }
 \quad\text{Let}
 \\]
 
 The remaining statements keep their order. If evaluation fails or the variable
 already exists, the statement has no transition. There is no recovery transition
-or separately observable state partway through a failed expression. A finished
-configuration has no statement to execute, so it takes no step.
+or separately observable state partway through a failed expression.
+
+The local rule above is auxiliary. Write \\(\rightsquigarrow\\) for that local
+operation. The program machine collects after it and has a separate exit rule:
+
+\\[
+\frac{\Delta\vdash\langle S,P\rangle\rightsquigarrow\langle S',P'\rangle}
+ {\Delta\vdash\operatorname{run}(S,P)\longrightarrow
+   \operatorname{gc}(\operatorname{run}(S',P'))}
+\qquad
+\Delta\vdash\operatorname{run}(\langle O,V,\nu\rangle,[])
+ \longrightarrow\operatorname{gc}(\langle O,\nu,\mathsf{none}\rangle).
+\\]
+
+The exit target has no frame and an empty heap, retaining counter \\(\nu\\).
+Even an empty program takes one exit step. A finished configuration has no
+successor. The Lean `Step` in `Unique/Step` is the auxiliary local relation;
+`Framed.Step` is this program machine. `baseOperation` selects the single-variable
+binding relation; later `patternOperation` selects the unpacking relation.
+
 ```
 
 ### Finite executions and failure
 
 ```{definition} given.executions
-:lean: Unique/Step:Steps Unique/Step:Stuck
+:lean: Unique/Frames:Steps Unique/Frames:StepsExactly Unique/Frames:Stuck
 :uses: given.machine given.steps
 
 A *finite execution*, written \\(\Delta\vdash K\longrightarrow^{*}K'\\),
@@ -357,7 +401,7 @@ consists of zero or more steps. These rules define it:
 }{\Delta\vdash K\longrightarrow^{*}K''}.
 \\]
 
-A configuration is *stuck* when statements remain but no next step is possible:
+A configuration is *stuck* when its frame remains but no next step is possible:
 
 \\[
 \mathsf{Stuck}_{\Delta}(K)\iff
@@ -374,19 +418,20 @@ operation that requires that lookup is what leaves the machine stuck.
 ## Worked executions
 
 ````{example} given.example.token
-:lean: Unique/Examples:create_token
+:lean: Unique/FrameChecks:lifetime
 :uses: given.classes given.syntax given.programs given.machine given.steps
 
 An empty class provides a value we can move:
 
 ```dada
 class Token {}
-class Box { value }
 let t = new Token();
 ```
 
 Starting with empty storage, one step creates a `Token` object and puts its
-reference in `t`. The configuration is finished: no statements remain.
+reference in `t`. No statements remain, but the initial frame is still live.
+The second step pops it and collects the object, leaving an empty heap and
+counter one. The check also covers the single exit step of an empty program.
 ````
 
 ````{example} given.example.field
@@ -410,7 +455,7 @@ Starting with empty storage, the machine takes three steps:
 2. Create a box and move `t` into its `value` field, leaving `t` empty.
 3. Follow `b` to the box and move the field's reference into `u`.
 
-The resulting configuration is finished. Variable `b` owns the box and `u`
+At this pre-exit observation, the statements are exhausted. Variable `b` owns the box and `u`
 owns the token; `t` and the box's `value` field are empty. Giving the field moves
 its contents; the containing box remains in place.
 ````
@@ -429,7 +474,7 @@ let b = new Box(new Token());
 
 Starting with empty storage, this is one statement step. Evaluate `new Token()`
 first, then put its reference in the newly created box's `value` field. Bind the
-box's reference to `b`. The finished configuration contains both objects, with
+box's reference to `b`. The pre-exit observation contains both objects, with
 no temporary source variable needed in the program.
 ````
 
@@ -437,14 +482,14 @@ no temporary source variable needed in the program.
 :lean: Unique/Examples:second_give_fails
 :uses: given.example.field given.executions
 
-Starting with the final storage of {anchor-ref}`given.example.field`, try:
+Starting with the pre-exit storage of {anchor-ref}`given.example.field`, try:
 
 ```dada
 let v = b.value→;
 ```
 
 Let \\(\Delta\\) be that example's class table, and let \\(K_{\mathrm{bad}}\\)
-pair its final storage with this one remaining statement.
+put that storage in a live frame with this one remaining statement.
 It is stuck: `b` still holds the box's reference, but its `value` field is empty.
 The give cannot evaluate, so the statement cannot execute. Giving once leaves
 no reference behind for a second give.
@@ -536,8 +581,18 @@ that immediately holds its reference: a path through several enclosing objects
 does not add extra owners of its final target.
 ```
 
+```{theorem} given.gc_inert
+:lean: Unique/Frames:State.collect_eq_self
+:uses: given.gc given.well_formed given.liveness
+
+Collection leaves structurally well-formed evaluation storage unchanged:
+every allocated object is already reachable. Ordinary statements preserve
+this property, so their following collection is inert. Popping the frame
+removes its roots; collection at that boundary empties the heap instead.
+```
+
 ```{theorem} given.soundness
-:lean: Unique/Soundness:Steps.from_initial
+:lean: Unique/Frames:base_soundness
 :uses: given.programs given.executions given.well_formed given.liveness given.single_owner
 
 For any program with a well-formed class table, every configuration reached by
@@ -590,7 +645,7 @@ To execute `let C → { ... } = e`, evaluate `e`, check that its result names a
 field becomes an initialized variable; an empty field becomes an empty variable.
 The consumed object's entry is removed from the object table.
 
-Write \\(\Delta\vdash K\longrightarrow_u K'\\) for the extended transition
+Write \\(\Delta\vdash K\rightsquigarrow_u K'\\) for the extended transition
 relation. It has the earlier **Let** rule, read over the extended statement
 syntax, and the following **Unpack** rule. We display the pattern fields in
 declaration order:
@@ -608,7 +663,7 @@ declaration order:
 }{
   \Delta\vdash
     \langle S,(\mathsf{let}\ C\mathord{\to}\{f_1:x_1,\ldots,f_n:x_n\}=e)::P\rangle
-    \longrightarrow_u\langle S'',P\rangle
+    \rightsquigarrow_u\langle S'',P\rangle
 }
 \quad\text{Unpack}
 \\]
@@ -632,10 +687,14 @@ The slots move together within one statement step. No object stored in a field
 is removed by unpacking its container. A class mismatch or an already allocated
 destination variable gives this rule no transition, even when that variable's
 slot is empty.
+
+These are local-frame operations. The program machine uses `patternOperation`
+in the same collection and exit rules as single-variable bindings.
+
 ```
 
 ```{theorem} given.unpacking.soundness
-:lean: Unique/Unpacking:Step.preserves_wellFormed
+:lean: Unique/Frames:pattern_preservation
 :uses: given.unpacking given.well_formed
 
 For a well-formed class table, every extended step from well-formed storage

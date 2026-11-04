@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "1e5390e5406344b94036057fcb498091cc8e2036b5393bbd94de1191ef95d96c",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/Soundness:WellFormed",
+    "lean:Unique/Soundness:WellFormedWith",
+    "lean:Unique/State:Allocated",
+    "lean:Unique/State:Live",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:References",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/State:Updated",
+    "lean:Unique/Step:Eval",
+    "lean:Unique/Step:EvalArgs",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Step:State.allocate",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.evaluation",
+    "unit:given.programs",
+    "unit:given.resolution",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax",
+    "unit:given.well_formed"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.well_formed against lean:Unique/State:Allocated, lean:Unique/State:Live, lean:Unique/State:References, lean:Unique/Soundness:WellFormed, lean:Unique/Soundness:WellFormedWith. WellFormed combines distinct object/variable keys, declaration-ordered distinct field shapes, allocation bounds, strictly older field targets, Nodup references, and equivalence of referenced and allocated identities. Together the last two mean exactly one occurrence per allocated identity. WellFormedWith counts pending roots as well, matching the scope statement. Notation and judgment context was checked in unit:given.programs, unit:given.state, unit:given.storage_places, unit:given.evaluation.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "15eb5dfa71d86d8f7f896d790f39fc82e1b1f9da55ccfea047883265f6dfbdf1"
+  ]
+}

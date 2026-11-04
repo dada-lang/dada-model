@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "bundle": "2f888977cbb84cfb1fdc39c1e812a996f51e72432cf5adbe70050f33bcebc792",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Shared/KindChecks:declarations",
+    "lean:Shared/State:Kind.mode",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:Kind",
+    "lean:Shared/Syntax:Kind.isStruct",
+    "lean:Shared/TypingViews:ClassTable.WellFormed",
+    "lean:Shared/TypingViews:KindValid",
+    "lean:Shared/TypingViews:StructType",
+    "policy:md/repo/correspondence-review.md",
+    "unit:shared.declarations",
+    "unit:shared.example.declarations",
+    "unit:shared.struct"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:shared.example.declarations against lean:Shared/KindChecks:declarations. The declarations example proves well-formedness of Token/Box/SharedBox/Resource/Owner, positive struct predicates, negative Resource predicates including an empty view, and rejection of both bad container kinds. The concrete fields in KindChecks match the source declarations, including a class containing another class. Notation and judgment context was checked in unit:shared.declarations, unit:shared.struct.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "48d468ad41346ac0a1e2921d0534b563042368559782930bf3bd31f5fdc23402"
+  ]
+}

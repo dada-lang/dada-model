@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "bundle": "6021e164f21dbca2c6f036289b7450c54da3a87a3cdb2ec524194e2f15b914ff",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Shared/State:Kind.mode",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:Kind",
+    "policy:md/repo/correspondence-review.md",
+    "unit:shared.declarations"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:shared.declarations against lean:Shared/Syntax:Kind, lean:Shared/Syntax:Class, lean:Shared/State:Kind.mode. Kind distinguishes classType, structType and sharedStruct. Kind.mode maps only sharedStruct to shared, and Kind.isStruct (in the following predicate definition) admits the latter two kinds. Class stores kind with ordered fields, while Reference stores the mode, supporting the table without introducing distinct object representations. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "fadb0c70d4a0e114e733ff4efc181cc41b72e541fb3cab306f2e57e7cd2e12dc"
+  ]
+}

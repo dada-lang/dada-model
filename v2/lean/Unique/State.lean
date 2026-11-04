@@ -58,6 +58,7 @@ inductive Live (state : State) : ObjectId → Prop where
       Live state parent → (parent, data) ∈ state.objects →
       (name, some object) ∈ data.fields → Live state object
 
+-- Auxiliary local-frame observation. The program lifetime is defined in Frames.
 structure Configuration where
   state : State
   code : List Statement
@@ -66,6 +67,7 @@ structure Configuration where
 def Configuration.initial (program : Program) : Configuration :=
   ⟨State.empty, program.body⟩
 
+-- Local code exhaustion; Framed.Configuration.finished means the frame is absent.
 def Configuration.finished (configuration : Configuration) : Prop :=
   configuration.code = []
 

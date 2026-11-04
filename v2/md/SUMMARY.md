@@ -8,6 +8,8 @@
 - [Shared](shared-overview.md)
   - [Operational semantics](shared.md)
   - [Type system](shared-typing.md)
+- [Functions](functions.md)
+- [Destructors (draft)](destructors.md)
 - [CFlow](cflow.md)
 - [Future extensions](dada/future-extensions.md)
 - [Contributing to the specification](introduction.md)

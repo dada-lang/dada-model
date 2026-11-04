@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "e5805f6024fbb2b8f4d9c48aa80ad4da60a25caf152c90628a3453071bea5954",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Shared/Soundness:Compatible",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Step:Give",
+    "lean:Shared/Step:Promote",
+    "lean:Shared/Step:Resolve",
+    "lean:Shared/Step:Take",
+    "lean:Shared/Syntax:Place",
+    "policy:md/repo/correspondence-review.md",
+    "unit:shared.give"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:shared.give against lean:Shared/State:Mode, lean:Shared/State:Reference, lean:Shared/State:Slot, lean:Shared/Syntax:Place, lean:Shared/Step:Resolve, lean:Shared/Step:Take, lean:Shared/Step:Promote, lean:Shared/Step:Give, lean:Shared/Soundness:Compatible. Resolve accumulates Mode.join along the path. Give.move requires unique access and Take empties exactly the selected unique slot; Give.copy requires shared stored reference and leaves state unchanged; Give.promote requires shared access and changes only the final unique reference. All branches return the same object identity. Compatible concerns occurrences, not an object-level mode. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "641f2e8cd40a62404fb7f1f908450c183675d0205e0caad68645563c3633dded"
+  ]
+}

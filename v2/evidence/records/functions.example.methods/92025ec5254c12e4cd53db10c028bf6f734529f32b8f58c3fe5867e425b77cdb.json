@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "bundle": "c4df34e2885e3eab9a153c8714ff101f5ac72c765eaf8bfb92fc359fa1cbb587",
+  "reviewer": "Codex author self-review",
+  "provenance": "Author self-review in the implementation conversation, after inspecting the full authored units, selected declarations, transitive Given/Shared context, and example setup. No independent reviewer or subagent was used.",
+  "examined": [
+    "context:lean/Correspondence/SharedFunctions.lean",
+    "context:lean/Functions/Checks.lean",
+    "context:lean/Functions/Step.lean",
+    "context:lean/Functions/Syntax.lean",
+    "context:lean/Functions/Typing.lean",
+    "context:lean/Shared/TypingViews.lean",
+    "lean:Functions/Checks:methods",
+    "policy:md/repo/correspondence-review.md",
+    "unit:functions.example.methods"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "methodProgram calls the qualified Name.method Point take/copy entries with explicit receiver arguments. takeMethod and copyMethod use receiver Point given/shared respectively. The anchored conjunction proves the whole program typed, execution to methodFinal, termination, p empty, and s/t shared aliases. The source uses Point.take and Point.copy, with no method invocation sugar or general typed receiver surface form. The notation and scope were checked against functions.signatures/functions.calls where included and the listed inherited unit inputs; explicit inherited forward references are intentional chapter organization.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "The Lean model is abstract syntax; there is no source parser or elaborator being certified.",
+    "General progress/preservation for programs using calls remains the separate draft functions.safety; this review does not approve it."
+  ],
+  "supersedes": []
+}

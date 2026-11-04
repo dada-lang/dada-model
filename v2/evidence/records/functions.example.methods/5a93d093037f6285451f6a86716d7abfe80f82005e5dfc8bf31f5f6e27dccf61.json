@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "bundle": "f5350b88139223fe3a0989d05de7c82303b7f3af387c9a9feafe818310e411cd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Functions/Checks:methods",
+    "policy:md/repo/correspondence-review.md",
+    "unit:functions.example.methods"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "methodProgram and its declarations use qualified Point.take and Point.copy calls with explicit receiver arguments and the two prefix receiver permissions. The selected conjunction checks typing, execution, p empty and s/t shared aliases before initial exit, and the exit step to an empty terminal state. This covers the surface examples as abstract syntax, without claiming a parser or receiver-call sugar.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "78c38ef1d4b9b6f166f20d71121bc974a013041259206e31b0ce1646de28680e"
+  ]
+}

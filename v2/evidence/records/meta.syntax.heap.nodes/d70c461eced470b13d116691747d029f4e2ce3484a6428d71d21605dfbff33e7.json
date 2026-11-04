@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "652cff646434e80b70693f19a4ba7653c084182c6dc14b86f93bf6c64fa90ebd",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/graph.rs:args",
+    "rust:mdbook-dada/src/graph.rs:identifier",
+    "rust:mdbook-dada/src/graph.rs:label",
+    "rust:mdbook-dada/src/graph.rs:parse",
+    "test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices",
+    "test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds",
+    "test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved",
+    "test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges",
+    "unit:meta.syntax.heap.nodes"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.heap.nodes against rust:mdbook-dada/src/graph.rs:identifier, rust:mdbook-dada/src/graph.rs:args, rust:mdbook-dada/src/graph.rs:label, rust:mdbook-dada/src/graph.rs:parse, test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds, test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices, test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target, test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved, test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges. parse records nodes before resolving assignments, permits the listed object/primitive/array/variable constructors and distinguishes owner, showned, lease and shared-lease edges. args preserves quoted commas and label uses JSON escapes. Tests cover Unicode fields, forward references, aliases, one variable group, empty array slots and label escaping; the unit explicitly treats this as diagram syntax rather than language semantics. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Implementation/test inspection is correspondence evidence; actual command results are recorded separately. Tests do not prove universal behavior, browser appearance, CDN availability, or authenticated execution."
+  ],
+  "supersedes": [
+    "304c07ba9ea6d0ea145f660bd560eabcc9602a8730c47feab2319dfad46b1ce2"
+  ]
+}

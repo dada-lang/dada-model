@@ -15,10 +15,15 @@ The opening chapters separate execution from static typing:
 | [Shared: operational semantics](../shared.md) | Extend execution with sharing of values, written `p→share`; traversal through shared ownership yields a shared copy. |
 | [Shared: typing and soundness](../shared-typing.md) | Permissions determine whether giving moves or copies; views track accessible fields. Progress, preservation, and completion are proved. |
 
-The two operational models live in `lean/Unique/` and `lean/Shared/`;
+| [Functions and methods](../functions.md) | Explicit call frames, return destinations, and eager collection across all live roots; progress and preservation allow recursive execution. |
+
+The first two operational models live in `lean/Unique/` and `lean/Shared/`;
 `lean/Correspondence/UniqueShared.lean`
 proves the embedding preserves and reflects steps, finite executions, and
-execution boundaries. Shared graph reasoning lives in `lean/Common/`.
+execution boundaries. Shared graph reasoning lives in `lean/Common/`. `Unique/Frames` and
+`Shared/Frames` are the program machines, wrapping the existing local statement
+relations with eager collection and initial-frame exit. Their frame safety
+results and `Correspondence/UniqueSharedFrames` cover these public boundaries.
 
 Both layers support explicit `Class → { x, y }` unpacking patterns. Shared
 requires a unique reference to the container; its fields may be shared.
@@ -27,13 +32,19 @@ statement typing, and the relation between typing environments and storage.
 Given needs no permission types; Shared adds `given` and `shared`.
 
 Progress says that a well-typed configuration is finished or can take a step.
-Preservation says that every step retains configuration typing. Since each
-step consumes one statement, well-typed programs also finish after exactly
-one step per statement. These type soundness results are separate from the
+Preservation says that every step retains configuration typing. Each local statement takes one step; the initial frame then takes one exit
+step. Well-typed programs finish after exactly the statement count plus one,
+with an empty heap. A separate pre-exit observation retains the final bindings. These type soundness results are separate from the
 structural heap invariants proved by the operational chapters.
 
-Later extensions will cover control flow, class and struct distinctions,
-primitives, destruction, and borrowing. Introduce each feature when its behavior
+Functions reuses Shared storage and typing machinery. Its stack realization
+accounts for suspended callers as well as the active frame; `Functions/Safety`
+proves progress and preservation for arbitrary successors and safety of every
+finite execution prefix. Recursion removes the termination guarantee.
+`Correspondence/SharedFunctionsFrames` preserves and reflects the call-free
+fragment, including initial-frame exit and terminal states.
+
+Later extensions will cover control flow, primitives, destruction, and borrowing. Introduce each feature when its behavior
 can be explained from the preceding chapters.
 
 ## Build one layer

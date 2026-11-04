@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "37e0e481e14fa078a524f351988c210516dabce2c6d4fe3ea90f5c17705ae128",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "unit:meta.syntax.anchors.identity"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.anchors.identity against rust:mdbook-dada/src/lib.rs:roles, rust:mdbook-dada/src/lib.rs:chapter_roles, rust:mdbook-dada/src/lib.rs:process_with_roots, rust:mdbook-dada/src/lib.rs:relative_html, rust:mdbook-dada/src/lib.rs:render_role, test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters, test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail, test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors, test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs. roles validates the documented ASCII ID shape and excludes literal contexts; chapter_roles adds structured IDs to the shared namespace; process_with_roots indexes all chapters before rendering and rejects duplicates. relative_html and render_role build local/relative shield links. Tests cover forward/nested/parent references, missing/duplicate IDs, literal examples and neutral/definition role labels without proof implications. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Implementation/test inspection is correspondence evidence; actual command results are recorded separately. Tests do not prove universal behavior, browser appearance, CDN availability, or authenticated execution."
+  ],
+  "supersedes": [
+    "4bfb279fae4ec19d2973e450a38f93ac41d878cb0117242434b56298a052454d"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "9aa83fe15626010d96ed6873a6d1c5f2b22fec9343f640f4d99cf615c2c43859",
+  "reviewer": "Codex author self-review",
+  "provenance": "Author self-review for the explicit-frame/eager-GC revision. Reviewed the current authored units, exact cited declarations, added Shared reachability context, and the revised example fixtures; unchanged inherited inputs retain the earlier inspection in this conversation. No independent reviewer was used.",
+  "examined": [
+    "context:lean/Correspondence/SharedFunctions.lean",
+    "context:lean/Functions/Checks.lean",
+    "context:lean/Functions/Step.lean",
+    "context:lean/Functions/Syntax.lean",
+    "context:lean/Functions/Typing.lean",
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Shared/TypingViews.lean",
+    "lean:Functions/Checks:methods",
+    "policy:md/repo/correspondence-review.md",
+    "unit:functions.example.methods"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "methodProgram and its declarations use qualified Point.take and Point.copy calls with explicit receiver arguments and the two prefix receiver permissions. The selected conjunction checks typing, execution, p empty and s/t shared aliases before initial exit, and the exit step to an empty terminal state. This covers the surface examples as abstract syntax, without claiming a parser or receiver-call sugar.",
+  "limitations": [
+    "Author self-review, not independent review.",
+    "Abstract syntax only; no parser/elaborator is certified.",
+    "GC is a noncomputable reachability specification; these reviews do not claim an executable collector or the still-draft general call-stack safety theorem."
+  ],
+  "supersedes": [
+    "92025ec5254c12e4cd53db10c028bf6f734529f32b8f58c3fe5867e425b77cdb"
+  ]
+}

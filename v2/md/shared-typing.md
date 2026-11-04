@@ -554,9 +554,8 @@ there are no `_` or `..` patterns here.
 :lean: Shared/Unpacking:Configuration Shared/Unpacking:Transfer Shared/Unpacking:Bind Shared/Unpacking:Step
 :uses: shared.typing.patterns given.unpacking shared.steps shared.state
 
-A *configuration* \\(K=\langle S,P\rangle\\) pairs storage with the remaining
-statement sequence. An *extended statement step*
-\\(\Delta\vdash K\longrightarrow_u K'\\) runs one `let` statement with a
+A local-frame observation pairs storage with the remaining statement sequence.
+An *extended local operation* runs one `let` statement with a
 [binding pattern](#claim-shared.typing.patterns).
 
 Write \\(\href{shared.html#claim-shared.steps}{\Delta\vdash\langle S,e\rangle\Downarrow\langle S',r\rangle}\\)
@@ -572,32 +571,26 @@ Field references retain their modes and targets; empty fields become empty
 variables. All other storage and the allocation counter remain as in
 \\(S'\\). The statement is removed from the remaining sequence. A shared
 result has no unpacking transition: consuming its container would invalidate
-other owners. This is an extension of the preceding chapter's machine.
+other owners. The program machine applies `patternOperation` and collects after this local
+operation; its frame-exit rule is unchanged.
 ```
 
 ```{definition} shared.typing.execution
-:lean: Shared/Unpacking:Steps
+:lean: Shared/Frames:Steps Shared/Frames:StepsExactly
 :uses: shared.typing.steps
 
 A *finite execution* \\(\Delta\vdash K\longrightarrow_u^{*}K'\\) consists
-of zero or more [extended statement steps](#claim-shared.typing.steps), all
+of zero or more program steps, including collection and frame exit, all
 using the same class table \\(\Delta\\).
 ```
 
 ```{definition} shared.typing.outcomes
-:lean: Shared/Unpacking:Configuration.finished Shared/Unpacking:Stuck
-:uses: shared.typing.steps
+:lean: Shared/Frames:Configuration.finished Shared/Frames:Stuck
+:uses: shared.typing.steps shared.machine
 
-A configuration is *finished* when no statements remain. It is *stuck* when
-statements remain but no [extended step](#claim-shared.typing.steps) is possible:
-
-\\[
-\begin{aligned}
-\mathsf{Finished}(\langle S,P\rangle)&\iff P=[],\\
-\mathsf{Stuck}_{\Delta}(\langle S,P\rangle)&\iff
-  P\ne[]\ \land\ \neg\exists K'.\;\href{#claim-shared.typing.steps}{\Delta\vdash\langle S,P\rangle\longrightarrow_u K'}.
-\end{aligned}
-\\]
+A configuration is *finished* exactly when its initial frame has been popped.
+It is *stuck* if unfinished and without a successor. An exhausted live frame
+can still take its exit step, so it is neither finished nor stuck.
 ```
 
 ```{definition} shared.typing.field
@@ -723,7 +716,8 @@ and a statement sequence \\(P\\) that
 \exists\Gamma_f.\;\href{#claim-shared.typing.sequences}{\Sigma;\varnothing\vdash P\Rightarrow\Gamma_f}.
 \\]
 
-Completion retains the final storage; the final environment need not be empty.
+The final environment describes locals before frame exit and need not be empty.
+Completion pops the initial frame and collects the heap.
 ```
 
 ## Relating types to storage
@@ -836,31 +830,33 @@ a move preserves the types of the other owning roots.
 ```
 
 ```{definition} shared.typing.configurations
-:lean: Shared/TypedConfigurations:ConfigurationTyped
-:uses: shared.typing.realization shared.typing.sequences shared.typing.steps shared.typing.well_formed_classes
+:lean: Shared/FrameSafety:ConfigurationTyped Shared/Frames:StepsExactly Shared/Frames:Stuck Shared/TypedConfigurations:ConfigurationTyped
+:uses: shared.typing.realization shared.typing.sequences shared.machine shared.gc
 
-A [configuration](#claim-shared.typing.steps) \\(K=\langle S,P\rangle\\)
-is *well typed* with final
-environment \\(\Gamma_f\\) when:
+A live frame is *well typed with final environment* \\(\Gamma_f\\) when its
+storage realizes an environment under which its remaining statements typecheck:
 
 \\[
-\Sigma\vdash\langle S,P\rangle:\Gamma_f
-\iff
-\exists\Gamma.\;
-  \href{#claim-shared.typing.realization}{\Sigma;\Gamma\models(S;[])}
-  \land\href{#claim-shared.typing.sequences}{\Sigma;\Gamma\vdash P\Rightarrow\Gamma_f}.
+\Sigma\vdash\operatorname{run}(S,P):\Gamma_f
+\iff \exists\Gamma.\;\Sigma;\Gamma\models(S;[])
+ \land \Sigma;\Gamma\vdash P\Rightarrow\Gamma_f.
 \\]
 
-The two premises are [storage realization](#claim-shared.typing.realization)
-and [statement-sequence typing](#claim-shared.typing.sequences).
-The class table \\(\Sigma\\) must be
-[well formed](#claim-shared.typing.well_formed_classes).
+A configuration with no frame is well typed when its heap is empty. Its counter
+may be nonzero. The final environment describes the locals **before exit**;
+it does not assert that terminal storage still contains those bindings.
+For a live frame, realization requires a well-formed class table.
+
+Write \\(K\longrightarrow_u^k K'\\) for exactly \\(k\\) program steps using
+unpacking-capable local operations. Finite executions existentially quantify
+\\(k\\); stuckness means an unfinished configuration with no successor.
+The frame-pop step is included in this count.
 ```
 
 ## Progress and preservation
 
 ```{theorem} shared.typing.progress
-:lean: Shared/TypingSafety:ConfigurationTyped.progress
+:lean: Shared/FrameSafety:ConfigurationTyped.progress
 :uses: shared.typing.configurations shared.typing.expression_soundness shared.typing.bindings shared.typing.outcomes shared.typing.steps shared.typing.erasure
 
 A [well-typed configuration](#claim-shared.typing.configurations) has
@@ -876,7 +872,7 @@ A [well-typed configuration](#claim-shared.typing.configurations) has
 ```
 
 ```{theorem} shared.typing.preservation
-:lean: Shared/TypingSafety:ConfigurationTyped.preservation
+:lean: Shared/FrameSafety:ConfigurationTyped.preservation
 :uses: shared.typing.configurations shared.typing.expression_soundness shared.typing.bindings shared.typing.steps shared.typing.erasure
 
 Every [step](#claim-shared.typing.steps) from a
@@ -895,15 +891,18 @@ reference changes mode; binding its result then adds a fresh variable.
 ```
 
 ```{theorem} shared.typing.safety
-:lean: Shared/TypingSafety:program_safety
-:uses: shared.typing.progress shared.typing.preservation shared.typing.programs shared.typing.outcomes shared.typing.execution
+:lean: Shared/FrameSafety:program_safety
+:uses: shared.typing.configurations shared.typing.progress shared.typing.preservation
 
-A [well-typed program](#claim-shared.typing.programs), started with empty
-storage, cannot reach a [stuck configuration](#claim-shared.typing.outcomes).
-Every [finite execution](#claim-shared.typing.execution) can be extended to a
-finished one whose total step count equals the
-initial number of statements. This includes
-copying, give-share, and unpacking unique containers with given or shared fields.
+For a well-formed class table, a program whose statements check from the empty
+environment cannot reach a stuck configuration. Every execution prefix remains
+well typed and can be completed.
+
+If the original program has \\(n\\) statements, every such prefix extends to
+completion after exactly \\(n+1\\) steps in total: one per statement, followed
+by one frame-pop step. A live frame's remaining work is its statement count plus
+one; a finished configuration has zero remaining work. Terminal storage has no
+locals and an empty heap; its allocation counter records the identifiers spent.
 ```
 
 ```{theorem} shared.typing.given_fragment
@@ -917,8 +916,34 @@ expressions. The typing rules then agree with
 [unpacking extension](given.md#claim-given.unpacking). Embedding every runtime
 reference with mode `unique` preserves and reflects
 [statement transitions](#claim-shared.typing.steps) and
-[completion](#claim-shared.typing.outcomes) in this fragment.
+exhaustion of the local statement sequence in this fragment. These selected
+results concern local-frame observations; program-level steps use the framed
+correspondence below.
 
 This extends the [earlier correspondence](shared.md#claim-shared.correspondence),
-which covers only single-variable bindings, to the machines with unpacking.
+which covers only single-variable bindings, to local operations with unpacking.
+```
+
+
+```{theorem} shared.typing.observation
+:lean: Shared/FrameSafety:completion
+:uses: shared.typing.configurations shared.typing.realization shared.typing.safety
+
+From a well-typed live frame with \\(n\\) statements, there is an observation
+state \\(S_f\\) after exactly \\(n\\) program steps. Its frame has no statements
+left, and its locals still realize the final environment. One further step pops
+that frame, leaving no roots and an empty heap with counter \\(S_f.\nu\\).
+This separates inspection of the computed bindings from program completion.
+```
+
+
+```{theorem} shared.typing.framed_correspondence
+:lean: Correspondence/UniqueSharedFrames:pattern_step_correspondence
+:uses: shared.typing.given_fragment shared.machine given.machine shared.typing.steps shared.gc
+
+The program machines with unpacking also preserve and reflect every step of
+the all-given fragment. From an embedded Given configuration, every Shared
+successor is the embedding of a Given successor, and every Given successor has
+that Shared step. This includes eager collection and initial-frame exit, not
+just local statement operations.
 ```

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "8a2d0cf05cad8247e96b09cd5120c30a9a93a203808a693bc6a279cdab3d0ad9",
+  "reviewer": "Codex author self-review",
+  "provenance": "Author self-review during the Given/Shared frame backport, comparing authored units, exact selections, revised public-machine proofs and example fixtures. Unchanged inherited inputs were inspected in this implementation conversation and earlier reviews; revised frame, GC and correspondence inputs were inspected again. No independent reviewer was used.",
+  "examined": [
+    "context:lean/Correspondence/SharedFunctions.lean",
+    "context:lean/Correspondence/SharedFunctionsFrames.lean",
+    "context:lean/Correspondence/UniqueSharedFrames.lean",
+    "context:lean/Functions/Checks.lean",
+    "context:lean/Functions/Step.lean",
+    "context:lean/Functions/Syntax.lean",
+    "context:lean/Functions/Typing.lean",
+    "context:lean/Shared/FrameChecks.lean",
+    "context:lean/Shared/FrameInvariants.lean",
+    "context:lean/Shared/FrameSafety.lean",
+    "context:lean/Shared/Frames.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/FrameChecks.lean",
+    "context:lean/Unique/FrameSafety.lean",
+    "context:lean/Unique/Frames.lean",
+    "lean:Functions/Checks:methods",
+    "policy:md/repo/correspondence-review.md",
+    "unit:functions.example.methods"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "methodProgram and its declarations use qualified Point.take and Point.copy calls with explicit receiver arguments and the two prefix receiver permissions. The selected conjunction checks typing, execution, p empty and s/t shared aliases before initial exit, and the exit step to an empty terminal state. This covers the surface examples as abstract syntax, without claiming a parser or receiver-call sugar. The machine/gc/steps units introduce the lifetime notation; inherited syntax, storage and typing notation remain in the listed dependency units. Functions keeps its explicit inherited-machinery forward reference to the appendix.",
+  "limitations": [
+    "Author self-review, not independent review.",
+    "Abstract syntax formalization, not a parser or elaborator.",
+    "GC is a noncomputable mathematical reachability filter. General Functions call-stack safety remains a separate draft."
+  ],
+  "supersedes": [
+    "89e6da25a90959d2a90aa3e99f88497fc9ac4069c2cd683a67320ecba27307f0"
+  ]
+}

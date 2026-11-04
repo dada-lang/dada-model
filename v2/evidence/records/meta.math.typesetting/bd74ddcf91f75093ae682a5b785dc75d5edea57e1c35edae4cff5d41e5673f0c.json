@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "b4e0a018b157edb7d39ec75d5805292801b8e5ed7b2630ee2ceccfc7eda805df",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lib.rs:escape",
+    "rust:mdbook-dada/src/lib.rs:protect_math",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order",
+    "test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders",
+    "test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles",
+    "test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies",
+    "unit:meta.math.typesetting"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.typesetting against rust:mdbook-dada/src/lib.rs:protect_math, rust:mdbook-dada/src/lib.rs:render_unit, rust:mdbook-dada/src/lean.rs:render_authored, rust:mdbook-dada/src/lib.rs:escape, test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order, test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders, test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies, test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles. protect_math excludes code/link/HTML contexts and escapes explicit display/inline formulas before Markdown processing; render_authored escapes raw TeX without translating Lean. Tests retain row breaks/primes under smart punctuation, reject HTML interpretation, preserve literal contexts and citation order. This supports syntax preservation, not validation that TeX means the same proposition as Lean. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Implementation/test inspection is correspondence evidence; actual command results are recorded separately. Tests do not prove universal behavior, browser appearance, CDN availability, or authenticated execution."
+  ],
+  "supersedes": [
+    "52042dd58d824fff00bd74e597530ea84a51d9222e8751bf880b70b0528dcba7"
+  ]
+}

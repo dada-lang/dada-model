@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "806b18156ace47f670ba1b589de7c83aad18d7ebed92bdc326f046e0bc2da746",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Unique/Soundness:ClassesWellFormed",
+    "lean:Unique/State:Object",
+    "lean:Unique/State:Slot",
+    "lean:Unique/State:State",
+    "lean:Unique/State:State.empty",
+    "lean:Unique/State:StoragePlace",
+    "lean:Unique/State:Stored",
+    "lean:Unique/State:Updated",
+    "lean:Unique/Step:Eval",
+    "lean:Unique/Step:EvalArgs",
+    "lean:Unique/Step:Resolve",
+    "lean:Unique/Step:State.allocate",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.evaluation",
+    "unit:given.programs",
+    "unit:given.resolution",
+    "unit:given.state",
+    "unit:given.storage_places",
+    "unit:given.syntax"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:given.evaluation against lean:Unique/Step:Eval, lean:Unique/Step:EvalArgs, lean:Unique/Step:State.allocate. Eval.give resolves and takes an owner, while Eval.new threads EvalArgs left to right, checks arity and fresh nextId, then zips results with declared fields and increments the counter. The empty-argument constructor is covered by EvalArgs.nil. No recovery state is exposed for a failed argument, and a repeated unique give loses its source on the first argument. Notation and judgment context was checked in unit:given.classes, unit:given.syntax, unit:given.programs, unit:given.state, unit:given.storage_places, unit:given.resolution.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "a90ff8586ba79779027d3a63eed65d00009a4ef348acec2881e62afe20f10910"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "c82b051ba6ea35b22a6912d6cd5606706d0c240a1eeb6f31c848285da7ac3389",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/lib.rs:directive_blocks",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/book.rs:block_directives_are_distinct_from_literal_code_and_inline_roles",
+    "test:mdbook-dada/tests/book.rs:generated_grammar_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:inferred_judgment_and_rule_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:informational_paragraphs_preserve_markdown_and_literal_examples",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:draft_status_is_explicit_and_does_not_relax_citation_checks",
+    "test:mdbook-dada/tests/units.rs:drafts_keep_their_semantic_kind_without_claiming_a_formalization",
+    "test:mdbook-dada/tests/units.rs:removed_obligation_syntax_is_rejected_at_every_authoring_entry_point",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "unit:meta.syntax.inline_and_block",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.inline_and_block against rust:mdbook-dada/src/units.rs:parse_block, rust:mdbook-dada/src/lib.rs:directive_blocks, rust:mdbook-dada/src/lib.rs:render, test:mdbook-dada/tests/book.rs:block_directives_are_distinct_from_literal_code_and_inline_roles, test:mdbook-dada/tests/book.rs:informational_paragraphs_preserve_markdown_and_literal_examples, test:mdbook-dada/tests/book.rs:generated_grammar_directives_require_migration, test:mdbook-dada/tests/book.rs:inferred_judgment_and_rule_directives_require_migration, test:mdbook-dada/tests/units.rs:drafts_keep_their_semantic_kind_without_claiming_a_formalization, test:mdbook-dada/tests/units.rs:draft_status_is_explicit_and_does_not_relax_citation_checks, test:mdbook-dada/tests/units.rs:removed_obligation_syntax_is_rejected_at_every_authoring_entry_point. directive_blocks distinguishes brace-prefixed supported fences from ordinary language fences; parse_block retains semantic kind under draft status while still checking supplied citations; render rejects legacy inferred forms and paragraph examples. Tests cover literals, informational Markdown, old syntax diagnostics, draft forms and removed obligations at all entry points. The closed-body dependency supplies the structured nesting boundary. Notation and judgment context was checked in unit:meta.units.closed_body.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Implementation/test inspection is correspondence evidence; actual command results are recorded separately. Tests do not prove universal behavior, browser appearance, CDN availability, or authenticated execution."
+  ],
+  "supersedes": [
+    "4f9e030a32ebee22277542e739987e62368e2e62cfc64856ff116a3bce112175"
+  ]
+}

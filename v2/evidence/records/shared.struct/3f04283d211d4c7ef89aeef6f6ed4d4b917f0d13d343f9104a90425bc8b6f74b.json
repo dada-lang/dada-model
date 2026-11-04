@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "bundle": "a3a2bb7df50132cf0870408ab31316f8526c818f09e7fd816b96bd7548990f27",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Shared/State:Kind.mode",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:Kind",
+    "lean:Shared/Syntax:Kind.isStruct",
+    "lean:Shared/TypingViews:ClassTable.WellFormed",
+    "lean:Shared/TypingViews:KindValid",
+    "lean:Shared/TypingViews:StructType",
+    "policy:md/repo/correspondence-review.md",
+    "unit:shared.declarations",
+    "unit:shared.struct"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:shared.struct against lean:Shared/Syntax:Kind.isStruct, lean:Shared/TypingViews:StructType, lean:Shared/TypingViews:ClassTable.WellFormed, lean:Shared/TypingViews:KindValid. StructType looks up only ty.base and tests declaration.kind.isStruct; it does not inspect permission or view. ClassTable.WellFormed imposes StructType on every declared field of either struct kind, plus KindValid on all fields. kindAllows rejects shared classes and given shared-struct normalized types. Thus hiding a class's fields cannot make it shareable. Notation and judgment context was checked in unit:shared.declarations.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "f748c1fc487063d0c6eab213f6cbf815b4415727218dccb381c7f553d634874b"
+  ]
+}

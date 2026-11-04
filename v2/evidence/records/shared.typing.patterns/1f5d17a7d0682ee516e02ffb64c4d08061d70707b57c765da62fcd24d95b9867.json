@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "b11a76d4ad9e940c8afda920e00a07c46c6c002a8c8c4408f348eded219c7549",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Shared/Unpacking:Pattern",
+    "lean:Shared/Unpacking:Statement",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "lean:Unique/Unpacking:Configuration",
+    "lean:Unique/Unpacking:Pattern",
+    "lean:Unique/Unpacking:Statement",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.patterns",
+    "unit:given.syntax",
+    "unit:shared.typing.patterns"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:shared.typing.patterns against lean:Shared/Unpacking:Pattern, lean:Shared/Unpacking:Statement. Shared.Unpacking.Pattern has the same flat variable/unpack syntax as Given; Statement retains the expression. Field coverage/order permutation, fresh distinct destinations and unique-only consumption are enforced by the operational and typing binding rules introduced next, rather than by raw pattern syntax. Notation and judgment context was checked in unit:given.patterns.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "78e1ddae18b732c18a38930b42c1335a9fe65d0d03ebb62501029785172f0666"
+  ]
+}

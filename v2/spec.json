@@ -6,6 +6,8 @@
     "md/given-typing.md",
     "md/shared.md",
     "md/shared-typing.md",
+    "md/functions.md",
+    "md/destructors.md",
     "md/dada/future-extensions.md"
   ],
   "policies": [

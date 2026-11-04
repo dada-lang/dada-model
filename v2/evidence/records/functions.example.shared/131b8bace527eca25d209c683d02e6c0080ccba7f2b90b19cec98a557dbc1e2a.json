@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "e551bca9e0f4d63fd3969a684e68d43815b50bacad6cf9f3d40b4ad7e2048a3b",
+  "reviewer": "Codex author self-review",
+  "provenance": "Author self-review during the Given/Shared frame backport, comparing authored units, exact selections, revised public-machine proofs and example fixtures. Unchanged inherited inputs were inspected in this implementation conversation and earlier reviews; revised frame, GC and correspondence inputs were inspected again. No independent reviewer was used.",
+  "examined": [
+    "context:lean/Correspondence/SharedFunctions.lean",
+    "context:lean/Correspondence/SharedFunctionsFrames.lean",
+    "context:lean/Correspondence/UniqueSharedFrames.lean",
+    "context:lean/Functions/Checks.lean",
+    "context:lean/Functions/Step.lean",
+    "context:lean/Functions/Syntax.lean",
+    "context:lean/Functions/Typing.lean",
+    "context:lean/Shared/FrameChecks.lean",
+    "context:lean/Shared/FrameInvariants.lean",
+    "context:lean/Shared/FrameSafety.lean",
+    "context:lean/Shared/Frames.lean",
+    "context:lean/Unique/Examples.lean",
+    "context:lean/Unique/FrameChecks.lean",
+    "context:lean/Unique/FrameSafety.lean",
+    "context:lean/Unique/Frames.lean",
+    "lean:Functions/Checks:shared",
+    "policy:md/repo/correspondence-review.md",
+    "unit:functions.example.shared"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected example proves typing, execution through allocation/share/copy, p empty and s/t shared aliases in sharedReturned, and a final step to empty heap/frames with counter 1. It also rejects shared Token. The copy declaration has a shared Point parameter and returns a give of that shared parameter, preserving the caller alias; no lease relation is asserted. The machine/gc/steps units introduce the lifetime notation; inherited syntax, storage and typing notation remain in the listed dependency units. Functions keeps its explicit inherited-machinery forward reference to the appendix.",
+  "limitations": [
+    "Author self-review, not independent review.",
+    "Abstract syntax formalization, not a parser or elaborator.",
+    "GC is a noncomputable mathematical reachability filter. General Functions call-stack safety remains a separate draft."
+  ],
+  "supersedes": [
+    "6914304f8fcfe6ceb4099cbc7942db21a30ed9a55c97e25160c10a3c30457d41"
+  ]
+}

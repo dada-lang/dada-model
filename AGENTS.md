@@ -49,19 +49,39 @@ the Given/Shared foundation; the earlier monolithic heap draft and its Lean modu
 have been removed and must not serve as an implicit specification for later layers.
 Render give syntax as `p→` and
 `p→share`. The table of contents groups Operational semantics and Type system
-under Given and Shared, followed by CFlow. Navigation pages are
+under Given and Shared, followed by Functions, Destructors, and CFlow. Navigation pages are
 `v2/md/given-overview.md` and `v2/md/shared-overview.md`.
 `v2/md/shared-typing.md` adds `given` and `shared` permissions, signed views,
 and unique-only unpacking. `Shared/TypingViews`, `Shared/Typing`, and
 `Shared/TypingRealization` formalize its rules; `Shared/TypingSafety` proves
 expression soundness, progress, preservation, and counted completion.
+`v2/md/functions.md` defines functions and methods before Destructors, with
+explicit `→` and `shared` signatures, prefix receiver permissions, and qualified
+`Type.method(receiver, args)` calls. `v2/lean/Functions/` defines the call syntax,
+stack machine, typing judgments, and checked examples, explicitly importing
+Shared's call-free expression/storage/binding foundation.
+`Correspondence/SharedFunctions` proves step, trace, typing, completion, and
+stuckness correspondence for the inherited fragment, with exact frame-level execution in `SharedFunctionsFrames`. Functions uses explicit frames and
+eager reachability collection after every transition; popping the initial frame
+is the common completion step, leaving an empty heap and preserving the allocation counter.
+The collector is specified mathematically, not as an executable traversal. `Functions/Realization`, `Functions/StackTyping`, and `Functions/Safety` prove
+general call-stack progress, preservation, and safety of every finite execution
+prefix, including recursive calls and eager collection. The stack invariant
+uses frame-local typed stores and Shared realization with all frame roots pending;
+it does not assume termination. `Shared/TypingBindingPending` and
+`Shared/TypingCollection` supply binding with additional roots and root-discard
+collection lemmas.
+`v2/md/destructors.md` is a nonnormative future-design sketch of explicit destruction, frame
+completion obligations, and stack execution, with inherited Shared machinery
+in a chapter appendix. It has no Lean formalization yet.
 `v2/md/cflow.md` remains an editorial placeholder.
 The existing chapter paths remain unchanged. `v2/md/given-typing.md` contains
 strictly covered units for signed views, typing rules, and storage realization,
 with formal definitions and examples in `Unique/Views`, `Unique/Typing`,
 `Unique/TypingRealization`, and their checks. `Unique/TypingSafety` proves
 expression soundness for arbitrary pending values, machine progress and
-preservation, and completion after exactly one step per statement. `Unique/Unpacking` adds `Class → { fields }` patterns with structural
+preservation, and completion after exactly one local step per statement, with frame-level completion
+after one additional exit step. `Unique/Unpacking` adds `Class → { fields }` patterns with structural
 preservation and embedding/reflection of the base machine. `Shared/Unpacking`
 extends the Shared machine with the same patterns; only a unique reference can
 be unpacked, and shared fields retain their modes.
@@ -239,3 +259,14 @@ only validate saved receipt integrity and never run commands. See `v2/AGENTS.md`
 for source snapshot scope and proof-assumption reporting. Renderer contracts now
 have named Rust/test-backed units in `v2/md/repo/renderer-contracts.md`, and theme
 JavaScript/CSS participate in correspondence freshness.
+
+Given and Shared expose their public program machines in `Unique/Frames` and
+`Shared/Frames`: one optional initial frame, eager reachability collection after
+every local statement, and an explicit frame-pop step. `Step`/`Unpacking.Step`
+in the older modules are auxiliary local-frame relations, not complete program
+lifetimes. `FrameSafety` proves progress, preservation and exactly n+1 total
+steps, retaining a pre-exit realization witness after n statement steps.
+`FrameChecks` covers empty-program exit and allocation followed by reclamation.
+`Correspondence/UniqueSharedFrames` relates framed steps and boundaries;
+`Correspondence/SharedFunctionsFrames` gives exact correspondence with Functions.
+Functions reuses the Shared storage collector with the roots of all live frames.

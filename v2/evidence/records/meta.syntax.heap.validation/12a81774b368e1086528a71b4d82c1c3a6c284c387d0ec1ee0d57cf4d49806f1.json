@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "bundle": "8e9a2f4c2a44b2c8633ed1ae5f0c257feceb671419df8fb45ecdd59b4d9d18de",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/graph.rs:args",
+    "rust:mdbook-dada/src/graph.rs:edge_target",
+    "rust:mdbook-dada/src/graph.rs:identifier",
+    "rust:mdbook-dada/src/graph.rs:label",
+    "rust:mdbook-dada/src/graph.rs:parse",
+    "test:mdbook-dada/src/graph.rs:cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically",
+    "test:mdbook-dada/src/graph.rs:lease_tests::leases_join_edges_and_shleases_target_objects",
+    "test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices",
+    "test:mdbook-dada/src/graph.rs:tests::bad_facts_fail_instead_of_silently_changing_the_graph",
+    "test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds",
+    "test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved",
+    "test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_array_size_boundary_preserves_all_slots",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges",
+    "unit:meta.syntax.heap.nodes",
+    "unit:meta.syntax.heap.validation"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.heap.validation against rust:mdbook-dada/src/graph.rs:parse, rust:mdbook-dada/src/graph.rs:edge_target, test:mdbook-dada/src/graph.rs:tests::bad_facts_fail_instead_of_silently_changing_the_graph, test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices, test:mdbook-dada/src/graph.rs:lease_tests::leases_join_edges_and_shleases_target_objects, test:mdbook-dada/src/graph.rs:cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically, test:mdbook-dada/tests/renderer_contracts.rs:diagram_array_size_boundary_preserves_all_slots. parse rejects duplicate nodes/slots, absent targets, invalid projections and arrays above 64; edge_target requires leases to name an initialized owned or leased edge. Tests cover the 0/64/65 boundary, invalid targets and supports, variable-store restrictions and deterministic cyclic examples. Ownership cycles are intentionally accepted rather than presented as valid language states. Notation and judgment context was checked in unit:meta.syntax.heap.nodes.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Implementation/test inspection is correspondence evidence; actual command results are recorded separately. Tests do not prove universal behavior, browser appearance, CDN availability, or authenticated execution."
+  ],
+  "supersedes": [
+    "c58363f822f74fe0adee60bc3e40a4b19274d4b3011820f16fb32e2ab6d00363"
+  ]
+}

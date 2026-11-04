@@ -1,4 +1,12 @@
 -- Executed by scripts/check-assumptions.sh after rebuilding all dependencies.
+import Unique.FrameChecks
+import Shared.FrameChecks
+import Shared.FrameInvariants
+import Correspondence.UniqueSharedFrames
+import Correspondence.SharedFunctionsFrames
+import Functions.Checks
+import Functions.SafetyChecks
+import Correspondence.SharedFunctions
 import Unique.Normalization
 import Unique.TypingSafety
 import Unique.Liveness
@@ -29,3 +37,46 @@ import Correspondence.UniqueShared
 
 #print axioms Dada.Shared.Eval.preserves_kinds
 #print axioms Dada.Shared.Steps.wellFormed_from_initial
+
+#print axioms Dada.Functions.Configuration.collect_eq_self
+#print axioms Dada.Functions.terminal_heap_empty
+#print axioms Dada.Functions.finished_no_step
+#print axioms Dada.Functions.call_arity
+#print axioms Dada.Correspondence.SharedFunctions.step_correspondence
+#print axioms Dada.Correspondence.SharedFunctions.steps_backward
+#print axioms Dada.Correspondence.SharedFunctions.typing_correspondence
+#print axioms Dada.Correspondence.SharedFunctions.finished_correspondence
+#print axioms Dada.Correspondence.SharedFunctions.stuck_correspondence
+#print axioms Dada.Functions.Checks.identity_execution
+#print axioms Dada.Functions.Checks.shared_execution
+#print axioms Dada.Functions.Checks.method_execution
+#print axioms Dada.Functions.Checks.leave_execution
+#print axioms Dada.Functions.Checks.nested_execution
+#print axioms Dada.Functions.Checks.recursive_step
+
+#print axioms Dada.Unique.Framed.program_safety
+#print axioms Dada.Shared.Framed.program_safety
+#print axioms Dada.Unique.Framed.completion
+#print axioms Dada.Shared.Framed.completion
+#print axioms Dada.Shared.Framed.base_soundness
+#print axioms Dada.Correspondence.Framed.collect_correspondence
+#print axioms Dada.Correspondence.Framed.base_step_correspondence
+#print axioms Dada.Correspondence.Framed.pattern_step_correspondence
+#print axioms Dada.Correspondence.Framed.base_boundary_correspondence
+#print axioms Dada.Correspondence.SharedFunctions.framed_step_correspondence
+#print axioms Dada.Correspondence.SharedFunctions.framed_steps_backward
+#print axioms Dada.Correspondence.SharedFunctions.framed_finished_correspondence
+#print axioms Dada.Correspondence.SharedFunctions.framed_stuck_correspondence
+
+#print axioms Dada.Functions.ConfigurationTyped.progress
+#print axioms Dada.Functions.ConfigurationTyped.preservation
+#print axioms Dada.Functions.program_safety
+#print axioms Dada.Functions.ConfigurationTyped.ownership
+#print axioms Dada.Functions.ConfigurationTyped.finished_heap_empty
+#print axioms Dada.Shared.Typing.Realizes.collect_pending
+#print axioms Dada.Shared.Typing.BindingTyped.preserves_realization_pending
+
+#print axioms Dada.Unique.Framed.ConfigurationTyped.progress
+#print axioms Dada.Unique.Framed.ConfigurationTyped.preservation
+#print axioms Dada.Shared.Framed.ConfigurationTyped.progress
+#print axioms Dada.Shared.Framed.ConfigurationTyped.preservation

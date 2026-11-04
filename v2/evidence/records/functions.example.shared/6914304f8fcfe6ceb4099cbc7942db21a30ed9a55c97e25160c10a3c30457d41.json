@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "9af935963c711b977d9f2bb5d3bc93b233a991ade80cb2ed11d2cf5b02dce8db",
+  "reviewer": "Codex author self-review",
+  "provenance": "Author self-review for the explicit-frame/eager-GC revision. Reviewed the current authored units, exact cited declarations, added Shared reachability context, and the revised example fixtures; unchanged inherited inputs retain the earlier inspection in this conversation. No independent reviewer was used.",
+  "examined": [
+    "context:lean/Correspondence/SharedFunctions.lean",
+    "context:lean/Functions/Checks.lean",
+    "context:lean/Functions/Step.lean",
+    "context:lean/Functions/Syntax.lean",
+    "context:lean/Functions/Typing.lean",
+    "context:lean/Shared/Liveness.lean",
+    "context:lean/Shared/TypingViews.lean",
+    "lean:Functions/Checks:shared",
+    "policy:md/repo/correspondence-review.md",
+    "unit:functions.example.shared"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected example proves typing, execution through allocation/share/copy, p empty and s/t shared aliases in sharedReturned, and a final step to empty heap/frames with counter 1. It also rejects shared Token. The copy declaration has a shared Point parameter and returns a give of that shared parameter, preserving the caller alias; no lease relation is asserted.",
+  "limitations": [
+    "Author self-review, not independent review.",
+    "Abstract syntax only; no parser/elaborator is certified.",
+    "GC is a noncomputable reachability specification; these reviews do not claim an executable collector or the still-draft general call-stack safety theorem."
+  ],
+  "supersedes": [
+    "5523768f0dcc2f2a7b85f29a2bc1e04db9e5384fea322f7a70d2867355b0e1cc"
+  ]
+}

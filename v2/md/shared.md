@@ -166,7 +166,8 @@ The fourth statement reaches the token through shared variable `s`. It changes
 the reference in the box's `value` field to shared and gives `u` a shared copy.
 The fifth copies the already-shared reference into `v`.
 
-At the end, there are still two objects. Variable `s` is a shared owner of the
+After these statements, before frame exit, there are still two objects.
+Variable `s` is a shared owner of the
 box. The box's field, `u`, and `v` are three shared owners of the token. Variables
 `t` and `b` are empty. Both field gives succeed because neither empties the field.
 ````
@@ -247,18 +248,71 @@ an empty slot prevents resolution.
 
 ## Executing statements
 
+```{definition} shared.machine
+:lean: Shared/Frames:Frame Shared/Frames:Configuration Shared/Frames:Configuration.running Shared/Frames:Configuration.initial Shared/Frames:Configuration.state Shared/Frames:Configuration.finished
+:uses: shared.state shared.syntax
+
+A *frame* \\(f=(V,P)\\) owns its local variable store \\(V\\) and remaining
+statements \\(P\\). The program has one initial frame; after its exit there is
+no frame. Heap objects \\(O\\) and the allocation counter \\(\nu\\) live outside it:
+
+\\[
+K=\langle O,\nu,F\rangle,\qquad F::=\mathsf{none}\mid\mathsf{some}(V,P).
+\\]
+
+For expression evaluation, combine the live frame's locals with the heap and
+counter as the storage \\(S=\langle O,V,\nu\rangle\\). Write
+\\(\operatorname{run}(S,P)=\langle O,\nu,\mathsf{some}(V,P)\rangle\\).
+The pair \\(\langle S,P\rangle\\) used by local statement rules is an
+observation of that live frame, not a terminal program state.
+
+Initially \\(K=\operatorname{run}(S_{\emptyset},P)\\), including when \\(P=[]\\).
+A configuration is *finished* exactly when its frame is absent:
+
+\\[
+\mathsf{Finished}(\langle O,\nu,F\rangle)\iff F=\mathsf{none}.
+\\]
+
+Exhausting the statements leaves a live frame whose bindings can still be
+inspected. A separate exit step pops it. There are no nested scopes or calls in
+this layer; Functions will extend this single-frame lifetime to a stack.
+```
+
+```{definition} shared.gc
+:lean: Shared/State:Live Shared/Frames:State.collect Shared/Frames:Configuration.collect
+:uses: shared.machine shared.state
+
+*Reachability* starts at an initialized slot of the live frame and follows
+initialized object fields. Write \\(\mathsf{Live}_S(\alpha)\\) when this reaches
+object \\(\alpha\\). An absent frame has no roots.
+
+*Eager collection* retains exactly reachable object entries. For object data
+\\(D\\) (its class tag and field slots), define:
+
+\\[
+\operatorname{gc}(K)=\langle
+ [(\alpha,D)\in O\mid\mathsf{Live}_{S_K}(\alpha)],\nu,F\rangle.
+\\]
+
+Here \\(S_K\\) uses the frame's locals, or an empty variable store if the
+frame is absent. Collection preserves surviving objects and their identifiers,
+the allocation counter, and the frame. It invokes no user code. With no frame,
+it removes the entire heap.
+
+The Lean definition is a mathematical reachability filter, not an executable
+traversal. Collection runs after whole statements and frame exit, never between
+constructor operands or while an expression result awaits binding.
+```
+
 ```{definition} shared.steps
-:lean: Shared/State:Configuration Shared/State:Configuration.initial Shared/State:Configuration.finished Shared/Step:Eval Shared/Step:EvalArgs Shared/Step:State.bind Shared/Step:State.allocate Shared/Step:Step Shared/Step:Steps Shared/Step:Stuck Shared/Step:StructReference Shared/Step:StructArguments Shared/State:Kind.mode
-:uses: shared.state shared.syntax shared.resolution shared.give
+:lean: Shared/Step:Eval Shared/Step:EvalArgs Shared/Step:State.bind Shared/Step:State.allocate Shared/Step:Step Shared/Frames:Step Shared/Frames:baseOperation Shared/Frames:patternOperation Shared/Frames:Steps Shared/Frames:StepsExactly Shared/Frames:Stuck Shared/Step:StructReference Shared/Step:StructArguments Shared/State:Kind.mode
+:uses: shared.state shared.syntax shared.resolution shared.give shared.machine shared.gc
 
-A *configuration* \\(\langle S,P\rangle\\) pairs storage \\(S\\) with an
-ordered *statement sequence* \\(P\\): either empty, \\([]\\), or a statement
-\\(t\\) followed by the rest, \\(t::P\\).
-Execution starts with the empty state and the program's entire
-statement sequence. It finishes when that sequence is empty, retaining the
-final variables and objects.
+A local-frame observation \\(\langle S,P\rangle\\) pairs evaluation storage with
+remaining statements. The [program machine](#claim-shared.machine) owns those
+locals in its initial frame.
 
-Write \\(\Delta\vdash\langle S,P\rangle\longrightarrow
+Write \\(\Delta\vdash\langle S,P\rangle\rightsquigarrow
 \langle S',P'\rangle\\) for one successful statement. Its destination variable
 must be absent from the variable table. The step removes the first statement
 and leaves the remaining code unchanged.
@@ -284,9 +338,43 @@ so a second give from that slot fails. All argument evaluations belong to the
 statement's single transition. Argument results remain owned by the evaluation
 until placed in the new object's fields.
 
-A finite execution consists of zero or more successful steps. A configuration
-is *stuck* when statements remain but no step is available.
+A finite execution consists of zero or more program steps. A configuration
+is *stuck* when it is unfinished and no program step is available.
+
+The local rule above is auxiliary. Write \\(\rightsquigarrow\\) for that local
+operation. The program machine collects after it and has a separate exit rule:
+
+\\[
+\frac{\Delta\vdash\langle S,P\rangle\rightsquigarrow\langle S',P'\rangle}
+ {\Delta\vdash\operatorname{run}(S,P)\longrightarrow
+   \operatorname{gc}(\operatorname{run}(S',P'))}
+\qquad
+\Delta\vdash\operatorname{run}(\langle O,V,\nu\rangle,[])
+ \longrightarrow\operatorname{gc}(\langle O,\nu,\mathsf{none}\rangle).
+\\]
+
+The exit target has no frame and an empty heap, retaining counter \\(\nu\\).
+Even an empty program takes one exit step. A finished configuration has no
+successor. The Lean `Step` in `Shared/Step` is the auxiliary local relation;
+`Framed.Step` is this program machine. `baseOperation` selects the single-variable
+binding relation; later `patternOperation` selects the unpacking relation.
+
 ```
+
+````{example} shared.example.frame_lifetime
+:lean: Shared/FrameChecks:lifetime
+:uses: shared.machine shared.steps shared.gc
+
+```dada
+class Token {}
+let t = new Token();
+```
+
+The first step binds the token in the initial frame. That frame is still live
+even though its statements are exhausted. The second step pops it and collects
+the token, leaving an empty heap and allocation counter one. An empty program
+has no statements but still takes its initial-frame exit step.
+````
 
 ## Constructing an immediately shared value
 
@@ -349,7 +437,7 @@ and allocation counter are unchanged.
 :lean: Shared/Examples:nested_shared_path
 :uses: shared.example.share_value shared.resolution shared.give shared.steps
 
-Start again from the final state of {anchor-ref}`shared.example.share_value`,
+Start again from the pre-exit storage of {anchor-ref}`shared.example.share_value`,
 before copying its field. Execute:
 
 ```dada
@@ -445,8 +533,18 @@ Every allocated object therefore has an owning path from a variable. Sharing
 allows several such paths without making missing objects reachable.
 ```
 
+```{theorem} shared.gc_inert
+:lean: Shared/Frames:State.collect_eq_self
+:uses: shared.gc shared.well_formed shared.liveness
+
+Collection leaves structurally well-formed evaluation storage unchanged:
+every allocated object is already reachable. Ordinary statements preserve
+this property, so their following collection is inert. Popping the frame
+removes its roots; collection at that boundary empties the heap instead.
+```
+
 ```{theorem} shared.soundness
-:lean: Shared/KindSafety:Steps.wellFormed_from_initial
+:lean: Shared/FrameInvariants:base_soundness
 :uses: shared.state shared.syntax shared.give shared.steps shared.well_formed shared.liveness shared.path_exclusivity
 
 For any program with a well-formed class table, every configuration reached by
@@ -464,7 +562,7 @@ final stored reference.
 ## The Given fragment inside Shared
 
 ```{definition} shared.embedding
-:lean: Correspondence/UniqueShared:embedId Correspondence/UniqueShared:embedReference Correspondence/UniqueShared:embedSlots Correspondence/UniqueShared:embedObject Correspondence/UniqueShared:embedState Correspondence/UniqueShared:embedPlace Correspondence/UniqueShared:embedValue Correspondence/UniqueShared:embedStatement Correspondence/UniqueShared:embedClasses Correspondence/UniqueShared:embedProgram Correspondence/UniqueShared:embedConfiguration
+:lean: Correspondence/UniqueSharedFrames:embed Correspondence/UniqueShared:embedId Correspondence/UniqueShared:embedReference Correspondence/UniqueShared:embedSlots Correspondence/UniqueShared:embedObject Correspondence/UniqueShared:embedState Correspondence/UniqueShared:embedPlace Correspondence/UniqueShared:embedValue Correspondence/UniqueShared:embedStatement Correspondence/UniqueShared:embedClasses Correspondence/UniqueShared:embedProgram Correspondence/UniqueShared:embedConfiguration
 :uses: given.classes given.state given.syntax given.unpacking shared.state shared.syntax
 
 The Shared language contains a translation of the Given fragment with
@@ -481,13 +579,14 @@ counter are preserved.
 For a program, \\(E\\) preserves its class declarations, places, constructors,
 gives, and statement order. Every Given declaration becomes a `class`, never a
 `struct` or `shared struct`. It introduces no give-share expression. For a
-configuration, it translates both the state and the remaining code. Thus a
+configuration, it translates the heap and any live frame, preserving the counter
+and the distinction between a live frame and no frame. Thus a
 related pair describes the same point in the same computation, with explicit
 unique mode tags in the Shared state.
 ```
 
 ```{theorem} shared.correspondence
-:lean: Correspondence/UniqueShared:step_correspondence
+:lean: Correspondence/UniqueSharedFrames:base_step_correspondence
 :uses: given.steps shared.steps shared.embedding
 
 For every class table \\(\Delta\\) and configuration \\(c\\) of this Given
@@ -506,7 +605,7 @@ no behavior to translated Given computations, and loses none of their steps.
 ```
 
 ```{theorem} shared.boundaries
-:lean: Correspondence/UniqueShared:boundary_correspondence
+:lean: Correspondence/UniqueSharedFrames:base_boundary_correspondence
 :uses: given.syntax given.steps shared.syntax shared.steps shared.embedding shared.correspondence
 
 For every program in the Given fragment with single-variable bindings,

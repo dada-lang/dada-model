@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "bundle": "fa16bdc02bc0181681275b925e460425a445983b252771e77de52152a1e036f5",
+  "reviewer": "Codex author self-review",
+  "provenance": "Fresh full-book narrative and exact-source-selection comparison after explicit-frame/eager-GC backport and Functions soundness proofs. Rechecked the prior unit-specific reasoning against current raw units, selected declarations/tests, dependencies and review policy; corrected obsolete pre-exit/completion descriptions. No independent reviewer or subagent was used.",
+  "examined": [
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Common/FiniteMap:FiniteMap.empty",
+    "policy:md/repo/correspondence-review.md",
+    "unit:evidence.map"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:evidence.map against lean:Common/FiniteMap:FiniteMap, lean:Common/FiniteMap:FiniteMap.empty. FiniteMap stores a finite list of key/value pairs with Nodup on projected keys, exactly the ordered representation and uniqueness condition described. FiniteMap.empty supplies the empty list without requiring an ordering or DecidableEq. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites.",
+  "limitations": [
+    "Author self-review, not an independent review.",
+    "Abstract syntax and mathematical semantics; no surface parser is certified. GC is a noncomputable reachability filter. Functions safety permits divergence."
+  ],
+  "supersedes": [
+    "512bae472001f249c4aca03ab64ef59e28106f8fa67b44a709860b2819788dd3"
+  ]
+}

@@ -1,3 +1,4 @@
+import Unique.Frames
 import Unique.Step
 
 namespace Dada.Unique
@@ -93,27 +94,52 @@ theorem second_give_stuck : Stuck exampleClasses badConfiguration := by
             simp [movedState] at parentStored
             rcases parentStored with rfl | ⟨_, rfl⟩ <;> simp at fieldStored
 
+private theorem framed_second_give_stuck : Framed.Stuck (Framed.baseOperation exampleClasses)
+    (.running badConfiguration.state badConfiguration.code) := by
+  constructor
+  · simp [Framed.Configuration.finished, Framed.Configuration.running]
+  · rintro ⟨after, step⟩
+    generalize equality : Framed.Configuration.running badConfiguration.state badConfiguration.code = start at step
+    cases step with
+    | @«local» beforeState afterState code rest operation =>
+      have stateEq := congrArg Framed.Configuration.state equality
+      change badConfiguration.state = beforeState at stateEq
+      have codeEq := congrArg (fun c => c.frame.map Framed.Frame.code) equality
+      simp only [Framed.Configuration.running, Option.map_some, Option.some.injEq] at codeEq
+      rw [← stateEq, ← codeEq] at operation
+      exact second_give_stuck.2 ⟨_, operation⟩
+    | exit =>
+      have codeEq := congrArg (fun c => c.frame.map Framed.Frame.code) equality
+      simp [Framed.Configuration.running, badConfiguration] at codeEq
+
 -- ANCHOR: second_give_fails
-example : Stuck exampleClasses badConfiguration ∧
-    ¬ ∃ after, Steps exampleClasses badConfiguration after ∧ after.finished := by
-  refine ⟨second_give_stuck, ?_⟩
-  rintro ⟨after, execution, finished⟩
+example : Framed.Stuck (Framed.baseOperation exampleClasses)
+    (.running badConfiguration.state badConfiguration.code) ∧
+    ¬ ∃ after, Framed.Steps (Framed.baseOperation exampleClasses)
+      (.running badConfiguration.state badConfiguration.code) after ∧ after.finished := by
+  refine ⟨framed_second_give_stuck, ?_⟩
+  rintro ⟨after, ⟨_, execution⟩, finished⟩
   cases execution with
-  | refl => exact second_give_stuck.1 finished
-  | step first _ => exact second_give_stuck.2 ⟨_, first⟩
+  | refl => exact framed_second_give_stuck.1 finished
+  | step first _ => exact framed_second_give_stuck.2 ⟨_, first⟩
 -- ANCHOR_END: second_give_fails
 
 -- ANCHOR: give_execution
-example : Steps exampleClasses
-    ⟨State.empty, tokenProgram ++ boxProgram ++ moveProgram⟩ ⟨movedState, []⟩ := by
-  exact .step (createToken _) (.step (createBox _) (.step (giveField []) (.refl _)))
+example : Framed.StepsExactly (Framed.baseOperation exampleClasses)
+    (.initial (tokenProgram ++ boxProgram ++ moveProgram)) 3 (.running movedState []) := by
+  have classesWf : ClassesWellFormed exampleClasses := by simp [ClassesWellFormed, exampleClasses, or_imp, and_imp, forall_and]
+  have tokenWf : WellFormed exampleClasses tokenState := (createToken []).preserves_wellFormed classesWf (WellFormed.empty _)
+  have boxWf : WellFormed exampleClasses boxState := (createBox []).preserves_wellFormed classesWf tokenWf
+  have movedWf : WellFormed exampleClasses movedState := (giveField []).preserves_wellFormed classesWf boxWf
+  exact .step (Framed.local_step (createToken _) tokenWf)
+    (.step (Framed.local_step (createBox _) boxWf)
+      (.step (Framed.local_step (giveField []) movedWf) (.refl _)))
 -- ANCHOR_END: give_execution
 
 def nestedState : State :=
   ⟨[(1, ⟨"Box", [("value", some 0)]⟩), (0, ⟨"Token", []⟩)], [("b", some 1)], 2⟩
 
--- ANCHOR: nested_constructor
-example : Step exampleClasses
+private theorem nested_operation : Step exampleClasses
     ⟨State.empty, [⟨"b", .new "Box" [.new "Token" []]⟩]⟩ ⟨nestedState, []⟩ := by
   let token : State := State.empty.allocate "Token" [] []
   apply Step.letValue (object := 1)
@@ -126,6 +152,11 @@ example : Step exampleClasses
       · exact EvalArgs.nil _
     · rfl
     · decide
+-- ANCHOR: nested_constructor
+example : Framed.Step (Framed.baseOperation exampleClasses)
+    (.initial [⟨"b", .new "Box" [.new "Token" []]⟩]) (.running nestedState []) :=
+  Framed.local_step nested_operation (nested_operation.preserves_wellFormed
+    (by simp [ClassesWellFormed, exampleClasses, or_imp, and_imp, forall_and]) (WellFormed.empty _))
 -- ANCHOR_END: nested_constructor
 
 end Dada.Unique
