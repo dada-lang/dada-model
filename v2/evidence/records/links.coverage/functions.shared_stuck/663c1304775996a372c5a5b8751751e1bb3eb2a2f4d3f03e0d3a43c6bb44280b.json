@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "c300467c184aec363dd510f859351b1d82bd579afa2236949c0ff5d7d43c3260",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:084af8c121ddc59986f42a7ab3f0d5d6acde12eabd63b8c398e3227243248fd1",
+    "audit:target:18e50dab95df074f64b089e4a508e22ce099405e437bd6cb4f61d60712b67a3c",
+    "audit:target:846a55d7987ffd22457064817eb87ab5ad269070c474f3113d1ad0601292a84b",
+    "audit:unit:functions.shared_correspondence",
+    "audit:unit:functions.shared_stuck",
+    "audit:unit:functions.traces",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Shared and Functions stuckness plus the embedding. The table parameters are explicitly arbitrary; exhaustion versus finishedness is explained to avoid an implicit extra exit transition. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "dd25a0375c348b007d3073c0806bf6e22e277594471ed8c41cf771ec94252f50"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Shared and Functions stuckness plus the embedding.",
+    "mathematics": "The table parameters are explicitly arbitrary; exhaustion versus finishedness is explained to avoid an implicit extra exit transition.",
+    "links": [
+      {
+        "occurrence": "functions.shared_stuck:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck' refers to md/shared.md#claim-shared.stuck for the concept or example setup used by this unit. Links Shared and Functions stuckness plus the embedding."
+      },
+      {
+        "occurrence": "functions.shared_stuck:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Functions embedding' refers to md/functions.md#claim-functions.shared_correspondence for the concept or example setup used by this unit. Links Shared and Functions stuckness plus the embedding."
+      },
+      {
+        "occurrence": "functions.shared_stuck:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'is stuck' refers to md/functions.md#claim-functions.stuck for the concept or example setup used by this unit. Links Shared and Functions stuckness plus the embedding."
+      }
+    ]
+  }
+}

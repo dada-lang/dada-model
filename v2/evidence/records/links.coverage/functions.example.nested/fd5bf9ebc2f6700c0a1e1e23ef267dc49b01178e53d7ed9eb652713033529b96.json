@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "f7b8a085366d45e1c0bb877f204455f788d776846e813a374cc6aad9447298b4",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8c93add9c0c83a776892d18710675ad1a169196ba74e7618d4b2ef28a872c904",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:bd50ee157533d7842a1634a68112529d4e247a05098eebac486fab1dec1ef353",
+    "audit:unit:functions.example.nested",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.return",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nested execution, return and program typing. Token, identity and relay supply the local declarations. The repeated token names are explicitly in different frames; the observations distinguish returned caller state from terminal empty storage. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "df01f9b777409226b92d1e78c86692bb97b4b6a414159c9df4fd7a1262bf2127"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nested execution, return and program typing. Token, identity and relay supply the local declarations.",
+    "mathematics": "The repeated token names are explicitly in different frames; the observations distinguish returned caller state from terminal empty storage.",
+    "links": [
+      {
+        "occurrence": "functions.example.nested:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nested call' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links nested execution, return and program typing. Token, identity and relay supply the local declarations."
+      },
+      {
+        "occurrence": "functions.example.nested:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'After both returns' refers to md/functions.md#claim-functions.return for the concept or example setup used by this unit. Links nested execution, return and program typing. Token, identity and relay supply the local declarations."
+      },
+      {
+        "occurrence": "functions.example.nested:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'checks typing' refers to md/functions.md#claim-functions.program_typing for the concept or example setup used by this unit. Links nested execution, return and program typing. Token, identity and relay supply the local declarations."
+      }
+    ]
+  }
+}

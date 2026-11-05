@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "3ceb16e7354b61d4f598476985e9d7451202e79d03660b3507595568cc7b8ee2",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:30846f25dcc13bb8ac2e31bafade18aabeadf7be174a0cd94b2aa2882f083558",
+    "audit:unit:shared.typing.example.arguments",
+    "audit:unit:shared.typing.example.paths",
+    "audit:unit:shared.typing.expressions",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. constructor_permissions checks the entire argumentProgram execution, final t/h/a/b descriptions, and universally rejects both a given Token argument to Holder and a shared argument to Box. This supports the stated successful example and both rejection variants rather than only a helper operation. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "a395668c4034e79ae5b00910e80060f24295a5aca16fdac9ba6cdf63f2d97906"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. constructor_permissions checks the entire argumentProgram execution, final t/h/a/b descriptions, and universally rejects both a given Token argument to Holder and a shared argument to Box. This supports the stated successful example and both rejection variants rather than only a helper operation.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.arguments:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'declared above' refers to md/shared-typing.md#claim-shared.typing.example.paths for the concept or example setup used by this unit. Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules."
+      },
+      {
+        "occurrence": "shared.typing.example.arguments:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'constructor rule' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links its local-class predecessor and constructor rule; the two rejected permission mismatches use already-defined expression rules."
+      }
+    ]
+  }
+}

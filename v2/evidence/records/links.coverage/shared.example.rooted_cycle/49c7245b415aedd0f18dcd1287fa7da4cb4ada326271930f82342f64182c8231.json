@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "529d1ff50570d37e734850beae5ac11e5b22552c72bd1e929551e6eeb03cb80b",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:shared.example.rooted_cycle",
+    "audit:unit:shared.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The single conceptual link supplies the already defined structural invariant. The cycle's complete graph and declarations are described locally, so no forward definition is needed. The single conceptual link supplies the already defined structural invariant. The cycle's complete graph and declarations are described locally, so no forward definition is needed. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "db4f76fba5c3c2e23c2056747d6a4aecf25e643c1ac5053c33634aa40c635b89"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The single conceptual link supplies the already defined structural invariant. The cycle's complete graph and declarations are described locally, so no forward definition is needed.",
+    "mathematics": "The single conceptual link supplies the already defined structural invariant. The cycle's complete graph and declarations are described locally, so no forward definition is needed. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "shared.example.rooted_cycle:1",
+        "role": "conceptual",
+        "rationale": "'structural well-formedness' points backward to #claim-shared.well_formed for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

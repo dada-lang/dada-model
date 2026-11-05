@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "fb75ce651a9d011655a2a8d0a393234d051c8939f51369f4f11e657b37fe1ca0",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ea88350f35acf3dbe92ab2a6eee84184c0fb823f75907318dc522380864a6084",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "audit:unit:given.classes",
+    "audit:unit:given.identities",
+    "audit:unit:given.slots",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together. The s/o grammar defines empty/reference contents and object fields. α is connected to the identity definition and C to class names. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "ae796ffe9029a11b5adc2feb9a40efffc9d4da9711a6ce1bca770c5c4a2fd352"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together.",
+    "mathematics": "The s/o grammar defines empty/reference contents and object fields. α is connected to the identity definition and C to class names.",
+    "links": [
+      {
+        "occurrence": "given.slots:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'object identity' refers to md/given.md#claim-given.identities for the concept or example setup used by this unit. Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together."
+      },
+      {
+        "occurrence": "given.slots:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class name' refers to md/given.md#claim-given.classes for the concept or example setup used by this unit. Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together."
+      }
+    ]
+  }
+}

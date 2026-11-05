@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "5762e5014673adc2d69ec677b31f5b5f70a1ed9b05964b7011acb63425f914a9",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e352bf1830e74f15198be0594d0061f7c9c957dfd9710c03023c40e4b5b65bf8",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.example.share_value directly introduces the shared-box example state and transition. Local class/object/slot table supplies the example state; the action links give-share evaluation. Sharing the returned box reference leaves child-reference modes unchanged. The obj0/obj1 state and slot modes are enumerated locally, using preceding identity/reference notation. The transition links give-share evaluation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "56ed5822547fba3d74e3e33979dc68c481684406ebd17ccb03975c2a727b3423"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the shared-box example state and transition",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 23187,
+      "end": 23858
+    },
+    "clarity": "The landing md/shared.md#claim-shared.example.share_value directly introduces the shared-box example state and transition. Local class/object/slot table supplies the example state; the action links give-share evaluation. Sharing the returned box reference leaves child-reference modes unchanged.",
+    "independence": "The obj0/obj1 state and slot modes are enumerated locally, using preceding identity/reference notation. The transition links give-share evaluation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

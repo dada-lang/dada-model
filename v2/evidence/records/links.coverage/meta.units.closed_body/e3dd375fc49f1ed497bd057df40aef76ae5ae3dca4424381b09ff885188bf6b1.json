@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "7ca8d76044f67ef2e51aa09f7856fc99749a9ea4f1934b87264553cb40489ac8",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.units.closed_body",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This unit defines the closed-body/preprocessing contract itself and spells out all three prohibited expansion forms. Its original-source comparison and scope limitation are explained locally; it does not depend on another undisclosed predicate. There is no mathematical equation or inference rule. Directive names and raw unit IDs are authoring syntax, described here rather than reused model notation. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "43a9ac04af4000e22f9a666a6e1953b7cb535c387bb19af02e971f380b25fb80"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This unit defines the closed-body/preprocessing contract itself and spells out all three prohibited expansion forms. Its original-source comparison and scope limitation are explained locally; it does not depend on another undisclosed predicate.",
+    "mathematics": "There is no mathematical equation or inference rule. Directive names and raw unit IDs are authoring syntax, described here rather than reused model notation.",
+    "links": []
+  }
+}

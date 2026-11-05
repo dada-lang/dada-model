@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "25710c7d8198a9a8f9e1d7d1905bb6d61cca122d3002495d28b1a41e0c83fecd",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.paths",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This unit introduces finite relative field paths, epsilon, concatenation, and append in place. It uses field names from the operational syntax without introducing another semantic predicate. The rho production is its defining grammar; every new symbol is assigned meaning in the preceding sentence. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "07ef0d40251e5ae21e3f492335e797c296d9cefb8f2236d653debb3e4e648be4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This unit introduces finite relative field paths, epsilon, concatenation, and append in place. It uses field names from the operational syntax without introducing another semantic predicate.",
+    "mathematics": "The rho production is its defining grammar; every new symbol is assigned meaning in the preceding sentence.",
+    "links": []
+  }
+}

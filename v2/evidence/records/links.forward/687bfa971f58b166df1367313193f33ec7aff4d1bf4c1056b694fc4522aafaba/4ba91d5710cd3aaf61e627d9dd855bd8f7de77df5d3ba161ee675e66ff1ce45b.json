@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "720e48efdc51bbf7396322cf4c5209ae105110a6ac4dca48bcf3556ae5c85353",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ca5509f1707e565d9c783f2764393e76a8754a765a01f785cc899eecd05325d8",
+    "audit:unit:assignment.example.overwrite_safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The forward conceptual use is explicitly signposted and bounded to the stated execution boundary; the code and lifetime behavior remain self-contained while the later machine section supplies the formal definition.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The opening lifetime examples show why Assignment needs both fixed storage types and frame/collector safety before the static and operational definitions. Moving the full machine/execution definitions before these examples would introduce machinery before the behavior it explains; moving the examples after the rules would lose the requested examples-first chapter structure. The reference was reduced to the finite-execution boundary definition; statement typing and the general soundness theorem remain later and are not needed to read the code.",
+      "signposting": "The link itself says execution, defined below, explicitly identifying that the formal definition follows in this chapter.",
+      "signpost": {
+        "path": "md/assignment.md",
+        "start": 4900,
+        "end": 4955
+      },
+      "minimal_use": "Only finite repetition of steps and the reached-state alternatives are needed: the same sentence says each state has no frames or can step, and the adjacent completion clause says an empty frame stack leaves an empty heap. The example does not depend on the later stack-typing invariant or claim termination."
+    }
+  }
+}

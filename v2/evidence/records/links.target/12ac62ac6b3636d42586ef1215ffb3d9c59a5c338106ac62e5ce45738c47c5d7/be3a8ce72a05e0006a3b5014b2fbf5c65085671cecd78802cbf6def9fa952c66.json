@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "8534abbf6b88eb83b2773a10241ca0999b523308bdf7b27504333d12761d49d4",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Finished environment is now the opening definition, avoiding a buried target after frame commentary. Struct types, frames and unpacking link directly to prior definitions. The selected defining body includes its local setup, conditions and direct prerequisite links. No display mathematics; environment, initialized binding and struct predicate are explained/linked, and runtime completion is described without introducing unchecked type assertions. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "8a64c04a61c3b29d0e4980719a1b08defd1652fae711948f87f0a890c5aa9cd7"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "finished environment",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 13426,
+      "end": 14537
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Finished environment is now the opening definition, avoiding a buried target after frame commentary. Struct types, frames and unpacking link directly to prior definitions.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. No display mathematics; environment, initialized binding and struct predicate are explained/linked, and runtime completion is described without introducing unchecked type assertions."
+  }
+}

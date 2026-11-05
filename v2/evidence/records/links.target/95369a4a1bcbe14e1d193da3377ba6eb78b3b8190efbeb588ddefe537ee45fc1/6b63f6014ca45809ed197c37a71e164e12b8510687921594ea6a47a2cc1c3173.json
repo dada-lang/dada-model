@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "62aba526248bab1b77d802e5e5810bcb8b0c5f8249e9637d77c3ecdccef1cb00",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This landing introduces the named definition or concrete heap setup in its opening passage. Declared classes, allocated IDs, index notation, ordinary liveness and pending roots all link to earlier definitions. The final Live(S;R) occurrence reuses the immediately preceding linked definition. WF(S) and WF(S;R) are defining occurrences, with S, Delta and nu already introduced by the storage/program units. No forward concept link is required. The surrounding chapter supplies storage and reachability before using them. Declared classes, allocated IDs, index notation, ordinary liveness and pending roots all link to earlier definitions. The final Live(S;R) occurrence reuses the immediately preceding linked definition. WF(S) and WF(S;R) are defining occurrences, with S, Delta and nu already introduced by the storage/program units. No forward concept link is required. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "ec789ae2d9b572d8b3dc90c2c901d269f82bb065db187e81095981f16e780638"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "given.well_formed",
+    "definition": {
+      "path": "md/given.md",
+      "start": 21659,
+      "end": 23429
+    },
+    "clarity": "This landing introduces the named definition or concrete heap setup in its opening passage. Declared classes, allocated IDs, index notation, ordinary liveness and pending roots all link to earlier definitions. The final Live(S;R) occurrence reuses the immediately preceding linked definition. WF(S) and WF(S;R) are defining occurrences, with S, Delta and nu already introduced by the storage/program units. No forward concept link is required.",
+    "independence": "The surrounding chapter supplies storage and reachability before using them. Declared classes, allocated IDs, index notation, ordinary liveness and pending roots all link to earlier definitions. The final Live(S;R) occurrence reuses the immediately preceding linked definition. WF(S) and WF(S;R) are defining occurrences, with S, Delta and nu already introduced by the storage/program units. No forward concept link is required."
+  }
+}

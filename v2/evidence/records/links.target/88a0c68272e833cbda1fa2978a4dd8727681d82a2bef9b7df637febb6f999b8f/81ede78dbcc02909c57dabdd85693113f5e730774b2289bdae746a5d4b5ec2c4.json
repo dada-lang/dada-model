@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "e4d4fd7c44ba0a7cfe69ad9c5d9cd868557a2e41cb3f703296ceb0e174b5feaf",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:88a0c68272e833cbda1fa2978a4dd8727681d82a2bef9b7df637febb6f999b8f",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.empty_state directly introduces empty Given storage. Empty storage has its own formula and zero allocation counter. The empty-map symbol is explained beside the equation, so machine initialization no longer lands inside general storage. S_empty is defined by its tuple equation and the empty-map symbol is explained locally. It is not a reference to a later initial-machine rule. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "6add23e2e91937f8d6abbfff50adb9df93b1e686b6b35b8f9557c0df982f31a3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "empty Given storage",
+    "definition": {
+      "path": "md/given.md",
+      "start": 5348,
+      "end": 5547
+    },
+    "clarity": "The landing md/given.md#claim-given.empty_state directly introduces empty Given storage. Empty storage has its own formula and zero allocation counter. The empty-map symbol is explained beside the equation, so machine initialization no longer lands inside general storage.",
+    "independence": "S_empty is defined by its tuple equation and the empty-map symbol is explained locally. It is not a reference to a later initial-machine rule. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "58d89cb4fe597d10c9916b2d071a00e307e4006dc5132ae12921f240ac06a8d3",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:939f180934edf65d84a072aad2dd778c3a2dc532ce0e9d8b312e9d65b1b4483b",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces Functions statement and sequence typing. Links argument typing, destination installation, signatures, inherited local statements and environment WF. Call premises use those linked definitions; the rule binds the table entry and intermediate environment locally. Sequence typing is defined recursively here, with explicit WF for the empty sequence. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "290d69a80d3688b4c88eb90be678369c2222768af0b8aaaceb0626b257e39da5"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Functions statement and sequence typing",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 10319,
+      "end": 12106
+    },
+    "clarity": "The named landing directly introduces Functions statement and sequence typing. Links argument typing, destination installation, signatures, inherited local statements and environment WF.",
+    "independence": "Call premises use those linked definitions; the rule binds the table entry and intermediate environment locally. Sequence typing is defined recursively here, with explicit WF for the empty sequence. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

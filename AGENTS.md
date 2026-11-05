@@ -80,7 +80,9 @@ collection lemmas.
 frame consumption, and stack execution with full progress/preservation.
 `v2/md/assignment.md` and `v2/lean/Assignment/` add fixed binding types and explicit
 stores to empty or struct slots, with checked static/runtime examples and forward
-Destructor execution correspondence. Assignment safety is not yet proved; see the chapter's explicit proof boundary.
+Destructor execution correspondence. `Assignment/StoreSoundness` and
+`Assignment/Safety` prove general progress, preservation, class-retaining collection,
+and finite-prefix safety; reverse execution and typing correspondence remain deferred.
 Given/Shared structural invariants require rootedness (including pending values)
 and unique/compatible ownership, not allocation-age order. Shared permits rooted
 cycles. Their safety proofs and the Functions/Destructors proofs use this weaker

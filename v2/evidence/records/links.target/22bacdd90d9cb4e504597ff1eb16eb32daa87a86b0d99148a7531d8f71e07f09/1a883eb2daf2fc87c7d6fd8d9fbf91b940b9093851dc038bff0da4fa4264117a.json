@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "bee823a59dcfbecedc7b629b053eca5deccb193051555576fb3188ef22528090",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:22bacdd90d9cb4e504597ff1eb16eb32daa87a86b0d99148a7531d8f71e07f09",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Places and Shared value expressions link their syntax; the inherited Destructor statement family is linked. Store p,e is introduced locally and calls remain statements rather than value expressions.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "Assignment statement/body/program syntax",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 6776,
+      "end": 7234
+    },
+    "clarity": "The named unit opens with the defining passage for Assignment statement/body/program syntax. Places and Shared value expressions link their syntax; the inherited Destructor statement family is linked. Store p,e is introduced locally and calls remain statements rather than value expressions.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. p and e are bound to their syntactic domains immediately. No undeclared grammar variable or inferred receiver sugar is used."
+  }
+}

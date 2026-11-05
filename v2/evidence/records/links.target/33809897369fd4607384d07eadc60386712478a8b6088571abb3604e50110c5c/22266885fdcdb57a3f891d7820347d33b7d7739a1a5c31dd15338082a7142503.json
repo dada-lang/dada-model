@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "e00a6bd6d075bba00558c9e17de06c288a871bc8e009734b5b78e549599ff973",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:33809897369fd4607384d07eadc60386712478a8b6088571abb3604e50110c5c",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces call, body and declaration syntax. Links inherited expression and pattern syntax, signatures and nominal declarations. The appendix is optional recap; all prerequisites already link backward. d,t,r,B,D and F are defined locally, including optional results and the whole program. Metasyntax is explicitly distinguished from surface call spelling. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "d5019a14f57e1a97838a6d80a35d876107ba32a322b56bd407f074ceb5b2a806"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "call, body and declaration syntax",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 6847,
+      "end": 8454
+    },
+    "clarity": "The named landing directly introduces call, body and declaration syntax. Links inherited expression and pattern syntax, signatures and nominal declarations. The appendix is optional recap; all prerequisites already link backward.",
+    "independence": "d,t,r,B,D and F are defined locally, including optional results and the whole program. Metasyntax is explicitly distinguished from surface call spelling. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "4edbd5e8bbf8292217729e69ad05a56ccddf403145d8afd1be0140031e7672ba",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.links.inventory",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The inventory is introduced here with its data, supported syntaxes, target resolution and book-order rules. Future notes are included explicitly. This is the defining contract for the link graph, not a use of an unintroduced semantic relation. Literal href and SUMMARY names are syntax examples. No equation or inference judgment requires a separate math link. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "fa94823feaee4d5e65433e1dff3e03ad267091bfaca9a6a12a35bea506e7e596"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The inventory is introduced here with its data, supported syntaxes, target resolution and book-order rules. Future notes are included explicitly. This is the defining contract for the link graph, not a use of an unintroduced semantic relation.",
+    "mathematics": "Literal href and SUMMARY names are syntax examples. No equation or inference judgment requires a separate math link.",
+    "links": []
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "bundle": "06cde475d90320f99851348adbd86e53c27444d219e698102fa777d0bc56e2db",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:462085c5c4c7eeff3ee20ed8cf1e031e6d0f49f7240fa319ee92937e94e6102b",
+    "audit:target:939f180934edf65d84a072aad2dd778c3a2dc532ce0e9d8b312e9d65b1b4483b",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:unit:functions.bodies",
+    "audit:unit:functions.result_typing",
+    "audit:unit:functions.signatures",
+    "audit:unit:functions.typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation. Both premises reuse exactly the linked sequence/result judgments. env and result are the projections introduced by the environment/signature definitions; middle/final environments are scoped to this rule. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "3cdf1a79d1a98c90edca133b50ae870bd515fe82a8ca156e723327e0619f8158"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation.",
+    "mathematics": "Both premises reuse exactly the linked sequence/result judgments. env and result are the projections introduced by the environment/signature definitions; middle/final environments are scoped to this rule.",
+    "links": [
+      {
+        "occurrence": "functions.bodies:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'its signature' refers to md/functions.md#claim-functions.signatures for the concept or example setup used by this unit. Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation."
+      },
+      {
+        "occurrence": "functions.bodies:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'typing its statements' refers to md/functions.md#claim-functions.typing for the concept or example setup used by this unit. Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation."
+      },
+      {
+        "occurrence": "functions.bodies:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'parameter environment' refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation."
+      },
+      {
+        "occurrence": "functions.bodies:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'return expression' refers to md/functions.md#claim-functions.result_typing for the concept or example setup used by this unit. Links signatures, sequence typing, parameter environment and result typing; the final environment has no consumption obligation."
+      }
+    ]
+  }
+}

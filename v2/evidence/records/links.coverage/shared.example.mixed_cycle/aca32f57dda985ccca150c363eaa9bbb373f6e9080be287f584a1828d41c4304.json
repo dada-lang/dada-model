@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "24bf8257f2883ab1f468cf5eec0e365f14360993f7b929a09f4217303315e6d0",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:target:ca2970f0b7f44288dd19e6248c36128f6c6a2ab6f10772049e5497e5e542525f",
+    "audit:unit:shared.example.mixed_cycle",
+    "audit:unit:shared.example.rooted_cycle",
+    "audit:unit:shared.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links backward to the immediately preceding complete two-node setup and to structural well-formedness. The sole changed reference and retained shared root are explicit; no equation symbols need introduction. Links backward to the immediately preceding complete two-node setup and to structural well-formedness. The sole changed reference and retained shared root are explicit; no equation symbols need introduction. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "3a54669710d04a8116f7895b68e2cfd8786d8ef6e1df9614c73626731911dcf9"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links backward to the immediately preceding complete two-node setup and to structural well-formedness. The sole changed reference and retained shared root are explicit; no equation symbols need introduction.",
+    "mathematics": "Links backward to the immediately preceding complete two-node setup and to structural well-formedness. The sole changed reference and retained shared root are explicit; no equation symbols need introduction. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "shared.example.mixed_cycle:1",
+        "role": "conceptual",
+        "rationale": "'preceding cycle' points backward to #claim-shared.example.rooted_cycle for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "shared.example.mixed_cycle:2",
+        "role": "conceptual",
+        "rationale": "'structural well-formedness' points backward to #claim-shared.well_formed for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

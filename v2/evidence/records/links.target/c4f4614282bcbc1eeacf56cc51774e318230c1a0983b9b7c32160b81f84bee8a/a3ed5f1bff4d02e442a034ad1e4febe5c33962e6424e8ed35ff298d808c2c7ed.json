@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "50a3e21ba3a5263d161c624bc6ca18c03125fa0341998e04a6e00783030db0e5",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c4f4614282bcbc1eeacf56cc51774e318230c1a0983b9b7c32160b81f84bee8a",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/evidence-pilot.md#claim-evidence.map.empty_definition directly introduces Empty finite map. The unit introduces finite maps directly, with the key uniqueness condition and a separate empty-map anchor; it does not invoke another language operation. M, K, T and entry components k,v are introduced in the same sentences; the map arrow and empty-map symbol are defining occurrences. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "b3ead93aec0807e17af2b1f084e8319a48767be9e2b40b9b71102111f758a31b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Empty finite map",
+    "definition": {
+      "path": "md/repo/evidence-pilot.md",
+      "start": 7215,
+      "end": 7306
+    },
+    "clarity": "The landing md/repo/evidence-pilot.md#claim-evidence.map.empty_definition directly introduces Empty finite map. The unit introduces finite maps directly, with the key uniqueness condition and a separate empty-map anchor; it does not invoke another language operation.",
+    "independence": "M, K, T and entry components k,v are introduced in the same sentences; the map arrow and empty-map symbol are defining occurrences. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

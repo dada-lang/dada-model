@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "85736afb0ad966419e95c0ffa4c4aa67e89c742e7732a19798196b71fdd1b1b0",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f04e04e63ee3dc0d3ff261b4a37a5a43d1bf2fa1799e9cf11fd813ea8a5351fd",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. The consumption obligation is introduced directly by the opening paragraph and the complete Pair example. Unpacking, moving and struct kinds link to their earlier definitions. Token/Pair are local declarations, not unlinked external concepts. The selected defining body includes its local setup, conditions and direct prerequisite links. No display equations. Surface code defines its own class, field and local names; → uses the linked give operation. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "b63f6f7f019d3a91e9d61631bb09ed57a1c53befae0a69e67b2887f0a925e6ab"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "example.consume",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 147,
+      "end": 1435
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. The consumption obligation is introduced directly by the opening paragraph and the complete Pair example. Unpacking, moving and struct kinds link to their earlier definitions. Token/Pair are local declarations, not unlinked external concepts.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. No display equations. Surface code defines its own class, field and local names; → uses the linked give operation."
+  }
+}

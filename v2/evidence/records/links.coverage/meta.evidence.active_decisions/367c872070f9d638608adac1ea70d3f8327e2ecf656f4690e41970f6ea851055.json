@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "85b7d05746d1aef2ea5d74bda986665c2f2514495fe990feeb70942b97a5de96",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c06f361df57d349bc9196f76826fc1003e0906e16dcf0c94d3361d5b9113bc8a",
+    "audit:unit:meta.evidence.active_decisions",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/authoring.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit states recording freshness and active/superseded decision behavior directly. The exception for Future notes links their defining section. Mismatch, inconclusive and stale outcomes are distinguished in the contract itself. No formal equations or mathematical notation are used; the described operations are the locally introduced review lifecycle. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "dce9fb2c3c4e80bbb4abec2a751b16eb724bc2f04723acec7af37c4e4140943d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit states recording freshness and active/superseded decision behavior directly. The exception for Future notes links their defining section. Mismatch, inconclusive and stale outcomes are distinguished in the contract itself.",
+    "mathematics": "No formal equations or mathematical notation are used; the described operations are the locally introduced review lifecycle.",
+    "links": [
+      {
+        "occurrence": "meta.evidence.active_decisions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Future notes' refers to md/repo/authoring.md#future-notes for the concept or example setup used by this unit. The unit states recording freshness and active/superseded decision behavior directly. The exception for Future notes links their defining section. Mismatch, inconclusive and stale outcomes are distinguished in the contract itself."
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "4758b9ecce8b50684638be04baefabf73c55b33af256ebaf91fa16b5d01791a5",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:352d218ae043b45463c8bd42b7601cfd2c44986b77b61a4e863108bdfaf7d0c2",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Links class-table validity, callable-table typing, frame machine, typed stores, contexts, result delivery, body completion and Shared realization. Active versus suspended checking and root multiplicity are directly explained.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "typed frame-stack configurations",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 23502,
+      "end": 24532
+    },
+    "clarity": "The named unit opens with the defining passage for typed frame-stack configurations. Links class-table validity, callable-table typing, frame machine, typed stores, contexts, result delivery, body completion and Shared realization. Active versus suspended checking and root multiplicity are directly explained.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No mathematical notation occurs. Frame-local names and ordered typed reference occurrences are stated in prose; the empty stack case is explicit."
+  }
+}

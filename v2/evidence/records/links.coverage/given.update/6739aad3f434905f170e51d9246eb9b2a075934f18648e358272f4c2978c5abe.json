@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "2b7957415154df39ce838e9912e6efcdcd65dccb39b5e2f6dbe178b54d64abde",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:49d19d3e6321b8309608988f0dba1cb54f8a069b5a7946d9f117d0fb274166d9",
+    "audit:unit:given.lookup",
+    "audit:unit:given.state",
+    "audit:unit:given.update",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit only defines the slot replacement operation; its defined-slot premise links to lookup. No auxiliary judgment is buried in this target. S[q←s] is introduced here and its lookup prerequisite is linked. It has no hidden auxiliary predicate or notation for deleting a slot. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "d14ab6d2dce57540d17d5810a5c3e7a09cd5a2a19e430c97cbd2a67ff186119d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit only defines the slot replacement operation; its defined-slot premise links to lookup. No auxiliary judgment is buried in this target.",
+    "mathematics": "S[q←s] is introduced here and its lookup prerequisite is linked. It has no hidden auxiliary predicate or notation for deleting a slot.",
+    "links": [
+      {
+        "occurrence": "given.update:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'defined lookup' refers to md/given.md#claim-given.lookup for the concept or example setup used by this unit. The unit only defines the slot replacement operation; its defined-slot premise links to lookup. No auxiliary judgment is buried in this target."
+      }
+    ]
+  }
+}

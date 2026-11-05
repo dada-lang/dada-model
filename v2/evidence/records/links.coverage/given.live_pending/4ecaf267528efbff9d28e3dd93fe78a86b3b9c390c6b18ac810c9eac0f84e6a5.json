@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "18090cf0efed6e1fae5b9893c60c897be1192c2c0aa7e23ae04e5b8d85df915d",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:56e88d29eb95c2d92fc038aa82ddca6d06f063d06b43e1307ce35878c60572ed",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.live",
+    "audit:unit:given.live_pending",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Both links are backward concept links: evaluation supplies the pending-result context, and Live supplies the inherited variable/field reachability rules. R and Live(S;R) are introduced before use; S and object identities come from existing chapter syntax. The one new displayed inference rule defines pending membership as a root and uses only locally bound notation. Both links are backward concept links: evaluation supplies the pending-result context, and Live supplies the inherited variable/field reachability rules. R and Live(S;R) are introduced before use; S and object identities come from existing chapter syntax. The one new displayed inference rule defines pending membership as a root and uses only locally bound notation. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "b01b5f3fd595fdec2f260a085a656c283df761f83133a872581a55b8c7c45291"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Both links are backward concept links: evaluation supplies the pending-result context, and Live supplies the inherited variable/field reachability rules. R and Live(S;R) are introduced before use; S and object identities come from existing chapter syntax. The one new displayed inference rule defines pending membership as a root and uses only locally bound notation.",
+    "mathematics": "Both links are backward concept links: evaluation supplies the pending-result context, and Live supplies the inherited variable/field reachability rules. R and Live(S;R) are introduced before use; S and object identities come from existing chapter syntax. The one new displayed inference rule defines pending membership as a root and uses only locally bound notation. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "given.live_pending:1",
+        "role": "conceptual",
+        "rationale": "'expression evaluation' points backward to #claim-given.evaluation for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "given.live_pending:2",
+        "role": "conceptual",
+        "rationale": "'ordinary liveness' points backward to #claim-given.live for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

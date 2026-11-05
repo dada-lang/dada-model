@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "100e316579c384d9229315ae409d086ecc79393654c688c04727964938e46a6f",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.declarations directly introduces typed class declarations and the typed class table Sigma. The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language. The d/Sigma grammar introduces its metavariables and domains locally. Field and class names are syntax categories, and the ordered pair/list/map notation carries no additional language judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "ba6eccff9a733d35d7524dd43c6604ae5e21f17a672a27b3e7471517d3913ddb"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "typed class declarations and the typed class table Sigma",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 213,
+      "end": 1051
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.declarations directly introduces typed class declarations and the typed class table Sigma. The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language.",
+    "independence": "The d/Sigma grammar introduces its metavariables and domains locally. Field and class names are syntax categories, and the ordered pair/list/map notation carries no additional language judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

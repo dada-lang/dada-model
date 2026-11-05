@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "555e95ef7d8a29ab4bfebc78ed8cbb23fb4ba61a8fd97384eff90127b79d1e3c",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.units.closed_body against rust:mdbook-dada/src/units.rs:parse_block, rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters, test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations, test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence, test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation, test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content. parse_block rejects include/playground/rustdoc directives in raw unit text, including literal samples, and rejects nested legacy citations. validate_chapters reparses original and received content and compares ordered IDs/raw units. Tests cover raw includes and simulated pre-expansion/addition/rewrite; the real mdBook pipeline regression is explicitly ignored by default and requires a separate run. The claim correctly limits the boundary to received chapters and this preprocessing stage. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "db5a0dfc248b36146d3a4c41ff683accf1eeb675a232186c80ec74fb6c754eab"
+  ]
+}

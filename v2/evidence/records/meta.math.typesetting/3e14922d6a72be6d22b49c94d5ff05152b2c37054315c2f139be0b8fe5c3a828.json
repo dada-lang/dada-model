@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "bundle": "b9180e31c21f0509723ba67d1efc6b38d62ef945bc515a08b12af559833e7df7",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:render_authored",
+    "rust:mdbook-dada/src/lib.rs:escape",
+    "rust:mdbook-dada/src/lib.rs:protect_math",
+    "rust:mdbook-dada/src/lib.rs:render_unit",
+    "test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order",
+    "test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders",
+    "test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles",
+    "test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies",
+    "unit:meta.math.typesetting"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.typesetting against rust:mdbook-dada/src/lib.rs:protect_math, rust:mdbook-dada/src/lib.rs:render_unit, rust:mdbook-dada/src/lean.rs:render_authored, rust:mdbook-dada/src/lib.rs:escape, test:mdbook-dada/tests/book.rs:authored_grammar_keeps_math_and_groups_citations_in_order, test:mdbook-dada/tests/book.rs:authored_math_escapes_html_without_interpreting_placeholders, test:mdbook-dada/tests/book.rs:explicit_math_survives_markdown_and_smart_punctuation_in_prose_and_proof_bodies, test:mdbook-dada/tests/book.rs:explicit_math_is_literal_in_code_links_and_html_and_does_not_define_roles. protect_math excludes code/link/HTML contexts and escapes explicit display/inline formulas before Markdown processing; render_authored escapes raw TeX without translating Lean. Tests retain row breaks/primes under smart punctuation, reject HTML interpretation, preserve literal contexts and citation order. This supports syntax preservation, not validation that TeX means the same proposition as Lean. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "f3ee998bf6f857b8e28bd521fa6bce78841b968ff35dc18aab508ae3434d9f35"
+  ]
+}

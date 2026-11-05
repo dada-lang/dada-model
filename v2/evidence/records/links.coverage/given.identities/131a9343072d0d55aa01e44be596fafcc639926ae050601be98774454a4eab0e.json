@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "7c1c5ad9a04963e1ea6c19c36d1da1ff57d7336444e49a05defa0f7d9539bff0",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:given.identities",
+    "audit:unit:given.programs",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines tagged object identities and index in the displayed representation. n is locally quantified over natural numbers; it is not an unlinked object identifier or future semantic concept. obj(n), index and the Nat domain are defined here; α and β are explicitly introduced as object identities. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "e1c4cf24f9c86b425040d2b6afc3d3921ad3f2bee07b1c53a23b28b8570f8012"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines tagged object identities and index in the displayed representation. n is locally quantified over natural numbers; it is not an unlinked object identifier or future semantic concept.",
+    "mathematics": "obj(n), index and the Nat domain are defined here; α and β are explicitly introduced as object identities.",
+    "links": []
+  }
+}

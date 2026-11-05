@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "252cf3a8b8048b1aea413e64d280c82456ec31a8e4eb818ba4853cf6aa7f5dd3",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e0e30b85b0197fab44a8ae02cdee7f7f84182b2175ddfdff24c007254c4a47e",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:shared.typing.example.partial",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.weakening",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Give-share and weakening, with its classes local. The concrete sequence retains known-empty left and accessible right information. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. sharing_partial_views establishes the five-step execution, partialPair.shared description, empty p, two shared right-field results, retained empty left slot, and rejection of a subsequent left give. The prose preserves the hole and does not infer it can be recovered by weakening. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "b693bf1650ff121934d4500b66201b0ba0688959a57e3fb4b245b1147f449635"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Give-share and weakening, with its classes local. The concrete sequence retains known-empty left and accessible right information.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. sharing_partial_views establishes the five-step execution, partialPair.shared description, empty p, two shared right-field results, retained empty left slot, and rejection of a subsequent left give. The prose preserves the hole and does not infer it can be recovered by weakening.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.partial:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Give-share' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links Give-share and weakening, with its classes local. The concrete sequence retains known-empty left and accessible right information."
+      },
+      {
+        "occurrence": "shared.typing.example.partial:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Weakening' refers to md/shared-typing.md#claim-shared.typing.weakening for the concept or example setup used by this unit. Links Give-share and weakening, with its classes local. The concrete sequence retains known-empty left and accessible right information."
+      }
+    ]
+  }
+}

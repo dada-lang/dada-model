@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "37cf130ae9f54035e2f9babd18460cef2358699a382e4c49ecc1c264a08d314b",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:df2da7caa3d89bc04ce4d503cad0e61b7f1272ee7dabab94f8f5a29def49bc73",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.classes directly introduces Shared class declarations. Links nominal kind while introducing class/field name categories and ordered fields. Source field typing is explicitly distinguished from its erased operational representation. C, f and natural arity n are introduced locally; operational Class retains kind and field names, including zero fields. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "7921ab0c284307cb18881333db5e9adbb1304f754ba48b4628712a291567afcd"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared class declarations",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 4966,
+      "end": 5414
+    },
+    "clarity": "The landing md/shared.md#claim-shared.classes directly introduces Shared class declarations. Links nominal kind while introducing class/field name categories and ordered fields. Source field typing is explicitly distinguished from its erased operational representation.",
+    "independence": "C, f and natural arity n are introduced locally; operational Class retains kind and field names, including zero fields. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

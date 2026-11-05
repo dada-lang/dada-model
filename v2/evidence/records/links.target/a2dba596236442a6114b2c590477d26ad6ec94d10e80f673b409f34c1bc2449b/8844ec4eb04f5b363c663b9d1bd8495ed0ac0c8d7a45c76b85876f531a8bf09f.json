@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "0dbd749b2eda26bc28918cabaf1d881485b900e1474fa2cadb4bf8fd88d41d0a",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a2dba596236442a6114b2c590477d26ad6ec94d10e80f673b409f34c1bc2449b",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.correspondence directly introduces the Given/Shared step correspondence theorem. Links E in prose and both languages’ Step judgments in the directional formulas; the reverse quantification over arbitrary Shared successors is explicit. E is linked in prose, and every Step formula links the correct language-specific transition definition; the arbitrary Shared successor d is locally quantified. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "94c0bc8f07b036508174d413fe0e20244ef7b05f428808e99c975a3f640fdc2e"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the Given/Shared step correspondence theorem",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 38012,
+      "end": 38864
+    },
+    "clarity": "The landing md/shared.md#claim-shared.correspondence directly introduces the Given/Shared step correspondence theorem. Links E in prose and both languages’ Step judgments in the directional formulas; the reverse quantification over arbitrary Shared successors is explicit.",
+    "independence": "E is linked in prose, and every Step formula links the correct language-specific transition definition; the arbitrary Shared successor d is locally quantified. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

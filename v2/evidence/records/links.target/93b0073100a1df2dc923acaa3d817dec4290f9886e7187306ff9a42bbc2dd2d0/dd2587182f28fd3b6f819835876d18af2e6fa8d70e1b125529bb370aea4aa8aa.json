@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "97ffd166cba8c4058f771d47090447fa19d196f3af37b34358d1a8b4b7404b9d",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.base directly introduces the base-class projection from a nominal view. This is the defining occurrence of base itself; C.A denotes the locally destructured class/view pair, with no separate external prose predicate invoked. The sole equation projects C from C.A and introduces base. C and A are the components of its argument rather than operations needing self-links. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "c52c80328f9f3a0c4e202a14b71c75b423f056cf9eaedcd0a8f9ee3ae98dcb3f"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the base-class projection from a nominal view",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 4042,
+      "end": 4095
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.base directly introduces the base-class projection from a nominal view. This is the defining occurrence of base itself; C.A denotes the locally destructured class/view pair, with no separate external prose predicate invoked.",
+    "independence": "The sole equation projects C from C.A and introduces base. C and A are the components of its argument rather than operations needing self-links. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

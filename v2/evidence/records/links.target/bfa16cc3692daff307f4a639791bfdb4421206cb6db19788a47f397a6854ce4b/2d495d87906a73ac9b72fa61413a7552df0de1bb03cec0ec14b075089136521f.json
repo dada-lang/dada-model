@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "9a679096ae1993a63b10bb53bbde121a56dd451123edbd5341724f025c27c6b0",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:bfa16cc3692daff307f4a639791bfdb4421206cb6db19788a47f397a6854ce4b",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Links Shared expression/argument and binding judgments, fixed binding types and static store. Inherited call/drop execution is linked; the lifted context flow and RHS-then-store rule are described directly.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "da3e9a090f320700e71a6e810e126ac4da3abf076205f0542acab038d3245877"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Assignment statement typing",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 11421,
+      "end": 12521
+    },
+    "clarity": "The named unit opens with the defining passage for Assignment statement typing. Links Shared expression/argument and binding judgments, fixed binding types and static store. Inherited call/drop execution is linked; the lifted context flow and RHS-then-store rule are described directly.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No display rules occur. Expression type and intermediate/output context are prose roles, with no free mathematical symbols."
+  }
+}

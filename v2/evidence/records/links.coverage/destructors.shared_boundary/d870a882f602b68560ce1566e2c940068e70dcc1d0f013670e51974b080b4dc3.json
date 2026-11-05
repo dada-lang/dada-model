@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "57349e41d33c577816a393b9c1d3366fd6afd36ba294c84c054e8a06deeead72",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:8c93add9c0c83a776892d18710675ad1a169196ba74e7618d4b2ef28a872c904",
+    "audit:unit:destructors.body_typing",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.shared_boundary",
+    "audit:unit:shared.typing.safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines the componentwise Functions embedding and exit condition in prose, links result evaluation and frame completion, and states the qualified step equivalence. It explicitly excludes unconditional preservation of old typings. The exit condition quantifies over all possible result evaluations; no displayed symbols or undeclared environments are introduced. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "21fccbaaaecc8006a32a4dc04246c8c6722808f8cc4b3d9c21cb0d20e0a6555d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines the componentwise Functions embedding and exit condition in prose, links result evaluation and frame completion, and states the qualified step equivalence. It explicitly excludes unconditional preservation of old typings.",
+    "mathematics": "The exit condition quantifies over all possible result evaluations; no displayed symbols or undeclared environments are introduced.",
+    "links": [
+      {
+        "occurrence": "destructors.shared_boundary:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'result evaluation' supplies the definition or concrete example setup used here, at functions.md#claim-functions.return. Defines the componentwise Functions embedding and exit condition in prose, links result evaluation and frame completion, and states the qualified step equivalence. It explicitly excludes unconditional preservation of old typings."
+      },
+      {
+        "occurrence": "destructors.shared_boundary:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'frame completion' supplies the definition or concrete example setup used here, at #claim-destructors.finished_environment. Defines the componentwise Functions embedding and exit condition in prose, links result evaluation and frame completion, and states the qualified step equivalence. It explicitly excludes unconditional preservation of old typings."
+      }
+    ]
+  }
+}

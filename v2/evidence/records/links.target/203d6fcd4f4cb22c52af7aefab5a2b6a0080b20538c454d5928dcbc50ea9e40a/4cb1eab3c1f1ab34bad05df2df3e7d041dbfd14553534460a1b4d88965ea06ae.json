@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "ea8679f4cf7cdfcaf3d8c7637579f9973a1655ad8a8c43c29155dabfc2abce74",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:203d6fcd4f4cb22c52af7aefab5a2b6a0080b20538c454d5928dcbc50ea9e40a",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Defines stuck directly using linked finished and next-step predicates. The explicit statement that terminal configurations are not stuck closes the boundary distinction.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "stuck configurations",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 15631,
+      "end": 15828
+    },
+    "clarity": "The named unit opens with the defining passage for stuck configurations. Defines stuck directly using linked finished and next-step predicates. The explicit statement that terminal configurations are not stuck closes the boundary distinction.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No mathematical notation occurs; the conjunction of nonfinished and no successor is stated in words."
+  }
+}

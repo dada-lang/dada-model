@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "8ac8c6a6469533cd07a56abf9e25df9dbc7eccca4a6a43e6c223ec1c3e14a2c9",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c68cfd5387727dd8e3d65abdcefc561b0dc5ba62b5affe424599439e9b0f70fc",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. The body definition names its parameter context, sequence/result checking and inherited completion obligation directly. The second paragraph links class-drop elaboration; it is an inherited operation, not a new rule inferred from the safety theorem.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "body typing and completion obligation",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 19556,
+      "end": 20174
+    },
+    "clarity": "The named unit opens with the defining passage for body typing and completion obligation. The body definition names its parameter context, sequence/result checking and inherited completion obligation directly. The second paragraph links class-drop elaboration; it is an inherited operation, not a new rule inferred from the safety theorem.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No mathematical equations occur. Whole/given/struct distinctions retain the linked Destructor typing meaning; no fresh metavariable is introduced."
+  }
+}

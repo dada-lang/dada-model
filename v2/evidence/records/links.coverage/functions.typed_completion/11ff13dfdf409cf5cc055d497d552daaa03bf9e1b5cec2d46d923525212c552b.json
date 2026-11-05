@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "d36441c862edf32ac0464d9241c38ec7e517319187e9daa0427910c4e660650a",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:2f4fae6642af15eee453aa7a85b451f092126af505d334ad49884a5cd4d2688a",
+    "audit:target:3e34120c88f7f20e50abd13d3572e04b10cad13d040b1ef300f681e3792499a4",
+    "audit:unit:functions.gc",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.stack_typing",
+    "audit:unit:functions.typed_completion",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links machine typing, finishedness and the earlier step-target theorem. The new premise is typing of the configuration, not having just taken a step; the prose explicitly states this stronger scope. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "be91220bf9f28ee85d4a7d8310e02e5d7b9a9c92bcc01fb7a10d8bd314436de8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links machine typing, finishedness and the earlier step-target theorem.",
+    "mathematics": "The new premise is typing of the configuration, not having just taken a step; the prose explicitly states this stronger scope.",
+    "links": [
+      {
+        "occurrence": "functions.typed_completion:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links machine typing, finishedness and the earlier step-target theorem."
+      },
+      {
+        "occurrence": "functions.typed_completion:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/functions.md#claim-functions.machine_finished for the concept or example setup used by this unit. Links machine typing, finishedness and the earlier step-target theorem."
+      },
+      {
+        "occurrence": "functions.typed_completion:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step-target result' refers to md/functions.md#claim-functions.terminal_heap for the concept or example setup used by this unit. Links machine typing, finishedness and the earlier step-target theorem."
+      }
+    ]
+  }
+}

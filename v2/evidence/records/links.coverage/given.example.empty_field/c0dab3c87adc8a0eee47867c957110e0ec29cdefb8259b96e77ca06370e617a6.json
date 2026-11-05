@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "b0a1a5ab7a527b3c5bf23a511f6d46a5eacb7a7f1f96610d64d6bea6ffd388b7",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c8ead969bed74ef79c463fa37a326d2236f51323ed159506774205ac0abfe848",
+    "audit:target:fb8728223f67267611c2c2583e138750a3de2c9dbffaf47cc6477356589bd987",
+    "audit:unit:given.example.empty_field",
+    "audit:unit:given.example.field",
+    "audit:unit:given.executions",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded. Δ and K_bad are introduced from the linked predecessor example. The starred arrow and Finished in the no-completion formula are linked. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "1a3d5fb08a12cbdf6799e648fb4967710d2704b281a58d72635e9b66539fb01c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded.",
+    "mathematics": "Δ and K_bad are introduced from the linked predecessor example. The starred arrow and Finished in the no-completion formula are linked.",
+    "links": [
+      {
+        "occurrence": "given.example.empty_field:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'given.example.field' refers to md/given.md#claim-given.example.field for the concept or example setup used by this unit. Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded."
+      },
+      {
+        "occurrence": "given.example.empty_field:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck' refers to md/given.md#claim-given.stuck for the concept or example setup used by this unit. Links the exact starting example, stuckness, finite-execution arrow, and Finished. The impossibility statement therefore has all three semantic judgments grounded."
+      }
+    ]
+  }
+}

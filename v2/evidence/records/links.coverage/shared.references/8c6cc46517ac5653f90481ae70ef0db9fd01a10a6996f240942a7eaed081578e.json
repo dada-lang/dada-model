@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "f36b8c03b8b75bc168a06844f6cf8c7adf1f3443ce0d05ec848915ff79331bde",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "audit:unit:given.identities",
+    "audit:unit:shared.references",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Introduces reference mode and pair representation before give uses them. Tagged object identities link back to their standalone Given definition; no object-level ownership flag is implied. κ/r/s are defined by their local grammar. ObjectId and obj(n) use the tagged-number convention linked to Given, not a mode attached to the object record. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "908e1316f2cf897ed48fcca1c85201337f473e53660b82fd463ae63e22888197"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Introduces reference mode and pair representation before give uses them. Tagged object identities link back to their standalone Given definition; no object-level ownership flag is implied.",
+    "mathematics": "κ/r/s are defined by their local grammar. ObjectId and obj(n) use the tagged-number convention linked to Given, not a mode attached to the object record.",
+    "links": [
+      {
+        "occurrence": "shared.references:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'tagged natural numbers' refers to md/given.md#claim-given.identities for the concept or example setup used by this unit. Introduces reference mode and pair representation before give uses them. Tagged object identities link back to their standalone Given definition; no object-level ownership flag is implied."
+      }
+    ]
+  }
+}

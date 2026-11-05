@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "bundle": "8ebf8b64f4293fc184135a54d7505d4d3746d35a4baa6fbfe77bb1830e57c337",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:11aed29a6b82dfc70e7df19c3fad999a9f8fa3cfb7d1b2ebf35e0b7a63f92a16",
+    "audit:target:4ba614a624608047955c9ae8f552242a0a12fdc9b4cec2848e20eb9b3287e39c",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:target:aa210780e33166914e582e1f2aa597e7876855cb4a8137adc65a043a6c43be2f",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.views",
+    "audit:unit:shared.typing.composition",
+    "audit:unit:shared.typing.declarations",
+    "audit:unit:shared.typing.declared_permission",
+    "audit:unit:shared.typing.nominal_table",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. declaredPermission returns given at the empty path and recursively looks up a field's permission/class, composing its permission with the suffix. Lookup failure makes the result absent. The recursive equations and validity condition use the same nominal path domain. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "a5cbe232e92196117dd004262646670ee74f74b44597edee76c17f1293e1810e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. declaredPermission returns given at the empty path and recursively looks up a field's permission/class, composing its permission with the suffix. Lookup failure makes the result absent. The recursive equations and validity condition use the same nominal path domain.",
+    "links": [
+      {
+        "occurrence": "shared.typing.declared_permission:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative path' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar."
+      },
+      {
+        "occurrence": "shared.typing.declared_permission:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'permission composition' refers to md/shared-typing.md#claim-shared.typing.composition for the concept or example setup used by this unit. Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar."
+      },
+      {
+        "occurrence": "shared.typing.declared_permission:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma(C)' refers to md/shared-typing.md#claim-shared.typing.declarations for the concept or example setup used by this unit. Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar."
+      },
+      {
+        "occurrence": "shared.typing.declared_permission:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'paths valid from' refers to md/given-typing.md#claim-given.typing.class_at for the concept or example setup used by this unit. Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar."
+      },
+      {
+        "occurrence": "shared.typing.declared_permission:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal class table' refers to md/shared-typing.md#claim-shared.typing.nominal_table for the concept or example setup used by this unit. Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar."
+      }
+    ]
+  }
+}

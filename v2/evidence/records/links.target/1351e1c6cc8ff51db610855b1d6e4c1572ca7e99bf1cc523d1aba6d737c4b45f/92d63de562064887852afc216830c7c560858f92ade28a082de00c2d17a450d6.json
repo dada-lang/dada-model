@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "54d209d457a25a969c8ff2486579f45f2edf32e572c72a93dd61de6fd34c8f5a",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1351e1c6cc8ff51db610855b1d6e4c1572ca7e99bf1cc523d1aba6d737c4b45f",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.execution directly introduces extended execution closure and exact step counts. The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation. The star and k superscripts are the defining occurrences. The underlying extended step relation is linked in the sentence introducing them. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "ac1bc0ebbf72dc2746c5860dc2f63b0ada892828a676f7f9d8369b6d377de010"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "extended execution closure and exact step counts",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 31342,
+      "end": 31752
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.execution directly introduces extended execution closure and exact step counts. The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation.",
+    "independence": "The star and k superscripts are the defining occurrences. The underlying extended step relation is linked in the sentence introducing them. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

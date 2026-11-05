@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "52489ef4a35ff6b2719c9c06c9eebf1ea58a96c52d120dce0dde8d577fdd7638",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e352bf1830e74f15198be0594d0061f7c9c957dfd9710c03023c40e4b5b65bf8",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:shared.example.share_value",
+    "audit:unit:shared.example.shared_middle",
+    "audit:unit:shared.give",
+    "audit:unit:shared.resolution",
+    "audit:unit:shared.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate. The earlier state is linked explicitly; the two source statements use known syntax, and the resulting route interpretation links resolution. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "2c7305de612c67616c2c5a7e3c43d0df9da31e7b636a522a60fb42a38ca5a76f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate.",
+    "mathematics": "The earlier state is linked explicitly; the two source statements use known syntax, and the resulting route interpretation links resolution.",
+    "links": [
+      {
+        "occurrence": "shared.example.shared_middle:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'shared.example.share_value' refers to md/shared.md#claim-shared.example.share_value for the concept or example setup used by this unit. Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate."
+      },
+      {
+        "occurrence": "shared.example.shared_middle:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'constructor' refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links the exact predecessor example, constructor evaluation, path resolution and object table. Uses object-table membership instead of prematurely invoking the later Allocated predicate."
+      }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "60fa769000b37072911bb1c2c55286293a6110369a1802494f6de657ffc75edb",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:48f69fd66c2ff1a3ca310d617921b131abdb2db405cd929c855065a0fcb9107c",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Separately links stack representation and collector, then links evaluation, writable slot, replaceability and write at the four transition stages. Destructor execution and completion requirements also have direct inherited links. The new operation order is defined here.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "f6f9e38d403d9c44a8b420fba2ba067e1e0a78427e046332d0b95494c7049895"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Assignment frame machine and transitions",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 13777,
+      "end": 14922
+    },
+    "clarity": "The named unit opens with the defining passage for Assignment frame machine and transitions. Separately links stack representation and collector, then links evaluation, writable slot, replaceability and write at the four transition stages. Destructor execution and completion requirements also have direct inherited links. The new operation order is defined here.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. The numbered list is operational prose, not an inference system with missing metavariables. No mathematical symbols occur; intermediate/resulting state roles are stated directly."
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "9027dc8be602d65a4bf326240bc715d5f7ee379b7ba7efdd41945cf6a003a782",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "context:AGENTS.md",
+    "lean:Common/FiniteMap:FiniteMap",
+    "lean:Shared/State:Kind.mode",
+    "lean:Shared/State:Mode",
+    "lean:Shared/State:Reference",
+    "lean:Shared/State:Reference.owned",
+    "lean:Shared/State:Reference.shared",
+    "lean:Shared/State:Slot",
+    "lean:Shared/Syntax:Class",
+    "lean:Shared/Syntax:Kind",
+    "lean:Shared/Syntax:ObjectId",
+    "lean:Unique/Syntax:Class",
+    "lean:Unique/Syntax:ClassName",
+    "lean:Unique/Syntax:Classes",
+    "lean:Unique/Syntax:FieldName",
+    "lean:Unique/Syntax:ObjectId",
+    "lean:Unique/Syntax:Place",
+    "lean:Unique/Syntax:Program",
+    "lean:Unique/Syntax:Statement",
+    "lean:Unique/Syntax:Value",
+    "lean:Unique/Syntax:VariableId",
+    "policy:md/repo/correspondence-review.md",
+    "unit:given.classes",
+    "unit:given.collections",
+    "unit:given.identities",
+    "unit:given.programs",
+    "unit:given.syntax",
+    "unit:shared.declarations",
+    "unit:shared.references"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:shared.declarations against lean:Shared/Syntax:Kind, lean:Shared/Syntax:Class, lean:Shared/State:Kind.mode. Kind distinguishes classType, structType and sharedStruct. Kind.mode maps only sharedStruct to shared, and Kind.isStruct (in the following predicate definition) admits the latter two kinds. Class stores kind with ordered fields, while Reference stores the mode, supporting the table without introducing distinct object representations. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "b7b79366a25cce4db7e2d7abb550dee33e4823ab3bf1eb93a546d6b816bceb57"
+  ]
+}

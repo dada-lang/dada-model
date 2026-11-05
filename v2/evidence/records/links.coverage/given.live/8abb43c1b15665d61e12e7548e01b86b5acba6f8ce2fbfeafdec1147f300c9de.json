@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "a6484139ef10886b05aa2e37cf775c2a061b5039cb023b83ef23f829e3c03a21",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:49d19d3e6321b8309608988f0dba1cb54f8a069b5a7946d9f117d0fb274166d9",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:unit:given.allocated",
+    "audit:unit:given.live",
+    "audit:unit:given.lookup",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference. Each lookup premise links its definition. Live recursion defines this judgment rather than referring to another result. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "93239bb4bad3cdad18c81d146495c5a36ef76879f281b4f5fee11c164b7a49bd"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference.",
+    "mathematics": "Each lookup premise links its definition. Live recursion defines this judgment rather than referring to another result.",
+    "links": [
+      {
+        "occurrence": "given.live:1",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S[x]' refers to md/given.md#claim-given.lookup for the concept or example setup used by this unit. The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference."
+      },
+      {
+        "occurrence": "given.live:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S[\\\\beta.f]' refers to md/given.md#claim-given.lookup for the concept or example setup used by this unit. The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference."
+      },
+      {
+        "occurrence": "given.live:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Allocation' refers to md/given.md#claim-given.allocated for the concept or example setup used by this unit. The two liveness rules link variable/field lookup; allocation is linked only in the comparison sentence. Recursive Live premises define liveness and do not need a separate forward reference."
+      }
+    ]
+  }
+}

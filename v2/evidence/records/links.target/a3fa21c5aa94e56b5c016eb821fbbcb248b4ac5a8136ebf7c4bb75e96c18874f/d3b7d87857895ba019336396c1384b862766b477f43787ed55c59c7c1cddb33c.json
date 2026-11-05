@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "d9ba01918db5d4042607fbf19dc4fee0c4dd9129aeca66e8e08a567c4564440b",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a3fa21c5aa94e56b5c016eb821fbbcb248b4ac5a8136ebf7c4bb75e96c18874f",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/link-audits.md#claim-meta.links.targets directly introduces Target-clarity review. Target clarity is introduced here and its source inventory is linked. The paragraph states both the landing requirement and the limit of choosing an interior span, preventing span validity from replacing readability. There is no formal mathematics; byte spans and UTF-8 are input representations rather than undefined model operations. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "9971b9a310b2c778d6f4bc3a69acb8039f43e2db2ae19409727a2033f269ecc8"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Target-clarity review",
+    "definition": {
+      "path": "md/repo/link-audits.md",
+      "start": 4188,
+      "end": 4894
+    },
+    "clarity": "The landing md/repo/link-audits.md#claim-meta.links.targets directly introduces Target-clarity review. Target clarity is introduced here and its source inventory is linked. The paragraph states both the landing requirement and the limit of choosing an interior span, preventing span validity from replacing readability.",
+    "independence": "There is no formal mathematics; byte spans and UTF-8 are input representations rather than undefined model operations. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

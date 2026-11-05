@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "4d93dfa1f493c89d2f6dacae1a2de6db9816e6cadf194cf2b95f7a6b7a48284c",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a65eb6e25dc5992af74682e3ee7637608f951cbca91ff863784472c2c21591a9",
+    "audit:target:ee677a280b28caae8944bc8ea17f855a3a4cc330d7651935f345a4588c0263f5",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.example.rejections",
+    "audit:unit:given.typing.example.views",
+    "audit:unit:given.typing.expressions",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Expression and binding rules are linked, including the constructor-order use. The examples explicitly state each starting type, so no hidden runtime state is needed to understand rejection versus hidden initialization. No separate mathematical judgment is invoked without a link. The literal program and view spellings are examples under the linked typing rules; Two is declared locally. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "92b27b8f3e0c31964710b3776b2d748e242ea3645bea76ee78822ff058b4fdee"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Expression and binding rules are linked, including the constructor-order use. The examples explicitly state each starting type, so no hidden runtime state is needed to understand rejection versus hidden initialization.",
+    "mathematics": "No separate mathematical judgment is invoked without a link. The literal program and view spellings are examples under the linked typing rules; Two is declared locally.",
+    "links": [
+      {
+        "occurrence": "given.typing.example.rejections:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression' refers to md/given-typing.md#claim-given.typing.expressions for the concept or example setup used by this unit. Expression and binding rules are linked, including the constructor-order use. The examples explicitly state each starting type, so no hidden runtime state is needed to understand rejection versus hidden initialization."
+      },
+      {
+        "occurrence": "given.typing.example.rejections:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'binding' refers to md/given-typing.md#claim-given.typing.bindings for the concept or example setup used by this unit. Expression and binding rules are linked, including the constructor-order use. The examples explicitly state each starting type, so no hidden runtime state is needed to understand rejection versus hidden initialization."
+      },
+      {
+        "occurrence": "given.typing.example.rejections:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Constructor argument order' refers to md/given-typing.md#claim-given.typing.expressions for the concept or example setup used by this unit. Expression and binding rules are linked, including the constructor-order use. The examples explicitly state each starting type, so no hidden runtime state is needed to understand rejection versus hidden initialization."
+      }
+    ]
+  }
+}

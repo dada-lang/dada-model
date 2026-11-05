@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "4530ba8ae67e7bfd8e5396827835851e969a484f47a3ae9f007368038f562d2f",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5a7219e1fd41219976eec9eebb6515ebcd880951a4601379a920abc74a64e7c9",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. The opening sentence defines program typing through linked class-table and declaration-table well-formedness. Main sequence typing, empty context and body completion each have direct local links.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "program typing",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 20934,
+      "end": 21329
+    },
+    "clarity": "The named unit opens with the defining passage for program typing. The opening sentence defines program typing through linked class-table and declaration-table well-formedness. Main sequence typing, empty context and body completion each have direct local links.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No symbolic judgment or free metavariable occurs. Main acceptance is expressed as initial/final context conditions."
+  }
+}

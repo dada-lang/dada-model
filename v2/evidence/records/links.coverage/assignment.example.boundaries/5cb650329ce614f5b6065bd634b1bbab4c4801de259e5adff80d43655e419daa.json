@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "f71e924cc3bdc0d68779f10b3ccedaeb3cc4b815cafebd2e33d837468bdd4060",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:unit:assignment.example.boundaries",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The rejection scenario explicitly identifies the initialized class field and links destructor declarations. The separate empty-local trials define their setup and nominal-type restriction locally; they preview the new fixed-type behavior rather than invoking a later typing judgment. Code declares Token and assumes the earlier Resource/Wrapper setup. The two commented stores are explicitly separate trials from the same empty-r state; no ambiguous sequential inference is required.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "8e4851a66c810d85a164443488799aa2e0e80cc4a193338316db21ed54f775e8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The rejection scenario explicitly identifies the initialized class field and links destructor declarations. The separate empty-local trials define their setup and nominal-type restriction locally; they preview the new fixed-type behavior rather than invoking a later typing judgment.",
+    "mathematics": "Code declares Token and assumes the earlier Resource/Wrapper setup. The two commented stores are explicitly separate trials from the same empty-r state; no ambiguous sequential inference is required.",
+    "links": [
+      {
+        "occurrence": "assignment.example.boundaries:1",
+        "role": "conceptual",
+        "rationale": "'destructor' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.declarations needed by this passage."
+      }
+    ]
+  }
+}

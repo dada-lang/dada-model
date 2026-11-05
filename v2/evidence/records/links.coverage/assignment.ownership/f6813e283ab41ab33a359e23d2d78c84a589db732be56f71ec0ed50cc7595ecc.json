@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "84d1253a6533d3225b11684fc8b305afc3852f0a0ce7d69778324098652a7d8f",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:352d218ae043b45463c8bd42b7601cfd2c44986b77b61a4e863108bdfaf7d0c2",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:assignment.ownership",
+    "audit:unit:assignment.stack_typing",
+    "audit:unit:shared.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links typed configuration and the structural ownership invariant. It spells out multiplicity-sensitive compatible occurrences and reference/allocation equivalence; no acyclicity or termination condition is implied. No mathematical notation is introduced. The every-reference/every-object quantifiers and shared-alias exception are explicit.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links typed configuration and the structural ownership invariant. It spells out multiplicity-sensitive compatible occurrences and reference/allocation equivalence; no acyclicity or termination condition is implied.",
+    "mathematics": "No mathematical notation is introduced. The every-reference/every-object quantifiers and shared-alias exception are explicit.",
+    "links": [
+      {
+        "occurrence": "assignment.ownership:1",
+        "role": "conceptual",
+        "rationale": "'typed configuration' supplies the defining operation, predicate, syntax or setup at #claim-assignment.stack_typing needed by this passage."
+      },
+      {
+        "occurrence": "assignment.ownership:2",
+        "role": "conceptual",
+        "rationale": "'pairwise compatible' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.well_formed needed by this passage."
+      }
+    ]
+  }
+}

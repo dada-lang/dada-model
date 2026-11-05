@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "bundle": "103dd6e874382f247619c48fcad351d041e6526a71975eb6d5ea96474cebc5f4",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:01136db71db4cfa667c6e3740ce6232362099005c519039ee87981eda09ab977",
+    "audit:target:3d33b028ca981a0fc9321bf9e923e736057fee84a81a9b48d93048441c206c33",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:f0800758e25ea7ee9fd903ee7d59491b9696d69585d50197192201ce0604d301",
+    "audit:unit:shared.pending_live",
+    "audit:unit:shared.state",
+    "audit:unit:shared.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Added backward links to shared.live for the rootedness clause and shared.pending_live for the expression invariant. Existing allocated/state/declaration links remain applicable. The text removes the former explanation deriving rooting from allocation order and introduces no forward theorem dependency. Added backward links to shared.live for the rootedness clause and shared.pending_live for the expression invariant. Existing allocated/state/declaration links remain applicable. The text removes the former explanation deriving rooting from allocation order and introduces no forward theorem dependency. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "88de6169ae3ba2709d537ea7768ccdd0151428cbd02c6a95350c82fef4a4680c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Added backward links to shared.live for the rootedness clause and shared.pending_live for the expression invariant. Existing allocated/state/declaration links remain applicable. The text removes the former explanation deriving rooting from allocation order and introduces no forward theorem dependency.",
+    "mathematics": "Added backward links to shared.live for the rootedness clause and shared.pending_live for the expression invariant. Existing allocated/state/declaration links remain applicable. The text removes the former explanation deriving rooting from allocation order and introduces no forward theorem dependency. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "shared.well_formed:1",
+        "role": "conceptual",
+        "rationale": "'Allocated objects' points backward to #claim-shared.allocated for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "shared.well_formed:2",
+        "role": "conceptual",
+        "rationale": "'live objects' points backward to #claim-shared.live for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "shared.well_formed:3",
+        "role": "conceptual",
+        "rationale": "'state' points backward to #claim-shared.state for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "shared.well_formed:4",
+        "role": "conceptual",
+        "rationale": "'declared' points backward to #claim-shared.programs for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "shared.well_formed:5",
+        "role": "conceptual",
+        "rationale": "'allocated identity' points backward to #claim-shared.allocated for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "shared.well_formed:6",
+        "role": "conceptual",
+        "rationale": "'live' points backward to #claim-shared.live for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "shared.well_formed:7",
+        "role": "conceptual",
+        "rationale": "'liveness with pending values' points backward to #claim-shared.pending_live for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

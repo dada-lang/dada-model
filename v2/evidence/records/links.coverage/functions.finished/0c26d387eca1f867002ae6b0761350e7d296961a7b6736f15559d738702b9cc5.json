@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "3de0bb74ff654aff581202087478c61acfa087c7538cccc7723a38b0fa03043b",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2f4fae6642af15eee453aa7a85b451f092126af505d334ad49884a5cd4d2688a",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.finished",
+    "audit:unit:functions.machine",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links finished stack and successor relation; the theorem quantifies over any declaration table. There is no hidden formula: no successor is the stated consequence of stack emptiness. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "ab95fa5eb04aba4d8dc75c0fbd422514bceb56064b3770353979d592fac2f509"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links finished stack and successor relation; the theorem quantifies over any declaration table.",
+    "mathematics": "There is no hidden formula: no successor is the stated consequence of stack emptiness.",
+    "links": [
+      {
+        "occurrence": "functions.finished:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished configuration' refers to md/functions.md#claim-functions.machine_finished for the concept or example setup used by this unit. Links finished stack and successor relation; the theorem quantifies over any declaration table."
+      },
+      {
+        "occurrence": "functions.finished:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'successor' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links finished stack and successor relation; the theorem quantifies over any declaration table."
+      }
+    ]
+  }
+}

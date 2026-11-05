@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "7e1d9dcf2eaa8f1ea3544a112f63c0c506626c3fd42e80aea60de8a73967858e",
+  "reviewer": "Codex /root/assignment_stack differential reviewer",
+  "provenance": "Codex /root/assignment_stack differential review during the Assignment soundness task, with the root agent separately inspecting and authorizing this bounded renewal. The reviewer examined the exact Shared wording delta, structural definition and Realizes premise, affected prior per-unit comparisons, and all three full relocated target excerpts. Unchanged comparison material is explicitly retained from the identified earlier active record after exact required key/path/hash comparison; this is not a claim of fresh independent re-review of all unchanged sources. New proof files and the updated AGENTS scope are conservative freshness context, and proof correctness is checked separately by Lean.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2125be554c01949722a01b484938c16897339c8d6ac2c317a9fc821a16faeeaa",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Retained specific comparison from active record 12cbdd9070480a1c5a82a6626b2c0b413d8c9250413e1e2515b32a36b66d72bf: The landing md/shared-typing.md#claim-shared.typing.configurations directly introduces shared.typing.configurations. The shared.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame. The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness. Differential editorial renewal: exact required-input comparison admits only deletion of the obsolete word \"five\" in the Shared realization passage and the resulting five-byte source-range relocation. Every link occurrence identifier, destination, label, role, direction, and all other selected prose remain unchanged. The realization passage continues to introduce storage realization and require the linked structural clauses, so removal of the count does not change its role or prerequisites. All other defining spans preserve their exact selected text; the realization target preserves its text modulo precisely that deletion. The supplied audit assessment relocates only the verified spans and retains the earlier conceptual-link judgments.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative.",
+    "Differential renewal retains the identified prior comparison for byte-identical required material; it is not a fresh independent audit of every unchanged proof or chapter."
+  ],
+  "supersedes": [
+    "12cbdd9070480a1c5a82a6626b2c0b413d8c9250413e1e2515b32a36b66d72bf"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.configurations",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 37306,
+      "end": 38348
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.configurations directly introduces shared.typing.configurations. The shared.typing.configurations unit links its typing and execution prerequisites and now uses public framed completion. Final environments describe pre-exit locals; finished execution retains no frame.",
+    "independence": "The linked judgments have their public frame meanings: collection follows each local transition and the initial frame takes one extra exit step. Counted completion uses n+1, while the n-step observation retains the final-environment witness. No implicit destructor obligation is added. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

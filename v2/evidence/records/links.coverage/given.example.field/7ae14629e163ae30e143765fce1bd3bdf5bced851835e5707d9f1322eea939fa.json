@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "bundle": "7013ff28ad18ed791d04e1ac2e52b91c99e5ca3ed615fa6567b4e729063f4093",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:88a0c68272e833cbda1fa2978a4dd8727681d82a2bef9b7df637febb6f999b8f",
+    "audit:unit:given.classes",
+    "audit:unit:given.example.field",
+    "audit:unit:given.machine",
+    "audit:unit:given.programs",
+    "audit:unit:given.steps",
+    "audit:unit:given.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations. The Token/Box declarations bind example names; the source code uses known give syntax, and its execution/completion references link to the corresponding definitions. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "2d3b488267a19b7a549a642af6569b23752db02983153c07add5fb645a08cb1d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations.",
+    "mathematics": "The Token/Box declarations bind example names; the source code uses known give syntax, and its execution/completion references link to the corresponding definitions.",
+    "links": [
+      {
+        "occurrence": "given.example.field:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty storage' refers to md/given.md#claim-given.empty_state for the concept or example setup used by this unit. The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations."
+      },
+      {
+        "occurrence": "given.example.field:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'steps' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. The local Token/Box program and three effects explain a complete execution. Empty storage, steps and finished state are linked; class names in the example are local declarations."
+      }
+    ]
+  }
+}

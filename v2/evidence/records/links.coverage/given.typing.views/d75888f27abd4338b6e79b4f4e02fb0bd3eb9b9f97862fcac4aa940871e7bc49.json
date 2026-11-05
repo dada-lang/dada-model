@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "8c6400a07168a68a433b09de902c5be03b5526717f68d0ab3b7abde68b6d7d20",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.views",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Relative place links to its grammar. Positive and negative entries, unknown omissions, whole-class shorthand, and empty view are explained locally. The a/A/T productions define the grammar. The negative-epsilon exclusion is explicit, and bare C is defined as a view spelling rather than a second constructor. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "7759748ffc6051a2e181e540ed3e9dd19599ae35eed993b3f65e8c7a968738ff"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Relative place links to its grammar. Positive and negative entries, unknown omissions, whole-class shorthand, and empty view are explained locally.",
+    "mathematics": "The a/A/T productions define the grammar. The negative-epsilon exclusion is explicit, and bare C is defined as a view spelling rather than a second constructor.",
+    "links": [
+      {
+        "occurrence": "given.typing.views:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative place' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. Relative place links to its grammar. Positive and negative entries, unknown omissions, whole-class shorthand, and empty view are explained locally."
+      }
+    ]
+  }
+}

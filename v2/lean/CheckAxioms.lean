@@ -2,6 +2,8 @@ import Unique.RootedChecks
 import Shared.RootedChecks
 import Shared.RootedPathChecks
 import Assignment.ExecutionChecks
+import Assignment.SafetyChecks
+import Assignment.StoreLocal
 import Correspondence.DestructorsAssignment
 -- Executed by scripts/check-assumptions.sh after rebuilding all dependencies.
 import Unique.FrameChecks
@@ -102,6 +104,17 @@ import Correspondence.UniqueShared
 #print axioms Dada.Assignment.store_preserves_bindings
 #print axioms Dada.Assignment.store_wellFormed
 #print axioms Dada.Assignment.Write.objectKeys
+#print axioms Dada.Assignment.Write.preserves_pending
+#print axioms Dada.Assignment.store_local_preserves
+#print axioms Dada.Assignment.store_sound
+#print axioms Dada.Assignment.ConfigurationTyped.progress
+#print axioms Dada.Assignment.ConfigurationTyped.preservation
+#print axioms Dada.Assignment.RawStep.sound
+#print axioms Dada.Assignment.program_safety
+#print axioms Dada.Assignment.ConfigurationTyped.ownership
+#print axioms Dada.Assignment.ConfigurationTyped.finished_heap_empty
+#print axioms Dada.Assignment.Checks.refill_typed
+#print axioms Dada.Assignment.Checks.overwrite_typed
 #print axioms Dada.Assignment.Checks.refill_raw
 #print axioms Dada.Correspondence.DestructorsAssignment.step_forward
 

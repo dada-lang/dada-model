@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "4a80b926d6bc40ac8e4f4807c5bd9f4c212a54ab976c12b310c91cf00ee2942a",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:534a177bb7b5f174ea012b9052bf1cba1349ac9c24e347fe4fafa25500c25bba",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b50fba7e62f9aaf161a6e1aaec2b60ca9f8ca33678e15facd8c24af1d87648a9",
+    "audit:unit:shared.example.give_cycle",
+    "audit:unit:shared.example.raw_take_cycle",
+    "audit:unit:shared.give",
+    "audit:unit:shared.resolution",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The setup links the preceding concrete example. Shared resolution and give's promotion rule link their earlier definitions. All links are backward; the quantification is described in words with no undefined symbols or forward theorem dependency. The setup links the preceding concrete example. Shared resolution and give's promotion rule link their earlier definitions. All links are backward; the quantification is described in words with no undefined symbols or forward theorem dependency. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "a9eb98a07c6ee2de3f9b4203b8ac38bde408768a6f32fa3d28c375e60f92d0fa"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The setup links the preceding concrete example. Shared resolution and give's promotion rule link their earlier definitions. All links are backward; the quantification is described in words with no undefined symbols or forward theorem dependency.",
+    "mathematics": "The setup links the preceding concrete example. Shared resolution and give's promotion rule link their earlier definitions. All links are backward; the quantification is described in words with no undefined symbols or forward theorem dependency. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "shared.example.give_cycle:1",
+        "role": "conceptual",
+        "rationale": "'preceding heap' points backward to #claim-shared.example.raw_take_cycle for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "shared.example.give_cycle:2",
+        "role": "conceptual",
+        "rationale": "'shared access' points backward to #claim-shared.resolution for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "shared.example.give_cycle:3",
+        "role": "conceptual",
+        "rationale": "'give's promotion case' points backward to #claim-shared.give for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

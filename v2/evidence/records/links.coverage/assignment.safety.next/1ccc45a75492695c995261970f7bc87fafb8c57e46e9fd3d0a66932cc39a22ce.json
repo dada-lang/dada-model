@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "4dcfc84af508677b75c690349ce0156dca23b1360f202a5dd37bade18b786072",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:20fca3fa491d7c7a68129e3f9e2d5b387eb3c6d941988e37292bfe36206dff27",
+    "audit:unit:assignment.example.age",
+    "audit:unit:assignment.forward",
+    "audit:unit:assignment.safety.next",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The future note links the established forward execution theorem and distinguishes unproved reverse/typing correspondence. Surface elaboration, automatic drops and mutable leases are explicitly deferred proposals, not normative premises. The only code notation p=e illustrates future surface syntax. No new formal rule or mathematical claim is asserted.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "c9f04db8f96f3e9f8a91f5048927262b686a2dad0c7f9811acc2600ff322b68c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The future note links the established forward execution theorem and distinguishes unproved reverse/typing correspondence. Surface elaboration, automatic drops and mutable leases are explicitly deferred proposals, not normative premises.",
+    "mathematics": "The only code notation p=e illustrates future surface syntax. No new formal rule or mathematical claim is asserted.",
+    "links": [
+      {
+        "occurrence": "assignment.safety.next:1",
+        "role": "conceptual",
+        "rationale": "'forward execution theorem' supplies the defining operation, predicate, syntax or setup at #claim-assignment.forward needed by this passage."
+      }
+    ]
+  }
+}

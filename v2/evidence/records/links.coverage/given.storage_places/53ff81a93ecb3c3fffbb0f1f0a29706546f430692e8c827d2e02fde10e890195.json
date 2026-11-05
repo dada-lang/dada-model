@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "c18599a35a12ac78a1c6ea5349855a2bdb5699a0b9bad5c66745814fe4c9a2e2",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2c252963139eaee62df862aa1a71c50907ca079776343e815f4e9da26b98bfe5",
+    "audit:unit:given.identities",
+    "audit:unit:given.storage_places",
+    "audit:unit:given.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines q directly and links the distinction from a routed place expression. Object-number examples instantiate the preceding identity definition. The q grammar has variable and object-field alternatives. Its x/α/f components are previously introduced name/identity categories. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "682efa8d2bc2b68899e9b48af4b37001856ff989d9d6cbc48657f69e8f8e5f1c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines q directly and links the distinction from a routed place expression. Object-number examples instantiate the preceding identity definition.",
+    "mathematics": "The q grammar has variable and object-field alternatives. Its x/α/f components are previously introduced name/identity categories.",
+    "links": [
+      {
+        "occurrence": "given.storage_places:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'place expression' refers to md/given.md#claim-given.syntax for the concept or example setup used by this unit. Defines q directly and links the distinction from a routed place expression. Object-number examples instantiate the preceding identity definition."
+      }
+    ]
+  }
+}

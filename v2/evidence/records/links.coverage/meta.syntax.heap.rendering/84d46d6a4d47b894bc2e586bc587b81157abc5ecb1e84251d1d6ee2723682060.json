@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "cbe3f3951a8726c4c8c838793cb353bffe140c67a45e6db8b433f11e9b82b959",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b20705f3e353f94b364e5cbddd1eb281eec7a3997129b64ea696b10fd0a0febf",
+    "audit:unit:meta.math.source_view",
+    "audit:unit:meta.syntax.heap.rendering",
+    "audit:unit:meta.syntax.heap.validation",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Stored-reference syntax links its direct slot definition. This unit then defines SVG-edge behavior, lease junctions, retained facts and deterministic layout limitations. There are no model equations; the graph arrows being described are diagram edges rather than semantic judgments. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "bfeebace24bf77892b841863e6dad398135111bb4d12f953d5a88a9c5d8ef72d"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Stored-reference syntax links its direct slot definition. This unit then defines SVG-edge behavior, lease junctions, retained facts and deterministic layout limitations.",
+    "mathematics": "There are no model equations; the graph arrows being described are diagram edges rather than semantic judgments.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.heap.rendering:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stored reference' refers to md/repo/renderer-contracts.md#claim-meta.syntax.heap.slots for the concept or example setup used by this unit. Stored-reference syntax links its direct slot definition. This unit then defines SVG-edge behavior, lease junctions, retained facts and deterministic layout limitations."
+      }
+    ]
+  }
+}

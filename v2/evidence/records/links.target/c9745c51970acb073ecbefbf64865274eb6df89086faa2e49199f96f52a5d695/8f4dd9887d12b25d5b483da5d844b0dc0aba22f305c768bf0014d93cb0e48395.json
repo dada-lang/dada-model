@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "00221dbed199f079c6ba7ea26ca178ec5def83b1b8f18eb8e346fb5edf8de7ed",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c9745c51970acb073ecbefbf64865274eb6df89086faa2e49199f96f52a5d695",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Result, destination and sequence typing are introduced directly; signature, fixed type and statement context are linked to their defining units. The subject is now separated from body/table/program acceptance.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "result, destination and sequence typing",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 18998,
+      "end": 19354
+    },
+    "clarity": "The named unit opens with the defining passage for result, destination and sequence typing. Result, destination and sequence typing are introduced directly; signature, fixed type and statement context are linked to their defining units. The subject is now separated from body/table/program acceptance.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No symbolic judgment is used without definition. Optional result and fresh destination cases are written out in prose; no formal metavariables occur."
+  }
+}

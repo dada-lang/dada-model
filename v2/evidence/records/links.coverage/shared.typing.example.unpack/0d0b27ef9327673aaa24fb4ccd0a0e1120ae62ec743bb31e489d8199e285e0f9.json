@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "7b028d4beb8706fbd7f1d1e062dba2fda04d8cac288fcab65e4a790c4e9339cb",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:4164f3c6aaa84ad9f9044c5d5b66bde8cdcaca726535c1e894d4d1eb03e06df6",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.example.arguments",
+    "audit:unit:shared.typing.example.unpack",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. unpacking_shared_fields proves the continuation typing and six-step execution, the Holder object's removal, preserved shared item/a/b/c descriptions, and universal rejection of unpacking holder.shared. It supports consuming the unique shell while retaining shared field owners. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "d9bd73ad615e40fb35be25938dcd3bc53ef6bbd458c588a47863cb469fbc67bf"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. unpacking_shared_fields proves the continuation typing and six-step execution, the Holder object's removal, preserved shared item/a/b/c descriptions, and universal rejection of unpacking holder.shared. It supports consuming the unique shell while retaining shared field owners.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.unpack:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Holder example' refers to md/shared-typing.md#claim-shared.typing.example.arguments for the concept or example setup used by this unit. Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined."
+      },
+      {
+        "occurrence": "shared.typing.example.unpack:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'unpacking rule' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links Holder predecessor and unpacking rule; the rejected shared-container case uses the given-only premise just defined."
+      }
+    ]
+  }
+}

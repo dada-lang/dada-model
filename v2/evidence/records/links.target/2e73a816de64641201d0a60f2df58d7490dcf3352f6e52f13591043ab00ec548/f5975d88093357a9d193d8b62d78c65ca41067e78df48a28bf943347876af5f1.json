@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "134b875e7c6727fba71ab14d17ae8cb722791223493300a8e6189d574e998e91",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2e73a816de64641201d0a60f2df58d7490dcf3352f6e52f13591043ab00ec548",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.focus directly introduces shared.typing.focus. Links declared field types, permission composition, Given focus, nominal grammar/table, pos and normalization. The equation’s two focus operations have distinct current/Given meanings made explicit. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. focus combines the outer permission with declaredPermission after successfully focusing the Given nominal view under classes.nominal. The formula carries that composed permission over the preserved nominal result; the pos side condition excludes empty or hidden paths. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "4a146da4536c6766b22e72ebf34e39be56e8d872b9481f9beb260558606b0e7b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.focus",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 12105,
+      "end": 13312
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.focus directly introduces shared.typing.focus. Links declared field types, permission composition, Given focus, nominal grammar/table, pos and normalization. The equation’s two focus operations have distinct current/Given meanings made explicit.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. focus combines the outer permission with declaredPermission after successfully focusing the Given nominal view under classes.nominal. The formula carries that composed permission over the preserved nominal result; the pos side condition excludes empty or hidden paths. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

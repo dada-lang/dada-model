@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "bundle": "cf3856d91b5861ea0d10473e74bff2d57dcad43f99c04750f03c473debb06504",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:c6cd701ce483fad3d033629a3f92f2d016ca2977340a1b43992963d711dd3413",
+    "audit:target:c9745c51970acb073ecbefbf64865274eb6df89086faa2e49199f96f52a5d695",
+    "audit:target:fb102fffa34394933fb7961431f0e3e35308342998590976bbea48c889b79ba1",
+    "audit:unit:assignment.body_typing",
+    "audit:unit:assignment.completion",
+    "audit:unit:assignment.context",
+    "audit:unit:assignment.typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The body definition names its parameter context, sequence/result checking and inherited completion obligation directly. The second paragraph links class-drop elaboration; it is an inherited operation, not a new rule inferred from the safety theorem. No mathematical equations occur. Whole/given/struct distinctions retain the linked Destructor typing meaning; no fresh metavariable is introduced.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The body definition names its parameter context, sequence/result checking and inherited completion obligation directly. The second paragraph links class-drop elaboration; it is an inherited operation, not a new rule inferred from the safety theorem.",
+    "mathematics": "No mathematical equations occur. Whole/given/struct distinctions retain the linked Destructor typing meaning; no fresh metavariable is introduced.",
+    "links": [
+      {
+        "occurrence": "assignment.body_typing:1",
+        "role": "conceptual",
+        "rationale": "'parameter context' supplies the defining operation, predicate, syntax or setup at #claim-assignment.context needed by this passage."
+      },
+      {
+        "occurrence": "assignment.body_typing:2",
+        "role": "conceptual",
+        "rationale": "'sequence and result typing' supplies the defining operation, predicate, syntax or setup at #claim-assignment.completion needed by this passage."
+      },
+      {
+        "occurrence": "assignment.body_typing:3",
+        "role": "conceptual",
+        "rationale": "'completion obligation' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.finished_environment needed by this passage."
+      },
+      {
+        "occurrence": "assignment.body_typing:4",
+        "role": "conceptual",
+        "rationale": "'Class drops' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.drop_typing needed by this passage."
+      }
+    ]
+  }
+}

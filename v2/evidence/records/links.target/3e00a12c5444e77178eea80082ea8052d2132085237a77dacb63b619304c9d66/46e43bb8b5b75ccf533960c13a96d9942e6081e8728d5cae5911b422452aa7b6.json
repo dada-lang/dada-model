@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "538f9ef98caf2bbf92e7f8e04b68701c504f107ed84f01876b1b8d01efaba27b",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3e00a12c5444e77178eea80082ea8052d2132085237a77dacb63b619304c9d66",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This landing introduces the named definition or concrete heap setup in its opening passage. Links backward to the immediately preceding complete two-node setup and to structural well-formedness. The sole changed reference and retained shared root are explicit; no equation symbols need introduction. The surrounding chapter supplies storage and reachability before using them. Links backward to the immediately preceding complete two-node setup and to structural well-formedness. The sole changed reference and retained shared root are explicit; no equation symbols need introduction. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "19b095e592b78b57e110757f9a1ef4149bd68fde94cb68606b70520af1154310"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.example.mixed_cycle",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 30278,
+      "end": 30728
+    },
+    "clarity": "This landing introduces the named definition or concrete heap setup in its opening passage. Links backward to the immediately preceding complete two-node setup and to structural well-formedness. The sole changed reference and retained shared root are explicit; no equation symbols need introduction.",
+    "independence": "The surrounding chapter supplies storage and reachability before using them. Links backward to the immediately preceding complete two-node setup and to structural well-formedness. The sole changed reference and retained shared root are explicit; no equation symbols need introduction."
+  }
+}

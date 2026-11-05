@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "33467ab533cbbe075de3c4044cd2bc68d7636de7bd9e8f26048ba50b1b3af4c6",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Defines class-only optional destructor bodies, receiver and dedicated core name namespace; Shared declarations, whole types, explicit unpacking and struct field restrictions have direct links. The appendix only gathers these definitions. The selected defining body includes its local setup, conditions and direct prerequisite links. The code spellings drop { body }, →self and drop(C) are locally introduced; no mathematical premise is left undefined. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "d5ac776e14fc311bbc381a4db098472a48abf66a973ae9c108dbd656253688a5"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "declarations",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 9455,
+      "end": 10644
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Defines class-only optional destructor bodies, receiver and dedicated core name namespace; Shared declarations, whole types, explicit unpacking and struct field restrictions have direct links. The appendix only gathers these definitions.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. The code spellings drop { body }, →self and drop(C) are locally introduced; no mathematical premise is left undefined."
+  }
+}

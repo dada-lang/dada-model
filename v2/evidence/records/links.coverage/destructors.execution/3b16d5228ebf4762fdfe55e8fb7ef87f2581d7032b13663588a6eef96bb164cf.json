@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "bundle": "d44faab3448e1dbea0167de62907ac0c6c45e44f51039ac801a8e7dc534d7bce",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:2cdd91fc260176222c491321591f70f455474e488de7b0ea38e3edc9ef648d81",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:destructors.body_typing",
+    "audit:unit:destructors.drop_typing",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.machine",
+    "audit:unit:shared.give",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit. No display rules. p is the previously defined place in drop p; state actions use the machine components introduced immediately above. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "dfb7105676e4799673faf1d2ba6b0e79980538fd1a9c1b6bf9cbf27aee4443a4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit.",
+    "mathematics": "No display rules. p is the previously defined place in drop p; state actions use the machine components introduced immediately above.",
+    "links": [
+      {
+        "occurrence": "destructors.execution:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Functions' ordinary call and returnmachinery' supplies the definition or concrete example setup used here, at functions.md#claim-functions.execution. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit."
+      },
+      {
+        "occurrence": "destructors.execution:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'stricter completion' supplies the definition or concrete example setup used here, at #claim-destructors.finished_environment. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit."
+      },
+      {
+        "occurrence": "destructors.execution:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'unpacking statement' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.steps. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit."
+      },
+      {
+        "occurrence": "destructors.execution:4",
+        "role": "conceptual",
+        "rationale": "The occurrence 'ordinary give' supplies the definition or concrete example setup used here, at shared.md#claim-shared.give. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit."
+      },
+      {
+        "occurrence": "destructors.execution:5",
+        "role": "conceptual",
+        "rationale": "The occurrence 'eager GC' supplies the definition or concrete example setup used here, at functions.md#claim-functions.gc. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit."
+      },
+      {
+        "occurrence": "destructors.execution:6",
+        "role": "conceptual",
+        "rationale": "The occurrence 'declared destructor' supplies the definition or concrete example setup used here, at #claim-destructors.declarations. Links inherited call/return machinery, completion, unpacking, ordinary give, GC and destructor declarations. The transition table defines the new operations and makes static receiver checks explicit."
+      }
+    ]
+  }
+}

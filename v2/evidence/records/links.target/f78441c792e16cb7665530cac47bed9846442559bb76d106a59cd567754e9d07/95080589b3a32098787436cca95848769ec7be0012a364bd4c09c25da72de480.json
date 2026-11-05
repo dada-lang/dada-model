@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "049ae3578dea1b4cb4f502e6dd531cae19b546771c478f7fde31fe28112247a8",
+  "reviewer": "Codex /root/assignment_stack differential reviewer",
+  "provenance": "Codex /root/assignment_stack differential review during the Assignment soundness task, with the root agent separately inspecting and authorizing this bounded renewal. The reviewer examined the exact Shared wording delta, structural definition and Realizes premise, affected prior per-unit comparisons, and all three full relocated target excerpts. Unchanged comparison material is explicitly retained from the identified earlier active record after exact required key/path/hash comparison; this is not a claim of fresh independent re-review of all unchanged sources. New proof files and the updated AGENTS scope are conservative freshness context, and proof correctness is checked separately by Lean.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Retained specific comparison from active record 9df7f080e94934f3594db5bddfac8d3662b9275b2eb5e3ae7217771048a44555: The landing md/shared-typing.md#claim-shared.typing.realization directly introduces shared.typing.realization. Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Realizes includes well-formed classes/environment, Admissible pending types, WellFormedWith ownership including pending roots, FieldsMatchClasses even on hidden fields, exact variable domains and per-variable/pending Satisfies. The revised prose explicitly requires normalized as well as well-formed types and keeps shared aliases' views independent. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness. Differential editorial renewal: exact required-input comparison admits only deletion of the obsolete word \"five\" in the Shared realization passage and the resulting five-byte source-range relocation. Every link occurrence identifier, destination, label, role, direction, and all other selected prose remain unchanged. The realization passage continues to introduce storage realization and require the linked structural clauses, so removal of the count does not change its role or prerequisites. All other defining spans preserve their exact selected text; the realization target preserves its text modulo precisely that deletion. The supplied audit assessment relocates only the verified spans and retains the earlier conceptual-link judgments.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative.",
+    "Differential renewal retains the identified prior comparison for byte-identical required material; it is not a fresh independent audit of every unchanged proof or chapter."
+  ],
+  "supersedes": [
+    "9df7f080e94934f3594db5bddfac8d3662b9275b2eb5e3ae7217771048a44555"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.realization",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 34280,
+      "end": 35832
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.realization directly introduces shared.typing.realization. Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Realizes includes well-formed classes/environment, Admissible pending types, WellFormedWith ownership including pending roots, FieldsMatchClasses even on hidden fields, exact variable domains and per-variable/pending Satisfies. The revised prose explicitly requires normalized as well as well-formed types and keeps shared aliases' views independent. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

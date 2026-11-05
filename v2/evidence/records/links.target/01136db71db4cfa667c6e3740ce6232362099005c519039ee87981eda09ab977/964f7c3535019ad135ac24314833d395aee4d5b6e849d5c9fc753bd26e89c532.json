@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "405a8fb07f3a6797348c7ff1fbd86a22c043906995d734a39fa34091d3fcdac4",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:01136db71db4cfa667c6e3740ce6232362099005c519039ee87981eda09ab977",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.allocated directly introduces Shared allocation as object-table membership. Direct object-table-membership definition; storage target supplies O. The defining equation uses O from the linked object table; Allocated itself is the subject introduced here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "ed3c09cd6285757ff6c53f2df93d29d22b5da2c254275df531203a503d7b381d"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared allocation as object-table membership",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 25226,
+      "end": 25393
+    },
+    "clarity": "The landing md/shared.md#claim-shared.allocated directly introduces Shared allocation as object-table membership. Direct object-table-membership definition; storage target supplies O.",
+    "independence": "The defining equation uses O from the linked object table; Allocated itself is the subject introduced here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

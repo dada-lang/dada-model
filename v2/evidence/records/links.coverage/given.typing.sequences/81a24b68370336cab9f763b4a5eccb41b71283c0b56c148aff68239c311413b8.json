@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "d6ba38d8edbdfaf9551a17813c7775a8ce846aae6018a59aa525762421cb460c",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c04103a1d651b8b9ae272310c435e218a3c69ad8ef05bf3d1f49e157898c6ce6",
+    "audit:unit:given.programs",
+    "audit:unit:given.typing.sequences",
+    "audit:unit:given.typing.statements",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The statement-typing prerequisite links directly. The sequence environment threading is the one subject introduced. The cons rule links the per-statement premise; the recursive sequence premise and empty-sequence conclusion define the new judgment locally. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "93167c2f8fc5ad4741ca958d74c6c13c6e3a31afbf5e029a5b5ae5b9426d6464"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The statement-typing prerequisite links directly. The sequence environment threading is the one subject introduced.",
+    "mathematics": "The cons rule links the per-statement premise; the recursive sequence premise and empty-sequence conclusion define the new judgment locally.",
+    "links": [
+      {
+        "occurrence": "given.typing.sequences:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statement typings' refers to md/given-typing.md#claim-given.typing.statements for the concept or example setup used by this unit. The statement-typing prerequisite links directly. The sequence environment threading is the one subject introduced."
+      },
+      {
+        "occurrence": "given.typing.sequences:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma\\\\vdash t\\\\Rightarrow\\\\Gamma_1' refers to md/given-typing.md#claim-given.typing.statements for the concept or example setup used by this unit. The statement-typing prerequisite links directly. The sequence environment threading is the one subject introduced."
+      }
+    ]
+  }
+}

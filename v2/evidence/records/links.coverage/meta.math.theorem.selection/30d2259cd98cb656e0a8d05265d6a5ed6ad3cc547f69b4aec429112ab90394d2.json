@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "0ed50810ccc083d7b0f630a59da8e558420852dbfc492ba6066a1ae52c97d88a",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.theorem.selection",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected theorem shape, complete proof display and citation exclusions are introduced here. Source-check versus proof-check responsibilities are explicit; nesting has its own precise anchor. No theorem of the language is assumed. Terms assumptions, quantifiers and conclusion describe what correspondence reviews inspect, not an unlinked object-level equation. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "6411059ddac8f6f814883bf27659121270466358d4a3479ee3980fc342ced5bb"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The selected theorem shape, complete proof display and citation exclusions are introduced here. Source-check versus proof-check responsibilities are explicit; nesting has its own precise anchor.",
+    "mathematics": "No theorem of the language is assumed. Terms assumptions, quantifiers and conclusion describe what correspondence reviews inspect, not an unlinked object-level equation.",
+    "links": []
+  }
+}

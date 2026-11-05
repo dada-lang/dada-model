@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "4ae2e194858d85811ea07751483f11465ab6cf9cd51e51e7a931f71a9d786706",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:57daa4bbb00f516581417950097fd38b2c7cf06564570a82daa059b2701ea541",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.stuck directly introduces stuckness in the extended unpacking language. Finishedness links to its operational definition. Stuckness is defined directly by not-finished and absence of a successor. The extended step arrow links to its definition; there is no hidden reachability predicate. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "031df9630d06ae8cd60d0f28379fa094ae8203537709ac3333218972a6de6650"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "stuckness in the extended unpacking language",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 31859,
+      "end": 32110
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.stuck directly introduces stuckness in the extended unpacking language. Finishedness links to its operational definition. Stuckness is defined directly by not-finished and absence of a successor.",
+    "independence": "The extended step arrow links to its definition; there is no hidden reachability predicate. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

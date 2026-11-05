@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "7d87afc995c44d4337186526516cd977fc85f98ec57edc8b5188bb02ffe5fa1c",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:e0f7028e3af89f0a1f93b77464e6ca10ddc3704b8a553bd11b721c356306583f",
+    "audit:unit:functions.example.identity",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program. The Unicode arrow is explained as the signature permission and as the give operation; no symbolic judgment beyond the example is assumed. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "714e78e25a78b66d09249abb7c7ebc88b8286eb08bb0827656e724864dcd822e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program.",
+    "mathematics": "The Unicode arrow is explained as the signature permission and as the give operation; no symbolic judgment beyond the example is assumed.",
+    "links": [
+      {
+        "occurrence": "functions.example.identity:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'uniquely owned Token' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program."
+      },
+      {
+        "occurrence": "functions.example.identity:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empties original' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links given ownership and give's emptying behavior. The appendix is an optional inherited-rule recap. Parameter/result syntax is introduced here with the complete identity program."
+      },
+      {
+        "occurrence": "functions.example.identity:3",
+        "role": "navigation",
+        "rationale": "Optional appendix navigation: the source already links the inherited definitions it actually uses; this appendix gathers those same rules in one summary without supplying a missing premise."
+      }
+    ]
+  }
+}

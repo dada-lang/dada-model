@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "dc3b12bf672fa18a235bf88c13e7e4f7302e585a3a3cb03bbae84a38f8c9e1bf",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:455f3d7f447537aa0fc4042daa0558909e9db5d0ede20c6e0b8e1fdcf70b3924",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. The opening sentence introduces declaration-table typing, followed by distinct names, ordinary/destructor signature restrictions, body typing and whole-table recursion. Each prior rule family is directly linked.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "declaration-table typing",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 20318,
+      "end": 20746
+    },
+    "clarity": "The named unit opens with the defining passage for declaration-table typing. The opening sentence introduces declaration-table typing, followed by distinct names, ordinary/destructor signature restrictions, body typing and whole-table recursion. Each prior rule family is directly linked.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No mathematical notation occurs. Recursion is stated as visibility of signatures throughout the table, without a termination symbol or assumption."
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "de707643f93d1af49c9234787bb0909c47f93b3ac22a7c07a9cdb12e8315c252",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces well-typed active and suspended frame stacks. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer. The ok judgment is introduced here; BodyFrom/ContinuationTyped/StackShape are explained as its components, not prerequisites assumed from a later proof. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "92b7426e6e5f93dd7e0d232ba8769d3a7740b38bb7b897e9111a34861264f1bc"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "well-typed active and suspended frame stacks",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 31814,
+      "end": 33642
+    },
+    "clarity": "The named landing directly introduces well-typed active and suspended frame stacks. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer.",
+    "independence": "The ok judgment is introduced here; BodyFrom/ContinuationTyped/StackShape are explained as its components, not prerequisites assumed from a later proof. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

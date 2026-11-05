@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "ac39a2239b74f0dac7ed8f07c701d857cd2d99043d349dce2102005cc3f74e42",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:assignment.example.age",
+    "audit:unit:assignment.machine",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The concrete wrapper/resource identities and store are locally described, following machine/store definitions. The structural invariant is linked; the prose names rootedness and compatible ownership while explicitly excluding an allocation-age requirement. The numeric IDs 1 and 2 and the age comparison are concrete values, not new mathematical metavariables. No rank or graph-order symbol is introduced.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "f0093aa5d9a0b979e34985eeb3ab0b4db8b3b9e705d39b3907257622f5ea43e0"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The concrete wrapper/resource identities and store are locally described, following machine/store definitions. The structural invariant is linked; the prose names rootedness and compatible ownership while explicitly excluding an allocation-age requirement.",
+    "mathematics": "The numeric IDs 1 and 2 and the age comparison are concrete values, not new mathematical metavariables. No rank or graph-order symbol is introduced.",
+    "links": [
+      {
+        "occurrence": "assignment.example.age:1",
+        "role": "conceptual",
+        "rationale": "'structural heap invariant' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.well_formed needed by this passage."
+      }
+    ]
+  }
+}

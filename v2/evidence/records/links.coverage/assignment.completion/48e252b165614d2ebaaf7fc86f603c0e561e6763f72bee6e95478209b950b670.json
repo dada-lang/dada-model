@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "6249b32a807a0c2152990b949f4ba7105defbdd90cfd72ab3284b6ae526a7322",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:bfa16cc3692daff307f4a639791bfdb4421206cb6db19788a47f397a6854ce4b",
+    "audit:target:c6cd701ce483fad3d033629a3f92f2d016ca2977340a1b43992963d711dd3413",
+    "audit:unit:assignment.completion",
+    "audit:unit:assignment.context",
+    "audit:unit:assignment.typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Result, destination and sequence typing are introduced directly; signature, fixed type and statement context are linked to their defining units. The subject is now separated from body/table/program acceptance. No symbolic judgment is used without definition. Optional result and fresh destination cases are written out in prose; no formal metavariables occur.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "aed0411be0304e29bde09d48c1a121f4b267af267b3ac79ea03d236f44aecfe3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Result, destination and sequence typing are introduced directly; signature, fixed type and statement context are linked to their defining units. The subject is now separated from body/table/program acceptance.",
+    "mathematics": "No symbolic judgment is used without definition. Optional result and fresh destination cases are written out in prose; no formal metavariables occur.",
+    "links": [
+      {
+        "occurrence": "assignment.completion:1",
+        "role": "conceptual",
+        "rationale": "'signature' supplies the defining operation, predicate, syntax or setup at functions.md#claim-functions.signatures needed by this passage."
+      },
+      {
+        "occurrence": "assignment.completion:2",
+        "role": "conceptual",
+        "rationale": "'fixed type' supplies the defining operation, predicate, syntax or setup at #claim-assignment.context needed by this passage."
+      },
+      {
+        "occurrence": "assignment.completion:3",
+        "role": "conceptual",
+        "rationale": "'statement contexts' supplies the defining operation, predicate, syntax or setup at #claim-assignment.typing needed by this passage."
+      }
+    ]
+  }
+}

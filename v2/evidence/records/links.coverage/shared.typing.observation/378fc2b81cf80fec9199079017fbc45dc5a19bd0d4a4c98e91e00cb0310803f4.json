@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "2a0f929152975ace7eff5839855d42b7ab409b072192d59868f9c3fa8464bad6",
+  "reviewer": "Codex /root/assignment_stack differential reviewer",
+  "provenance": "Codex /root/assignment_stack differential review during the Assignment soundness task, with the root agent separately inspecting and authorizing this bounded renewal. The reviewer examined the exact Shared wording delta, structural definition and Realizes premise, affected prior per-unit comparisons, and all three full relocated target excerpts. Unchanged comparison material is explicitly retained from the identified earlier active record after exact required key/path/hash comparison; this is not a claim of fresh independent re-review of all unchanged sources. New proof files and the updated AGENTS scope are conservative freshness context, and proof correctness is checked separately by Lean.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2125be554c01949722a01b484938c16897339c8d6ac2c317a9fc821a16faeeaa",
+    "audit:target:4fbc8d894e68d4383b58ceae09ec533638f4d56e8e7e70e873de2949841887dd",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:unit:shared.typing.configurations",
+    "audit:unit:shared.typing.observation",
+    "audit:unit:shared.typing.realization",
+    "audit:unit:shared.typing.safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Retained specific comparison from active record 1838ffc003dfd9eb3d2c97881b4dbbbea8f895016df0b758ddcf8ddb3dcd2b68: Links sequence typing and realization and distinguishes bindings before exit from terminal storage. The counted statement prefix preserves the final environment witness; the next exit has no local bindings. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness. Differential editorial renewal: exact required-input comparison admits only deletion of the obsolete word \"five\" in the Shared realization passage and the resulting five-byte source-range relocation. Every link occurrence identifier, destination, label, role, direction, and all other selected prose remain unchanged. The realization passage continues to introduce storage realization and require the linked structural clauses, so removal of the count does not change its role or prerequisites. All other defining spans preserve their exact selected text; the realization target preserves its text modulo precisely that deletion. The supplied audit assessment relocates only the verified spans and retains the earlier conceptual-link judgments.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative.",
+    "Differential renewal retains the identified prior comparison for byte-identical required material; it is not a fresh independent audit of every unchanged proof or chapter."
+  ],
+  "supersedes": [
+    "1838ffc003dfd9eb3d2c97881b4dbbbea8f895016df0b758ddcf8ddb3dcd2b68"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links sequence typing and realization and distinguishes bindings before exit from terminal storage.",
+    "mathematics": "The counted statement prefix preserves the final environment witness; the next exit has no local bindings.",
+    "links": [
+      {
+        "occurrence": "shared.typing.observation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed live frame' refers to md/shared-typing.md#claim-shared.typing.configurations for the concept or example setup used by this unit. Links sequence typing and realization and distinguishes bindings before exit from terminal storage."
+      },
+      {
+        "occurrence": "shared.typing.observation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'program steps' refers to md/shared-typing.md#claim-shared.typing.execution for the concept or example setup used by this unit. Links sequence typing and realization and distinguishes bindings before exit from terminal storage."
+      },
+      {
+        "occurrence": "shared.typing.observation:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'realize the final environment' refers to md/shared-typing.md#claim-shared.typing.realization for the concept or example setup used by this unit. Links sequence typing and realization and distinguishes bindings before exit from terminal storage."
+      }
+    ]
+  }
+}

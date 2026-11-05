@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "ff88d9362547e495650e30387e7f126532c72a81c20a561190a5e6b7a8176b15",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5622717387ebfdf87c5d3f86c337a128b567967f67969be864ff86c108809a19",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.liveness directly introduces the Shared allocated/live equivalence. WF, Live and Allocated each link to their standalone definitions in the equivalence. WF, Live and Allocated are individually linked in the equivalence formula. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "5a0430004ac01cd5abc92b1d51fbe2bc6d3109646d8fa955e1f4842122093e1f"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the Shared allocated/live equivalence",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 34029,
+      "end": 34462
+    },
+    "clarity": "The landing md/shared.md#claim-shared.liveness directly introduces the Shared allocated/live equivalence. WF, Live and Allocated each link to their standalone definitions in the equivalence.",
+    "independence": "WF, Live and Allocated are individually linked in the equivalence formula. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

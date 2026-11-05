@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "a0243b09405405c464cd9499e04ff2644797ddcad704c0b05127874c7f81a690",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:cb3e7f137fa264d756a4ce07ced53774f9fec6337e518a0dd5f5f0e263b368b4",
+    "audit:unit:meta.syntax.heap.rendering",
+    "audit:unit:meta.syntax.heap.routing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Diagram edges link their rendering definition before this unit specifies routing corridors, bends, dots and failure behavior. Lease junctions are already explained by that target. No mathematical symbol requires a definition link; routing cost is described in ordinary terms without an omitted formula. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "0d7e6c082966293b8c58df1dcd2bcb3d6c0e8b4c0662592bb4b760b796672eba"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Diagram edges link their rendering definition before this unit specifies routing corridors, bends, dots and failure behavior. Lease junctions are already explained by that target.",
+    "mathematics": "No mathematical symbol requires a definition link; routing cost is described in ordinary terms without an omitted formula.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.heap.routing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Diagram edges' refers to md/repo/renderer-contracts.md#claim-meta.syntax.heap.rendering for the concept or example setup used by this unit. Diagram edges link their rendering definition before this unit specifies routing corridors, bends, dots and failure behavior. Lease junctions are already explained by that target."
+      }
+    ]
+  }
+}

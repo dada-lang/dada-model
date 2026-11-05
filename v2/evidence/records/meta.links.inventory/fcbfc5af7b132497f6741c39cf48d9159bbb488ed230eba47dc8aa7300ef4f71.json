@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "7948c6c0f42aa7099771b03d8a43b9b7d4c63b359822d23d9cbfacd880d43389",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/links.rs:LinkInventory::build",
+    "test:mdbook-dada/tests/evidence_validation.rs:configured_renderer_rejects_a_correct_claim_in_the_wrong_chapter",
+    "test:mdbook-dada/tests/links.rs:inventory_reads_markdown_reference_roles_and_math_with_exact_ranges",
+    "test:mdbook-dada/tests/links.rs:order_comes_from_summary_and_byte_position_not_filename_or_unit_id",
+    "test:mdbook-dada/tests/links.rs:reference_definitions_outside_unit_and_bare_math_directives_are_inventoried",
+    "test:mdbook-dada/tests/links.rs:relative_paths_preserve_target_chapter_and_wrong_path_does_not_match_global_id",
+    "unit:meta.links.inventory"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "LinkInventory::build derives chapters from SUMMARY order and resolves exact chapter/fragment identity, retains source spans and distinguishes local containing targets. document extracts Markdown/reference links, roles and literal MathJax hrefs while excluding code/comments and rejecting unsupported HTML/URL forms. Tests cover all named syntaxes, external reference definitions, wrong-chapter global IDs and source-order differences. All SourceLinks, including future notes, require audit generation; cycles remain candidates rather than automatic exemptions. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "4d55e09548a55c52bb6af5c96386dcf4661e7a5f06bff5de9805379faa0072f9"
+  ]
+}

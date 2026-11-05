@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "bc65ede5e40d7f62955bbc96718245d65ac9054d19d4639e5e2e1100a4c0573a",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.patterns directly introduces shared.typing.patterns. Links Given flat patterns; defines the Shared pattern grammar and fresh/distinct/all-fields constraints locally. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Pattern provides variable and flat named unpack forms; Unpacking.Statement pairs a pattern with a value expression. Distinct fresh destinations and exhaustive fields are enforced by binding, as the accompanying scope paragraph states. No wildcard or remainder form is admitted. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "bb147d08760d979a3fd2e1f5fd5f04610a3579008538e31dfaf59f74919da336"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.patterns",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 22250,
+      "end": 22835
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.patterns directly introduces shared.typing.patterns. Links Given flat patterns; defines the Shared pattern grammar and fresh/distinct/all-fields constraints locally.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Unpacking.Pattern provides variable and flat named unpack forms; Unpacking.Statement pairs a pattern with a value expression. Distinct fresh destinations and exhaustive fields are enforced by binding, as the accompanying scope paragraph states. No wildcard or remainder form is admitted. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

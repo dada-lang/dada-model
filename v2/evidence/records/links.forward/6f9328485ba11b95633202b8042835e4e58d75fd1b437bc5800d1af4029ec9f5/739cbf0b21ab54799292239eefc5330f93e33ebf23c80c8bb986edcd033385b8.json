@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "037a743d17dd13c5920694ee86126edf4dfd1a2bec9c564cee3ab33e6fdd55e2",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cce19ef6a71eb7d3cab3d2e2c78a524748e4bdf086d09a170c945dcbe7dcef9",
+    "audit:unit:given.typing.example.views",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Reviewed existing reference-order classification: {\"kind\": \"forward\", \"necessity\": \"The first view table distinguishes complete knowledge from complete initialization. Moving Full earlier also requires its pos/neg/class-at prerequisites before the first concrete views; moving the table later leaves signed views without this central concrete distinction. Splitting away its full/partial labels loses the contrast between unknown and known-empty fields. The preview states only that distinction.\", \"signposting\": \"The selected source passage explicitly identifies the following definition and limits the current preview: The [formal fullness predicate](#claim-given.typing.full) comes after this example;\\nonly this distinction is needed to read the table.\", \"signpost\": {\"path\": \"md/given-typing.md\", \"start\": 5062, \"end\": 5196}, \"minimal_use\": \"The opening sentences define full as accounting for every field recursively, including empty fields, and partial as leaving statuses unknown. The table needs only those facts, not the later quantified Full judgment.\"} Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "c4eac8e2e766e224f47095e3fa069b4353bdcf4baadf7fc0deb7c4cc3c607f58"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The first view table distinguishes complete knowledge from complete initialization. Moving Full earlier also requires its pos/neg/class-at prerequisites before the first concrete views; moving the table later leaves signed views without this central concrete distinction. Splitting away its full/partial labels loses the contrast between unknown and known-empty fields. The preview states only that distinction.",
+      "signposting": "The selected source passage explicitly identifies the following definition and limits the current preview: The [formal fullness predicate](#claim-given.typing.full) comes after this example;\nonly this distinction is needed to read the table.",
+      "signpost": {
+        "path": "md/given-typing.md",
+        "start": 5062,
+        "end": 5196
+      },
+      "minimal_use": "The opening sentences define full as accounting for every field recursively, including empty fields, and partial as leaving statuses unknown. The table needs only those facts, not the later quantified Full judgment."
+    }
+  }
+}

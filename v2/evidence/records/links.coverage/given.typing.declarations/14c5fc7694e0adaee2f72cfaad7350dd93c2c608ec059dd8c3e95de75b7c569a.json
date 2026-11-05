@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "508a424be7c2e5e4fd9674d26365e4456699d7e444758cf0b21fbad954377056",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:unit:given.classes",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.patterns",
+    "audit:unit:given.programs",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.unpacking",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language. The d/Sigma grammar introduces its metavariables and domains locally. Field and class names are syntax categories, and the ordered pair/list/map notation carries no additional language judgment. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "34ac20f7957aadea66ef5b0bcafe92ea47d699a03e01ede9d9de21460bad73fb"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language.",
+    "mathematics": "The d/Sigma grammar introduces its metavariables and domains locally. Field and class names are syntax categories, and the ordered pair/list/map notation carries no additional language judgment.",
+    "links": [
+      {
+        "occurrence": "given.typing.declarations:1",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'given.unpacking' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language."
+      },
+      {
+        "occurrence": "given.typing.declarations:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression evaluation' refers to md/given.md#claim-given.evaluation for the concept or example setup used by this unit. The chapter boundary explicitly links the unpacking extension and unchanged expression evaluation. The new subject is the typed class table; fields and names come from the preceding operational language."
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "a5ed42d1562383707f564888688d0c84827b78917deec97c3c56d5cd8b9ee87a",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.views",
+    "audit:unit:given.typing.well_formed_types",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here. C is the locally named base class; the C.{f,-f.g} notation is a literal counterexample to the condition, not a new operation. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "82cb31f71e68d688a88f11fe73820620a2651a3f2480c26804d49fc98422b34c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here.",
+    "mathematics": "C is the locally named base class; the C.{f,-f.g} notation is a literal counterexample to the condition, not a new operation.",
+    "links": [
+      {
+        "occurrence": "given.typing.well_formed_types:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'base class' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here."
+      },
+      {
+        "occurrence": "given.typing.well_formed_types:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'valid from' refers to md/given-typing.md#claim-given.typing.class_at for the concept or example setup used by this unit. Base-class and valid-path prerequisites link directly. Prefix-incomparability and the overlap counterexample are defined and explained here."
+      }
+    ]
+  }
+}

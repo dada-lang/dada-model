@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "f99d0836ceaf80c27d37dd08bad64d294c6b6d9804c1fbbc6e25c97577453006",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:241e787663abf5f9ca32f4fa137ed5a061f3b4d699bfbfe7cfffa6c8698505f0",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/functions.md identifies # Functions and methods at the named paragraph or section. This is the explicitly named paragraph/section selected by the link. Its surrounding chapter supplies the authoring or navigation context; it is not represented as a formal language judgment. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "fea4dcda3f4b6c9d9e7af0d841835b367e1615b0a12ae151b93a25afe73d16b1"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "# Functions and methods",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 0,
+      "end": 63
+    },
+    "clarity": "The landing md/functions.md identifies # Functions and methods at the named paragraph or section.",
+    "independence": "This is the explicitly named paragraph/section selected by the link. Its surrounding chapter supplies the authoring or navigation context; it is not represented as a formal language judgment."
+  }
+}

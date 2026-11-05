@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "ec2267c6ca302196335c58a4a71503cae6af7542d49f8e97a79e8a63eadf8d78",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ca5509f1707e565d9c783f2764393e76a8754a765a01f785cc899eecd05325d8",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Finite execution is immediately defined as zero or more machine steps; initial frame/locals/result destination are then specified. Frame and step links point to the preceding Assignment machine unit.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "finite execution and initial configuration",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 15077,
+      "end": 15312
+    },
+    "clarity": "The named unit opens with the defining passage for finite execution and initial configuration. Finite execution is immediately defined as zero or more machine steps; initial frame/locals/result destination are then specified. Frame and step links point to the preceding Assignment machine unit.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No mathematical symbols occur; zero-step and multi-step executions are included by the explicit zero-or-more wording."
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "0361980d8f3fb58ae3224a7e490f89a2c8521e526dee151068080d270306f787",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:unit:functions.example.stack_safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Reviewed existing reference-order classification: {\"kind\": \"forward\", \"necessity\": \"The nested call already has a complete earlier operational example. This short safety preview identifies the new issue—an undelivered caller result—before introducing the continuation invariant. Moving the full invariant earlier would require introducing typed roots/continuation environments before stating the problem they solve; moving this paragraph later would remove that motivation. Splitting it would either duplicate the nested example or leave its promised-result issue unmotivated.\", \"signposting\": \"The selected source passage explicitly identifies the following definition and limits the current preview: The following [stack-typing definition](#claim-functions.stack_typing) explains what being well typed means for a suspended\\ncaller whose result has not arrived yet.\", \"signpost\": {\"path\": \"md/functions.md\", \"start\": 30518, \"end\": 30682}, \"minimal_use\": \"Only the finite-prefix conclusion (the whole stack stays typed and cannot get stuck) and the need to account for a suspended caller are previewed. The paragraph does not use the later judgment to derive another result; its component definitions follow immediately after the typed-root introduction.\"} Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "01d44612fe9d43c261f703487d12aeaeeb54224bb7a30d530b92aa4ad858f46f"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The nested call already has a complete earlier operational example. This short safety preview identifies the new issue—an undelivered caller result—before introducing the continuation invariant. Moving the full invariant earlier would require introducing typed roots/continuation environments before stating the problem they solve; moving this paragraph later would remove that motivation. Splitting it would either duplicate the nested example or leave its promised-result issue unmotivated.",
+      "signposting": "The selected source passage explicitly identifies the following definition and limits the current preview: The following [stack-typing definition](#claim-functions.stack_typing) explains what being well typed means for a suspended\ncaller whose result has not arrived yet.",
+      "signpost": {
+        "path": "md/functions.md",
+        "start": 30518,
+        "end": 30682
+      },
+      "minimal_use": "Only the finite-prefix conclusion (the whole stack stays typed and cannot get stuck) and the need to account for a suspended caller are previewed. The paragraph does not use the later judgment to derive another result; its component definitions follow immediately after the typed-root introduction."
+    }
+  }
+}

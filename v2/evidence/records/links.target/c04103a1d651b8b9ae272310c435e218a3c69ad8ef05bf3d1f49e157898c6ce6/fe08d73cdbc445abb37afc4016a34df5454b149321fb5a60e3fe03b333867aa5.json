@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "a13a37529265d20a8103060b827b317116d5d40f87a12bf8e15e19740e503c1f",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c04103a1d651b8b9ae272310c435e218a3c69ad8ef05bf3d1f49e157898c6ce6",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.statements directly introduces typing a let statement by expression and binding composition. Expression typing and binding typing both link directly in the introductory explanation. Both premises link their defining judgments, while the Let conclusion defines statement typing here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "7018b9bf56e0cbf555d4cadbfaf5e8762a65e04781eef099fda70aa2296357fb"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "typing a let statement by expression and binding composition",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 23442,
+      "end": 23918
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.statements directly introduces typing a let statement by expression and binding composition. Expression typing and binding typing both link directly in the introductory explanation.",
+    "independence": "Both premises link their defining judgments, while the Let conclusion defines statement typing here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

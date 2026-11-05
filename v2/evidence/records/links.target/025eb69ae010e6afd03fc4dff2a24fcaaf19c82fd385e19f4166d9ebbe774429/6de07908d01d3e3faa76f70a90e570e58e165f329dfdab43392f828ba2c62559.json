@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "c9e8974c729d4ce5fa41639d6234294a4d7e7ae706578cdca661889bec6b8376",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:025eb69ae010e6afd03fc4dff2a24fcaaf19c82fd385e19f4166d9ebbe774429",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.single_owner directly introduces the Given sole-owning-occurrence theorem. Links WF and allocated objects; owning occurrences are counted explicitly rather than conflated with whole paths. It invokes no new counting operator. The prose count is of immediately occupied owner slots, with WF and allocated objects linked. No unnamed path-count equation is used. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "ecf27a465fe433503f4a1816528a459b9788b6f1ae869980a0ad7c78075bb6ac"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "the Given sole-owning-occurrence theorem",
+    "definition": {
+      "path": "md/given.md",
+      "start": 25666,
+      "end": 25994
+    },
+    "clarity": "The landing md/given.md#claim-given.single_owner directly introduces the Given sole-owning-occurrence theorem. Links WF and allocated objects; owning occurrences are counted explicitly rather than conflated with whole paths. It invokes no new counting operator.",
+    "independence": "The prose count is of immediately occupied owner slots, with WF and allocated objects linked. No unnamed path-count equation is used. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

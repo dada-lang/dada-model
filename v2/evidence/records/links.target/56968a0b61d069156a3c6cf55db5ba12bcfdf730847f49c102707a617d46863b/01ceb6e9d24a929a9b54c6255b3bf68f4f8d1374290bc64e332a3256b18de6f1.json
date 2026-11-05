@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "26035d80e5d9afcd0ee222ca93b93d741a9fef1dc1c0cc8691591d7b64256941",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:56968a0b61d069156a3c6cf55db5ba12bcfdf730847f49c102707a617d46863b",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.well_formed_classes directly introduces Given class-table well-formedness. The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly. There is no separate formula: the two distinctness conditions directly define the named property. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "06b13e9e075d23dfe1acfa0bdc019cf8c078a868c4eb644df5e6fd4aa41f8d8b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given class-table well-formedness",
+    "definition": {
+      "path": "md/given.md",
+      "start": 3337,
+      "end": 3471
+    },
+    "clarity": "The landing md/given.md#claim-given.well_formed_classes directly introduces Given class-table well-formedness. The only subject is operational class-table well-formedness. Its link points to the class table, and both class-key and field-name uniqueness are stated directly.",
+    "independence": "There is no separate formula: the two distinctness conditions directly define the named property. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "bundle": "a4868d96773dd74d17a4b5f4424cbc837a07b8f55492156b08ba733a50051deb",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lint.rs:check_latex",
+    "test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions",
+    "test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex",
+    "test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf",
+    "test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed",
+    "test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space",
+    "unit:meta.math.overline.braces"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.overline.braces against rust:mdbook-dada/src/lint.rs:check_latex, test:mdbook-dada/tests/latex.rs:overbars_require_a_preceding_brace_and_following_literal_space, test:mdbook-dada/tests/latex.rs:grouped_overbars_and_other_control_words_are_allowed, test:mdbook-dada/tests/latex.rs:diagnostics_count_source_lines_including_unicode_and_crlf, test:mdbook-dada/tests/latex.rs:book_build_checks_math_directives_examples_and_literal_tex, test:mdbook-dada/tests/latex.rs:all_book_markdown_follows_latex_conventions. check_latex uses a raw-source regex for the exact control word, requiring an immediately preceding brace and literal ASCII space after it. Tests distinguish tabs/newlines/nonbreaking spaces and longer names, verify Unicode/CRLF line counts, apply the lint in nested book chapters/literal samples and scan all md files recursively. The prose correctly limits this to adjacency rather than TeX parsing. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "dcd927bde9aecba6324db434670c43f3bcbb0a1aae1eee1854c47947c6c19800"
+  ]
+}

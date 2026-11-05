@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "bundle": "d07429cf15fbe1181b16b4a013357ff35a79427da347517c881838efc8d8bdf0",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7a4e714d94614dfcf82ae12cf39b0fc48783107cffa0afff778a59a28df6719d",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:unit:assignment.context",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines storage type/layout key and the two context components before their conditions. Permission, view, environment well-formedness, type well-formedness, normalization and unpacking have direct links. The previous misleading admissibility-to-WF-only link was replaced by both requirements. No displayed mathematics occurs. given Foo/shared Foo are local type illustrations using linked permission/view syntax; the fixed/current map relationship is stated in words.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "7031a85666021a36605d2f8214585ac9180210e3fdcc31b717977e63a5cf1674"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines storage type/layout key and the two context components before their conditions. Permission, view, environment well-formedness, type well-formedness, normalization and unpacking have direct links. The previous misleading admissibility-to-WF-only link was replaced by both requirements.",
+    "mathematics": "No displayed mathematics occurs. given Foo/shared Foo are local type illustrations using linked permission/view syntax; the fixed/current map relationship is stated in words.",
+    "links": [
+      {
+        "occurrence": "assignment.context:1",
+        "role": "conceptual",
+        "rationale": "'permission' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.types needed by this passage."
+      },
+      {
+        "occurrence": "assignment.context:2",
+        "role": "conceptual",
+        "rationale": "'view' supplies the defining operation, predicate, syntax or setup at given-typing.md#claim-given.typing.views needed by this passage."
+      },
+      {
+        "occurrence": "assignment.context:3",
+        "role": "conceptual",
+        "rationale": "'well formed' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.environments needed by this passage."
+      },
+      {
+        "occurrence": "assignment.context:4",
+        "role": "conceptual",
+        "rationale": "'well formed' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.well_formed_types needed by this passage."
+      },
+      {
+        "occurrence": "assignment.context:5",
+        "role": "conceptual",
+        "rationale": "'normalized' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.normalization needed by this passage."
+      },
+      {
+        "occurrence": "assignment.context:6",
+        "role": "conceptual",
+        "rationale": "'Unpacking' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.bindings needed by this passage."
+      }
+    ]
+  }
+}

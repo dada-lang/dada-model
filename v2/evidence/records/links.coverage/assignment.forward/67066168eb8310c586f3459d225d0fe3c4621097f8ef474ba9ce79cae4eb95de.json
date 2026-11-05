@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "8abbff1319d761fcaf38f435b6896c339ef92d44ec63b44059ae64cc2a6bbcdf",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2948fd23e337d523facb0a0bd8446f0c73151a1b3773cee11a0866dd45cc1d0a",
+    "audit:target:ae08b7c87ebb6ccce78c920e81bcd92f0a881d614e165e3e2f5b8c68376061dd",
+    "audit:unit:assignment.embedding",
+    "audit:unit:assignment.forward",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Destructor execution and the previously defined embedding. The statement confines itself to forward steps including GC/frame boundaries and explicitly excludes typing preservation. No symbolic judgment occurs; quantification over every source step is explicit in prose.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "41f2a55f0956dfe9f254e08c5ee7939932db19c544457513622c1f6ec88c9abd"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Destructor execution and the previously defined embedding. The statement confines itself to forward steps including GC/frame boundaries and explicitly excludes typing preservation.",
+    "mathematics": "No symbolic judgment occurs; quantification over every source step is explicit in prose.",
+    "links": [
+      {
+        "occurrence": "assignment.forward:1",
+        "role": "conceptual",
+        "rationale": "'Destructor execution step' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.execution needed by this passage."
+      },
+      {
+        "occurrence": "assignment.forward:2",
+        "role": "conceptual",
+        "rationale": "'embedding' supplies the defining operation, predicate, syntax or setup at #claim-assignment.embedding needed by this passage."
+      }
+    ]
+  }
+}

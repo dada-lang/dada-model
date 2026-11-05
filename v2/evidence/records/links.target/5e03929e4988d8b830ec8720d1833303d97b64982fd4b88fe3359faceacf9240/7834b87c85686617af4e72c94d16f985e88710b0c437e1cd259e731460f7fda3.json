@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "e5210ebc244c321370a097416d0cc0ffcf55a7950aa1673a0ae8e6f1ad5e5bb9",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5e03929e4988d8b830ec8720d1833303d97b64982fd4b88fe3359faceacf9240",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Defines writable slot, replaceability and write as the three adjacent runtime slot operations. Place syntax, resolution and struct kind have direct links. The unchanged identities/field names/counter specify write scope.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "writable slots, replaceability and slot writes",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 12927,
+      "end": 13551
+    },
+    "clarity": "The named unit opens with the defining passage for writable slots, replaceability and slot writes. Defines writable slot, replaceability and write as the three adjacent runtime slot operations. Place syntax, resolution and struct kind have direct links. The unchanged identities/field names/counter specify write scope.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No symbolic rules occur. Initialized versus empty local, uniquely accessible parent and displaced contents are spelled out in prose."
+  }
+}

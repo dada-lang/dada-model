@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "d52ffa0012dfce45931e7603fdcb705df9501dc5e9890298f611d691b77e4dd1",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d7278b2e66fc50a56ecd4f79fdc59efe6a01a529bf64229bd7c0141d1c6a7ebf",
+    "audit:unit:meta.examples.selection",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Example marker syntax and selection are defined here. The reused nesting restriction links directly to its dedicated restriction paragraph; other local anchors introduce structured examples and authored-body support. There is no mathematics beyond literal source syntax. The example directive is being specified, not used to assert an uncited language example. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "3de284ee5cf343ca148dab0e621849b2a6ded7c5e77ff9c91eeb5cd14c0d5a59"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Example marker syntax and selection are defined here. The reused nesting restriction links directly to its dedicated restriction paragraph; other local anchors introduce structured examples and authored-body support.",
+    "mathematics": "There is no mathematics beyond literal source syntax. The example directive is being specified, not used to assert an uncited language example.",
+    "links": [
+      {
+        "occurrence": "meta.examples.selection:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nesting restrictions' refers to md/repo/renderer-contracts.md#claim-meta.syntax.nesting for the concept or example setup used by this unit. Example marker syntax and selection are defined here. The reused nesting restriction links directly to its dedicated restriction paragraph; other local anchors introduce structured examples and authored-body support."
+      }
+    ]
+  }
+}

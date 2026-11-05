@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "0c7ebece2224ac989a61d89040f1b62b46eb2bdb07f4f9e36fa1413e97963304",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:5b3bd3762dac7ef70751da902619564be96d44c05ac7687bbe3e789f7f60292b",
+    "audit:target:88a0c68272e833cbda1fa2978a4dd8727681d82a2bef9b7df637febb6f999b8f",
+    "audit:unit:given.classes",
+    "audit:unit:given.evaluation",
+    "audit:unit:given.example.nested",
+    "audit:unit:given.steps",
+    "audit:unit:given.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links constructor evaluation, starting storage, the one statement step, and completion. Nested construction is explained using the already-defined evaluation rule. The source code binds Token/Box locally. The one-step claim uses linked constructor evaluation, initial storage and completion rather than a new mathematical operator. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "b743348fda0b7030e61a12165613464d67d96118c637d45c9fe1256e121ba31c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links constructor evaluation, starting storage, the one statement step, and completion. Nested construction is explained using the already-defined evaluation rule.",
+    "mathematics": "The source code binds Token/Box locally. The one-step claim uses linked constructor evaluation, initial storage and completion rather than a new mathematical operator.",
+    "links": [
+      {
+        "occurrence": "given.example.nested:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Constructor arguments' refers to md/given.md#claim-given.evaluation for the concept or example setup used by this unit. Links constructor evaluation, starting storage, the one statement step, and completion. Nested construction is explained using the already-defined evaluation rule."
+      },
+      {
+        "occurrence": "given.example.nested:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty storage' refers to md/given.md#claim-given.empty_state for the concept or example setup used by this unit. Links constructor evaluation, starting storage, the one statement step, and completion. Nested construction is explained using the already-defined evaluation rule."
+      },
+      {
+        "occurrence": "given.example.nested:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statement step' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Links constructor evaluation, starting storage, the one statement step, and completion. Nested construction is explained using the already-defined evaluation rule."
+      }
+    ]
+  }
+}

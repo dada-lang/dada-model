@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "93d70cc4c65f941ddf2253261ca30fb258c0612c0466890a427fee00ea415981",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.syntax.anchors.identity",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit defines identity syntax, namespace, defining roles, reference roles, shields and literal contexts in individually marked passages. No language-level permission or heap concept is needed. No mathematical block or reused equation occurs; all backtick text is authoring syntax. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "033de899654b513d8215ffca66f97583690cd34ea8c13de29919300911da92cf"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit defines identity syntax, namespace, defining roles, reference roles, shields and literal contexts in individually marked passages. No language-level permission or heap concept is needed.",
+    "mathematics": "No mathematical block or reused equation occurs; all backtick text is authoring syntax.",
+    "links": []
+  }
+}

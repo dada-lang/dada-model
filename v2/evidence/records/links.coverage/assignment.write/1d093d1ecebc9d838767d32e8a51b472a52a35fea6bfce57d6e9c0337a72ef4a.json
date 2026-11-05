@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "ed6b50fa0835cbdfedf9b9b7a49ea010ea440febeb1d4fbe4da595dc3cdff277",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:b50fba7e62f9aaf161a6e1aaec2b60ca9f8ca33678e15facd8c24af1d87648a9",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:assignment.syntax",
+    "audit:unit:assignment.write",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines writable slot, replaceability and write as the three adjacent runtime slot operations. Place syntax, resolution and struct kind have direct links. The unchanged identities/field names/counter specify write scope. No symbolic rules occur. Initialized versus empty local, uniquely accessible parent and displaced contents are spelled out in prose.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "fe49efe58cf020e814133e578a8c01b6d7abdd9d0bed179851f6406efd922ce4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines writable slot, replaceability and write as the three adjacent runtime slot operations. Place syntax, resolution and struct kind have direct links. The unchanged identities/field names/counter specify write scope.",
+    "mathematics": "No symbolic rules occur. Initialized versus empty local, uniquely accessible parent and displaced contents are spelled out in prose.",
+    "links": [
+      {
+        "occurrence": "assignment.write:1",
+        "role": "conceptual",
+        "rationale": "'place' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.syntax needed by this passage."
+      },
+      {
+        "occurrence": "assignment.write:2",
+        "role": "conceptual",
+        "rationale": "'Resolving' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.resolution needed by this passage."
+      },
+      {
+        "occurrence": "assignment.write:3",
+        "role": "conceptual",
+        "rationale": "'struct' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.struct needed by this passage."
+      }
+    ]
+  }
+}

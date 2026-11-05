@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "efc9eb92158fc90da950090d5d8d507a86f6dba7b532914895d493323d9ea63b",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:target:ff3e7738076ec20cf83e1713f8a2f88cd97eba66768aa681e849e215d51fcdbe",
+    "audit:unit:shared.lookup",
+    "audit:unit:shared.references",
+    "audit:unit:shared.state",
+    "audit:unit:shared.storage_places",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones. S[x] and S[α.f] are defined by the two partial equations. Storage decomposition and defined-slot conditions are local; q and references are linked. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "394216c769229db9d8167bcea2daa7fa71694d83052eaf56e576bef2ebd79297"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones.",
+    "mathematics": "S[x] and S[α.f] are defined by the two partial equations. Storage decomposition and defined-slot conditions are local; q and references are linked.",
+    "links": [
+      {
+        "occurrence": "shared.lookup:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage place' refers to md/shared.md#claim-shared.storage_places for the concept or example setup used by this unit. Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones."
+      },
+      {
+        "occurrence": "shared.lookup:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage' refers to md/shared.md#claim-shared.state for the concept or example setup used by this unit. Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones."
+      },
+      {
+        "occurrence": "shared.lookup:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reference' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links storage, q and reference representation; variable/field equations define lookup and distinguish absent slots from empty ones."
+      }
+    ]
+  }
+}

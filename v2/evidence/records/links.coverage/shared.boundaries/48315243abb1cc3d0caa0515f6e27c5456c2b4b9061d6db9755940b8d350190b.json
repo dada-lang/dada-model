@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "bundle": "6ebfae070095ca68ba93fb26972053f0a1f5eb876d1597caf0a5ad7fe71355b6",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6a677ac22a7333f883a5bbe3ea1f985b201e8e1dfa34eb7895adb06760dc2928",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:6da213a18937e4126d7e96483f8007dabd404477df24caffc5a0862001bcce8b",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:target:8132c92fa5f747ccdf2fbc59a0936de31747623e06e98e9afada9d4d962dc8b4",
+    "audit:target:846a55d7987ffd22457064817eb87ab5ad269070c474f3113d1ad0601292a84b",
+    "audit:target:c8ead969bed74ef79c463fa37a326d2236f51323ed159506774205ac0abfe848",
+    "audit:unit:given.steps",
+    "audit:unit:given.syntax",
+    "audit:unit:shared.boundaries",
+    "audit:unit:shared.correspondence",
+    "audit:unit:shared.embedding",
+    "audit:unit:shared.steps",
+    "audit:unit:shared.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links translation, both initial machines, both Finished definitions and both Stuck definitions. These endpoints are no longer buried under generic step anchors. Initialization, Finished and Stuck each link separately for Given and Shared. Translation links E; no compound endpoint predicate is hidden. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "e57772b5c5893d165c7159ead667e7a9e74555f58721a39084501def5ecfd535"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links translation, both initial machines, both Finished definitions and both Stuck definitions. These endpoints are no longer buried under generic step anchors.",
+    "mathematics": "Initialization, Finished and Stuck each link separately for Given and Shared. Translation links E; no compound endpoint predicate is hidden.",
+    "links": [
+      {
+        "occurrence": "shared.boundaries:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'translating' refers to md/shared.md#claim-shared.embedding for the concept or example setup used by this unit. Links translation, both initial machines, both Finished definitions and both Stuck definitions. These endpoints are no longer buried under generic step anchors."
+      },
+      {
+        "occurrence": "shared.boundaries:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'initial configuration' refers to md/given.md#claim-given.machine for the concept or example setup used by this unit. Links translation, both initial machines, both Finished definitions and both Stuck definitions. These endpoints are no longer buried under generic step anchors."
+      },
+      {
+        "occurrence": "shared.boundaries:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'initial configuration' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links translation, both initial machines, both Finished definitions and both Stuck definitions. These endpoints are no longer buried under generic step anchors."
+      },
+      {
+        "occurrence": "shared.boundaries:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/shared.md#claim-shared.finished for the concept or example setup used by this unit. Links translation, both initial machines, both Finished definitions and both Stuck definitions. These endpoints are no longer buried under generic step anchors."
+      },
+      {
+        "occurrence": "shared.boundaries:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/given.md#claim-given.finished for the concept or example setup used by this unit. Links translation, both initial machines, both Finished definitions and both Stuck definitions. These endpoints are no longer buried under generic step anchors."
+      },
+      {
+        "occurrence": "shared.boundaries:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck' refers to md/shared.md#claim-shared.stuck for the concept or example setup used by this unit. Links translation, both initial machines, both Finished definitions and both Stuck definitions. These endpoints are no longer buried under generic step anchors."
+      },
+      {
+        "occurrence": "shared.boundaries:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck' refers to md/given.md#claim-given.stuck for the concept or example setup used by this unit. Links translation, both initial machines, both Finished definitions and both Stuck definitions. These endpoints are no longer buried under generic step anchors."
+      }
+    ]
+  }
+}

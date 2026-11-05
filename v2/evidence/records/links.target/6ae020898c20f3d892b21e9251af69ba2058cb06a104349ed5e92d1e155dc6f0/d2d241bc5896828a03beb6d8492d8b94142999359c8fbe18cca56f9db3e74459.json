@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "e6d0201a818200ce50cde8a52be6485e10cdba01116e28d96f9842f520f089ef",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6ae020898c20f3d892b21e9251af69ba2058cb06a104349ed5e92d1e155dc6f0",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.declared_permission directly introduces shared.typing.declared_permission. Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. declaredPermission returns given at the empty path and recursively looks up a field's permission/class, composing its permission with the suffix. Lookup failure makes the result absent. The recursive equations and validity condition use the same nominal path domain. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "d654ddb80c8c1a7b9a9c863ad2d33b70fc52d9cd1c104996b7058db7e46fb13c"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.declared_permission",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 11071,
+      "end": 11767
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.declared_permission directly introduces shared.typing.declared_permission. Links relative paths, composition, typed Σ, nominal table and path validity. Fixed the old valid-path link to land on classAt rather than combined view grammar.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. declaredPermission returns given at the empty path and recursively looks up a field's permission/class, composing its permission with the suffix. Lookup failure makes the result absent. The recursive equations and validity condition use the same nominal path domain. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

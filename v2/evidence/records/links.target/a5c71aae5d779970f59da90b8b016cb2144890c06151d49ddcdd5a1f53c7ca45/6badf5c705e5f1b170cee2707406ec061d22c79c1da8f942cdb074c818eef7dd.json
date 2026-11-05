@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "d5a07ea6934ee7fb885f7c9dce68de62fa3ce21ba6a07081e6fd3f03e0fb6609",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a5c71aae5d779970f59da90b8b016cb2144890c06151d49ddcdd5a1f53c7ca45",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target. The selected defining body includes its local setup, conditions and direct prerequisite links. No new equations. Heap, allocation counter, active/suspended frames and roots are introduced in the paragraph before use. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "53179030a36730fecce629448fd17068a46e0289ac6746e6ece715f25d1ef1af"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "machine",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 16274,
+      "end": 17496
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. No new equations. Heap, allocation counter, active/suspended frames and roots are introduced in the paragraph before use."
+  }
+}

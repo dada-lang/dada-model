@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "bundle": "2b75ffe76fc214d345f2120bdf7289d1bb3a92360eb00f4e69397c9044ac3fa4",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:084af8c121ddc59986f42a7ab3f0d5d6acde12eabd63b8c398e3227243248fd1",
+    "audit:target:2f4fae6642af15eee453aa7a85b451f092126af505d334ad49884a5cd4d2688a",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:bd50ee157533d7842a1634a68112529d4e247a05098eebac486fab1dec1ef353",
+    "audit:target:ef7aedb66f188b157bd66e467ed07f4ec8f3366639a1a82c26fc4370ae9980d8",
+    "audit:unit:functions.bodies",
+    "audit:unit:functions.preservation",
+    "audit:unit:functions.progress",
+    "audit:unit:functions.safety",
+    "audit:unit:functions.stack_typing",
+    "audit:unit:functions.traces",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness. The finite-prefix quantification is explicit; no unlinked termination bound or operational-success premise is introduced. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "ab16472943e9d726b1d477e1535b08ed50f603405fee986b1b9657a5774b77e7"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness.",
+    "mathematics": "The finite-prefix quantification is explicit; no unlinked termination bound or operational-success premise is introduced.",
+    "links": [
+      {
+        "occurrence": "functions.safety:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed program' refers to md/functions.md#claim-functions.program_typing for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      },
+      {
+        "occurrence": "functions.safety:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finite execution' refers to md/functions.md#claim-functions.traces for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      },
+      {
+        "occurrence": "functions.safety:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'initial configuration' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      },
+      {
+        "occurrence": "functions.safety:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well typed' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      },
+      {
+        "occurrence": "functions.safety:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/functions.md#claim-functions.machine_finished for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      },
+      {
+        "occurrence": "functions.safety:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      },
+      {
+        "occurrence": "functions.safety:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stuck' refers to md/functions.md#claim-functions.stuck for the concept or example setup used by this unit. Links program typing, traces, initial machine, machine typing, finishedness, transitions and stuckness."
+      }
+    ]
+  }
+}

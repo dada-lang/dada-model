@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "5a2370a7c66d844ace3857df42fd49e8c035a10503e18c40cedd17058828d454",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:250e67d7508718bea2e3571b83e4b2d80632b14c4db059cb7a01b9104100b14a",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.field directly introduces shared.typing.field. Links pattern context, pos/neg and focus; defines the one direct-field-description operator. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. fieldDescription returns an existing empty description when the single-field path is negative, otherwise maps successful focus to an inhabited description. The cases distinguish unknown from empty, and shared focusing preserves the effective permission. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "70c488c7fd6f5f1e2c514077b4b952bfd501087f2f8da9ac48494b2d250d7362"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.field",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 26187,
+      "end": 26676
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.field directly introduces shared.typing.field. Links pattern context, pos/neg and focus; defines the one direct-field-description operator.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. fieldDescription returns an existing empty description when the single-field path is negative, otherwise maps successful focus to an inhabited description. The cases distinguish unknown from empty, and shared focusing preserves the effective permission. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

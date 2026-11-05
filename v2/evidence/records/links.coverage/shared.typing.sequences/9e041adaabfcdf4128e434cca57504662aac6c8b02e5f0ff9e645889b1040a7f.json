@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "bundle": "a15274dbbcd619df06f4e217cdd51aeee191bfb6b3c65125e8f0718b9720b96c",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:58f17a684fc230b323ae8c0c0a29e40b2208af121a7764998e534a69fd23250c",
+    "audit:unit:shared.typing.sequences",
+    "audit:unit:shared.typing.statements",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links head-statement typing in prose/math; empty/cons rules define sequence typing recursively. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SequenceTyped.nil retains a well-formed environment and cons threads StatementTyped into the tail. The two rules use the same intermediate and final environments, preserving the earlier environment convention. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "22a3a6c0c10799fc3c59eba7ac560043421de89305076caf50291c159ce27a08"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links head-statement typing in prose/math; empty/cons rules define sequence typing recursively.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SequenceTyped.nil retains a well-formed environment and cons threads StatementTyped into the tail. The two rules use the same intermediate and final environments, preserving the earlier environment convention.",
+    "links": [
+      {
+        "occurrence": "shared.typing.sequences:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"statement's\" refers to md/shared-typing.md#claim-shared.typing.statements for the concept or example setup used by this unit. Links head-statement typing in prose/math; empty/cons rules define sequence typing recursively."
+      },
+      {
+        "occurrence": "shared.typing.sequences:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma\\\\vdash t\\\\Rightarrow\\\\Gamma_1' refers to md/shared-typing.md#claim-shared.typing.statements for the concept or example setup used by this unit. Links head-statement typing in prose/math; empty/cons rules define sequence typing recursively."
+      }
+    ]
+  }
+}

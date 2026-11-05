@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "e95cdf3f4cc88665e947f78ad408279aae3518417d22841fc04617642fd3aaee",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:7dfd23d8e49e6e7e6c73809bba4e1db61c5399680ac76ddd7713cd94334838af",
+    "audit:target:9152f90a41f757fc02cb545765b11e8fad2e3801166666165f01b88d1a383bb0",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.configurations",
+    "audit:unit:given.typing.expression_soundness",
+    "audit:unit:given.typing.progress",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Typed configurations, finishedness, and operational extended steps all link directly. The displayed premise and disjunction link configuration typing, Finished, erasure, and the step arrow. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "43eef64391fe148093d853819ba0518d907b91918dde57773f7f352d39f20a9f"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Typed configurations, finishedness, and operational extended steps all link directly.",
+    "mathematics": "The displayed premise and disjunction link configuration typing, Finished, erasure, and the step arrow.",
+    "links": [
+      {
+        "occurrence": "given.typing.progress:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed configuration' refers to md/given-typing.md#claim-given.typing.configurations for the concept or example setup used by this unit. Typed configurations, finishedness, and operational extended steps all link directly."
+      },
+      {
+        "occurrence": "given.typing.progress:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finished' refers to md/given.md#claim-given.finished for the concept or example setup used by this unit. Typed configurations, finishedness, and operational extended steps all link directly."
+      },
+      {
+        "occurrence": "given.typing.progress:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. Typed configurations, finishedness, and operational extended steps all link directly."
+      }
+    ]
+  }
+}

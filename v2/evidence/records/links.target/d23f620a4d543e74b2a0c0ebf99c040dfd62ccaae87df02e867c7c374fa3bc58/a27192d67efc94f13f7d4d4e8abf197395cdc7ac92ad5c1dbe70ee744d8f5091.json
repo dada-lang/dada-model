@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "f4d7ddb6f55b70f1c0675e98d25f450ab861a8d187e89df612392b5ad56cd952",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d23f620a4d543e74b2a0c0ebf99c040dfd62ccaae87df02e867c7c374fa3bc58",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.slots directly introduces Given slots and their owning-reference contents. Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together. The s/o grammar defines empty/reference contents and object fields. α is connected to the identity definition and C to class names. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "72ca9d646989a46978965245f8981c18145b35fa587a6ab39c1d9d44c9f9e065"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Given slots and their owning-reference contents",
+    "definition": {
+      "path": "md/given.md",
+      "start": 4049,
+      "end": 4560
+    },
+    "clarity": "The landing md/given.md#claim-given.slots directly introduces Given slots and their owning-reference contents. Links the owning-reference representation to object identities and object class names to declarations. The slot/object grammar is the target; empty slots and occupied slots are defined together.",
+    "independence": "The s/o grammar defines empty/reference contents and object fields. α is connected to the identity definition and C to class names. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

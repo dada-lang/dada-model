@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "bundle": "fb59042f990d67bf8bb140f224320963fcb641144d67e0c9549debab9aed15ef",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:250e67d7508718bea2e3571b83e4b2d80632b14c4db059cb7a01b9104100b14a",
+    "audit:target:2e73a816de64641201d0a60f2df58d7490dcf3352f6e52f13591043ab00ec548",
+    "audit:target:7a4e714d94614dfcf82ae12cf39b0fc48783107cffa0afff778a59a28df6719d",
+    "audit:target:85c6f5541eebb05cd28829f9fa8089766a5fcead98afdc63ae0b70b40094da6a",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:target:c6cd701ce483fad3d033629a3f92f2d016ca2977340a1b43992963d711dd3413",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:assignment.context",
+    "audit:unit:assignment.store",
+    "audit:unit:assignment.view",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links context, evaluation, place domain, well-formedness, normalization, struct type, focus, field description and view replacement. Empty versus inaccessible destinations and post-RHS timing are explicit. No equations occur. The store operation and input/output roles are introduced locally, and all named helper concepts have links.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "8b77f7f358cd189f0fe3732a86f1318177b1ec5189011e24c2933a282d44a601"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links context, evaluation, place domain, well-formedness, normalization, struct type, focus, field description and view replacement. Empty versus inaccessible destinations and post-RHS timing are explicit.",
+    "mathematics": "No equations occur. The store operation and input/output roles are introduced locally, and all named helper concepts have links.",
+    "links": [
+      {
+        "occurrence": "assignment.store:1",
+        "role": "conceptual",
+        "rationale": "'context' supplies the defining operation, predicate, syntax or setup at #claim-assignment.context needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:2",
+        "role": "conceptual",
+        "rationale": "'expression evaluation' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.evaluation needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:3",
+        "role": "conceptual",
+        "rationale": "'place' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.syntax needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:4",
+        "role": "conceptual",
+        "rationale": "'well formed' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.well_formed_types needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:5",
+        "role": "conceptual",
+        "rationale": "'normalized' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.normalization needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:6",
+        "role": "conceptual",
+        "rationale": "'struct type' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.struct needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:7",
+        "role": "conceptual",
+        "rationale": "'focus' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.focus needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:8",
+        "role": "conceptual",
+        "rationale": "'current field description' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.field needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:9",
+        "role": "conceptual",
+        "rationale": "'view replacement' supplies the defining operation, predicate, syntax or setup at #claim-assignment.view needed by this passage."
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "bundle": "19b9a6c893f9b49dafa0f04bfb714dfcfdc7ea72b95c92caecbbd94fa7531a9c",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:shared.empty_state",
+    "audit:unit:shared.state",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Empty storage has its own formula, with no variables, no objects and zero counter. Initial-state and empty-storage links land directly here. The empty-state tuple and empty-map notation are explicitly defined here, independently of later machine initialization. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "d0c31b3422b8ecedee4cc5b4fd127c80ebd040ffa5da7159505b7d6d0f01f270"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Empty storage has its own formula, with no variables, no objects and zero counter. Initial-state and empty-storage links land directly here.",
+    "mathematics": "The empty-state tuple and empty-map notation are explicitly defined here, independently of later machine initialization.",
+    "links": []
+  }
+}

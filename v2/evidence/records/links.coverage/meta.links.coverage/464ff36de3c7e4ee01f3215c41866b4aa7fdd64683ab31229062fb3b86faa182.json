@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "555d5b55b31ea305bef43dcb4396d53cd5764120d05421b1ab8164222ea67adf",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e2a8996e1d48de8e7921a6bfb09f14a9fa9f213b2d19363568752083dc6c81c7",
+    "audit:unit:meta.links.coverage",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit defines a coverage review and links the link inventory it classifies. It explicitly distinguishes missing-link judgment from occurrence-set checking, and explains navigation versus conceptual roles. Inline/display math are included in review scope; no formula is invoked by this meta definition itself. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "77d2088fc96194a68abb9a41898f8eee222c98258f5b7e6037b1bb1744e3fbb4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The unit defines a coverage review and links the link inventory it classifies. It explicitly distinguishes missing-link judgment from occurrence-set checking, and explains navigation versus conceptual roles.",
+    "mathematics": "Inline/display math are included in review scope; no formula is invoked by this meta definition itself.",
+    "links": [
+      {
+        "occurrence": "meta.links.coverage:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'link inventory' refers to md/repo/link-audits.md#claim-meta.links.inventory for the concept or example setup used by this unit. The unit defines a coverage review and links the link inventory it classifies. It explicitly distinguishes missing-link judgment from occurrence-set checking, and explains navigation versus conceptual roles."
+      }
+    ]
+  }
+}

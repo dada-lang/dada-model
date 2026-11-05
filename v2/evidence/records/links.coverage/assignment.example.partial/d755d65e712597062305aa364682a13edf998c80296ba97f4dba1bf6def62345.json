@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "e6b4621b168682618ccc6f900e0b0a60ba9899fd12b00701c1ee6926a939c38d",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:assignment.example.partial",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The negative view notation follows the opening setup and its linked view definition. The class-consumption and unpacking rules have direct links; the new distinction between fixed declared type and current empty slot is explained in the example itself. given Wrapper.{-resource} is the earlier signed-view notation. Wrapper, resource and r are given by the chapter setup and displayed pattern, with no free symbolic judgment.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "4f3b664a02608d721e42cf9f8f5a64d90b97f38b7326b2488a9f0360099899d4"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The negative view notation follows the opening setup and its linked view definition. The class-consumption and unpacking rules have direct links; the new distinction between fixed declared type and current empty slot is explained in the example itself.",
+    "mathematics": "given Wrapper.{-resource} is the earlier signed-view notation. Wrapper, resource and r are given by the chapter setup and displayed pattern, with no free symbolic judgment.",
+    "links": [
+      {
+        "occurrence": "assignment.example.partial:1",
+        "role": "conceptual",
+        "rationale": "'class-consumption obligation' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.finished_environment needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.partial:2",
+        "role": "conceptual",
+        "rationale": "'Unpacking' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.bindings needed by this passage."
+      }
+    ]
+  }
+}

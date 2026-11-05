@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "cd1e2a72091df3f411e507a87f787de0339443b1813802a651b424375fc06406",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c72617e2e092741fb75d1f15cd59a10e3c8c772581b4f5c204a64f9733998f34",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/evidence-pilot.md#claim-meta.sources.configuration directly introduces Configured source roots. The book/Lean source-root policy is the defining subject; book.toml, runtime overrides and project containment are all stated locally. No other custom operation is invoked. No mathematics occurs. Source-root paths and file extensions are literal tool syntax, not undeclared semantic variables. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "b7fdc4b390fa96cf3ebd602f514c10f73a6c8d3495ce62e1714c626d6fdb11b1"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Configured source roots",
+    "definition": {
+      "path": "md/repo/evidence-pilot.md",
+      "start": 1949,
+      "end": 2386
+    },
+    "clarity": "The landing md/repo/evidence-pilot.md#claim-meta.sources.configuration directly introduces Configured source roots. The book/Lean source-root policy is the defining subject; book.toml, runtime overrides and project containment are all stated locally. No other custom operation is invoked.",
+    "independence": "No mathematics occurs. Source-root paths and file extensions are literal tool syntax, not undeclared semantic variables. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

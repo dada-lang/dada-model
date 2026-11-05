@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "9b973c9ec19600cb0ac5155108fd909ec89a745012fa1fc73e60245f1226a7cc",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:495573557cbd18357f32548655128ad41947aed83299b509c1c38ceca7f36384",
+    "audit:target:4a21645966bc500800b0d38fd94ff68e58ed55da0e2ed756db07501884925d89",
+    "audit:unit:meta.math.runtime",
+    "audit:unit:meta.math.source_view",
+    "audit:unit:meta.math.typesetting",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The runtime unit links math delimiters and source-view selectors at their reuse. Pinned loader, CDN access and display overflow are explained locally without implying browser-proof evidence. No formulas are introduced. The version and build names are concrete runtime configuration, with the delimiter notation supplied by its link. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "6b72be3f3680e114531a77bce91a70847668d85a6cdd39448801154235a6dd53"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The runtime unit links math delimiters and source-view selectors at their reuse. Pinned loader, CDN access and display overflow are explained locally without implying browser-proof evidence.",
+    "mathematics": "No formulas are introduced. The version and build names are concrete runtime configuration, with the delimiter notation supplied by its link.",
+    "links": [
+      {
+        "occurrence": "meta.math.runtime:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'MathJax delimiters' refers to md/repo/renderer-contracts.md#claim-meta.math.typesetting for the concept or example setup used by this unit. The runtime unit links math delimiters and source-view selectors at their reuse. Pinned loader, CDN access and display overflow are explained locally without implying browser-proof evidence."
+      },
+      {
+        "occurrence": "meta.math.runtime:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'selectors' refers to md/repo/renderer-contracts.md#claim-meta.math.source_view for the concept or example setup used by this unit. The runtime unit links math delimiters and source-view selectors at their reuse. Pinned loader, CDN access and display overflow are explained locally without implying browser-proof evidence."
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "9e0e8f4f9252d5970a5a1ae9dff0fdda0d6da71c11bf1d8fa86d71850b0511b8",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:90551fc1b4acbc85cd0af545697c9e6593adef6b426431e751cb7e9684fbc7b8",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.well_formed_classes directly introduces well-formed typed class tables. The typed-class-table link identifies the exact object constrained by the three conditions. There is no separate displayed equation or undefined operator: Sigma names the linked table. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "9e54fb87233d1e08a3ee4deef65c1a8d252043a0771d0000bc12be1011fdb734"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "well-formed typed class tables",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 1182,
+      "end": 1403
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.well_formed_classes directly introduces well-formed typed class tables. The typed-class-table link identifies the exact object constrained by the three conditions.",
+    "independence": "There is no separate displayed equation or undefined operator: Sigma names the linked table. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

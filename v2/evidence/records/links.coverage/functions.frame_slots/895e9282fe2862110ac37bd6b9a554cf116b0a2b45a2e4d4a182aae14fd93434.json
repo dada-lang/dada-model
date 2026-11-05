@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "491f4bd4f8e2c4799550ef0957edba5e55acd5f2b8915021ae700bf993277346",
+  "reviewer": "Codex /root/assignment_stack differential reviewer",
+  "provenance": "Codex /root/assignment_stack differential review during the Assignment soundness task, with the root agent separately inspecting and authorizing this bounded renewal. The reviewer examined the exact Shared wording delta, structural definition and Realizes premise, affected prior per-unit comparisons, and all three full relocated target excerpts. Unchanged comparison material is explicitly retained from the identified earlier active record after exact required key/path/hash comparison; this is not a claim of fresh independent re-review of all unchanged sources. New proof files and the updated AGENTS scope are conservative freshness context, and proof correctness is checked separately by Lean.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:unit:functions.environments",
+    "audit:unit:functions.frame_slots",
+    "audit:unit:functions.machine",
+    "audit:unit:shared.typing.realization",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Retained specific comparison from active record 9b07c49d9f7d73877e67dc8ddc15be0bddf79cad17d942f2772d9dc5906a6fd8: Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names. R is introduced as the list of reference/type pairs; repeated occurrences are retained explicitly. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness. Differential editorial renewal: exact required-input comparison admits only deletion of the obsolete word \"five\" in the Shared realization passage and the resulting five-byte source-range relocation. Every link occurrence identifier, destination, label, role, direction, and all other selected prose remain unchanged. The realization passage continues to introduce storage realization and require the linked structural clauses, so removal of the count does not change its role or prerequisites. All other defining spans preserve their exact selected text; the realization target preserves its text modulo precisely that deletion. The supplied audit assessment relocates only the verified spans and retains the earlier conceptual-link judgments.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative.",
+    "Differential renewal retains the identified prior comparison for byte-identical required material; it is not a fresh independent audit of every unchanged proof or chapter."
+  ],
+  "supersedes": [
+    "9b07c49d9f7d73877e67dc8ddc15be0bddf79cad17d942f2772d9dc5906a6fd8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names.",
+    "mathematics": "R is introduced as the list of reference/type pairs; repeated occurrences are retained explicitly.",
+    "links": [
+      {
+        "occurrence": "functions.frame_slots:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"frame's environment\" refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names."
+      },
+      {
+        "occurrence": "functions.frame_slots:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'runtime locals' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names."
+      },
+      {
+        "occurrence": "functions.frame_slots:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reference/type pairs' refers to md/shared-typing.md#claim-shared.typing.realization for the concept or example setup used by this unit. Links environment, runtime frame and reference/type roots. Defines the pairing relation without conflating it with heap satisfaction or distinct names."
+      }
+    ]
+  }
+}

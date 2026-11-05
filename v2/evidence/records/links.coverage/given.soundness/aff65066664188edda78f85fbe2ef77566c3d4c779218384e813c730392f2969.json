@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "bundle": "3f9459df99a0222e18ba321380359d8a60342cc83f861257009e59fbcab9c715",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:025eb69ae010e6afd03fc4dff2a24fcaaf19c82fd385e19f4166d9ebbe774429",
+    "audit:target:472873be00917a4ebf8d69e3b338f3e2a17aa6e7d92d58a52bc513ef0d20f263",
+    "audit:target:56968a0b61d069156a3c6cf55db5ba12bcfdf730847f49c102707a617d46863b",
+    "audit:target:6a677ac22a7333f883a5bbe3ea1f985b201e8e1dfa34eb7895adb06760dc2928",
+    "audit:target:947af4db243fa71cc6d47052431fa51f5bbbfedb0bcb714543f9ba10f451b42a",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:unit:given.executions",
+    "audit:unit:given.liveness",
+    "audit:unit:given.programs",
+    "audit:unit:given.single_owner",
+    "audit:unit:given.soundness",
+    "audit:unit:given.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise. The result is expressed in prose with links for each premise/consequence; no unlinked extra formula or static typing hypothesis is introduced. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "0b845fff64b8ca03dc4f3d846b22ccada267369ab0190c2b578c74975ab3e37b"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise.",
+    "mathematics": "The result is expressed in prose with links for each premise/consequence; no unlinked extra formula or static typing hypothesis is introduced.",
+    "links": [
+      {
+        "occurrence": "given.soundness:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed class table' refers to md/given.md#claim-given.well_formed_classes for the concept or example setup used by this unit. Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise."
+      },
+      {
+        "occurrence": "given.soundness:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'finite execution' refers to md/given.md#claim-given.executions for the concept or example setup used by this unit. Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise."
+      },
+      {
+        "occurrence": "given.soundness:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'empty initial state' refers to md/given.md#claim-given.machine for the concept or example setup used by this unit. Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise."
+      },
+      {
+        "occurrence": "given.soundness:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed state' refers to md/given.md#claim-given.well_formed for the concept or example setup used by this unit. Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise."
+      },
+      {
+        "occurrence": "given.soundness:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'live' refers to md/given.md#claim-given.liveness for the concept or example setup used by this unit. Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise."
+      },
+      {
+        "occurrence": "given.soundness:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'exactly one owningreference' refers to md/given.md#claim-given.single_owner for the concept or example setup used by this unit. Links class-table WF, initial machine, finite execution, storage WF and both consequences. The theorem is about successful executions, with no forward static-typing premise."
+      }
+    ]
+  }
+}

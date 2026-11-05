@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "3c1cb44e4cd75230407aa6447a90673eac353b02eb4b597fd8737fb60b22df47",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/evidence.rs:check",
+    "rust:mdbook-dada/src/mechanical.rs:Execution::validate",
+    "rust:mdbook-dada/src/mechanical.rs:records",
+    "rust:mdbook-dada/src/mechanical.rs:run",
+    "rust:mdbook-dada/src/mechanical.rs:snapshot",
+    "rust:mdbook-dada/src/mechanical.rs:status",
+    "test:mdbook-dada/tests/evidence_validation.rs:workspace_validation_rejects_malformed_execution_receipts",
+    "test:mdbook-dada/tests/mechanical.rs:execution_preserves_success_failure_and_non_utf8_output",
+    "test:mdbook-dada/tests/mechanical.rs:execution_retains_source_mutations_additions_and_deletions",
+    "test:mdbook-dada/tests/mechanical.rs:failed_after_snapshot_and_launch_failures_are_retained",
+    "test:mdbook-dada/tests/mechanical.rs:later_failures_and_tied_failures_cannot_be_hidden_by_success",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_rejects_tampering_and_profile_substitution",
+    "test:mdbook-dada/tests/mechanical.rs:receipt_validation_requires_selected_sources_and_runner_snapshots",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_and_records_reject_symbolic_links",
+    "test:mdbook-dada/tests/mechanical.rs:snapshots_record_empty_directories_and_ignore_generated_outputs",
+    "test:mdbook-dada/tests/mechanical.rs:source_or_profile_changes_stale_receipts_without_corrupting_history",
+    "test:mdbook-dada/tests/mechanical.rs:status_and_record_validation_never_execute_profile_commands",
+    "unit:meta.evidence.mechanical_execution"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.evidence.mechanical_execution against rust:mdbook-dada/src/mechanical.rs:run, rust:mdbook-dada/src/mechanical.rs:snapshot, rust:mdbook-dada/src/mechanical.rs:Execution::validate, rust:mdbook-dada/src/mechanical.rs:status, rust:mdbook-dada/src/mechanical.rs:records, rust:mdbook-dada/src/evidence.rs:check, test:mdbook-dada/tests/mechanical.rs:execution_preserves_success_failure_and_non_utf8_output, test:mdbook-dada/tests/mechanical.rs:execution_retains_source_mutations_additions_and_deletions, test:mdbook-dada/tests/mechanical.rs:failed_after_snapshot_and_launch_failures_are_retained, test:mdbook-dada/tests/mechanical.rs:status_and_record_validation_never_execute_profile_commands, test:mdbook-dada/tests/mechanical.rs:source_or_profile_changes_stale_receipts_without_corrupting_history, test:mdbook-dada/tests/mechanical.rs:later_failures_and_tied_failures_cannot_be_hidden_by_success, test:mdbook-dada/tests/mechanical.rs:receipt_validation_rejects_tampering_and_profile_substitution, test:mdbook-dada/tests/mechanical.rs:receipt_validation_requires_selected_sources_and_runner_snapshots, test:mdbook-dada/tests/mechanical.rs:snapshots_record_empty_directories_and_ignore_generated_outputs, test:mdbook-dada/tests/mechanical.rs:snapshots_and_records_reject_symbolic_links, test:mdbook-dada/tests/evidence_validation.rs:workspace_validation_rejects_malformed_execution_receipts. run snapshots before/after, captures both version probes and command outputs, and retains failed launch/recapture results. succeeded requires identical version results and snapshots plus successful command. validate checks required directory membership and profile consistency; status uses the latest finish time and gives stale/failure precedence on ties. The tests cover source mutations, binary output, missing required snapshots, symlinks, tampering and nonexecution during validation; none authenticates the runner or a hermetic environment. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "6c7f9f82f937e8d971c4ee3c00f92520950121935081f5537c2f7874234441e8"
+  ]
+}

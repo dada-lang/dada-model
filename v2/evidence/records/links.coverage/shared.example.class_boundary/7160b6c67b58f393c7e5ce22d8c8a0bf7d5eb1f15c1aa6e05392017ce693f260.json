@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "fab074cea6516aae8a8d7aa6d47359856490377e6cce2cd3877a67a488472cde",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:shared.example.class_boundary",
+    "audit:unit:shared.example.declarations",
+    "audit:unit:shared.give",
+    "audit:unit:shared.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing. The source code uses locally supplied declarations and tests the giveShare boundary, not an undeclared permission conversion. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "90a191426695595ad9a017b3978c6680f83fceaa33f5de244666adb0e94ba160"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing.",
+    "mathematics": "The source code uses locally supplied declarations and tests the giveShare boundary, not an undeclared permission conversion.",
+    "links": [
+      {
+        "occurrence": "shared.example.class_boundary:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'class reference' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing."
+      },
+      {
+        "occurrence": "shared.example.class_boundary:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'rejected' refers to md/shared.md#claim-shared.struct for the concept or example setup used by this unit. Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing."
+      },
+      {
+        "occurrence": "shared.example.class_boundary:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'move' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links class declarations and struct-only sharing; the example distinguishes legal class containment from forbidden class sharing."
+      }
+    ]
+  }
+}

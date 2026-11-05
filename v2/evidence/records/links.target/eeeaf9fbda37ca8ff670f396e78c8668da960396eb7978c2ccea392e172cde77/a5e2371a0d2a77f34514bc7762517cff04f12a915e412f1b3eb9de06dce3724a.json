@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "b39c96f179caff2e8926a59b4ee6f7f41f103858dc66835c472a29ef06a2abfa",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:eeeaf9fbda37ca8ff670f396e78c8668da960396eb7978c2ccea392e172cde77",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Links destructor declaration, finished environment, Functions signatures, and droppability; the whole-table recursion policy is defined here. The appendix is supplementary navigation. The selected defining body includes its local setup, conditions and direct prerequisite links. self: given C denotes the locally identified whole receiver. Function and result types come from the linked signature definition; no undefined judgment notation appears. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "e0f635a683b70cfcd945261f3ee3307d14e217bda05c31d5dc0863e61e203e69"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "body typing",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 14778,
+      "end": 15900
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Links destructor declaration, finished environment, Functions signatures, and droppability; the whole-table recursion policy is defined here. The appendix is supplementary navigation.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. self: given C denotes the locally identified whole receiver. Function and result types come from the linked signature definition; no undefined judgment notation appears."
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "bundle": "832df4ab42a4ffeaed2836b39132a7fc2fb21fd948f1058daf6ad7aa8babfb9f",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a6ae59a09e70e90e65b6b679ec5d9cb7a83357681f172e7b3000fca26b1adaf5",
+    "audit:unit:given.lookup",
+    "audit:unit:given.state",
+    "audit:unit:given.typing.paths",
+    "audit:unit:given.typing.read",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly. read is introduced here; alpha and rho are the input object/path, bot is the existing empty-slot notation. No unlinked auxiliary equation is used. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "93b3f1e306873168d5a2d82120f7493872dc607f81093347926b0377b4086d16"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly.",
+    "mathematics": "read is introduced here; alpha and rho are the input object/path, bot is the existing empty-slot notation. No unlinked auxiliary equation is used.",
+    "links": [
+      {
+        "occurrence": "given.typing.read:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'relative path' refers to md/given-typing.md#claim-given.typing.paths for the concept or example setup used by this unit. Relative path links to its grammar. The operation is defined by its object/field traversal, with failure cases and the undereferenced final identity stated explicitly."
+      }
+    ]
+  }
+}

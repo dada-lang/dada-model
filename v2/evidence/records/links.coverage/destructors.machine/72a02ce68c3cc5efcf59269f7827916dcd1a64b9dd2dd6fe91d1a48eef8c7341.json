@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "bundle": "40f0c3c2fd4baa1ab5983ac6cecc02f4bb3dfeb8a17c122738685bc713b6e2b5",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:destructors.finished_environment",
+    "audit:unit:destructors.machine",
+    "audit:unit:functions.gc",
+    "audit:unit:functions.machine",
+    "audit:unit:shared.state",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target. No new equations. Heap, allocation counter, active/suspended frames and roots are introduced in the paragraph before use. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "d0dac9e2687fb39af1f6c45183c9db68a7ea3edd831637fc8c810ce1389bc7db"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target.",
+    "mathematics": "No new equations. Heap, allocation counter, active/suspended frames and roots are introduced in the paragraph before use.",
+    "links": [
+      {
+        "occurrence": "destructors.machine:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Functions' supplies the definition or concrete example setup used here, at functions.md#claim-functions.machine. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      },
+      {
+        "occurrence": "destructors.machine:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Functions' frame-exit rule' supplies the definition or concrete example setup used here, at functions.md#claim-functions.execution. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      },
+      {
+        "occurrence": "destructors.machine:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'class obligations' supplies the definition or concrete example setup used here, at #claim-destructors.finished_environment. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      },
+      {
+        "occurrence": "destructors.machine:4",
+        "role": "conceptual",
+        "rationale": "The occurrence 'EagerGC' supplies the definition or concrete example setup used here, at functions.md#claim-functions.gc. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      },
+      {
+        "occurrence": "destructors.machine:5",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Shared representation' supplies the definition or concrete example setup used here, at shared.md#claim-shared.state. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target."
+      }
+    ]
+  }
+}

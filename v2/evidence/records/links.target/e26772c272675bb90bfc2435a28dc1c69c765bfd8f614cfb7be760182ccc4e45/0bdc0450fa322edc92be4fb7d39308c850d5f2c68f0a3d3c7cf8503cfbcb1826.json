@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "698bcffaf014c3a5cf45bc34722775f77a235c4cc04d9e7ee0c09ad45f0bc44e",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e26772c272675bb90bfc2435a28dc1c69c765bfd8f614cfb7be760182ccc4e45",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Links context, evaluation, place domain, well-formedness, normalization, struct type, focus, field description and view replacement. Empty versus inaccessible destinations and post-RHS timing are explicit.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "f37227337a799a46846fcc8960e81b99e208096f5071b4d542f6e06badf0b40c"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "static store operation",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 9771,
+      "end": 11163
+    },
+    "clarity": "The named unit opens with the defining passage for static store operation. Links context, evaluation, place domain, well-formedness, normalization, struct type, focus, field description and view replacement. Empty versus inaccessible destinations and post-RHS timing are explicit.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No equations occur. The store operation and input/output roles are introduced locally, and all named helper concepts have links."
+  }
+}

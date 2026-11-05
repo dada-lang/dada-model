@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "4689c598da103658e2cddb8022462d0ba05a7b572feadee143e5882927d534e4",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e0e30b85b0197fab44a8ae02cdee7f7f84182b2175ddfdff24c007254c4a47e",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.weakening directly introduces shared.typing.weakening. Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Subtype requires equal permissions and the Given nominal subtype relation. For normalized types that relation is equal base class plus inclusion of the target's positive and negative observations in the source. Thus weakening cannot silently convert given into shared. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "d56c3e9ad03ef0c2a7125e4b13ecc832ca3e084fbb68508c88cc957274c5a88c"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.weakening",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 16881,
+      "end": 17830
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.weakening directly introduces shared.typing.weakening. Links Given weakening, normalization, observation sets and runtime give-share. The equation preserves permission, avoiding a silent unique/shared conversion.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Subtype requires equal permissions and the Given nominal subtype relation. For normalized types that relation is equal base class plus inclusion of the target's positive and negative observations in the source. Thus weakening cannot silently convert given into shared. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

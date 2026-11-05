@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "89bbe78ae20f3fc26fa4b931a3db60b3d31f48e8c9cecc1fbc885164ae4a65ea",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d624ee0d5cd5657b31ab57c7b4683b005539b9d45e491bf03994c6837439d23e",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/evidence-pilot.md#claim-meta.sources.exact_selection directly introduces Exact source selection. The first paragraph now defines exact source selection; subsequent paragraphs explain rule and mutual-group special cases directly. This unit is the introduction of the extraction boundary, so no self-link is needed. There are no formulas. Constructor names, quoted identifiers and mutual are source-language syntax whose treatment is explained here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "c247f130bed3b02ac50168051ae0ff72537dfcd4d593476f8f8aab68017ecfca"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Exact source selection",
+    "definition": {
+      "path": "md/repo/evidence-pilot.md",
+      "start": 3080,
+      "end": 4040
+    },
+    "clarity": "The landing md/repo/evidence-pilot.md#claim-meta.sources.exact_selection directly introduces Exact source selection. The first paragraph now defines exact source selection; subsequent paragraphs explain rule and mutual-group special cases directly. This unit is the introduction of the extraction boundary, so no self-link is needed.",
+    "independence": "There are no formulas. Constructor names, quoted identifiers and mutual are source-language syntax whose treatment is explained here. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

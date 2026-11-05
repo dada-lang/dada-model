@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "1e6f549d05a2db1e62f12f1f1519b29cfe48723bab4f79ce01b01763ae2b9577",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:48f69fd66c2ff1a3ca310d617921b131abdb2db405cd929c855065a0fcb9107c",
+    "audit:unit:assignment.finished",
+    "audit:unit:assignment.machine",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The definition immediately equates finished with empty frame stack and links the preceding machine representation. It is now a separate direct landing for completion premises. No equations or metavariables occur; emptiness is the full condition, not an unstated heap assumption.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The definition immediately equates finished with empty frame stack and links the preceding machine representation. It is now a separate direct landing for completion premises.",
+    "mathematics": "No equations or metavariables occur; emptiness is the full condition, not an unstated heap assumption.",
+    "links": [
+      {
+        "occurrence": "assignment.finished:1",
+        "role": "conceptual",
+        "rationale": "'frame stack' supplies the defining operation, predicate, syntax or setup at #claim-assignment.machine needed by this passage."
+      }
+    ]
+  }
+}

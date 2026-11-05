@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "48b88ae31e6f16b51a3b64ddb8955c8fbd23935c9a0f04ae0f99f73158c43040",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:example_source",
+    "rust:mdbook-dada/src/lean.rs:extract_example",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "test:mdbook-dada/src/lean.rs:tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_end_markers_that_cut_off_a_proof_continuation",
+    "test:mdbook-dada/src/lean.rs:tests::requires_one_complete_anonymous_example",
+    "test:mdbook-dada/tests/book.rs:linked_example_bodies_index_anchors_and_scope_nested_selectors",
+    "test:mdbook-dada/tests/book.rs:linked_examples_fail_on_invalid_citations_bodies_or_nesting",
+    "test:mdbook-dada/tests/book.rs:linked_examples_preserve_native_markdown_and_select_one_lean_test",
+    "unit:meta.examples.selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.examples.selection against rust:mdbook-dada/src/lean.rs:extract_example, rust:mdbook-dada/src/lean.rs:example_source, rust:mdbook-dada/src/lib.rs:render, rust:mdbook-dada/src/lib.rs:chapter_roles, test:mdbook-dada/tests/book.rs:linked_examples_preserve_native_markdown_and_select_one_lean_test, test:mdbook-dada/tests/book.rs:linked_example_bodies_index_anchors_and_scope_nested_selectors, test:mdbook-dada/tests/book.rs:linked_examples_fail_on_invalid_citations_bodies_or_nesting, test:mdbook-dada/src/lean.rs:tests::ignores_anchor_decoys_in_strings_block_comments_and_inline_comments, test:mdbook-dada/src/lean.rs:tests::requires_one_complete_anonymous_example, test:mdbook-dada/src/lean.rs:tests::rejects_end_markers_that_cut_off_a_proof_continuation. extract_example recognizes standalone comment markers, enforces one complete column-zero anonymous example with a body, excludes nested/sibling commands and rejects end markers before an indented continuation. Rendering retains Markdown and scoped nested diagrams. Tests cover decoy markers, malformed ranges, citation/nesting failures and body markup; they do not execute the selected Lean test. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "672e540b2b060da16c1f204c2c16b8f963bd1b9bcbcaa84c88b00c02d9380a94"
+  ]
+}

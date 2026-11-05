@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "c948562a1fc9720b291c9a3f62efbe60592ce7083b0c72fbe39a9f5dd32bf9f2",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.normalization directly introduces shared.typing.normalization. Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. RawType.normalize supplies given at a nominal leaf and composes each outer permission with the normalized inner permission. normalize changes only the nominal view using Given normalization. This matches the two equations and the single outer-permission representation; nested shared is absorbed. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "613e0cd5e3190388f220ce041d13521b2513c851aecc54b3c9a877693c17eda0"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.normalization",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 2938,
+      "end": 3721
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.normalization directly introduces shared.typing.normalization. Links permission composition in prose/equation and Given view normalization. Normalized π C.A is now its own target, separate from perm/base.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. RawType.normalize supplies given at a nominal leaf and composes each outer permission with the normalized inner permission. normalize changes only the nominal view using Given normalization. This matches the two equations and the single outer-permission representation; nested shared is absorbed. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

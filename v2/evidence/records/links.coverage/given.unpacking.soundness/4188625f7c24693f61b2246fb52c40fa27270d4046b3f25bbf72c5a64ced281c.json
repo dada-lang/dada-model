@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "cd1a29ddd8055a4ac95c894e57e1dc919fd8db5f6dd3807077ef8040d630d798",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:56968a0b61d069156a3c6cf55db5ba12bcfdf730847f49c102707a617d46863b",
+    "audit:target:95369a4a1bcbe14e1d193da3377ba6eb78b3b8190efbeb588ddefe537ee45fc1",
+    "audit:unit:given.unpacking",
+    "audit:unit:given.unpacking.soundness",
+    "audit:unit:given.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result. The theorem is stated in prose with links to class-table WF, the extended transition and state WF; there is no separate hidden predicate. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "83ac5c056fd2b1cc7ed810c57f68d960bf523c38b366c8319dd93efe07d7e6af"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result.",
+    "mathematics": "The theorem is stated in prose with links to class-table WF, the extended transition and state WF; there is no separate hidden predicate.",
+    "links": [
+      {
+        "occurrence": "given.unpacking.soundness:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed class table' refers to md/given.md#claim-given.well_formed_classes for the concept or example setup used by this unit. The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result."
+      },
+      {
+        "occurrence": "given.unpacking.soundness:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'extended step' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result."
+      },
+      {
+        "occurrence": "given.unpacking.soundness:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed storage' refers to md/given.md#claim-given.well_formed for the concept or example setup used by this unit. The proposition links class-table WF, extended step, and storage WF separately. Field transfers describe the same preservation result."
+      }
+    ]
+  }
+}

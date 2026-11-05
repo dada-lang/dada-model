@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "68a1fed80f1140c7b9855a258f696667de56066ad023e36bcf2f37f15afbddff",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c6cd701ce483fad3d033629a3f92f2d016ca2977340a1b43992963d711dd3413",
+    "audit:target:e26772c272675bb90bfc2435a28dc1c69c765bfd8f614cfb7be760182ccc4e45",
+    "audit:unit:assignment.fixed",
+    "audit:unit:assignment.store",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Both static store and fixed binding map link their earlier definitions. The success premise and whole-map preservation conclusion are explicit. No mathematical notation appears, and no runtime hypothesis is silently used to explain this static result.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "6f598501f35dd38c2aaa7f153be16c72ef1df369b69743d7f6be073a103597bf"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Both static store and fixed binding map link their earlier definitions. The success premise and whole-map preservation conclusion are explicit.",
+    "mathematics": "No mathematical notation appears, and no runtime hypothesis is silently used to explain this static result.",
+    "links": [
+      {
+        "occurrence": "assignment.fixed:1",
+        "role": "conceptual",
+        "rationale": "'static store' supplies the defining operation, predicate, syntax or setup at #claim-assignment.store needed by this passage."
+      },
+      {
+        "occurrence": "assignment.fixed:2",
+        "role": "conceptual",
+        "rationale": "'fixed binding map' supplies the defining operation, predicate, syntax or setup at #claim-assignment.context needed by this passage."
+      }
+    ]
+  }
+}

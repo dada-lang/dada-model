@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "a8aa1e597533ea121a08052600a26c176dcc0cb67eea019486e2d1484b5d61b8",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.give directly introduces Shared giving, including move/copy/final-slot conversion. Links the unchanged place concept and the preceding reference definition. Its table itself defines move/copy/final-slot conversion; it is not an implicit forward invocation of Resolve. The table is the definition of giving behavior at this level. It uses the preceding reference modes and linked place concept; it does not invoke the later Resolve judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "cfe82ec242c3943a417f38e6ceca16f06d8daddb9c6e92017e3afd3ea7e07921"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared giving, including move/copy/final-slot conversion",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 1000,
+      "end": 2158
+    },
+    "clarity": "The landing md/shared.md#claim-shared.give directly introduces Shared giving, including move/copy/final-slot conversion. Links the unchanged place concept and the preceding reference definition. Its table itself defines move/copy/final-slot conversion; it is not an implicit forward invocation of Resolve.",
+    "independence": "The table is the definition of giving behavior at this level. It uses the preceding reference modes and linked place concept; it does not invoke the later Resolve judgment. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

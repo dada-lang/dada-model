@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "bundle": "df46c60cd78b833fa8df90cff090ba0895ccacc2f8d31a598a3b6da311b3bced",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0a30a009d4b68db3b59d8b85ba9779ff70e060e297f2aa22a9d6c7d1b43cab06",
+    "audit:target:11aed29a6b82dfc70e7df19c3fad999a9f8fa3cfb7d1b2ebf35e0b7a63f92a16",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:e0f7028e3af89f0a1f93b77464e6ca10ddc3704b8a553bd11b721c356306583f",
+    "audit:unit:functions.calls",
+    "audit:unit:functions.signatures",
+    "audit:unit:shared.syntax",
+    "audit:unit:shared.typing.patterns",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links inherited expression and pattern syntax, signatures and nominal declarations. The appendix is optional recap; all prerequisites already link backward. d,t,r,B,D and F are defined locally, including optional results and the whole program. Metasyntax is explicitly distinguished from surface call spelling. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "52cb95f4393c02e2b9ef39d3822bc307c00eb2b56be62be67f3a3feed71f3b4b"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links inherited expression and pattern syntax, signatures and nominal declarations. The appendix is optional recap; all prerequisites already link backward.",
+    "mathematics": "d,t,r,B,D and F are defined locally, including optional results and the whole program. Metasyntax is explicitly distinguished from surface call spelling.",
+    "links": [
+      {
+        "occurrence": "functions.calls:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'value expression' refers to md/shared.md#claim-shared.syntax for the concept or example setup used by this unit. Links inherited expression and pattern syntax, signatures and nominal declarations. The appendix is optional recap; all prerequisites already link backward."
+      },
+      {
+        "occurrence": "functions.calls:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'binding pattern' refers to md/shared-typing.md#claim-shared.typing.patterns for the concept or example setup used by this unit. Links inherited expression and pattern syntax, signatures and nominal declarations. The appendix is optional recap; all prerequisites already link backward."
+      },
+      {
+        "occurrence": "functions.calls:3",
+        "role": "navigation",
+        "rationale": "Optional appendix navigation: the source already links the inherited definitions it actually uses; this appendix gathers those same rules in one summary without supplying a missing premise."
+      },
+      {
+        "occurrence": "functions.calls:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'signature' refers to md/functions.md#claim-functions.signatures for the concept or example setup used by this unit. Links inherited expression and pattern syntax, signatures and nominal declarations. The appendix is optional recap; all prerequisites already link backward."
+      },
+      {
+        "occurrence": "functions.calls:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal class table' refers to md/shared-typing.md#claim-shared.typing.declarations for the concept or example setup used by this unit. Links inherited expression and pattern syntax, signatures and nominal declarations. The appendix is optional recap; all prerequisites already link backward."
+      }
+    ]
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "bundle": "22724a28067a2e0f67445565d31e1976d20e40fa6020cabbaed233c3b11cc452",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:target:d6c2319422bc09f8bd5db42388b5e094818d235328c57f2f2ed44355c8fd76d1",
+    "audit:target:e35657bf769f399f71a289ab97c3d64f55d9f44be732a34633b1c76ef237a49c",
+    "audit:target:e360f5e4ae97607a8987e41d4524dcc69f070f9ea2df3f694e44fa2af0f9e8a4",
+    "audit:unit:given.patterns",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.bindings",
+    "audit:unit:given.typing.declarations",
+    "audit:unit:given.typing.environments",
+    "audit:unit:given.typing.field",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally. The Unpack premises link base, the typed class table, and field descriptions. The conclusions define binding typing here; dom and freshness are ordinary finite-map conditions. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "f4c33407e3b8c85dfc47843a0a56431ce2af62c5c9ed2826e161e8d985bb5edd"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally.",
+    "mathematics": "The Unpack premises link base, the typed class table, and field descriptions. The conclusions define binding typing here; dom and freshness are ordinary finite-map conditions.",
+    "links": [
+      {
+        "occurrence": "given.typing.bindings:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'variable pattern' refers to md/given.md#claim-given.patterns for the concept or example setup used by this unit. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally."
+      },
+      {
+        "occurrence": "given.typing.bindings:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'unpacking pattern' refers to md/given.md#claim-given.patterns for the concept or example setup used by this unit. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally."
+      },
+      {
+        "occurrence": "given.typing.bindings:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"field's description\" refers to md/given-typing.md#claim-given.typing.field for the concept or example setup used by this unit. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally."
+      },
+      {
+        "occurrence": "given.typing.bindings:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{base}' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally."
+      },
+      {
+        "occurrence": "given.typing.bindings:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma(C)' refers to md/given-typing.md#claim-given.typing.declarations for the concept or example setup used by this unit. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally."
+      },
+      {
+        "occurrence": "given.typing.bindings:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{field}' refers to md/given-typing.md#claim-given.typing.field for the concept or example setup used by this unit. The two patterns link to their operational syntax; the field-description side condition links to its own definition. The paragraph explains fresh variables and named-field reordering locally."
+      }
+    ]
+  }
+}

@@ -806,7 +806,7 @@ Here \\(S=\langle O,V,\nu\rangle\\) is the
 *pending values* \\((r:T)\\): expression results not yet stored by a binding
 or constructor. The relation holds when:
 
-- The five structural clauses of {anchor-ref}`shared.well_formed` hold,
+- The structural clauses of {anchor-ref}`shared.well_formed` hold,
   counting pending references alongside all stored owning occurrences. The
   additional declaration-kind invariants are not premises of this relation;
   the operational preservation result establishes them for executions from

@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "bundle": "3f48897cd832b4f6b96029f982f7e795a65e0dc207867bb3fc3354a5e659e8b0",
+  "reviewer": "Codex /root/assignment_stack differential reviewer",
+  "provenance": "Codex /root/assignment_stack differential review during the Assignment soundness task, with the root agent separately inspecting and authorizing this bounded renewal. The reviewer examined the exact Shared wording delta, structural definition and Realizes premise, affected prior per-unit comparisons, and all three full relocated target excerpts. Unchanged comparison material is explicitly retained from the identified earlier active record after exact required key/path/hash comparison; this is not a claim of fresh independent re-review of all unchanged sources. New proof files and the updated AGENTS scope are conservative freshness context, and proof correctness is checked separately by Lean.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0e411ab3d3f4538324e304fd37a80dd02fef29ff116e7f948292a5133e615d1f",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:79283484adee6a2142c00e38e1f1accde4d861bb79aa4ecbf735a13e187ee7c9",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:shared.evaluation",
+    "audit:unit:shared.steps",
+    "audit:unit:shared.typing.erasure",
+    "audit:unit:shared.typing.expression_soundness",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.realization",
+    "audit:unit:shared.typing.well_formed_classes",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Retained specific comparison from active record e6182a388de447a87dd59fe4ec13b104dfdf44fa31f5f10dbe100e9780647103: Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. expression_soundness quantifies over arbitrary pending values, guarantees an Eval exists, and requires every Eval result to realize the output environment with the result appended to pending. The prose states both existence and universal preservation, including earlier constructor arguments; it does not assume successful evaluation as a premise. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness. Differential editorial renewal: exact required-input comparison admits only deletion of the obsolete word \"five\" in the Shared realization passage and the resulting five-byte source-range relocation. Every link occurrence identifier, destination, label, role, direction, and all other selected prose remain unchanged. The realization passage continues to introduce storage realization and require the linked structural clauses, so removal of the count does not change its role or prerequisites. All other defining spans preserve their exact selected text; the realization target preserves its text modulo precisely that deletion. The supplied audit assessment relocates only the verified spans and retains the earlier conceptual-link judgments.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative.",
+    "Differential renewal retains the identified prior comparison for byte-identical required material; it is not a fresh independent audit of every unchanged proof or chapter."
+  ],
+  "supersedes": [
+    "e6182a388de447a87dd59fe4ec13b104dfdf44fa31f5f10dbe100e9780647103"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. expression_soundness quantifies over arbitrary pending values, guarantees an Eval exists, and requires every Eval result to realize the output environment with the result appended to pending. The prose states both existence and universal preservation, including earlier constructor arguments; it does not assume successful evaluation as a premise.",
+    "links": [
+      {
+        "occurrence": "shared.typing.expression_soundness:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed' refers to md/shared-typing.md#claim-shared.typing.well_formed_classes for the concept or example setup used by this unit. Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression typing' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage realization' refers to md/shared-typing.md#claim-shared.typing.realization for the concept or example setup used by this unit. Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Sigma;\\\\Gamma\\\\vdash e:T\\\\;\\\\triangleright\\\\;\\\\Gamma'\" refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma\\\\models(S;R)' refers to md/shared-typing.md#claim-shared.typing.realization for the concept or example setup used by this unit. Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'evaluation' refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:7",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\lfloor\\\\Sigma\\\\rfloor' refers to md/shared-typing.md#claim-shared.typing.erasure for the concept or example setup used by this unit. Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:8",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Downarrow' refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition."
+      },
+      {
+        "occurrence": "shared.typing.expression_soundness:9",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Sigma;\\\\Gamma'\\\\models(S';R\\\\mathbin{+\\\\!\\\\!+}[(r:T)])\" refers to md/shared-typing.md#claim-shared.typing.realization for the concept or example setup used by this unit. Links all input typing/realization assumptions and erasure/Eval output; append is defined locally. Runtime Eval now lands at its actual definition."
+      }
+    ]
+  }
+}

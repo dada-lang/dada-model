@@ -153,11 +153,15 @@ metadata survives empty slots; current views track partial values independently.
 Unpacking gives empty bindings their fixed declared field types. Stores do not
 implicitly destroy classes, and given/shared share a nominal layout key.
 The layer has Lean rules, checked examples, and forward operational correspondence
-in `Correspondence/DestructorsAssignment`; general soundness and reverse
-correspondence remain explicitly future work. The foundation now uses rootedness
-and ownership compatibility instead of allocation-age order. The refill transition
-satisfies this invariant without relabeling object IDs; general store preservation
-is still required. Given/Shared and Functions/Destructors safety proofs have been
+in `Correspondence/DestructorsAssignment`. `Assignment/StoreSoundness` proves
+runtime store existence and realization preservation, with displaced struct
+references retained as temporary roots until collection. `Assignment/Safety`
+proves progress, preservation for every successor, class-retaining collection,
+empty completion, and safety of every finite execution prefix. `SafetyChecks`
+applies these results to field refill across destructor calls and shared-struct
+overwrite. Reverse execution correspondence and typing correspondence remain
+separate future work. The foundation uses rootedness and ownership compatibility
+instead of allocation-age order; stores preserve it without relabeling object IDs. Given/Shared and Functions/Destructors safety proofs have been
 rebuilt under this foundation. Shared rooted cycles are permitted; unique path
 properties follow from ownership routes, not a global acyclicity assumption.
 Destructors and Assignment are

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "cef4946f75df6682099f7d024a4248082d984d851c425f645374a05cf52e6f77",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3d33b028ca981a0fc9321bf9e923e736057fee84a81a9b48d93048441c206c33",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This landing introduces the named definition or concrete heap setup in its opening passage. Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept. The surrounding chapter supplies storage and reachability before using them. Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "673f6af812ee11e3329f28a65fe36e3ef853c62cafea1158fe653ecb30a57ff4"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.pending_live",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 26018,
+      "end": 26486
+    },
+    "clarity": "This landing introduces the named definition or concrete heap setup in its opening passage. Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept.",
+    "independence": "The surrounding chapter supplies storage and reachability before using them. Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept."
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "87265f55fd42433e99f799c9e2bcfa0798262a935d6e17495f5ed0e809131ece",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:85c6f5541eebb05cd28829f9fa8089766a5fcead98afdc63ae0b70b40094da6a",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Links signed views and normalization. The replacement algorithm is defined here: preserve siblings, remove overwritten subtree, prefix incoming entries and normalize. Negative/unknown/whole distinctions come from the linked view definition.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "bdec974e252b3926310da004e2bcdc186fe8d980c39a17ca2903c53a5129d135"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "view replacement",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 9017,
+      "end": 9579
+    },
+    "clarity": "The named unit opens with the defining passage for view replacement. Links signed views and normalization. The replacement algorithm is defined here: preserve siblings, remove overwritten subtree, prefix incoming entries and normalize. Negative/unknown/whole distinctions come from the linked view definition.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No mathematical expressions occur. Field paths are the earlier view paths; there is no new graph rank or mutation-order symbol."
+  }
+}

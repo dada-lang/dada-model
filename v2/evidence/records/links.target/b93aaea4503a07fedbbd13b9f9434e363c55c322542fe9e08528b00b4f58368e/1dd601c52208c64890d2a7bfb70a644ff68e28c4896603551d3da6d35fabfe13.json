@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "6ef9a0a0f47f181d27d04898889af987d4d619c0a4eeba8903a7dd8c3963249a",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The named landing directly introduces raw transitions and collected public steps. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery. The linked judgments account for every raw-rule premise; H,V,n and evaluated variants are scoped immediately before the rules, B_r is defined there, and raw/public step symbols are the local definitions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "c1949829545f684cc78d80e9653d3cf03474293b4dd6583cfc79871a9594dfec"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "raw transitions and collected public steps",
+    "definition": {
+      "path": "md/functions.md",
+      "start": 20207,
+      "end": 23255
+    },
+    "clarity": "The named landing directly introduces raw transitions and collected public steps. Links GC, frame storage, Shared argument/local evaluation, remaining bodies, parameter binding/shape and optional result delivery.",
+    "independence": "The linked judgments account for every raw-rule premise; H,V,n and evaluated variants are scoped immediately before the rules, B_r is defined there, and raw/public step symbols are the local definitions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

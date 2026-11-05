@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "bundle": "1c8f8ed674a9a819796cc3aa42bfc9f9ff18a83c3905685d3c2043356da944f0",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:target:6da213a18937e4126d7e96483f8007dabd404477df24caffc5a0862001bcce8b",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "audit:unit:given.steps",
+    "audit:unit:shared.correspondence",
+    "audit:unit:shared.embedding",
+    "audit:unit:shared.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links E in prose and both languages’ Step judgments in the directional formulas; the reverse quantification over arbitrary Shared successors is explicit. E is linked in prose, and every Step formula links the correct language-specific transition definition; the arbitrary Shared successor d is locally quantified. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "a522fdc90112d15b9f8437e36ba5b93c36e584a6c6e5bff6c3a6d83301235028"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links E in prose and both languages’ Step judgments in the directional formulas; the reverse quantification over arbitrary Shared successors is explicit.",
+    "mathematics": "E is linked in prose, and every Step formula links the correct language-specific transition definition; the arbitrary Shared successor d is locally quantified.",
+    "links": [
+      {
+        "occurrence": "shared.correspondence:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'embedding' refers to md/shared.md#claim-shared.embedding for the concept or example setup used by this unit. Links E in prose and both languages’ Step judgments in the directional formulas; the reverse quantification over arbitrary Shared successors is explicit."
+      },
+      {
+        "occurrence": "shared.correspondence:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash c\\\\longrightarrow c'\" refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Links E in prose and both languages’ Step judgments in the directional formulas; the reverse quantification over arbitrary Shared successors is explicit."
+      },
+      {
+        "occurrence": "shared.correspondence:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"E(\\\\Delta)\\\\vdash E(c)\\\\longrightarrow E(c')\" refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links E in prose and both languages’ Step judgments in the directional formulas; the reverse quantification over arbitrary Shared successors is explicit."
+      },
+      {
+        "occurrence": "shared.correspondence:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'E(\\\\Delta)\\\\vdash E(c)\\\\longrightarrow d' refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links E in prose and both languages’ Step judgments in the directional formulas; the reverse quantification over arbitrary Shared successors is explicit."
+      },
+      {
+        "occurrence": "shared.correspondence:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash c\\\\longrightarrow c'\" refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Links E in prose and both languages’ Step judgments in the directional formulas; the reverse quantification over arbitrary Shared successors is explicit."
+      }
+    ]
+  }
+}

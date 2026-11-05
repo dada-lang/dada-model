@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "f263a2c9c056bc5929e47da60d1f77adffcdc8abd7483286430780dfe2ae7994",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:fb102fffa34394933fb7961431f0e3e35308342998590976bbea48c889b79ba1",
+    "audit:unit:assignment.example.replacement",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Explicit drop typing is linked, and the retained replacement root links suspended call frames. Both input bindings are explicitly assumed; the paragraph does not misrepresent the sequence as an initially closed complete program. Resource and its destructor are declared in the code. r and replacement are explicitly typed before use; give syntax is inherited, with no new symbolic operation.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "bf1bedbe90e04a82d305ac414363441217794450a90aa556380f25e1f899a0a1"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Explicit drop typing is linked, and the retained replacement root links suspended call frames. Both input bindings are explicitly assumed; the paragraph does not misrepresent the sequence as an initially closed complete program.",
+    "mathematics": "Resource and its destructor are declared in the code. r and replacement are explicitly typed before use; give syntax is inherited, with no new symbolic operation.",
+    "links": [
+      {
+        "occurrence": "assignment.example.replacement:1",
+        "role": "conceptual",
+        "rationale": "'explicit destruction' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.drop_typing needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.replacement:2",
+        "role": "conceptual",
+        "rationale": "'suspended caller frame' supplies the defining operation, predicate, syntax or setup at functions.md#claim-functions.machine needed by this passage."
+      }
+    ]
+  }
+}

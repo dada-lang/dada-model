@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "30df775d122e18aaa62fe6cfd352609c265bc6c4672cda557e2110d4f9f803d2",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:19005780920305ce2edfef53fc5a5693afa3fb5fb7b312b33450cdfbe885221b",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given.md#claim-given.gc directly introduces Reachability  starts at an initialized slot of the [live frame](#claim-given.machine) and follows [initialized object fields](#claim-given.slots). Write \\\\(\\mat. Links live-frame roots and initialized fields; defines reachability for collection with absent frames having no roots. The filter equation defines gc; S_K and D are explained locally, and the frame/counter are preserved. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "c3158fa9dc2969e9a05bb55f753ed3ad779eb1010e901d7b0f81c6248d4e2914"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Reachability  starts at an initialized slot of the [live frame](#claim-given.machine) and follows [initialized object fields](#claim-given.slots). Write \\\\(\\mat",
+    "definition": {
+      "path": "md/given.md",
+      "start": 8455,
+      "end": 9422
+    },
+    "clarity": "The landing md/given.md#claim-given.gc directly introduces Reachability  starts at an initialized slot of the [live frame](#claim-given.machine) and follows [initialized object fields](#claim-given.slots). Write \\\\(\\mat. Links live-frame roots and initialized fields; defines reachability for collection with absent frames having no roots.",
+    "independence": "The filter equation defines gc; S_K and D are explained locally, and the frame/counter are preserved. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

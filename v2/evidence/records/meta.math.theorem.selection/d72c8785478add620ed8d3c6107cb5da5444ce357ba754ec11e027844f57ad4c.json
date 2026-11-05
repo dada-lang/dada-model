@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "64b038f13ebacaf94d49ff3ac7c975f24f7103098a37d80b6bd06d159f05e275",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/lean.rs:extract_declaration",
+    "rust:mdbook-dada/src/lean.rs:select",
+    "rust:mdbook-dada/src/lean.rs:theorem_source",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "test:mdbook-dada/src/lean.rs:tests::rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections",
+    "test:mdbook-dada/src/lean.rs:tests::selects_complete_named_theorems_without_comment_or_string_decoys",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_reject_wrong_kinds_and_malformed_directives",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_select_literal_qualified_names",
+    "test:mdbook-dada/tests/book.rs:authored_theorems_show_the_exact_named_statement_and_proof",
+    "test:mdbook-dada/tests/book.rs:markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds",
+    "unit:meta.math.theorem.selection"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.math.theorem.selection against rust:mdbook-dada/src/lean.rs:select, rust:mdbook-dada/src/lean.rs:extract_declaration, rust:mdbook-dada/src/lean.rs:theorem_source, rust:mdbook-dada/src/lib.rs:chapter_roles, test:mdbook-dada/tests/book.rs:authored_theorems_show_the_exact_named_statement_and_proof, test:mdbook-dada/tests/book.rs:authored_theorems_select_literal_qualified_names, test:mdbook-dada/tests/book.rs:authored_theorems_reject_wrong_kinds_and_malformed_directives, test:mdbook-dada/tests/book.rs:markdown_proof_blocks_reject_invalid_targets_and_all_nested_proof_kinds, test:mdbook-dada/src/lean.rs:tests::selects_complete_named_theorems_without_comment_or_string_decoys, test:mdbook-dada/src/lean.rs:tests::rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections. Theorem/lemma selection requires a named theorem with := body; the extractor rejects wrong kinds, duplicate/unsupported declarations and indented sibling commands. Rendering retains the exact selected statement/proof and forbids nested proof/definition/example blocks. Tests cover literal qualified names, comments/string decoys, complete proof output and every nested block-kind combination. Lean proof correctness remains a separate check. This unit introduces its own objects and notation; it has no explicit :uses: prerequisites. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "4a65d6efa727ed8877e05727e0be7daeb51c60373d8a7da456c1f06938d90d8b"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "e2bc9d2e6ebdd2c2db73154ed2e4f6b1d0eba6922e60a6d0995e758d28246525",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This landing introduces the named definition or concrete heap setup in its opening passage. Added backward links to shared.live for the rootedness clause and shared.pending_live for the expression invariant. Existing allocated/state/declaration links remain applicable. The text removes the former explanation deriving rooting from allocation order and introduces no forward theorem dependency. The surrounding chapter supplies storage and reachability before using them. Added backward links to shared.live for the rootedness clause and shared.pending_live for the expression invariant. Existing allocated/state/declaration links remain applicable. The text removes the former explanation deriving rooting from allocation order and introduces no forward theorem dependency. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "424e481425d11578e192b15f3f754e3567548085aade33dc39e5b7fff28084c8"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.well_formed",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 26877,
+      "end": 28950
+    },
+    "clarity": "This landing introduces the named definition or concrete heap setup in its opening passage. Added backward links to shared.live for the rootedness clause and shared.pending_live for the expression invariant. Existing allocated/state/declaration links remain applicable. The text removes the former explanation deriving rooting from allocation order and introduces no forward theorem dependency.",
+    "independence": "The surrounding chapter supplies storage and reachability before using them. Added backward links to shared.live for the rootedness clause and shared.pending_live for the expression invariant. Existing allocated/state/declaration links remain applicable. The text removes the former explanation deriving rooting from allocation order and introduces no forward theorem dependency."
+  }
+}

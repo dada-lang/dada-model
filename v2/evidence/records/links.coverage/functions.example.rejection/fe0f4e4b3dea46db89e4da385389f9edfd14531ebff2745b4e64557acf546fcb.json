@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "7131e8bc2b335441cac48f8e3ac8cd27f3f29e2ba1652245185b7bbc905a3386",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:939f180934edf65d84a072aad2dd778c3a2dc532ce0e9d8b312e9d65b1b4483b",
+    "audit:unit:functions.example.rejection",
+    "audit:unit:functions.signatures",
+    "audit:unit:functions.typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the call typing rules and signature receiver constraints. The table states each attempted boundary and reason. Token/Point/identity refer to the concrete preceding examples. There are no new mathematical operations in the rejection table. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "e2a419a66e67feaf2f2487d29f18f6e790c8a23d42ab9faf234c473a88efe583"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the call typing rules and signature receiver constraints. The table states each attempted boundary and reason.",
+    "mathematics": "Token/Point/identity refer to the concrete preceding examples. There are no new mathematical operations in the rejection table.",
+    "links": [
+      {
+        "occurrence": "functions.example.rejection:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'formal checks' refers to md/functions.md#claim-functions.typing for the concept or example setup used by this unit. Links the call typing rules and signature receiver constraints. The table states each attempted boundary and reason."
+      },
+      {
+        "occurrence": "functions.example.rejection:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'signature' refers to md/functions.md#claim-functions.signatures for the concept or example setup used by this unit. Links the call typing rules and signature receiver constraints. The table states each attempted boundary and reason."
+      }
+    ]
+  }
+}

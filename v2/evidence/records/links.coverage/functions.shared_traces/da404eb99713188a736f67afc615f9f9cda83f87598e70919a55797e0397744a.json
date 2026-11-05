@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "204b21f02c70ee0483588551a41f1651375ca67660775547cef00f6fbf436dc7",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:18e50dab95df074f64b089e4a508e22ce099405e437bd6cb4f61d60712b67a3c",
+    "audit:target:ef7aedb66f188b157bd66e467ed07f4ec8f3366639a1a82c26fc4370ae9980d8",
+    "audit:target:f518fc51a45f1599c96e5cca147f3048043bee6a5718ef54dd66d238eb0b8dcf",
+    "audit:unit:functions.shared_correspondence",
+    "audit:unit:functions.shared_traces",
+    "audit:unit:functions.traces",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Functions traces, the embedding, and Shared traces. The endpoint equality and arbitrary starting configurations are explicit. No extra well-formedness premise is silently assumed. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "cce620e07503b248d2348d1873378e91eb0504b38a1675c5cd0810cab28b731c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Functions traces, the embedding, and Shared traces.",
+    "mathematics": "The endpoint equality and arbitrary starting configurations are explicit. No extra well-formedness premise is silently assumed.",
+    "links": [
+      {
+        "occurrence": "functions.shared_traces:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Functions trace' refers to md/functions.md#claim-functions.traces for the concept or example setup used by this unit. Links Functions traces, the embedding, and Shared traces."
+      },
+      {
+        "occurrence": "functions.shared_traces:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'embedded Shared program configuration' refers to md/functions.md#claim-functions.shared_correspondence for the concept or example setup used by this unit. Links Functions traces, the embedding, and Shared traces."
+      },
+      {
+        "occurrence": "functions.shared_traces:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared trace' refers to md/shared.md#claim-shared.executions for the concept or example setup used by this unit. Links Functions traces, the embedding, and Shared traces."
+      }
+    ]
+  }
+}

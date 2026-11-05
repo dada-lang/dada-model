@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "30e5d8ee9a2e4da2ec4ec8c1f5bdeef99b0945ec9e23df85a01b56531538566e",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.steps directly introduces Shared statement stepping. The sole subject is Let stepping. Links the machine and complete Eval premise; local V′ extension and freshness are explained beside the rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation. The Let premise links Eval directly. The resulting V′ extension and the absence check are local binding/freshness notation for this one transition. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "b8710a63578497114eb590f109cc3a031febeec8e742ccaeb05a31cb4c6d7c3f"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Shared statement stepping",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 18411,
+      "end": 20211
+    },
+    "clarity": "The landing md/shared.md#claim-shared.steps directly introduces Shared statement stepping. The sole subject is Let stepping. Links the machine and complete Eval premise; local V′ extension and freshness are explained beside the rule. The public wrapper additionally links collection and initial-frame exit, distinguishing it from the local statement operation.",
+    "independence": "The Let premise links Eval directly. The resulting V′ extension and the absence check are local binding/freshness notation for this one transition. Public transitions collect after local evaluation or pop an exhausted frame; these rules define the wrapper in place. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

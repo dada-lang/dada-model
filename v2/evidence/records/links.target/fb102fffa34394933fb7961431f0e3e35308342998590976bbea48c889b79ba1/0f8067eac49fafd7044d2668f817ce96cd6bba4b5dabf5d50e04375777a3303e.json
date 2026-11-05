@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "af4ac8847e2aa197e8b4d4e787dc6f99549a34a94bd7f7250e48e91a967e386e",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:fb102fffa34394933fb7961431f0e3e35308342998590976bbea48c889b79ba1",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing names and introduces Explicit drop elaboration and its static requirements. Its opening explanation supplies the operation/setup and the remainder states its components and boundaries; the selected span is the defining passage rather than an incidental mention. The surrounding chapter introduces the syntax and preceding operations first. The earlier destructor definition explicitly introduces drop p and its give/droppable requirements, with links to the place, environment, give and destructor-name definitions. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "e8c93bb20fc32862dc15f9778ca2221b2a872130898da86e16f4fca3d825edf5"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Explicit drop elaboration and its static requirements",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 11880,
+      "end": 13237
+    },
+    "clarity": "The unit landing names and introduces Explicit drop elaboration and its static requirements. Its opening explanation supplies the operation/setup and the remainder states its components and boundaries; the selected span is the defining passage rather than an incidental mention.",
+    "independence": "The surrounding chapter introduces the syntax and preceding operations first. The earlier destructor definition explicitly introduces drop p and its give/droppable requirements, with links to the place, environment, give and destructor-name definitions."
+  }
+}

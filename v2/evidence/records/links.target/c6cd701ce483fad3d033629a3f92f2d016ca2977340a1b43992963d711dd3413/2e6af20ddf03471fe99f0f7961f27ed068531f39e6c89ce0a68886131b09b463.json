@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bundle": "11fe25d14b5ad3b97c4ebb1b9618735168ee53e27481c9fe3c9a752d1c7a3d31",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c6cd701ce483fad3d033629a3f92f2d016ca2977340a1b43992963d711dd3413",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Defines storage type/layout key and the two context components before their conditions. Permission, view, environment well-formedness, type well-formedness, normalization and unpacking have direct links. The previous misleading admissibility-to-WF-only link was replaced by both requirements.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "369da8596a2bd244ebffa5a3f22197111b549204effa72abf0868e42c6e85c6b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "storage types and fixed/current typing contexts",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 7528,
+      "end": 8882
+    },
+    "clarity": "The named unit opens with the defining passage for storage types and fixed/current typing contexts. Defines storage type/layout key and the two context components before their conditions. Permission, view, environment well-formedness, type well-formedness, normalization and unpacking have direct links. The previous misleading admissibility-to-WF-only link was replaced by both requirements.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No displayed mathematics occurs. given Foo/shared Foo are local type illustrations using linked permission/view syntax; the fixed/current map relationship is stated in words."
+  }
+}

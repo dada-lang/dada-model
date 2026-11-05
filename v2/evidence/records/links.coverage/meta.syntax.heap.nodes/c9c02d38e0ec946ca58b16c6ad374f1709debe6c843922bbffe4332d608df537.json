@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "bccb7e0746bfbd9404343d2c66392c673cc7234aec0a57e01b69f0fb7f66c5c0",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.syntax.heap.nodes",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The diagram vocabulary is introduced here: graph facts, nodes and slots each have clear named passages. Aliases, initial empty slots and the boundary from language semantics are stated locally. No language formula is used. α or edge-style examples elsewhere are diagram identifiers, while this unit defines the available fact constructors. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "4b5a9bf544798ff4932567c631e17ede9dd7efc203f2eaa2487e8c81f9e07289"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The diagram vocabulary is introduced here: graph facts, nodes and slots each have clear named passages. Aliases, initial empty slots and the boundary from language semantics are stated locally.",
+    "mathematics": "No language formula is used. α or edge-style examples elsewhere are diagram identifiers, while this unit defines the available fact constructors.",
+    "links": []
+  }
+}

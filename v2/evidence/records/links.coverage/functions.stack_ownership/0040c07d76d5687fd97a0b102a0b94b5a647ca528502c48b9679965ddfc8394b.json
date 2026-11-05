@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "d3a1cd02e19462da62e69c41b526c39bb4a44022496a9e1929ecd508c5db7339",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:05dab8f452fde072ac54845c7ea4e864d204d00d0a6d21f900060fdbda489613",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.stack_ownership",
+    "audit:unit:functions.stack_typing",
+    "audit:unit:shared.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names. No separate path uniqueness formula is assumed: pairwise occurrence compatibility and allocated incoming targets are spelled out. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "9b96d7d3686930951c8b3120fac19fad0d2e0b63d5cb27290bab866caa833873"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names.",
+    "mathematics": "No separate path uniqueness formula is assumed: pairwise occurrence compatibility and allocated incoming targets are spelled out.",
+    "links": [
+      {
+        "occurrence": "functions.stack_ownership:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed' refers to md/functions.md#claim-functions.stack_typing for the concept or example setup used by this unit. Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names."
+      },
+      {
+        "occurrence": "functions.stack_ownership:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'owning occurrences' refers to md/shared.md#claim-shared.well_formed for the concept or example setup used by this unit. Links machine typing and compatible owning occurrences. It counts every live frame's roots, including equal local names."
+      }
+    ]
+  }
+}

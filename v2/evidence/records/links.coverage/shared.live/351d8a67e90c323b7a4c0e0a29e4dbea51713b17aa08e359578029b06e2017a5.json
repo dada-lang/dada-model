@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "ee4bcd536f758cdb8bd9850e8575c3b3c05c3d92b66a1af65c8957093a970c34",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:target:fc2b9cd2551cefd6e370454f733eeb9560ca3149a815add8716a368b41fd25af",
+    "audit:unit:shared.live",
+    "audit:unit:shared.lookup",
+    "audit:unit:shared.references",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition. Both occupied-slot premises link lookup and κ is grounded by the reference link. Recursive Live defines the relation independent of mode. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "d42549e2a0bf7d5b79a5e66bb880ac0e712bd9cec96ead2430161cf3551bf1fd"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition.",
+    "mathematics": "Both occupied-slot premises link lookup and κ is grounded by the reference link. Recursive Live defines the relation independent of mode.",
+    "links": [
+      {
+        "occurrence": "shared.live:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'references' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition."
+      },
+      {
+        "occurrence": "shared.live:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S[x]' refers to md/shared.md#claim-shared.lookup for the concept or example setup used by this unit. The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition."
+      },
+      {
+        "occurrence": "shared.live:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of 'S[\\\\beta.f]' refers to md/shared.md#claim-shared.lookup for the concept or example setup used by this unit. The liveness rules link lookup and reference modes. Both unique and shared occupied edges contribute; recursively defining Live does not use WF ahead of its definition."
+      }
+    ]
+  }
+}

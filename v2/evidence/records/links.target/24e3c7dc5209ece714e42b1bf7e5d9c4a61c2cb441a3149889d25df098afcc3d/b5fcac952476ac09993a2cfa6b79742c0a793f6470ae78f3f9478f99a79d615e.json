@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "1d7e8c989d03b9be76a9cbe1cc651c9489b4919b74f24f6a53e8fc388c96aed3",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:24e3c7dc5209ece714e42b1bf7e5d9c4a61c2cb441a3149889d25df098afcc3d",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. The definition immediately equates finished with empty frame stack and links the preceding machine representation. It is now a separate direct landing for completion premises.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "target",
+    "subject": "finished configurations",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 15427,
+      "end": 15516
+    },
+    "clarity": "The named unit opens with the defining passage for finished configurations. The definition immediately equates finished with empty frame stack and links the preceding machine representation. It is now a separate direct landing for completion premises.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No equations or metavariables occur; emptiness is the full condition, not an unstated heap assumption."
+  }
+}

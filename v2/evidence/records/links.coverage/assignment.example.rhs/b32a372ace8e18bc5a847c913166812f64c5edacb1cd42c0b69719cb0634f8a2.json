@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "c4e46a210a75906dbd36f6f0a7aabd6cd4f93d5f2012e867d669347c727925f9",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:828c2e9a592d1b90f2650b6136e24abe27a4c6886c1c3487d5a24c9e3f96fcf7",
+    "audit:unit:assignment.example.rhs",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The linked ordinary give operation explains self-move. The example directly defines RHS-first ordering and why an empty root cannot supply a field destination; no later judgment is required. The single store w,w→ uses explicitly assumed whole Wrapper input and prior give syntax. No display equation or new metavariable occurs.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "0db7568212ee1993441c8c4ea85b5f1a568930c7801f06db8c73500950caa084"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The linked ordinary give operation explains self-move. The example directly defines RHS-first ordering and why an empty root cannot supply a field destination; no later judgment is required.",
+    "mathematics": "The single store w,w→ uses explicitly assumed whole Wrapper input and prior give syntax. No display equation or new metavariable occurs.",
+    "links": [
+      {
+        "occurrence": "assignment.example.rhs:1",
+        "role": "conceptual",
+        "rationale": "'giving' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.giving needed by this passage."
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "2c5de6389223a26e296ac00b858095b424c6d1203406c6d4d8508f334d855b56",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:095ffbfb34b5f680e29ec7cf978ffc17ac96dc172c42371f4ab92ba7f31088e2",
+    "audit:target:472873be00917a4ebf8d69e3b338f3e2a17aa6e7d92d58a52bc513ef0d20f263",
+    "audit:unit:given.executions",
+    "audit:unit:given.typing.execution",
+    "audit:unit:given.unpacking",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation. The star and k superscripts are the defining occurrences. The underlying extended step relation is linked in the sentence introducing them. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "0f1be3471b3504e4cae706d9af687dc837cc42c9971223a09dda96da0d17d7dc"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation.",
+    "mathematics": "The star and k superscripts are the defining occurrences. The underlying extended step relation is linked in the sentence introducing them.",
+    "links": [
+      {
+        "occurrence": "given.typing.execution:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'extended steps' refers to md/given.md#claim-given.unpacking for the concept or example setup used by this unit. The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation."
+      },
+      {
+        "occurrence": "given.typing.execution:2",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'given.executions' refers to md/given.md#claim-given.executions for the concept or example setup used by this unit. The extended steps and reflexive/transitive execution closure both link to operational definitions. This unit introduces the extended closure and counted-steps notation."
+      }
+    ]
+  }
+}

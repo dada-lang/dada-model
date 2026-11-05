@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "0777138983a807837761d1ee97fa83b5f7282d2607563bc446d99096ab2f1b7a",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:assignment.example.structs",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Struct kind and collector have direct links. Each row states its starting type, action and acceptance result. Unique-parent rejection, fixed permission and equal nominal layout key are described locally as the new behavior being motivated. The table defines Point, SharedPoint and Box in the preceding code. given/shared are the already introduced permissions; each row is explicitly an independent case, not a sequence.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "cccb289bb66cbb647158f927c5b4e42ab5bd152e396f53c96889d779cdc3a9bf"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Struct kind and collector have direct links. Each row states its starting type, action and acceptance result. Unique-parent rejection, fixed permission and equal nominal layout key are described locally as the new behavior being motivated.",
+    "mathematics": "The table defines Point, SharedPoint and Box in the preceding code. given/shared are the already introduced permissions; each row is explicitly an independent case, not a sequence.",
+    "links": [
+      {
+        "occurrence": "assignment.example.structs:1",
+        "role": "conceptual",
+        "rationale": "'Struct' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.struct needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.structs:2",
+        "role": "conceptual",
+        "rationale": "'collection' supplies the defining operation, predicate, syntax or setup at functions.md#claim-functions.gc needed by this passage."
+      }
+    ]
+  }
+}

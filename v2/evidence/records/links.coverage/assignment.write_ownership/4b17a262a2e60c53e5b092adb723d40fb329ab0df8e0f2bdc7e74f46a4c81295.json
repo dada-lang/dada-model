@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "284773ee97ca24195ec8d9b031100673237959c43d74781f3b69a1a32af37d01",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3d33b028ca981a0fc9321bf9e923e736057fee84a81a9b48d93048441c206c33",
+    "audit:target:5e03929e4988d8b830ec8720d1833303d97b64982fd4b88fe3359faceacf9240",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:assignment.write",
+    "audit:unit:assignment.write_ownership",
+    "audit:unit:shared.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links structural well-formedness, pending-root liveness and writable write. The incoming/displaced root exchange is explicit before collection; no age order or global acyclicity is assumed. No mathematical notation occurs. Pending references retain multiplicity and the optional displaced value is named explicitly in the ownership exchange.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links structural well-formedness, pending-root liveness and writable write. The incoming/displaced root exchange is explicit before collection; no age order or global acyclicity is assumed.",
+    "mathematics": "No mathematical notation occurs. Pending references retain multiplicity and the optional displaced value is named explicitly in the ownership exchange.",
+    "links": [
+      {
+        "occurrence": "assignment.write_ownership:1",
+        "role": "conceptual",
+        "rationale": "'structurally well formed' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.well_formed needed by this passage."
+      },
+      {
+        "occurrence": "assignment.write_ownership:2",
+        "role": "conceptual",
+        "rationale": "'pending references' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.pending_live needed by this passage."
+      },
+      {
+        "occurrence": "assignment.write_ownership:3",
+        "role": "conceptual",
+        "rationale": "'write to a writable slot' supplies the defining operation, predicate, syntax or setup at #claim-assignment.write needed by this passage."
+      }
+    ]
+  }
+}

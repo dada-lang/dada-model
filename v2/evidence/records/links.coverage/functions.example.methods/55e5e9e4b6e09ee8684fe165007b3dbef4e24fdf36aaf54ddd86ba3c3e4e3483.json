@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "b6b1f217585a92e8dc4ec88b74542559f787c31bfc1985a9a8fbed8d9d2a6865",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:unit:functions.example.methods",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained. The example uses concrete signatures and calls, not an unstated dispatch or overloading relation. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "a04af03b2ac0d03963ae3de3dbe6a65a09976a829f90aba977aa7b1d8694faa8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained.",
+    "mathematics": "The example uses concrete signatures and calls, not an unstated dispatch or overloading relation.",
+    "links": [
+      {
+        "occurrence": "functions.example.methods:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal declaration' refers to md/shared.md#claim-shared.declarations for the concept or example setup used by this unit. Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained."
+      },
+      {
+        "occurrence": "functions.example.methods:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'give operation' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links nominal kinds and give behavior. Point and both methods are declared locally, with receiver-first qualified call spelling explained."
+      }
+    ]
+  }
+}

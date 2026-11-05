@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "bundle": "2451b874171ba5e0231c1495c19c12e1ded13e9fff9cc385cc69a381aba9b1c3",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:2d5a0220b046aeeb28e78a457ca2eac1e7e33cc6215854481ba854ab97d51d3a",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:target:ca5509f1707e565d9c783f2764393e76a8754a765a01f785cc899eecd05325d8",
+    "audit:unit:assignment.example.overwrite_safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links shared-struct declarations, eager collection and the inherited completion obligation. The sole forward link explicitly says execution is defined below and states the minimal reached-state/no-frames conditions locally. The code binds s and locally declares SharedPoint. No new permission symbol or formal judgment is used; the finite-execution assertion is verbal and conditional at completion.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links shared-struct declarations, eager collection and the inherited completion obligation. The sole forward link explicitly says execution is defined below and states the minimal reached-state/no-frames conditions locally.",
+    "mathematics": "The code binds s and locally declares SharedPoint. No new permission symbol or formal judgment is used; the finite-execution assertion is verbal and conditional at completion.",
+    "links": [
+      {
+        "occurrence": "assignment.example.overwrite_safety:1",
+        "role": "conceptual",
+        "rationale": "'shared-struct' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.declarations needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.overwrite_safety:2",
+        "role": "conceptual",
+        "rationale": "'collection' supplies the defining operation, predicate, syntax or setup at functions.md#claim-functions.gc needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.overwrite_safety:3",
+        "role": "conceptual",
+        "rationale": "The explicitly signposted execution link supplies the later formal finite-execution definition; the example states the necessary reached-state and empty-stack behavior locally."
+      },
+      {
+        "occurrence": "assignment.example.overwrite_safety:4",
+        "role": "conceptual",
+        "rationale": "'completion obligation' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.finished_environment needed by this passage."
+      }
+    ]
+  }
+}

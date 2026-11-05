@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "d49543851c0497974daee89d8bbc1474c28b5472db688bec54682a8d20e66d97",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:03fcdaa7d9e64cc2b00dda8207ab21ed415e3086bcd48f75777b1e5df411cb28",
+    "audit:unit:given.executions",
+    "audit:unit:given.machine",
+    "audit:unit:given.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined. The one-step premise links the Step definition. Reflexivity and recursion define the starred execution relation in place. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "e2c7d8c43eff57b58209efee90e20675e689e9b66ec7bdf57a827c4d9052dbb5"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined.",
+    "mathematics": "The one-step premise links the Step definition. Reflexivity and recursion define the starred execution relation in place.",
+    "links": [
+      {
+        "occurrence": "given.executions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'statement steps' refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined."
+      },
+      {
+        "occurrence": "given.executions:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of \"\\\\Delta\\\\vdash K\\\\longrightarrow K'\" refers to md/given.md#claim-given.steps for the concept or example setup used by this unit. Defines reflexive/transitive finite execution and links its one-step premise. Recursive execution occurrences are locally defined."
+      }
+    ]
+  }
+}

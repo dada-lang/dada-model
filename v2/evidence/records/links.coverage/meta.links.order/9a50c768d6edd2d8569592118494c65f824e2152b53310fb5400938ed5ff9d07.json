@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "bundle": "897912c0ccfd24daa80c5a5ce57462fb7de171dccc48bb8e0e2f7ff796cfbce2",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a3fa21c5aa94e56b5c016eb821fbbcb248b4ac5a8136ebf7c4bb75e96c18874f",
+    "audit:target:e2a8996e1d48de8e7921a6bfb09f14a9fa9f213b2d19363568752083dc6c81c7",
+    "audit:target:ff0a789b2ecb06589ed5db3dd8a9f86c491709eb81a4abe737f911eff4c6d6d0",
+    "audit:unit:meta.links.order",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "All three reused audit concepts link their earlier definitions: inventory, coverage and target passage. Necessity, signposting and minimal use are each explained in this unit, including examples/cycles not being automatic exemptions. No object-language formula appears. Reading order is explicitly tied to the reviewed passage rather than an implicit mathematical relation. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "d8d9707029e00fcfc0f1df28b65b01efabacad22bdbdbc5f13a76050027709a6"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "All three reused audit concepts link their earlier definitions: inventory, coverage and target passage. Necessity, signposting and minimal use are each explained in this unit, including examples/cycles not being automatic exemptions.",
+    "mathematics": "No object-language formula appears. Reading order is explicitly tied to the reviewed passage rather than an implicit mathematical relation.",
+    "links": [
+      {
+        "occurrence": "meta.links.order:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'link inventory' refers to md/repo/link-audits.md#claim-meta.links.inventory for the concept or example setup used by this unit. All three reused audit concepts link their earlier definitions: inventory, coverage and target passage. Necessity, signposting and minimal use are each explained in this unit, including examples/cycles not being automatic exemptions."
+      },
+      {
+        "occurrence": "meta.links.order:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'coverage classification' refers to md/repo/link-audits.md#claim-meta.links.coverage for the concept or example setup used by this unit. All three reused audit concepts link their earlier definitions: inventory, coverage and target passage. Necessity, signposting and minimal use are each explained in this unit, including examples/cycles not being automatic exemptions."
+      },
+      {
+        "occurrence": "meta.links.order:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reviewed defining passage' refers to md/repo/link-audits.md#claim-meta.links.targets for the concept or example setup used by this unit. All three reused audit concepts link their earlier definitions: inventory, coverage and target passage. Necessity, signposting and minimal use are each explained in this unit, including examples/cycles not being automatic exemptions."
+      }
+    ]
+  }
+}

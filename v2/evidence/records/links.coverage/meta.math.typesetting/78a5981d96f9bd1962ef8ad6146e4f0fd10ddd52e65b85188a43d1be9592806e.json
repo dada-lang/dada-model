@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "bundle": "0a3bd758228246a8e05a889f3c7ad1a276a79bc5118f93bada0ebe7599809ffb",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:unit:meta.math.typesetting",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This is the defining contract for authored math delimiters and preservation. The distinction between raw-TeX and Markdown bodies, escaped output and browser typesetting is stated locally. Delimiter samples and grammar rendering are syntax examples, not equations relying on model concepts. No mathematical reference needs an external definition. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "0f93ec53d6560facefab1d6ab362b4b8101198f400c87244d2f145c2b18a66b8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "This is the defining contract for authored math delimiters and preservation. The distinction between raw-TeX and Markdown bodies, escaped output and browser typesetting is stated locally.",
+    "mathematics": "Delimiter samples and grammar rendering are syntax examples, not equations relying on model concepts. No mathematical reference needs an external definition.",
+    "links": []
+  }
+}

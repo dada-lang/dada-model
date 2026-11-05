@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "fff4231f5a4251deb71ee782031635775b01650f3bca44d53d1d5e7d5c985d1c",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:594ea809f0d04ba629b1de28589abf9e58c62a74c0f0c2c381cc09175e201d33",
+    "audit:target:b20705f3e353f94b364e5cbddd1eb281eec7a3997129b64ea696b10fd0a0febf",
+    "audit:unit:meta.syntax.heap.nodes",
+    "audit:unit:meta.syntax.heap.validation",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Node declarations and slot assignments now link separate precise passages. Validation conditions and allowed cyclic/conflicting graphs are stated directly, so readers are not asked to infer language ownership invariants. The α.f, vars.p and items[0] fragments illustrate the slot syntax supplied by the links; there is no mathematical inference relation. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "e826dbcd9c39bc91b60b9ee88001b49c95a8804cb5deee73e59669c1b7364da8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Node declarations and slot assignments now link separate precise passages. Validation conditions and allowed cyclic/conflicting graphs are stated directly, so readers are not asked to infer language ownership invariants.",
+    "mathematics": "The α.f, vars.p and items[0] fragments illustrate the slot syntax supplied by the links; there is no mathematical inference relation.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.heap.validation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'node' refers to md/repo/renderer-contracts.md#claim-meta.syntax.heap.constructors for the concept or example setup used by this unit. Node declarations and slot assignments now link separate precise passages. Validation conditions and allowed cyclic/conflicting graphs are stated directly, so readers are not asked to infer language ownership invariants."
+      },
+      {
+        "occurrence": "meta.syntax.heap.validation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'explicitly assigned slot' refers to md/repo/renderer-contracts.md#claim-meta.syntax.heap.slots for the concept or example setup used by this unit. Node declarations and slot assignments now link separate precise passages. Validation conditions and allowed cyclic/conflicting graphs are stated directly, so readers are not asked to infer language ownership invariants."
+      }
+    ]
+  }
+}

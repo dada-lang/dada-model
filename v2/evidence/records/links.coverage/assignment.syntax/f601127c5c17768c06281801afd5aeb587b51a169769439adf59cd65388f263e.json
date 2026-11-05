@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "22596998e6565cf7b5c4d68dcede1793e666294de45833d49760fee587763ae1",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:unit:assignment.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Places and Shared value expressions link their syntax; the inherited Destructor statement family is linked. Store p,e is introduced locally and calls remain statements rather than value expressions. p and e are bound to their syntactic domains immediately. No undeclared grammar variable or inferred receiver sugar is used.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "88cfb3253d4f82eb84c66a9f6793df6e7f1070857e5a65bb966b86bb055211c7"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Places and Shared value expressions link their syntax; the inherited Destructor statement family is linked. Store p,e is introduced locally and calls remain statements rather than value expressions.",
+    "mathematics": "p and e are bound to their syntactic domains immediately. No undeclared grammar variable or inferred receiver sugar is used.",
+    "links": [
+      {
+        "occurrence": "assignment.syntax:1",
+        "role": "conceptual",
+        "rationale": "'Destructor statements' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.declarations needed by this passage."
+      },
+      {
+        "occurrence": "assignment.syntax:2",
+        "role": "conceptual",
+        "rationale": "'place' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.syntax needed by this passage."
+      },
+      {
+        "occurrence": "assignment.syntax:3",
+        "role": "conceptual",
+        "rationale": "'Shared value expression' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.syntax needed by this passage."
+      }
+    ]
+  }
+}

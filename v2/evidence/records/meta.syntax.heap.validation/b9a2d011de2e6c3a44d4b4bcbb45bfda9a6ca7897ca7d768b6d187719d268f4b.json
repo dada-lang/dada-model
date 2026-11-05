@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "615560bad7a507bd18ef5016028a3eb300a47faa838af8d9f85dd1249796b8be",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/graph.rs:args",
+    "rust:mdbook-dada/src/graph.rs:edge_target",
+    "rust:mdbook-dada/src/graph.rs:identifier",
+    "rust:mdbook-dada/src/graph.rs:label",
+    "rust:mdbook-dada/src/graph.rs:parse",
+    "test:mdbook-dada/src/graph.rs:cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically",
+    "test:mdbook-dada/src/graph.rs:lease_tests::leases_join_edges_and_shleases_target_objects",
+    "test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices",
+    "test:mdbook-dada/src/graph.rs:tests::bad_facts_fail_instead_of_silently_changing_the_graph",
+    "test:mdbook-dada/src/graph.rs:tests::facts_render_unicode_fields_and_reference_kinds",
+    "test:mdbook-dada/src/graph.rs:tests::labels_are_escaped_and_quoted_commas_are_preserved",
+    "test:mdbook-dada/src/graph.rs:tests::variable_store_groups_slots_without_becoming_a_reference_target",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_array_size_boundary_preserves_all_slots",
+    "test:mdbook-dada/tests/renderer_contracts.rs:diagram_forward_references_and_aliases_preserve_distinct_edges",
+    "unit:meta.syntax.heap.nodes",
+    "unit:meta.syntax.heap.validation"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.heap.validation against rust:mdbook-dada/src/graph.rs:parse, rust:mdbook-dada/src/graph.rs:edge_target, test:mdbook-dada/src/graph.rs:tests::bad_facts_fail_instead_of_silently_changing_the_graph, test:mdbook-dada/src/graph.rs:tests::arrays_materialize_uninitialized_slots_and_validate_indices, test:mdbook-dada/src/graph.rs:lease_tests::leases_join_edges_and_shleases_target_objects, test:mdbook-dada/src/graph.rs:cycle_tests::cycles_self_loops_and_disconnected_cycles_render_deterministically, test:mdbook-dada/tests/renderer_contracts.rs:diagram_array_size_boundary_preserves_all_slots. parse rejects duplicate nodes/slots, absent targets, invalid projections and arrays above 64; edge_target requires leases to name an initialized owned or leased edge. Tests cover the 0/64/65 boundary, invalid targets and supports, variable-store restrictions and deterministic cyclic examples. Ownership cycles are intentionally accepted rather than presented as valid language states. Notation and judgment context was checked in unit:meta.syntax.heap.nodes. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "1412e948fdd32d8dba286f70485f3225a4557550d24268f02ce85ea12f28c6c0"
+  ]
+}

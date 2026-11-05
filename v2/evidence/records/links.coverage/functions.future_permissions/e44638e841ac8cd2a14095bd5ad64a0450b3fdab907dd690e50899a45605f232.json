@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "c6e5a2b9de4799d9e002660a2cead4f6cc5b94498996d0f2e2b28243818bed4f",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:unit:functions.future_permissions",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the current owned permission grammar and explicitly marks leased/generic defaults as intended extensions. P and place lists are introduced as proposed permissions; readable(P) is explicitly a candidate rather than a current predicate requiring a definition. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "2852464a5471cf16fc382874f968012e718c6be318ce45eef42f32733b99dcd8"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the current owned permission grammar and explicitly marks leased/generic defaults as intended extensions.",
+    "mathematics": "P and place lists are introduced as proposed permissions; readable(P) is explicitly a candidate rather than a current predicate requiring a definition.",
+    "links": [
+      {
+        "occurrence": "functions.future_permissions:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'owned permissions' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links the current owned permission grammar and explicitly marks leased/generic defaults as intended extensions."
+      }
+    ]
+  }
+}

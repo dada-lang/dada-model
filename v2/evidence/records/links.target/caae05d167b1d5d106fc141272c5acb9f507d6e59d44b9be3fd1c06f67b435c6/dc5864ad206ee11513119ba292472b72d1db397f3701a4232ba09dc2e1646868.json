@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "93f515ea82eb9d05564c84a79f119a127b0d2248efaac0236e2ea134fc81c1a0",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.environments directly introduces shared.typing.environments. Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SlotDescription is Option ValueType, distinguishing empty from absent lookup; Environment is a list with distinct variable keys. Environment.WellFormed requires Admissible (well-formed and normalized) inhabited descriptions. Replacement retains allocated variable keys, matching the freshness explanation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "2a613e500b9d7aa01245961ce2dc88c9db91995e2d9bd388be7684a34ed1d377"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.environments",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 14496,
+      "end": 14917
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.environments directly introduces shared.typing.environments. Defines slot descriptions and Γ together; links WF and normalized types. No give predicate is hidden here.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. SlotDescription is Option ValueType, distinguishing empty from absent lookup; Environment is a list with distinct variable keys. Environment.WellFormed requires Admissible (well-formed and normalized) inhabited descriptions. Replacement retains allocated variable keys, matching the freshness explanation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

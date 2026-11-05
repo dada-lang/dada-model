@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "136d860a31fd212c1110840701292acffa7c9f619486c2d70f23254c25bf34bd",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:9706361cb1416b8b1c72f68388e43e6c094bdc6596edd42a0dfa82b82f58194d",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/given-typing.md#claim-given.typing.forgetting directly introduces view weakening by inclusion of initialization observations. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation. Both sides of the pos/neg inclusions link the observation definitions. The weakening relation is the subject defined by those inclusions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "c25eeb6a1a6e112138e4909a777a0e4e88b58a32dbc1a070fc49e6bc31fb5309"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "view weakening by inclusion of initialization observations",
+    "definition": {
+      "path": "md/given-typing.md",
+      "start": 14566,
+      "end": 15732
+    },
+    "clarity": "The landing md/given-typing.md#claim-given.typing.forgetting directly introduces view weakening by inclusion of initialization observations. Normalization, base class, and the Pair example declarations link to their definitions. The prose explains the direction of information loss and distinguishes it from a runtime operation.",
+    "independence": "Both sides of the pos/neg inclusions link the observation definitions. The weakening relation is the subject defined by those inclusions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

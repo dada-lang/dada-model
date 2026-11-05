@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "b3816f7936fb32b4f3cb84a8e1a184a5c25ca114e3b7504f306364c1c1a13449",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:81ccfd540968c8bf6b777cea484df57e5dff4b61517968758cc9d5c6f20e3b23",
+    "context:AGENTS.md",
+    "context:link-chapter:md/dada/future-extensions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/dada/future-extensions.md#claim-future.path_permissions directly introduces future.path_permissions. The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation. P and T are locally bound; the displayed identity and absorption laws link through the preceding explanation to current normalization, while the path-dependent extension is explicitly unsettled. No later borrowing formalism is assumed. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "072f4df4077db86368aa8d632065842de22fb3b3a1cb6a64eec266a55a2f3c54"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "future.path_permissions",
+    "definition": {
+      "path": "md/dada/future-extensions.md",
+      "start": 1643,
+      "end": 3206
+    },
+    "clarity": "The landing md/dada/future-extensions.md#claim-future.path_permissions directly introduces future.path_permissions. The proposal distinguishes rooted place expressions from relative view paths with links to both definitions. Environment, effective path permission and current permission-normalization laws are linked. given[p] and its intended function signatures are introduced here as future notation.",
+    "independence": "P and T are locally bound; the displayed identity and absorption laws link through the preceding explanation to current normalization, while the path-dependent extension is explicitly unsettled. No later borrowing formalism is assumed. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

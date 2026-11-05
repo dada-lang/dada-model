@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "441989e19d048ec1f5d7a397e2328087ea4fee02755e3893c0f7f37527aa439e",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.return",
+    "audit:unit:functions.traces",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links public steps and introduces their reflexive/transitive closure. The starred arrow is the defining occurrence, with M and M-prime from the machine grammar. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "069736cb7c4eb8993299b73b266eebcd88e9e7ec7e4ccb15a8ab5af5d67c32cf"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links public steps and introduces their reflexive/transitive closure.",
+    "mathematics": "The starred arrow is the defining occurrence, with M and M-prime from the machine grammar.",
+    "links": [
+      {
+        "occurrence": "functions.traces:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'of steps' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links public steps and introduces their reflexive/transitive closure."
+      }
+    ]
+  }
+}

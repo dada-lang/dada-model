@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "bundle": "7eda9d10fc20d523858bc489c7f82c3320cb95e9975927221fb94c7f0345e0aa",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5feaa3debb95d06781802051db9bb937f0cf2ae9119c78f52303411d6677040d",
+    "audit:target:7008f276c3d9b1e7b7e0dd1dd6ad05416e22eba1998138393dee67df1cb9fcb3",
+    "audit:target:93b0073100a1df2dc923acaa3d817dec4290f9886e7187306ff9a42bbc2dd2d0",
+    "audit:target:a14dc4154473cd4e6b925fe365042cf755bfaefd1e260d6da362c2d9e498f9ca",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:unit:given.allocated",
+    "audit:unit:given.typing.base",
+    "audit:unit:given.typing.class_at",
+    "audit:unit:given.typing.observations",
+    "audit:unit:given.typing.read",
+    "audit:unit:given.typing.satisfaction",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition. base, pos, neg, read, and class-at each link at their uses. The models judgment is the defining occurrence here. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "eb45ce7674968b80a73e556daf0e36c837789f18fa3d516570c70072a6ffcb06"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition.",
+    "mathematics": "base, pos, neg, read, and class-at each link at their uses. The models judgment is the defining occurrence here.",
+    "links": [
+      {
+        "occurrence": "given.typing.satisfaction:1",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{base}' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:2",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{pos}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{read}' refers to md/given-typing.md#claim-given.typing.read for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'allocated object' refers to md/given.md#claim-given.allocated for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{class}' refers to md/given-typing.md#claim-given.typing.class_at for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{base}' refers to md/given-typing.md#claim-given.typing.base for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:7",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\operatorname{neg}' refers to md/given-typing.md#claim-given.typing.observations for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      },
+      {
+        "occurrence": "given.typing.satisfaction:8",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\mathsf{read}' refers to md/given-typing.md#claim-given.typing.read for the concept or example setup used by this unit. Allocated objects link to their predicate. The root class and all positive/negative obligations are stated as the complete satisfaction definition."
+      }
+    ]
+  }
+}

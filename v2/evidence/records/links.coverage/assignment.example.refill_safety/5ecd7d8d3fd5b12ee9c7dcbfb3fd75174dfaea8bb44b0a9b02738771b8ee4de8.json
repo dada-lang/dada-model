@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "bundle": "d195665377fe49f58076e1a80d9550f6a7e102f6b57e1f2b31c2f68ec29f85e2",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:2948fd23e337d523facb0a0bd8446f0c73151a1b3773cee11a0866dd45cc1d0a",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:ca5509f1707e565d9c783f2764393e76a8754a765a01f785cc899eecd05325d8",
+    "audit:unit:assignment.example.refill_safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links frames, destructor execution, consumption and unpacking. The complete code supplies declarations and locals. The forward execution link is signposted and only the stated finite reached-state alternatives and empty completion are needed at this point. No display mathematics occurs. The code binds self, w and r using prior destructor/binding syntax; the safety statement introduces no unbound judgment symbols.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links frames, destructor execution, consumption and unpacking. The complete code supplies declarations and locals. The forward execution link is signposted and only the stated finite reached-state alternatives and empty completion are needed at this point.",
+    "mathematics": "No display mathematics occurs. The code binds self, w and r using prior destructor/binding syntax; the safety statement introduces no unbound judgment symbols.",
+    "links": [
+      {
+        "occurrence": "assignment.example.refill_safety:1",
+        "role": "conceptual",
+        "rationale": "'frame' supplies the defining operation, predicate, syntax or setup at functions.md#claim-functions.machine needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.refill_safety:2",
+        "role": "conceptual",
+        "rationale": "'destructor call' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.execution needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.refill_safety:3",
+        "role": "conceptual",
+        "rationale": "'consumption obligation' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.finished_environment needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.refill_safety:4",
+        "role": "conceptual",
+        "rationale": "'unpacks it' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.bindings needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.refill_safety:5",
+        "role": "conceptual",
+        "rationale": "The explicitly signposted execution link supplies the later formal finite-execution definition; the example states the necessary reached-state and empty-stack behavior locally."
+      }
+    ]
+  }
+}

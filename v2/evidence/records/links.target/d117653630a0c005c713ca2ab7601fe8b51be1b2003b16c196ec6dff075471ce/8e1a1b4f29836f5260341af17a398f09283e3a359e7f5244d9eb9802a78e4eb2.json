@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "1df71cccb7e826463e56e1dd24fd071d6de623c8774b7269690f56030dcf072b",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:d117653630a0c005c713ca2ab7601fe8b51be1b2003b16c196ec6dff075471ce",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared.md#claim-shared.example.declarations directly introduces These declarations distinguish the [three forms](#claim-shared.declarations) without requiring primitive types:. Links kinds and the struct-field restriction. All accepted and rejected nominal declarations are local. No mathematical judgment is reused without a link; the empty-view observation restates that the restriction is nominal. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "60030d202c672b34eba0f6a1607b0640170555925ff5f44fb114825ca682e68b"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "These declarations distinguish the [three forms](#claim-shared.declarations) without requiring primitive types:",
+    "definition": {
+      "path": "md/shared.md",
+      "start": 4065,
+      "end": 4793
+    },
+    "clarity": "The landing md/shared.md#claim-shared.example.declarations directly introduces These declarations distinguish the [three forms](#claim-shared.declarations) without requiring primitive types:. Links kinds and the struct-field restriction. All accepted and rejected nominal declarations are local.",
+    "independence": "No mathematical judgment is reused without a link; the empty-view observation restates that the restriction is nominal. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

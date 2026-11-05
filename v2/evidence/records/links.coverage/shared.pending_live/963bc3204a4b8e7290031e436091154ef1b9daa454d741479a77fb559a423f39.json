@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "0109dabdda28d0a79b3d30f9631a4d8fd8334e8dce547588b243010c6d00cbe1",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "audit:unit:shared.live",
+    "audit:unit:shared.pending_live",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept. Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "7081ca6f20df029642b266c0695c4328ddc811717ae1b7b6a6632bb426de2fe1"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept.",
+    "mathematics": "Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "shared.pending_live:1",
+        "role": "conceptual",
+        "rationale": "'ordinary liveness' points backward to #claim-shared.live for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

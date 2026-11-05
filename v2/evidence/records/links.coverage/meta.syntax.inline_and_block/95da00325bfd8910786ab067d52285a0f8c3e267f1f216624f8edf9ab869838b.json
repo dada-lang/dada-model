@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "73004ebf51a9bc86480716f5f5b4e764df8eb00b35bf7ffbb17c5b89cb2e3492",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1f7a5686f1ade1d96f51f430abce68f4805e63ed85e8238b1c8780ae7b61da69",
+    "audit:target:83be7fbcf36059917cb21e26e5a9bdcd7b053305236cec331e30f20d2fee917b",
+    "audit:unit:meta.syntax.inline_and_block",
+    "audit:unit:meta.units.closed_body",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker. The unit has no formulas; braced directive names are explicitly introduced literal authoring syntax. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "8924a298b2f6a670857b6b1edcba25b1498876a5b2dce6f4e5966b283e2231d5"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker.",
+    "mathematics": "The unit has no formulas; braced directive names are explicitly introduced literal authoring syntax.",
+    "links": [
+      {
+        "occurrence": "meta.syntax.inline_and_block:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Inline roles' refers to md/repo/renderer-contracts.md#claim-meta.syntax.anchors.roles for the concept or example setup used by this unit. Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker."
+      },
+      {
+        "occurrence": "meta.syntax.inline_and_block:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'stable ID' refers to md/repo/renderer-contracts.md#claim-meta.syntax.anchors.identity for the concept or example setup used by this unit. Inline roles and stable IDs link their earlier definitions. Draft status now has a dedicated anchor at the sentence defining it. Other passages directly introduce directive kinds, removed syntax and the informational marker."
+      }
+    ]
+  }
+}

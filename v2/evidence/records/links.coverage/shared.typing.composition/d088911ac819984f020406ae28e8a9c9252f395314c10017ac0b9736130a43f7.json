@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "d489c17390b8c3c95426c34c14873e8a1e2a92550d998ea8a42cb6174c848cdf",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:8557225131afeda2c77da080e9cfe97df5b5b07d86c0c1eb30d4a94fec6402d3",
+    "audit:unit:shared.typing.composition",
+    "audit:unit:shared.typing.types",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links permission grammar; the unique table defines juxtaposition of outer and inner permissions. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.comp returns given only for the pair given/given and shared in the other three cases, exactly the four table cells. Both operands are permissions, not object classifications. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "d4de6fe284054af57ac3e24d304030f110213bd2ae960932bf3d9cc08a3e13c2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links permission grammar; the unique table defines juxtaposition of outer and inner permissions.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Perm.comp returns given only for the pair given/given and shared in the other three cases, exactly the four table cells. Both operands are permissions, not object classifications.",
+    "links": [
+      {
+        "occurrence": "shared.typing.composition:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'permission' refers to md/shared-typing.md#claim-shared.typing.types for the concept or example setup used by this unit. Links permission grammar; the unique table defines juxtaposition of outer and inner permissions."
+      }
+    ]
+  }
+}

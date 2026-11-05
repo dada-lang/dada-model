@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "2885e6a2c6728708de7fadb3733aadc7348af84970761a8bce3c4eeb0e8ac473",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5027e237be554f4900cfc87bba7610cfac1fcc235ce9fc10af2ff498a9d9290e",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "This landing introduces the named definition or concrete heap setup in its opening passage. Both links are backward concept links: evaluation supplies the pending-result context, and Live supplies the inherited variable/field reachability rules. R and Live(S;R) are introduced before use; S and object identities come from existing chapter syntax. The one new displayed inference rule defines pending membership as a root and uses only locally bound notation. The surrounding chapter supplies storage and reachability before using them. Both links are backward concept links: evaluation supplies the pending-result context, and Live supplies the inherited variable/field reachability rules. R and Live(S;R) are introduced before use; S and object identities come from existing chapter syntax. The one new displayed inference rule defines pending membership as a root and uses only locally bound notation. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "5dd2cecaf73c126b3d81344c97f6647e7839f4be11fd80af65d8452e8c168a13"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "given.live_pending",
+    "definition": {
+      "path": "md/given.md",
+      "start": 20705,
+      "end": 21430
+    },
+    "clarity": "This landing introduces the named definition or concrete heap setup in its opening passage. Both links are backward concept links: evaluation supplies the pending-result context, and Live supplies the inherited variable/field reachability rules. R and Live(S;R) are introduced before use; S and object identities come from existing chapter syntax. The one new displayed inference rule defines pending membership as a root and uses only locally bound notation.",
+    "independence": "The surrounding chapter supplies storage and reachability before using them. Both links are backward concept links: evaluation supplies the pending-result context, and Live supplies the inherited variable/field reachability rules. R and Live(S;R) are introduced before use; S and object identities come from existing chapter syntax. The one new displayed inference rule defines pending membership as a root and uses only locally bound notation."
+  }
+}

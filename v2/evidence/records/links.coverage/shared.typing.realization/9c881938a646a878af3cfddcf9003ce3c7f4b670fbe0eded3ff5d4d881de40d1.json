@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "bundle": "d794c384a1d96e936512ebf4453a938bf3d87ea4870593a86afa04f8836cc3ea",
+  "reviewer": "Codex /root/assignment_stack differential reviewer",
+  "provenance": "Codex /root/assignment_stack differential review during the Assignment soundness task, with the root agent separately inspecting and authorizing this bounded renewal. The reviewer examined the exact Shared wording delta, structural definition and Realizes premise, affected prior per-unit comparisons, and all three full relocated target excerpts. Unchanged comparison material is explicitly retained from the identified earlier active record after exact required key/path/hash comparison; this is not a claim of fresh independent re-review of all unchanged sources. New proof files and the updated AGENTS scope are conservative freshness context, and proof correctness is checked separately by Lean.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:79283484adee6a2142c00e38e1f1accde4d861bb79aa4ecbf735a13e187ee7c9",
+    "audit:target:7a4e714d94614dfcf82ae12cf39b0fc48783107cffa0afff778a59a28df6719d",
+    "audit:target:7d39039c16cb90355a163028b9b98dd00959710f1487f4433d5baf8d96f33e39",
+    "audit:target:8d81c7b4f11aeea46a624df3356f9dcaa7eda85398e02854dbe437303e0c69ea",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "audit:unit:shared.state",
+    "audit:unit:shared.typing.environments",
+    "audit:unit:shared.typing.realization",
+    "audit:unit:shared.typing.reference_realization",
+    "audit:unit:shared.typing.well_formed_classes",
+    "audit:unit:shared.typing.well_formed_types",
+    "audit:unit:shared.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Retained specific comparison from active record 81430ea7ebb24727c2d17af23dcd849d440cf2bd6de0c07997525d59a8f2881c: Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Realizes includes well-formed classes/environment, Admissible pending types, WellFormedWith ownership including pending roots, FieldsMatchClasses even on hidden fields, exact variable domains and per-variable/pending Satisfies. The revised prose explicitly requires normalized as well as well-formed types and keeps shared aliases' views independent. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness. Differential editorial renewal: exact required-input comparison admits only deletion of the obsolete word \"five\" in the Shared realization passage and the resulting five-byte source-range relocation. Every link occurrence identifier, destination, label, role, direction, and all other selected prose remain unchanged. The realization passage continues to introduce storage realization and require the linked structural clauses, so removal of the count does not change its role or prerequisites. All other defining spans preserve their exact selected text; the realization target preserves its text modulo precisely that deletion. The supplied audit assessment relocates only the verified spans and retains the earlier conceptual-link judgments.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative.",
+    "Differential renewal retains the identified prior comparison for byte-identical required material; it is not a fresh independent audit of every unchanged proof or chapter."
+  ],
+  "supersedes": [
+    "81430ea7ebb24727c2d17af23dcd849d440cf2bd6de0c07997525d59a8f2881c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. Realizes includes well-formed classes/environment, Admissible pending types, WellFormedWith ownership including pending roots, FieldsMatchClasses even on hidden fields, exact variable domains and per-variable/pending Satisfies. The revised prose explicitly requires normalized as well as well-formed types and keeps shared aliases' views independent.",
+    "links": [
+      {
+        "occurrence": "shared.typing.realization:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'variables' refers to md/shared-typing.md#claim-shared.typing.environments for the concept or example setup used by this unit. Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them."
+      },
+      {
+        "occurrence": "shared.typing.realization:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'storage' refers to md/shared.md#claim-shared.state for the concept or example setup used by this unit. Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them."
+      },
+      {
+        "occurrence": "shared.typing.realization:3",
+        "role": "conceptual",
+        "rationale": "This anchor_ref occurrence of 'shared.well_formed' refers to md/shared.md#claim-shared.well_formed for the concept or example setup used by this unit. Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them."
+      },
+      {
+        "occurrence": "shared.typing.realization:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'reference realization' refers to md/shared-typing.md#claim-shared.typing.reference_realization for the concept or example setup used by this unit. Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them."
+      },
+      {
+        "occurrence": "shared.typing.realization:5",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;S\\\\models r:T' refers to md/shared-typing.md#claim-shared.typing.reference_realization for the concept or example setup used by this unit. Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them."
+      },
+      {
+        "occurrence": "shared.typing.realization:6",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;S\\\\models r:T' refers to md/shared-typing.md#claim-shared.typing.reference_realization for the concept or example setup used by this unit. Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them."
+      },
+      {
+        "occurrence": "shared.typing.realization:7",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'table' refers to md/shared-typing.md#claim-shared.typing.well_formed_classes for the concept or example setup used by this unit. Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them."
+      },
+      {
+        "occurrence": "shared.typing.realization:8",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'types' refers to md/shared-typing.md#claim-shared.typing.well_formed_types for the concept or example setup used by this unit. Links variable descriptions, storage, structural WF, per-reference realization and table/type WF. Pending pairs are introduced immediately beside the relation that accounts for them."
+      }
+    ]
+  }
+}

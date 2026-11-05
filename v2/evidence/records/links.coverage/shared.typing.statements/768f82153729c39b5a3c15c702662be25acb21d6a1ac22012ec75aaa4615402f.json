@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "bundle": "577c07fe785cf7d88acf18ba8556a661ecc489c64a6aafe247ff6a399f8ef94f",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:given.typing.statements",
+    "audit:unit:shared.typing.bindings",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.statements",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links both expression and binding typing in prose and the rule premises; Let defines statement typing. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. StatementTyped.letValue composes ExprTyped before/middle with BindingTyped middle/after, exactly the two premises and final environment of the displayed Let rule. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "f0e0a99d0259e2e17312b9e80e11d27fcab1f9369e5ff1cf17e3386ffe42fe33"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links both expression and binding typing in prose and the rule premises; Let defines statement typing.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. StatementTyped.letValue composes ExprTyped before/middle with BindingTyped middle/after, exactly the two premises and final environment of the displayed Let rule.",
+    "links": [
+      {
+        "occurrence": "shared.typing.statements:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'expression typing' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links both expression and binding typing in prose and the rule premises; Let defines statement typing."
+      },
+      {
+        "occurrence": "shared.typing.statements:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'binding typing' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links both expression and binding typing in prose and the rule premises; Let defines statement typing."
+      },
+      {
+        "occurrence": "shared.typing.statements:3",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma\\\\vdash e:T\\\\;\\\\triangleright\\\\;\\\\Gamma_1' refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links both expression and binding typing in prose and the rule premises; Let defines statement typing."
+      },
+      {
+        "occurrence": "shared.typing.statements:4",
+        "role": "conceptual",
+        "rationale": "This math_jax occurrence of '\\\\Sigma;\\\\Gamma_1\\\\vdash b:T\\\\Rightarrow\\\\Gamma_2' refers to md/shared-typing.md#claim-shared.typing.bindings for the concept or example setup used by this unit. Links both expression and binding typing in prose and the rule premises; Let defines statement typing."
+      }
+    ]
+  }
+}

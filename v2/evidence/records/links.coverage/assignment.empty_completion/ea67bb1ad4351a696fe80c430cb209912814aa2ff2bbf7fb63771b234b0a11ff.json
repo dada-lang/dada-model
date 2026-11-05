@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "7d6004929a304afb88d3fcf600e13a33f1c2aef8fd4af800feb70bf0f5befc40",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:24e3c7dc5209ece714e42b1bf7e5d9c4a61c2cb441a3149889d25df098afcc3d",
+    "audit:target:352d218ae043b45463c8bd42b7601cfd2c44986b77b61a4e863108bdfaf7d0c2",
+    "audit:unit:assignment.empty_completion",
+    "audit:unit:assignment.machine",
+    "audit:unit:assignment.stack_typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the typed-configuration predicate and the finished/no-frames predicate; the conclusion is empty heap, not merely no roots. Both premises have earlier definitions. No mathematical notation occurs. The universal implication is expressed directly and does not claim termination.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the typed-configuration predicate and the finished/no-frames predicate; the conclusion is empty heap, not merely no roots. Both premises have earlier definitions.",
+    "mathematics": "No mathematical notation occurs. The universal implication is expressed directly and does not claim termination.",
+    "links": [
+      {
+        "occurrence": "assignment.empty_completion:1",
+        "role": "conceptual",
+        "rationale": "'typed configuration' supplies the defining operation, predicate, syntax or setup at #claim-assignment.stack_typing needed by this passage."
+      },
+      {
+        "occurrence": "assignment.empty_completion:2",
+        "role": "conceptual",
+        "rationale": "'no frames' supplies the defining operation, predicate, syntax or setup at #claim-assignment.finished needed by this passage."
+      }
+    ]
+  }
+}

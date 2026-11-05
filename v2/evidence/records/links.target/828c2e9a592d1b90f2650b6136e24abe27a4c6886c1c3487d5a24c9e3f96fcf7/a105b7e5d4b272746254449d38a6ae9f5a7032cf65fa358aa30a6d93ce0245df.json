@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "b9bee84f27b51b0c4ce91f3a7e118dcb1f34e370ec5b12e91ed428e2d49bac30",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:828c2e9a592d1b90f2650b6136e24abe27a4c6886c1c3487d5a24c9e3f96fcf7",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.giving directly introduces shared.typing.giving. Links environment, place syntax, relative path, pos, focus, perm and emptying. All three Γ′ cases use explicit linked operators; the source-retained shared case is not an unmentioned dynamic choice. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. give splits the source place into a root and suffix, requires an inhabited variable and successful focus, then has exactly the three displayed branches: preserve the environment for shared, empty the root for given/epsilon, or apply emptyPath for a given field. It depends only on the static descriptions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "506d601f15294104cdc49c048430eb94f212c6174e49b86183c3f678c683204a"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.giving",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 15168,
+      "end": 16675
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.giving directly introduces shared.typing.giving. Links environment, place syntax, relative path, pos, focus, perm and emptying. All three Γ′ cases use explicit linked operators; the source-retained shared case is not an unmentioned dynamic choice.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. give splits the source place into a root and suffix, requires an inhabited variable and successful focus, then has exactly the three displayed branches: preserve the environment for shared, empty the root for given/epsilon, or apply emptyPath for a given field. It depends only on the static descriptions. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

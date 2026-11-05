@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "49ad99de823af9f7f6f1ebf7205d7f94fe2f3abea001926468250ff31642da63",
+  "reviewer": "Codex assignment_views editorial reviewer",
+  "provenance": "Bounded review by /root/assignment_views using the spit-and-polish skill: read the final authored chapter, exact audit units and destination selections, current correspondence/link policy, and reading order. Earlier audit notes were used only for orientation; the current passages, occurrence sets and UTF-8 spans were re-examined. Reviewer authored some Assignment support proofs earlier; this editorial review does not claim independent proof review.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:assignment.context",
+    "audit:unit:assignment.view",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "context:md/repo/authoring.md",
+    "context:md/repo/link-audits.md",
+    "context:md/repo/writing-style.md",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links signed views and normalization. The replacement algorithm is defined here: preserve siblings, remove overwritten subtree, prefix incoming entries and normalize. Negative/unknown/whole distinctions come from the linked view definition. No mathematical expressions occur. Field paths are the earlier view paths; there is no new graph rank or mutation-order symbol.",
+  "limitations": [
+    "Editorial link/ordering assessment only; formal correspondence and proof checks are separate."
+  ],
+  "supersedes": [
+    "ec65f90c4ce937dfd34bbdd693b59c83d3a2a547b8fce9ab4df99b63b42b0981"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links signed views and normalization. The replacement algorithm is defined here: preserve siblings, remove overwritten subtree, prefix incoming entries and normalize. Negative/unknown/whole distinctions come from the linked view definition.",
+    "mathematics": "No mathematical expressions occur. Field paths are the earlier view paths; there is no new graph rank or mutation-order symbol.",
+    "links": [
+      {
+        "occurrence": "assignment.view:1",
+        "role": "conceptual",
+        "rationale": "'view' supplies the defining operation, predicate, syntax or setup at given-typing.md#claim-given.typing.views needed by this passage."
+      },
+      {
+        "occurrence": "assignment.view:2",
+        "role": "conceptual",
+        "rationale": "'normalized' supplies the defining operation, predicate, syntax or setup at given-typing.md#claim-given.typing.normalization needed by this passage."
+      }
+    ]
+  }
+}

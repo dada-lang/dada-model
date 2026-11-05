@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "9e8be31d98258496e9435fbab55646ec435052c5c34e5be6b540a9094fcd96ab",
+  "reviewer": "Codex renewal of reviewed comparison",
+  "provenance": "Retains the previous recorded semantic/editorial comparison after exact-content comparison of every required raw unit, source selection, audit input, and policy. Root reviewed the new proof-module boundary, current contributor instructions, and the explicit Shared wording correction; separate agents reviewed Assignment public theorem scope and changed chapter claims. This is renewal of unchanged reviewed inputs, not a new independent review of all historical proof bodies. Preparation/recording workers only enforce the comparison and write immutable artifacts.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0cdbf42c41e7e944b7cfdecf7bb762ce6c2d75970d563b592d053b10c0002f94",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Defines Droppable directly and links permissions/views, normalization, declared destructor and unknown view entries. The table states both cases without requiring the appendix to provide a missing condition. The selected defining body includes its local setup, conditions and direct prerequisite links. T is identified as the value type in the opening sentence. Droppable(T) is the defining occurrence, not an unlinked use. Whole normalization is linked. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result."
+  ],
+  "supersedes": [
+    "9e4c5d024cdee030c7595fe78a4e322feeda9836e185a2f0789232067f838745"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "droppable",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 10791,
+      "end": 11713
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Defines Droppable directly and links permissions/views, normalization, declared destructor and unknown view entries. The table states both cases without requiring the appendix to provide a missing condition.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. T is identified as the value type in the opening sentence. Droppable(T) is the defining occurrence, not an unlinked use. Whole normalization is linked."
+  }
+}
