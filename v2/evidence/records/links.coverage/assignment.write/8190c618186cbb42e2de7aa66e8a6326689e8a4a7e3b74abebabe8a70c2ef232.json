@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "bundle": "a6dd0c971c000d3abb6adaf1551570d830124280f049601fafeb28d8a64dcbed",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:b50fba7e62f9aaf161a6e1aaec2b60ca9f8ca33678e15facd8c24af1d87648a9",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:unit:assignment.syntax",
+    "audit:unit:assignment.write",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Defines writable slot, replaceability and write as the three adjacent runtime slot operations. Place syntax, resolution and struct kind have direct links. The unchanged identities/field names/counter specify write scope. No symbolic rules occur. Initialized versus empty local, uniquely accessible parent and displaced contents are spelled out in prose. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "1d093d1ecebc9d838767d32e8a51b472a52a35fea6bfce57d6e9c0337a72ef4a"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Defines writable slot, replaceability and write as the three adjacent runtime slot operations. Place syntax, resolution and struct kind have direct links. The unchanged identities/field names/counter specify write scope.",
+    "mathematics": "No symbolic rules occur. Initialized versus empty local, uniquely accessible parent and displaced contents are spelled out in prose.",
+    "links": [
+      {
+        "occurrence": "assignment.write:1",
+        "role": "conceptual",
+        "rationale": "'place' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.syntax needed by this passage."
+      },
+      {
+        "occurrence": "assignment.write:2",
+        "role": "conceptual",
+        "rationale": "'Resolving' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.resolution needed by this passage."
+      },
+      {
+        "occurrence": "assignment.write:3",
+        "role": "conceptual",
+        "rationale": "'struct' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.struct needed by this passage."
+      }
+    ]
+  }
+}

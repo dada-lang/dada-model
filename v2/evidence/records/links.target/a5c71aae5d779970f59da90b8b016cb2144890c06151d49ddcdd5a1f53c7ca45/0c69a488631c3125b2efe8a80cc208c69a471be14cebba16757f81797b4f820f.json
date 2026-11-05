@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "0dc085a3c0b61729a17b6881ab4c05b929d5b12b13e46a77c3bcd78ee0366a9b",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:a5c71aae5d779970f59da90b8b016cb2144890c06151d49ddcdd5a1f53c7ca45",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The unit landing directly introduces its named concept or example before supplying the conditions. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target. The selected defining body includes its local setup, conditions and direct prerequisite links. No new equations. Heap, allocation counter, active/suspended frames and roots are introduced in the paragraph before use. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "6badf5c705e5f1b170cee2707406ec061d22c79c1da8f942cdb074c818eef7dd"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "machine",
+    "definition": {
+      "path": "md/destructors.md",
+      "start": 16274,
+      "end": 17496
+    },
+    "clarity": "The unit landing directly introduces its named concept or example before supplying the conditions. Links Functions frames/exit, class obligations, eager GC and the Shared storage definition directly. The former representation link through a future appendix has been replaced by the actual storage target.",
+    "independence": "The selected defining body includes its local setup, conditions and direct prerequisite links. No new equations. Heap, allocation counter, active/suspended frames and roots are introduced in the paragraph before use."
+  }
+}

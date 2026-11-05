@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "d2684e7f16250499781dd61826f01d73d6c2ff4e11d0b83ea1ddfbb8da9a489f",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ca5509f1707e565d9c783f2764393e76a8754a765a01f785cc899eecd05325d8",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Finite execution is immediately defined as zero or more machine steps; initial frame/locals/result destination are then specified. Frame and step links point to the preceding Assignment machine unit. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "f30283fcc50022e46885e85047e71da9e73c2a56b78a32a62f9f93f9a12861a3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "finite execution and initial configuration",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 15027,
+      "end": 15262
+    },
+    "clarity": "The named unit opens with the defining passage for finite execution and initial configuration. Finite execution is immediately defined as zero or more machine steps; initial frame/locals/result destination are then specified. Frame and step links point to the preceding Assignment machine unit.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No mathematical symbols occur; zero-step and multi-step executions are included by the explicit zero-or-more wording."
+  }
+}

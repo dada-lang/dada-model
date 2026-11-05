@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "bundle": "f4b9b6dfc3c102ce7b45f858443289ef13bd1b1848d659a072be24aa47ebd96e",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:unit:assignment.syntax",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Places and Shared value expressions link their syntax; the inherited Destructor statement family is linked. Assignment p = e is introduced locally and calls remain statements rather than value expressions. p and e are bound to their syntactic domains immediately. No undeclared grammar variable or inferred receiver sugar is used. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "f601127c5c17768c06281801afd5aeb587b51a169769439adf59cd65388f263e"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Places and Shared value expressions link their syntax; the inherited Destructor statement family is linked. Assignment p = e is introduced locally and calls remain statements rather than value expressions.",
+    "mathematics": "p and e are bound to their syntactic domains immediately. No undeclared grammar variable or inferred receiver sugar is used.",
+    "links": [
+      {
+        "occurrence": "assignment.syntax:1",
+        "role": "conceptual",
+        "rationale": "'Destructor statements' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.declarations needed by this passage."
+      },
+      {
+        "occurrence": "assignment.syntax:2",
+        "role": "conceptual",
+        "rationale": "'place' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.syntax needed by this passage."
+      },
+      {
+        "occurrence": "assignment.syntax:3",
+        "role": "conceptual",
+        "rationale": "'Shared value expression' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.syntax needed by this passage."
+      }
+    ]
+  }
+}

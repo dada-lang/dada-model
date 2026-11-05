@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "bundle": "11f441cd24333541abd53264f5ac1b022296b7912e787ee4cd909cfdd56354e5",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2cce19ef6a71eb7d3cab3d2e2c78a524748e4bdf086d09a170c945dcbe7dcef9",
+    "audit:unit:given.typing.example.views",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Reviewed existing reference-order classification: {\"kind\": \"forward\", \"necessity\": \"The first view table distinguishes complete knowledge from complete initialization. Moving Full earlier also requires its pos/neg/class-at prerequisites before the first concrete views; moving the table later leaves signed views without this central concrete distinction. Splitting away its full/partial labels loses the contrast between unknown and known-empty fields. The preview states only that distinction.\", \"signposting\": \"The selected source passage explicitly identifies the following definition and limits the current preview: The [formal fullness predicate](#claim-given.typing.full) comes after this example;\\nonly this distinction is needed to read the table.\", \"signpost\": {\"path\": \"md/given-typing.md\", \"start\": 5062, \"end\": 5196}, \"minimal_use\": \"The opening sentences define full as accounting for every field recursively, including empty fields, and partial as leaving statuses unknown. The table needs only those facts, not the later quantified Full judgment.\"} Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "739cbf0b21ab54799292239eefc5330f93e33ebf23c80c8bb986edcd033385b8"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The first view table distinguishes complete knowledge from complete initialization. Moving Full earlier also requires its pos/neg/class-at prerequisites before the first concrete views; moving the table later leaves signed views without this central concrete distinction. Splitting away its full/partial labels loses the contrast between unknown and known-empty fields. The preview states only that distinction.",
+      "signposting": "The selected source passage explicitly identifies the following definition and limits the current preview: The [formal fullness predicate](#claim-given.typing.full) comes after this example;\nonly this distinction is needed to read the table.",
+      "signpost": {
+        "path": "md/given-typing.md",
+        "start": 5062,
+        "end": 5196
+      },
+      "minimal_use": "The opening sentences define full as accounting for every field recursively, including empty fields, and partial as leaving statuses unknown. The table needs only those facts, not the later quantified Full judgment."
+    }
+  }
+}

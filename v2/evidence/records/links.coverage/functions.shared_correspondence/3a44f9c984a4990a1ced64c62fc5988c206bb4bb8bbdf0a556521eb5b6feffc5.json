@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "bundle": "57efad39e413ffb02f50257d0a2cce9c64f26379c24462581eaa01fb28642d60",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "audit:target:b93aaea4503a07fedbbd13b9f9434e363c55c322542fe9e08528b00b4f58368e",
+    "audit:unit:functions.execution",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.shared_correspondence",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse. The translation is defined in prose here; no unintroduced relation or restriction to already-embedded endpoints weakens the claim. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "b7759663a9203c23c4008483d1b0aa9c5c8252096be276b74e6560522e5f0a20"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse.",
+    "mathematics": "The translation is defined in prose here; no unintroduced relation or restriction to already-embedded endpoints weakens the claim.",
+    "links": [
+      {
+        "occurrence": "functions.shared_correspondence:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared program configuration' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse."
+      },
+      {
+        "occurrence": "functions.shared_correspondence:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Functions stack' refers to md/functions.md#claim-functions.machine for the concept or example setup used by this unit. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse."
+      },
+      {
+        "occurrence": "functions.shared_correspondence:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared step' refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse."
+      },
+      {
+        "occurrence": "functions.shared_correspondence:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Functionsstep' refers to md/functions.md#claim-functions.execution for the concept or example setup used by this unit. Links both frame representations and both transition relations. Explains the embedding components and arbitrary-successor converse."
+      }
+    ]
+  }
+}

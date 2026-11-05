@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "bundle": "adbe0bdba6b7ff71059e99f6642b28f656c4b10e9042ed52f5950d1e30839dea",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:10c1f88291dcba5073f56e237308508dc39bc72af450fc04d5d24aef2a179522",
+    "audit:target:c06f361df57d349bc9196f76826fc1003e0906e16dcf0c94d3361d5b9113bc8a",
+    "audit:unit:meta.evidence.mechanical_execution",
+    "audit:unit:meta.examples.selection",
+    "audit:unit:meta.lean.definitions.navigation",
+    "audit:unit:meta.math.definition.selection",
+    "audit:unit:meta.math.judgment.selection",
+    "audit:unit:meta.math.overline.braces",
+    "audit:unit:meta.math.runtime",
+    "audit:unit:meta.math.source_view",
+    "audit:unit:meta.math.theorem.selection",
+    "audit:unit:meta.math.typesetting",
+    "audit:unit:meta.syntax.anchors.identity",
+    "audit:unit:meta.syntax.heap.nodes",
+    "audit:unit:meta.syntax.heap.rendering",
+    "audit:unit:meta.syntax.heap.routing",
+    "audit:unit:meta.syntax.heap.validation",
+    "audit:unit:meta.syntax.inline_and_block",
+    "audit:unit:meta.system.remaining_coverage",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/authoring.md",
+    "context:link-chapter:md/repo/evidence-pilot.md",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-chapter:md/repo/renderer-contracts.md",
+    "context:link-chapter:md/repo/spec-system.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Future notes link their definition and link audits link the earlier workflow introduction. The unit directly states which sources require which kind of evidence and separates receipts from semantic judgments. There are no formulas. Inventory membership, source selections and tests are concrete tooling terms described in this chapter, not unexplained model predicates. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "2908f19f4f302725756c82c45b325300b7d70cf634b721a4b09c53819d95f41c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Future notes link their definition and link audits link the earlier workflow introduction. The unit directly states which sources require which kind of evidence and separates receipts from semantic judgments.",
+    "mathematics": "There are no formulas. Inventory membership, source selections and tests are concrete tooling terms described in this chapter, not unexplained model predicates.",
+    "links": [
+      {
+        "occurrence": "meta.system.remaining_coverage:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Future notes' refers to md/repo/authoring.md#future-notes for the concept or example setup used by this unit. Future notes link their definition and link audits link the earlier workflow introduction. The unit directly states which sources require which kind of evidence and separates receipts from semantic judgments."
+      },
+      {
+        "occurrence": "meta.system.remaining_coverage:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'link audits' refers to md/repo/link-audits.md for the concept or example setup used by this unit. Future notes link their definition and link audits link the earlier workflow introduction. The unit directly states which sources require which kind of evidence and separates receipts from semantic judgments."
+      }
+    ]
+  }
+}

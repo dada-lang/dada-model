@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "fb4a23e406118bf01393b9ae8c91edef35999e37ba6b6184a7ca16df461d6ed3",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6aa0531d85c4fdc61f271f69981c61e81491e3580a5cc792370c4086d883ed5f",
+    "audit:target:7b056928ffebd347269af384eddc2497a6bf2c609af6e1d69692a57202a9732d",
+    "audit:target:9cc9154e3592cdc44cca3510ac58cfa325b84ffa766de384bb8a62113e702254",
+    "audit:unit:shared.example.frame_lifetime",
+    "audit:unit:shared.gc",
+    "audit:unit:shared.machine",
+    "audit:unit:shared.steps",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links frame execution/collection and follows the local declaration through initial-frame exit. Object allocation and the retained counter are concrete observations of the linked lifetime, not code-exhaustion completion. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "675380a7fa911bc11f843ef0d7e6a0908399b79ed8a9f20d3240eada4a080698"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links frame execution/collection and follows the local declaration through initial-frame exit.",
+    "mathematics": "Object allocation and the retained counter are concrete observations of the linked lifetime, not code-exhaustion completion.",
+    "links": [
+      {
+        "occurrence": "shared.example.frame_lifetime:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'step' refers to md/shared.md#claim-shared.steps for the concept or example setup used by this unit. Links frame execution/collection and follows the local declaration through initial-frame exit."
+      },
+      {
+        "occurrence": "shared.example.frame_lifetime:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'initial frame' refers to md/shared.md#claim-shared.machine for the concept or example setup used by this unit. Links frame execution/collection and follows the local declaration through initial-frame exit."
+      },
+      {
+        "occurrence": "shared.example.frame_lifetime:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'collects' refers to md/shared.md#claim-shared.gc for the concept or example setup used by this unit. Links frame execution/collection and follows the local declaration through initial-frame exit."
+      }
+    ]
+  }
+}

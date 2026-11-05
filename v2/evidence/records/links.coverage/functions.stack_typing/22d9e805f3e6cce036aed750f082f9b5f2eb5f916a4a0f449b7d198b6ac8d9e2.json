@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "bundle": "fc27bb17559dacc2e3b7c8656cb7164501610dc286d897fc4c8b3c59cec3ae30",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5b191b4ae73004553b8e41cc5f545f7c147cba689bcb49ef7849cef20bd54b19",
+    "audit:target:5b6edfc4552c30336364dae954c14a37455bd57d299ebed99a5460518636b203",
+    "audit:target:79283484adee6a2142c00e38e1f1accde4d861bb79aa4ecbf735a13e187ee7c9",
+    "audit:target:7dc073f30dfdeb7c8e9599d8a935c9ddd6bc39f688b2ff9fd1a3dd55453c75d7",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:target:f78441c792e16cb7665530cac47bed9846442559bb76d106a59cd567754e9d07",
+    "audit:unit:functions.bodies",
+    "audit:unit:functions.environments",
+    "audit:unit:functions.frame_slots",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.stack_typing",
+    "audit:unit:shared.typing.realization",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Retained specific comparison from active record 0b8d1ed96ea1be138d764fa43d7e0d7a1e9ddcde56754137be8da2222d20cb51: Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer. The ok judgment is introduced here; BodyFrom/ContinuationTyped/StackShape are explained as its components, not prerequisites assumed from a later proof. Inserted rootedness definitions and checked examples move later source positions. Unchanged target passages were relocated by exact-byte comparison; revised invariant passages and new links were reviewed directly. All added conceptual links point backward after moving Shared pending-liveness immediately after ordinary liveness. Differential editorial renewal: exact required-input comparison admits only deletion of the obsolete word \"five\" in the Shared realization passage and the resulting five-byte source-range relocation. Every link occurrence identifier, destination, label, role, direction, and all other selected prose remain unchanged. The realization passage continues to introduce storage realization and require the linked structural clauses, so removal of the count does not change its role or prerequisites. All other defining spans preserve their exact selected text; the realization target preserves its text modulo precisely that deletion. The supplied audit assessment relocates only the verified spans and retains the earlier conceptual-link judgments.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "Author editorial self-review. Extraction and byte ranges do not establish clarity by themselves. Earlier unchanged passages retain the prior review after exact-input comparison. Future notes remain nonnormative.",
+    "Differential renewal retains the identified prior comparison for byte-identical required material; it is not a fresh independent audit of every unchanged proof or chapter.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "59839a4607d730aa8411c22a9ad86900e6fbca48d4fd53c7e57a14ac769c5a28"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer.",
+    "mathematics": "The ok judgment is introduced here; BodyFrom/ContinuationTyped/StackShape are explained as its components, not prerequisites assumed from a later proof.",
+    "links": [
+      {
+        "occurrence": "functions.stack_typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'nominal' refers to md/shared-typing.md#claim-shared.typing.well_formed_classes for the concept or example setup used by this unit. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer."
+      },
+      {
+        "occurrence": "functions.stack_typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'callable tables must check' refers to md/functions.md#claim-functions.declaration_typing for the concept or example setup used by this unit. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer."
+      },
+      {
+        "occurrence": "functions.stack_typing:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'environment' refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer."
+      },
+      {
+        "occurrence": "functions.stack_typing:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'delivery typing judgment' refers to md/functions.md#claim-functions.destination_typing for the concept or example setup used by this unit. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer."
+      },
+      {
+        "occurrence": "functions.stack_typing:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'Shared realization' refers to md/shared-typing.md#claim-shared.typing.realization for the concept or example setup used by this unit. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer."
+      },
+      {
+        "occurrence": "functions.stack_typing:6",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'typed roots' refers to md/functions.md#claim-functions.frame_slots for the concept or example setup used by this unit. Links checked nominal/declaration tables, environments, delivery, Shared realization and typed roots. The table explains each continuation layer."
+      }
+    ]
+  }
+}

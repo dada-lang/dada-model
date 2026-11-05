@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "0f923d7bddd3e2dea760f82f24121b908ca92b0b329ae37e8125eefb3feb8c5c",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:target:c613d51b337553f7840537d47ff654108f354c8792db2e0d8d3b43d1244860a9",
+    "audit:unit:assignment.example.structs",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Struct kind and collector have direct links. Each row states its starting type, action and acceptance result. Unique-parent rejection, fixed permission and equal nominal layout key are described locally as the new behavior being motivated. The table defines Point, SharedPoint and Box in the preceding code. given/shared are the already introduced permissions; each row is explicitly an independent case, not a sequence. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "577783dd0d9137cedde2bc315b05c6de9fd2729e93c638a68b9b53c347174b94"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Struct kind and collector have direct links. Each row states its starting type, action and acceptance result. Unique-parent rejection, fixed permission and equal nominal layout key are described locally as the new behavior being motivated.",
+    "mathematics": "The table defines Point, SharedPoint and Box in the preceding code. given/shared are the already introduced permissions; each row is explicitly an independent case, not a sequence.",
+    "links": [
+      {
+        "occurrence": "assignment.example.structs:1",
+        "role": "conceptual",
+        "rationale": "'Struct' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.struct needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.structs:2",
+        "role": "conceptual",
+        "rationale": "'collection' supplies the defining operation, predicate, syntax or setup at functions.md#claim-functions.gc needed by this passage."
+      }
+    ]
+  }
+}

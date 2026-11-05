@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "bundle": "642c6d28e56fccca5144c3ec46f44b1d6f46d9862b916526a2fd37d0976d0310",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:455f3d7f447537aa0fc4042daa0558909e9db5d0ede20c6e0b8e1fdcf70b3924",
+    "audit:target:79283484adee6a2142c00e38e1f1accde4d861bb79aa4ecbf735a13e187ee7c9",
+    "audit:target:c68cfd5387727dd8e3d65abdcefc561b0dc5ba62b5affe424599439e9b0f70fc",
+    "audit:target:c6cd701ce483fad3d033629a3f92f2d016ca2977340a1b43992963d711dd3413",
+    "audit:target:c9745c51970acb073ecbefbf64865274eb6df89086faa2e49199f96f52a5d695",
+    "audit:unit:assignment.body_typing",
+    "audit:unit:assignment.completion",
+    "audit:unit:assignment.context",
+    "audit:unit:assignment.declaration_typing",
+    "audit:unit:assignment.program_typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The opening sentence defines program typing through linked class-table and declaration-table well-formedness. Main sequence typing, empty context and body completion each have direct local links. No symbolic judgment or free metavariable occurs. Main acceptance is expressed as initial/final context conditions. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "c21358dadc1be620a93d40f60587eee719aa97b62a6813dc9dce9c80dd8281ae"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The opening sentence defines program typing through linked class-table and declaration-table well-formedness. Main sequence typing, empty context and body completion each have direct local links.",
+    "mathematics": "No symbolic judgment or free metavariable occurs. Main acceptance is expressed as initial/final context conditions.",
+    "links": [
+      {
+        "occurrence": "assignment.program_typing:1",
+        "role": "conceptual",
+        "rationale": "'well-formed class table' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.well_formed_classes needed by this passage."
+      },
+      {
+        "occurrence": "assignment.program_typing:2",
+        "role": "conceptual",
+        "rationale": "'well-typed declaration table' supplies the defining operation, predicate, syntax or setup at #claim-assignment.declaration_typing needed by this passage."
+      },
+      {
+        "occurrence": "assignment.program_typing:3",
+        "role": "conceptual",
+        "rationale": "'checks' supplies the defining operation, predicate, syntax or setup at #claim-assignment.completion needed by this passage."
+      },
+      {
+        "occurrence": "assignment.program_typing:4",
+        "role": "conceptual",
+        "rationale": "'context' supplies the defining operation, predicate, syntax or setup at #claim-assignment.context needed by this passage."
+      },
+      {
+        "occurrence": "assignment.program_typing:5",
+        "role": "conceptual",
+        "rationale": "'completion obligation' supplies the defining operation, predicate, syntax or setup at #claim-assignment.body_typing needed by this passage."
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "17381a027ccfc30faa18793ecefa95832b47ca9badd69a95f38a291ea1bfe23a",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ff0a789b2ecb06589ed5db3dd8a9f86c491709eb81a4abe737f911eff4c6d6d0",
+    "context:AGENTS.md",
+    "context:link-chapter:md/repo/link-audits.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/repo/link-audits.md#claim-meta.links.coverage directly introduces Link-coverage review. The unit defines a coverage review and links the link inventory it classifies. It explicitly distinguishes missing-link judgment from occurrence-set checking, and explains navigation versus conceptual roles. Inline/display math are included in review scope; no formula is invoked by this meta definition itself. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "94da557eb41cf5e667b0c1e2d427007df91ff458dd2246b67092749063f2f0b3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Link-coverage review",
+    "definition": {
+      "path": "md/repo/link-audits.md",
+      "start": 2923,
+      "end": 3894
+    },
+    "clarity": "The landing md/repo/link-audits.md#claim-meta.links.coverage directly introduces Link-coverage review. The unit defines a coverage review and links the link inventory it classifies. It explicitly distinguishes missing-link judgment from occurrence-set checking, and explains navigation versus conceptual roles.",
+    "independence": "Inline/display math are included in review scope; no formula is invoked by this meta definition itself. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

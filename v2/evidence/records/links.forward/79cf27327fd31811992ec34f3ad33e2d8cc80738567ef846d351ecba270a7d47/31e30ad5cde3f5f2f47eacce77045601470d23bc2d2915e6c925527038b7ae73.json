@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "2928dca7b6a0f305a24989851a61237a9f0c145bf07e5fd205f27eb887a35a86",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ca5509f1707e565d9c783f2764393e76a8754a765a01f785cc899eecd05325d8",
+    "audit:unit:assignment.example.refill_safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The forward conceptual use is explicitly signposted and bounded to the stated execution boundary; the code and lifetime behavior remain self-contained while the later machine section supplies the formal definition. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "34bfd694e011517e74a79c76eefb5cae0091dbdb6f0e87b71231abee2c5f7e95"
+  ],
+  "audit": {
+    "kind": "forward",
+    "assessment": {
+      "kind": "forward",
+      "necessity": "The opening lifetime examples show why Assignment needs both fixed storage types and frame/collector safety before the static and operational definitions. Moving the full machine/execution definitions before these examples would introduce machinery before the behavior it explains; moving the examples after the rules would lose the requested examples-first chapter structure. The reference was reduced to the finite-execution boundary definition; statement typing and the general soundness theorem remain later and are not needed to read the code.",
+      "signposting": "The link itself says execution, defined below, explicitly identifying that the formal definition follows in this chapter.",
+      "signpost": {
+        "path": "md/assignment.md",
+        "start": 1599,
+        "end": 1654
+      },
+      "minimal_use": "Only finite repetition of steps and the reached-state alternatives are needed: the same sentence says each state has no frames or can step, and the adjacent completion clause says an empty frame stack leaves an empty heap. The example does not depend on the later stack-typing invariant or claim termination."
+    }
+  }
+}

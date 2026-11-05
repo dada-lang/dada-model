@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "9ee1f903318b4cf336067389970a5d6911a6de4bc6e2c1ba9b6532166dcfd4a1",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2948fd23e337d523facb0a0bd8446f0c73151a1b3773cee11a0866dd45cc1d0a",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:target:c8cc0b8b6abef8a10509119d2140141701f58f8925ed109a7a9eb157fbf76014",
+    "audit:unit:destructors.collection_safety",
+    "audit:unit:destructors.execution",
+    "audit:unit:destructors.heap_obligations",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes. No equations; the statement identifies raw and collected states in prose and gives the typed-source assumption. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "5c5487a35a3e0d54ba220e003a41cdfa07ef4ef9e81df7f5adf9e50079eccb3c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes.",
+    "mathematics": "No equations; the statement identifies raw and collected states in prose and gives the typed-source assumption.",
+    "links": [
+      {
+        "occurrence": "destructors.collection_safety:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'raw transition' supplies the definition or concrete example setup used here, at #claim-destructors.execution. Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes."
+      },
+      {
+        "occurrence": "destructors.collection_safety:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'typed configuration' supplies the definition or concrete example setup used here, at #claim-destructors.heap_obligations. Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes."
+      },
+      {
+        "occurrence": "destructors.collection_safety:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'struct fields have struct types' supplies the definition or concrete example setup used here, at shared.md#claim-shared.struct. Links raw transitions and typed configurations, and explicitly links the struct-field closure used to explain why garbage roots cannot hide classes."
+      }
+    ]
+  }
+}

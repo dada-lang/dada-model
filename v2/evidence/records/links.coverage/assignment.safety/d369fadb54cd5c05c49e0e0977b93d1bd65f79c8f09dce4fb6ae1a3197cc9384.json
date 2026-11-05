@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "bundle": "887905dcd8e4c1c98c3f46c8692795fc47d30cdce437d7eaa6a705090ead6580",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:203d6fcd4f4cb22c52af7aefab5a2b6a0080b20538c454d5928dcbc50ea9e40a",
+    "audit:target:24e3c7dc5209ece714e42b1bf7e5d9c4a61c2cb441a3149889d25df098afcc3d",
+    "audit:target:352d218ae043b45463c8bd42b7601cfd2c44986b77b61a4e863108bdfaf7d0c2",
+    "audit:target:48f69fd66c2ff1a3ca310d617921b131abdb2db405cd929c855065a0fcb9107c",
+    "audit:target:5a7219e1fd41219976eec9eebb6515ebcd880951a4601379a920abc74a64e7c9",
+    "audit:target:ca5509f1707e565d9c783f2764393e76a8754a765a01f785cc899eecd05325d8",
+    "audit:unit:assignment.execution",
+    "audit:unit:assignment.finished",
+    "audit:unit:assignment.machine",
+    "audit:unit:assignment.program_typing",
+    "audit:unit:assignment.safety",
+    "audit:unit:assignment.stack_typing",
+    "audit:unit:assignment.stuck",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links program typing, finite executions, configuration typing, finished, machine step and stuck to their distinct earlier definitions. Recursive calls are within the declaration model and the no-termination scope is explicit. No symbolic inference rules occur. Every finite execution prefix, not only terminating executions, is quantified in prose. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "0766eed41924dde882e0188ef15c599565fc5ebc6833e29c31ec3aa7c9d7cd91"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links program typing, finite executions, configuration typing, finished, machine step and stuck to their distinct earlier definitions. Recursive calls are within the declaration model and the no-termination scope is explicit.",
+    "mathematics": "No symbolic inference rules occur. Every finite execution prefix, not only terminating executions, is quantified in prose.",
+    "links": [
+      {
+        "occurrence": "assignment.safety:1",
+        "role": "conceptual",
+        "rationale": "'well-typed program' supplies the defining operation, predicate, syntax or setup at #claim-assignment.program_typing needed by this passage."
+      },
+      {
+        "occurrence": "assignment.safety:2",
+        "role": "conceptual",
+        "rationale": "'execution' supplies the defining operation, predicate, syntax or setup at #claim-assignment.execution needed by this passage."
+      },
+      {
+        "occurrence": "assignment.safety:3",
+        "role": "conceptual",
+        "rationale": "'typed configuration' supplies the defining operation, predicate, syntax or setup at #claim-assignment.stack_typing needed by this passage."
+      },
+      {
+        "occurrence": "assignment.safety:4",
+        "role": "conceptual",
+        "rationale": "'finished' supplies the defining operation, predicate, syntax or setup at #claim-assignment.finished needed by this passage."
+      },
+      {
+        "occurrence": "assignment.safety:5",
+        "role": "conceptual",
+        "rationale": "'machine step' supplies the defining operation, predicate, syntax or setup at #claim-assignment.machine needed by this passage."
+      },
+      {
+        "occurrence": "assignment.safety:6",
+        "role": "conceptual",
+        "rationale": "'stuck' supplies the defining operation, predicate, syntax or setup at #claim-assignment.stuck needed by this passage."
+      }
+    ]
+  }
+}

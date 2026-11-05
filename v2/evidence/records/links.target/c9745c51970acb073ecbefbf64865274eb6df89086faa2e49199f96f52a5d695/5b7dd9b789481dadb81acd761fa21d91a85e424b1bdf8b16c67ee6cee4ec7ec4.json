@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "6b5d119e1a780d25d83f326ea381acbb805f34696927aba762a53ca4a3489f10",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c9745c51970acb073ecbefbf64865274eb6df89086faa2e49199f96f52a5d695",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Result, destination and sequence typing are introduced directly; signature, fixed type and statement context are linked to their defining units. The subject is now separated from body/table/program acceptance. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "8f4dd9887d12b25d5b483da5d844b0dc0aba22f305c768bf0014d93cb0e48395"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "result, destination and sequence typing",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 18917,
+      "end": 19273
+    },
+    "clarity": "The named unit opens with the defining passage for result, destination and sequence typing. Result, destination and sequence typing are introduced directly; signature, fixed type and statement context are linked to their defining units. The subject is now separated from body/table/program acceptance.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No symbolic judgment is used without definition. Optional result and fresh destination cases are written out in prose; no formal metavariables occur."
+  }
+}

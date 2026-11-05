@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "99c33a2c230438f2d5ee11adb80c735516b8e8cbea902cb1a2fdbf6fe23bea2e",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:203d6fcd4f4cb22c52af7aefab5a2b6a0080b20538c454d5928dcbc50ea9e40a",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Defines stuck directly using linked finished and next-step predicates. The explicit statement that terminal configurations are not stuck closes the boundary distinction. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "4cb1eab3c1f1ab34bad05df2df3e7d041dbfd14553534460a1b4d88965ea06ae"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "stuck configurations",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 15581,
+      "end": 15778
+    },
+    "clarity": "The named unit opens with the defining passage for stuck configurations. Defines stuck directly using linked finished and next-step predicates. The explicit statement that terminal configurations are not stuck closes the boundary distinction.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No mathematical notation occurs; the conjunction of nonfinished and no successor is stated in words."
+  }
+}

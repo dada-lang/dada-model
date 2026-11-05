@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "405f5e4b93c9d519905a9ae4dc4c3803c0bc31d2ce16600587ef856c45e7fb72",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:12ac62ac6b3636d42586ef1215ffb3d9c59a5c338106ac62e5ce45738c47c5d7",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:unit:assignment.example.partial",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The negative view notation follows the opening setup and its linked view definition. The class-consumption and unpacking rules have direct links; the new distinction between fixed declared type and current empty slot is explained in the example itself. given Wrapper.{-resource} is the earlier signed-view notation. Wrapper, resource and r are given by the chapter setup and displayed pattern, with no free symbolic judgment. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "d755d65e712597062305aa364682a13edf998c80296ba97f4dba1bf6def62345"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The negative view notation follows the opening setup and its linked view definition. The class-consumption and unpacking rules have direct links; the new distinction between fixed declared type and current empty slot is explained in the example itself.",
+    "mathematics": "given Wrapper.{-resource} is the earlier signed-view notation. Wrapper, resource and r are given by the chapter setup and displayed pattern, with no free symbolic judgment.",
+    "links": [
+      {
+        "occurrence": "assignment.example.partial:1",
+        "role": "conceptual",
+        "rationale": "'class-consumption obligation' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.finished_environment needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.partial:2",
+        "role": "conceptual",
+        "rationale": "'Unpacking' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.bindings needed by this passage."
+      }
+    ]
+  }
+}

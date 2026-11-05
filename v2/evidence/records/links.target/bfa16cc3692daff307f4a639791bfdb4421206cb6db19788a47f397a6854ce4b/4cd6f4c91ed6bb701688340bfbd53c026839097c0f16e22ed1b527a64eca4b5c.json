@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "48f054f8ba61b0b7a6286e376b0b53d0e6f93e2c0eaec999751f4c563d426f8c",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:bfa16cc3692daff307f4a639791bfdb4421206cb6db19788a47f397a6854ce4b",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Links Shared expression/argument and binding judgments, fixed binding types and static store. Inherited call/drop execution is linked; the lifted context flow and RHS-then-store rule are described directly. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "2d495d87906a73ac9b72fa61413a7552df0de1bb03cec0ec14b075089136521f"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Assignment statement typing",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 11371,
+      "end": 12471
+    },
+    "clarity": "The named unit opens with the defining passage for Assignment statement typing. Links Shared expression/argument and binding judgments, fixed binding types and static store. Inherited call/drop execution is linked; the lifted context flow and RHS-then-store rule are described directly.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No display rules occur. Expression type and intermediate/output context are prose roles, with no free mathematical symbols."
+  }
+}

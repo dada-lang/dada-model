@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "1ba0ca10013775678545f8767f970de1ac711b557403ff7e74d2a5bf05b10869",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:455f3d7f447537aa0fc4042daa0558909e9db5d0ede20c6e0b8e1fdcf70b3924",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. The opening sentence introduces declaration-table typing, followed by distinct names, ordinary/destructor signature restrictions, body typing and whole-table recursion. Each prior rule family is directly linked. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "05dea3d9d84bbe1a591eef6e3a69c8122abb00ddfbaaf4128103dac347fb06c3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "declaration-table typing",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 20237,
+      "end": 20665
+    },
+    "clarity": "The named unit opens with the defining passage for declaration-table typing. The opening sentence introduces declaration-table typing, followed by distinct names, ordinary/destructor signature restrictions, body typing and whole-table recursion. Each prior rule family is directly linked.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No mathematical notation occurs. Recursion is stated as visibility of signatures throughout the table, without a termination symbol or assumption."
+  }
+}

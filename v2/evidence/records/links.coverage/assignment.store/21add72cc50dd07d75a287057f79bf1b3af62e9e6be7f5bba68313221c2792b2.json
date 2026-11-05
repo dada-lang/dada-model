@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "bundle": "7d50a6fd0930bcc72dbf98b7c3cb054157ef8617820c52297125dd3ab73f6340",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:250e67d7508718bea2e3571b83e4b2d80632b14c4db059cb7a01b9104100b14a",
+    "audit:target:2e73a816de64641201d0a60f2df58d7490dcf3352f6e52f13591043ab00ec548",
+    "audit:target:7a4e714d94614dfcf82ae12cf39b0fc48783107cffa0afff778a59a28df6719d",
+    "audit:target:85c6f5541eebb05cd28829f9fa8089766a5fcead98afdc63ae0b70b40094da6a",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:b5340345d5c1a330062f46dd7aecff3e03901ccbb687d8529683636a541bd272",
+    "audit:target:c6cd701ce483fad3d033629a3f92f2d016ca2977340a1b43992963d711dd3413",
+    "audit:target:d9c5c1c5761a75473183255de5010983d500396cb84fc756cd737aec2a76a638",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:assignment.context",
+    "audit:unit:assignment.store",
+    "audit:unit:assignment.view",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links context, evaluation, place domain, well-formedness, normalization, struct type, focus, field description and view replacement. Empty versus inaccessible destinations and post-RHS timing are explicit. No equations occur. The store operation and input/output roles are introduced locally, and all named helper concepts have links. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "014d4aba780946a396bd92a4034a2ed1ad2850331af3e75fa49f1b96adf213dc"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links context, evaluation, place domain, well-formedness, normalization, struct type, focus, field description and view replacement. Empty versus inaccessible destinations and post-RHS timing are explicit.",
+    "mathematics": "No equations occur. The store operation and input/output roles are introduced locally, and all named helper concepts have links.",
+    "links": [
+      {
+        "occurrence": "assignment.store:1",
+        "role": "conceptual",
+        "rationale": "'context' supplies the defining operation, predicate, syntax or setup at #claim-assignment.context needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:2",
+        "role": "conceptual",
+        "rationale": "'expression evaluation' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.evaluation needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:3",
+        "role": "conceptual",
+        "rationale": "'place' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.syntax needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:4",
+        "role": "conceptual",
+        "rationale": "'well formed' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.well_formed_types needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:5",
+        "role": "conceptual",
+        "rationale": "'normalized' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.normalization needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:6",
+        "role": "conceptual",
+        "rationale": "'struct type' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.struct needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:7",
+        "role": "conceptual",
+        "rationale": "'focus' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.focus needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:8",
+        "role": "conceptual",
+        "rationale": "'current field description' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.field needed by this passage."
+      },
+      {
+        "occurrence": "assignment.store:9",
+        "role": "conceptual",
+        "rationale": "'view replacement' supplies the defining operation, predicate, syntax or setup at #claim-assignment.view needed by this passage."
+      }
+    ]
+  }
+}

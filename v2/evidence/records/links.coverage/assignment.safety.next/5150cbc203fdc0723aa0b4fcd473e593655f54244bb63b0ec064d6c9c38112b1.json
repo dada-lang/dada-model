@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "c2528799b4dd54fd3d880c35ffc96aff282cf0164ec1fb891d43eedba6ead128",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:20fca3fa491d7c7a68129e3f9e2d5b387eb3c6d941988e37292bfe36206dff27",
+    "audit:unit:assignment.example.age",
+    "audit:unit:assignment.forward",
+    "audit:unit:assignment.safety.next",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The nonnormative future note links the established forward execution theorem and distinguishes unproved reverse/typing correspondence. Automatic destructor insertion and mutable leases remain deferred. It no longer calls p = e future surface syntax, and it contains no symbolic mathematics or new formal rule. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "1ccc45a75492695c995261970f7bc87fafb8c57e46e9fd3d0a66932cc39a22ce"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The future note links the established forward execution theorem and distinguishes unproved reverse/typing correspondence. Automatic destructor insertion and mutable leases remain explicitly deferred; the adopted p = e spelling is no longer incorrectly described as future work.",
+    "mathematics": "No code notation or display mathematics remains in this future note. Its forward-execution link names the established result; no new formal rule or mathematical claim is asserted.",
+    "links": [
+      {
+        "occurrence": "assignment.safety.next:1",
+        "role": "conceptual",
+        "rationale": "'forward execution theorem' supplies the defining operation, predicate, syntax or setup at #claim-assignment.forward needed by this passage."
+      }
+    ]
+  }
+}

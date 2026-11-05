@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "60b68d41ae90cfd6f755967047d2761da552959e994ca3076f53334e0bb1808e",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:24e3c7dc5209ece714e42b1bf7e5d9c4a61c2cb441a3149889d25df098afcc3d",
+    "audit:target:352d218ae043b45463c8bd42b7601cfd2c44986b77b61a4e863108bdfaf7d0c2",
+    "audit:unit:assignment.empty_completion",
+    "audit:unit:assignment.machine",
+    "audit:unit:assignment.stack_typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the typed-configuration predicate and the finished/no-frames predicate; the conclusion is empty heap, not merely no roots. Both premises have earlier definitions. No mathematical notation occurs. The universal implication is expressed directly and does not claim termination. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "ea67bb1ad4351a696fe80c430cb209912814aa2ff2bbf7fb63771b234b0a11ff"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the typed-configuration predicate and the finished/no-frames predicate; the conclusion is empty heap, not merely no roots. Both premises have earlier definitions.",
+    "mathematics": "No mathematical notation occurs. The universal implication is expressed directly and does not claim termination.",
+    "links": [
+      {
+        "occurrence": "assignment.empty_completion:1",
+        "role": "conceptual",
+        "rationale": "'typed configuration' supplies the defining operation, predicate, syntax or setup at #claim-assignment.stack_typing needed by this passage."
+      },
+      {
+        "occurrence": "assignment.empty_completion:2",
+        "role": "conceptual",
+        "rationale": "'no frames' supplies the defining operation, predicate, syntax or setup at #claim-assignment.finished needed by this passage."
+      }
+    ]
+  }
+}

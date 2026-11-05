@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "e66e95d686cc515f7fbca743b51d5bcb81334712e490a0b2f4de713b2b06d263",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:target:f3b9f2f7b42d9c0ada2e54700a2502d2cd46ea500d6c5737e1cb86f825ab46a1",
+    "audit:unit:assignment.context",
+    "audit:unit:assignment.view",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links signed views and normalization. The replacement algorithm is defined here: preserve siblings, remove overwritten subtree, prefix incoming entries and normalize. Negative/unknown/whole distinctions come from the linked view definition. No mathematical expressions occur. Field paths are the earlier view paths; there is no new graph rank or mutation-order symbol. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "da0d0f2a80e3b7d1a2860cc445b7277386a79f4ca8f033f808de19d04d0108b6"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links signed views and normalization. The replacement algorithm is defined here: preserve siblings, remove overwritten subtree, prefix incoming entries and normalize. Negative/unknown/whole distinctions come from the linked view definition.",
+    "mathematics": "No mathematical expressions occur. Field paths are the earlier view paths; there is no new graph rank or mutation-order symbol.",
+    "links": [
+      {
+        "occurrence": "assignment.view:1",
+        "role": "conceptual",
+        "rationale": "'view' supplies the defining operation, predicate, syntax or setup at given-typing.md#claim-given.typing.views needed by this passage."
+      },
+      {
+        "occurrence": "assignment.view:2",
+        "role": "conceptual",
+        "rationale": "'normalized' supplies the defining operation, predicate, syntax or setup at given-typing.md#claim-given.typing.normalization needed by this passage."
+      }
+    ]
+  }
+}

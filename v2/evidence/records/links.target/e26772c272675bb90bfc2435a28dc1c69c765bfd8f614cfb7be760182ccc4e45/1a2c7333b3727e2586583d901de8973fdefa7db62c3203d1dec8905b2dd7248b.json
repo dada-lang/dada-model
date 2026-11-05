@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "f91abe88e2dfb39511084b19d7ae8cd12abad65887b693c34e75d9937c476d5c",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e26772c272675bb90bfc2435a28dc1c69c765bfd8f614cfb7be760182ccc4e45",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Links context, evaluation, place domain, well-formedness, normalization, struct type, focus, field description and view replacement. Empty versus inaccessible destinations and post-RHS timing are explicit. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "0bdc0450fa322edc92be4fb7d39308c850d5f2c68f0a3d3c7cf8503cfbcb1826"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "static store operation",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 9721,
+      "end": 11113
+    },
+    "clarity": "The named unit opens with the defining passage for static store operation. Links context, evaluation, place domain, well-formedness, normalization, struct type, focus, field description and view replacement. Empty versus inaccessible destinations and post-RHS timing are explicit.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No equations occur. The store operation and input/output roles are introduced locally, and all named helper concepts have links."
+  }
+}

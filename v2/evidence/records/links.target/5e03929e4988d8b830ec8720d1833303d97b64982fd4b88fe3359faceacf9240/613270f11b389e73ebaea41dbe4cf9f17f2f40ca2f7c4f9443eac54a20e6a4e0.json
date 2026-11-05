@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "201224eee4986ef6c84ddc083c7234d87c8f1c2290be2e8066cb748beb32e89b",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5e03929e4988d8b830ec8720d1833303d97b64982fd4b88fe3359faceacf9240",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Defines writable slot, replaceability and write as the three adjacent runtime slot operations. Place syntax, resolution and struct kind have direct links. The unchanged identities/field names/counter specify write scope. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "7834b87c85686617af4e72c94d16f985e88710b0c437e1cd259e731460f7fda3"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "writable slots, replaceability and slot writes",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 12877,
+      "end": 13501
+    },
+    "clarity": "The named unit opens with the defining passage for writable slots, replaceability and slot writes. Defines writable slot, replaceability and write as the three adjacent runtime slot operations. Place syntax, resolution and struct kind have direct links. The unchanged identities/field names/counter specify write scope.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No symbolic rules occur. Initialized versus empty local, uniquely accessible parent and displaced contents are spelled out in prose."
+  }
+}

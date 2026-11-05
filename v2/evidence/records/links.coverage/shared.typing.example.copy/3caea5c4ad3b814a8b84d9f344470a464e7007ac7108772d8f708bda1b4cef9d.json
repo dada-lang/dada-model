@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "bundle": "2f3761f9177db36a88b9b37870ed302a0dd4c22ae6243ef0d515a9934fdf8e1d",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7827c8638b6970115936ff41d0bd17fb6c8ea4dc8682dbfa8f889a9d14265e4e",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:target:d6c2319422bc09f8bd5db42388b5e094818d235328c57f2f2ed44355c8fd76d1",
+    "audit:unit:given.patterns",
+    "audit:unit:given.typing.views",
+    "audit:unit:shared.example.copy_field",
+    "audit:unit:shared.give",
+    "audit:unit:shared.typing.example.copy",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-chapter:md/given.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links operational give, Given views and patterns. The upcoming permission grammar is explicitly signposted, with only the move/copy distinction required for this introductory table. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. copying_through_shared proves the four-statement typed execution and final b/s/u/v descriptions. It separately exhibits the first field give changing the stored owned reference to shared and the second give copying without a storage change. The prose attributes modes to references and does not claim the object itself is promoted. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "98b5310f07d28732fe79352ea0d3f4a12d09ae39f364902c409bbe5aba06444c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links operational give, Given views and patterns. The upcoming permission grammar is explicitly signposted, with only the move/copy distinction required for this introductory table.",
+    "mathematics": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. copying_through_shared proves the four-statement typed execution and final b/s/u/v descriptions. It separately exhibits the first field give changing the stored owned reference to shared and the second give copying without a storage change. The prose attributes modes to references and does not claim the object itself is promoted.",
+    "links": [
+      {
+        "occurrence": "shared.typing.example.copy:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'moves or copies' refers to md/shared.md#claim-shared.give for the concept or example setup used by this unit. Links operational give, Given views and patterns. The upcoming permission grammar is explicitly signposted, with only the move/copy distinction required for this introductory table."
+      },
+      {
+        "occurrence": "shared.typing.example.copy:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's types and views\" refers to md/given-typing.md#claim-given.typing.views for the concept or example setup used by this unit. Links operational give, Given views and patterns. The upcoming permission grammar is explicitly signposted, with only the move/copy distinction required for this introductory table."
+      },
+      {
+        "occurrence": "shared.typing.example.copy:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Given's unpacking patterns\" refers to md/given.md#claim-given.patterns for the concept or example setup used by this unit. Links operational give, Given views and patterns. The upcoming permission grammar is explicitly signposted, with only the move/copy distinction required for this introductory table."
+      }
+    ]
+  }
+}

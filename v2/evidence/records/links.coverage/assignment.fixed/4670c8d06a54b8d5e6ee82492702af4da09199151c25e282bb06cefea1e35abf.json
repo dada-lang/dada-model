@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "bundle": "5e9e9e971bc6aaad7b2562dbbb0ad7ddfed8b799ec4b6a052a9cb8d94a29c17a",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c6cd701ce483fad3d033629a3f92f2d016ca2977340a1b43992963d711dd3413",
+    "audit:target:e26772c272675bb90bfc2435a28dc1c69c765bfd8f614cfb7be760182ccc4e45",
+    "audit:unit:assignment.fixed",
+    "audit:unit:assignment.store",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Both static store and fixed binding map link their earlier definitions. The success premise and whole-map preservation conclusion are explicit. No mathematical notation appears, and no runtime hypothesis is silently used to explain this static result. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "d3d70b8ef90132a61cca95d06005f3631973fe076341031cea327e7beb838eb3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Both static store and fixed binding map link their earlier definitions. The success premise and whole-map preservation conclusion are explicit.",
+    "mathematics": "No mathematical notation appears, and no runtime hypothesis is silently used to explain this static result.",
+    "links": [
+      {
+        "occurrence": "assignment.fixed:1",
+        "role": "conceptual",
+        "rationale": "'static store' supplies the defining operation, predicate, syntax or setup at #claim-assignment.store needed by this passage."
+      },
+      {
+        "occurrence": "assignment.fixed:2",
+        "role": "conceptual",
+        "rationale": "'fixed binding map' supplies the defining operation, predicate, syntax or setup at #claim-assignment.context needed by this passage."
+      }
+    ]
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "bundle": "b36892aac2695629966dc0f2b98effc64e439e176b4df6c8779c97f0d595cbf2",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:0cdbf42c41e7e944b7cfdecf7bb762ce6c2d75970d563b592d053b10c0002f94",
+    "audit:target:2ad9184ea8f87bf25aa062eee2e8605a4933189e40f6aa461d5c7a04418b8674",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:target:828c2e9a592d1b90f2650b6136e24abe27a4c6886c1c3487d5a24c9e3f96fcf7",
+    "audit:target:ae725120a184408232d91138dfe3b23badf2783e25976f65d1874689a64f9d4d",
+    "audit:target:caae05d167b1d5d106fc141272c5acb9f507d6e59d44b9be3fd1c06f67b435c6",
+    "audit:unit:destructors.drop_typing",
+    "audit:unit:destructors.droppable",
+    "audit:unit:shared.typing.giving",
+    "context:AGENTS.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary. Γ, p, T and Γ′ are introduced immediately with the static Give operation. The numbered conditions use the linked Droppable definition; no separate inference-rule metavariables are assumed. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "521d4d43f8830a574ca81184bf059e374f5cd534d4201f88528bb621ba381b0c"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary.",
+    "mathematics": "Γ, p, T and Γ′ are introduced immediately with the static Give operation. The numbered conditions use the linked Droppable definition; no separate inference-rule metavariables are assumed.",
+    "links": [
+      {
+        "occurrence": "destructors.drop_typing:1",
+        "role": "conceptual",
+        "rationale": "The occurrence 'place' supplies the definition or concrete example setup used here, at shared.md#claim-shared.syntax. Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary."
+      },
+      {
+        "occurrence": "destructors.drop_typing:2",
+        "role": "conceptual",
+        "rationale": "The occurrence 'environment' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.environments. Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary."
+      },
+      {
+        "occurrence": "destructors.drop_typing:3",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Shared's static ordinary-give operation' supplies the definition or concrete example setup used here, at shared-typing.md#claim-shared.typing.giving. Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary."
+      },
+      {
+        "occurrence": "destructors.drop_typing:4",
+        "role": "navigation",
+        "rationale": "Optional appendix/chapter navigation: the source directly defines the example or links its needed concepts; this link only gathers further reading."
+      },
+      {
+        "occurrence": "destructors.drop_typing:5",
+        "role": "conceptual",
+        "rationale": "The occurrence 'destructor name' supplies the definition or concrete example setup used here, at #claim-destructors.declarations. Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary."
+      },
+      {
+        "occurrence": "destructors.drop_typing:6",
+        "role": "conceptual",
+        "rationale": "The occurrence 'Require Droppable(T)' supplies the definition or concrete example setup used here, at #claim-destructors.droppable. Links place, environment, static give, droppability, and destructor namespace. The core elaboration is explained locally with no forward dependency. Appendix navigation is supplementary."
+      }
+    ]
+  }
+}

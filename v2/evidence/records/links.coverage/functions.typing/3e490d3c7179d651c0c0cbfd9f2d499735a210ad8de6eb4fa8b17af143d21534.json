@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "bundle": "ac3f51bb397fdbf4fd578c0a0852079d87010c06dbf65bfe929eeb05e17aca93",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:1519957b346ed3fd6649d648fd9d4e65df5920f77d5cf0cacdcdb36125b4bf3c",
+    "audit:target:58f17a684fc230b323ae8c0c0a29e40b2208af121a7764998e534a69fd23250c",
+    "audit:target:5b191b4ae73004553b8e41cc5f545f7c147cba689bcb49ef7849cef20bd54b19",
+    "audit:target:e4a9d442d27574e8d317bfc7213da30bcf710dd2b2b9990352359b9edf4e7afa",
+    "audit:unit:functions.calls",
+    "audit:unit:functions.environments",
+    "audit:unit:functions.typing",
+    "audit:unit:shared.typing.expressions",
+    "audit:unit:shared.typing.statements",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links argument typing, destination installation, signatures, inherited local statements and environment WF. Call premises use those linked definitions; the rule binds the table entry and intermediate environment locally. Sequence typing is defined recursively here, with explicit WF for the empty sequence. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "59ebb99c82d94028acca9a6e54a43bf46753847f7df7b4d83358a23504d3f2dc"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links argument typing, destination installation, signatures, inherited local statements and environment WF.",
+    "mathematics": "Call premises use those linked definitions; the rule binds the table entry and intermediate environment locally. Sequence typing is defined recursively here, with explicit WF for the empty sequence.",
+    "links": [
+      {
+        "occurrence": "functions.typing:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Shared's argument judgment\" refers to md/shared-typing.md#claim-shared.typing.expressions for the concept or example setup used by this unit. Links argument typing, destination installation, signatures, inherited local statements and environment WF."
+      },
+      {
+        "occurrence": "functions.typing:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'destination judgment' refers to md/functions.md#claim-functions.destination_typing for the concept or example setup used by this unit. Links argument typing, destination installation, signatures, inherited local statements and environment WF."
+      },
+      {
+        "occurrence": "functions.typing:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'a signature' refers to md/functions.md#claim-functions.signatures for the concept or example setup used by this unit. Links argument typing, destination installation, signatures, inherited local statements and environment WF."
+      },
+      {
+        "occurrence": "functions.typing:4",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'their typing rule' refers to md/shared-typing.md#claim-shared.typing.statements for the concept or example setup used by this unit. Links argument typing, destination installation, signatures, inherited local statements and environment WF."
+      },
+      {
+        "occurrence": "functions.typing:5",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-formed environment' refers to md/functions.md#claim-functions.environments for the concept or example setup used by this unit. Links argument typing, destination installation, signatures, inherited local statements and environment WF."
+      }
+    ]
+  }
+}

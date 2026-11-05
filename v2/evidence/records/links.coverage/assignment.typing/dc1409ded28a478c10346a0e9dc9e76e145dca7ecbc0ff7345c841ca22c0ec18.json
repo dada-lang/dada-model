@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "bundle": "d8e6a12b0573cea967a96e7c0be3d874ba3975e2d36e77953513d9a7da3f4b9d",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1037b1d20e47357ec1334a3f0f8421804ab20d66c11a4c4af3924c387014a25d",
+    "audit:target:2948fd23e337d523facb0a0bd8446f0c73151a1b3773cee11a0866dd45cc1d0a",
+    "audit:target:7c12cc8de308730d11013a712675689f1aa95d1a9e512efc5a6b0cdbb8be868d",
+    "audit:target:c6cd701ce483fad3d033629a3f92f2d016ca2977340a1b43992963d711dd3413",
+    "audit:target:e26772c272675bb90bfc2435a28dc1c69c765bfd8f614cfb7be760182ccc4e45",
+    "audit:unit:assignment.context",
+    "audit:unit:assignment.store",
+    "audit:unit:assignment.syntax",
+    "audit:unit:assignment.typing",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Shared expression/argument and binding judgments, fixed binding types and static store. Inherited call/drop execution is linked; the lifted context flow and RHS-then-store rule are described directly. No display rules occur. Expression type and intermediate/output context are prose roles, with no free mathematical symbols. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "3201c313c5987d9ef373cc2afe27a677312b34a5de7c9f045b0e5444510c54c1"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Shared expression/argument and binding judgments, fixed binding types and static store. Inherited call/drop execution is linked; the lifted context flow and RHS-then-store rule are described directly.",
+    "mathematics": "No display rules occur. Expression type and intermediate/output context are prose roles, with no free mathematical symbols.",
+    "links": [
+      {
+        "occurrence": "assignment.typing:1",
+        "role": "conceptual",
+        "rationale": "'Shared judgments' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.expressions needed by this passage."
+      },
+      {
+        "occurrence": "assignment.typing:2",
+        "role": "conceptual",
+        "rationale": "'Shared's binding judgment' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.bindings needed by this passage."
+      },
+      {
+        "occurrence": "assignment.typing:3",
+        "role": "conceptual",
+        "rationale": "'binding types' supplies the defining operation, predicate, syntax or setup at #claim-assignment.context needed by this passage."
+      },
+      {
+        "occurrence": "assignment.typing:4",
+        "role": "conceptual",
+        "rationale": "'static store operation' supplies the defining operation, predicate, syntax or setup at #claim-assignment.store needed by this passage."
+      },
+      {
+        "occurrence": "assignment.typing:5",
+        "role": "conceptual",
+        "rationale": "'Calls and struct drops' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.execution needed by this passage."
+      }
+    ]
+  }
+}

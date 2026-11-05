@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "bundle": "8371bc4603ff80419397fe280e90fa70b0464a294d96f745a2781ece36a5b059",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:1351e1c6cc8ff51db610855b1d6e4c1572ca7e99bf1cc523d1aba6d737c4b45f",
+    "audit:target:9152f90a41f757fc02cb545765b11e8fad2e3801166666165f01b88d1a383bb0",
+    "audit:target:de8c17107cd2bbf6e44d0bf15ada676d4d817578ead32b69effa4f7154e93041",
+    "audit:unit:given.typing.configurations",
+    "audit:unit:given.typing.observation",
+    "audit:unit:given.typing.realization",
+    "audit:unit:given.typing.safety",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links the typed statement sequence and storage realization. Separates the pre-exit local observation from terminal completion. The n-statement witness and the later frame-pop are scoped explicitly; the final environment describes only the former. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "e2e61ae45a7e04f1f6f5a78b375122c0b823c40a57f1fb770e1ae960cb6d7726"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links the typed statement sequence and storage realization. Separates the pre-exit local observation from terminal completion.",
+    "mathematics": "The n-statement witness and the later frame-pop are scoped explicitly; the final environment describes only the former.",
+    "links": [
+      {
+        "occurrence": "given.typing.observation:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'well-typed live frame' refers to md/given-typing.md#claim-given.typing.configurations for the concept or example setup used by this unit. Links the typed statement sequence and storage realization. Separates the pre-exit local observation from terminal completion."
+      },
+      {
+        "occurrence": "given.typing.observation:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'program steps' refers to md/given-typing.md#claim-given.typing.execution for the concept or example setup used by this unit. Links the typed statement sequence and storage realization. Separates the pre-exit local observation from terminal completion."
+      },
+      {
+        "occurrence": "given.typing.observation:3",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'realize the final environment' refers to md/given-typing.md#claim-given.typing.realization for the concept or example setup used by this unit. Links the typed statement sequence and storage realization. Separates the pre-exit local observation from terminal completion."
+      }
+    ]
+  }
+}

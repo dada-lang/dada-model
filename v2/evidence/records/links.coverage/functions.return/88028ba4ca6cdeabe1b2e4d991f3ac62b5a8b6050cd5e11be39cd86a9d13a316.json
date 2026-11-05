@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "ac76000f7744039167356266edebd7bc48734220032556411b6a54920b487d60",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:dfe51064f53962b0edfe32647490b0d70d49985aed70af75c9de8b4a78e473d3",
+    "audit:target:f84a0fddcda381a313a8b4a78be4323784efa68253fe339f924ceb24e65ebf99",
+    "audit:unit:functions.machine",
+    "audit:unit:functions.return",
+    "audit:unit:shared.give",
+    "context:AGENTS.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links optional references and Shared expression evaluation. Defines optional evaluation and delivery's two cases. S/r/u and V/d are locally described; absence matching and fresh binding are the complete delivery rules, not an implicit discard operation. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "5aa8888b6366c88d3858fa6dc83f26af3c3e7ef5012b8bbd161d18693adaede7"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links optional references and Shared expression evaluation. Defines optional evaluation and delivery's two cases.",
+    "mathematics": "S/r/u and V/d are locally described; absence matching and fresh binding are the complete delivery rules, not an implicit discard operation.",
+    "links": [
+      {
+        "occurrence": "functions.return:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'optional reference' refers to md/shared.md#claim-shared.references for the concept or example setup used by this unit. Links optional references and Shared expression evaluation. Defines optional evaluation and delivery's two cases."
+      },
+      {
+        "occurrence": "functions.return:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of \"Shared's value evaluation\" refers to md/shared.md#claim-shared.evaluation for the concept or example setup used by this unit. Links optional references and Shared expression evaluation. Defines optional evaluation and delivery's two cases."
+      }
+    ]
+  }
+}

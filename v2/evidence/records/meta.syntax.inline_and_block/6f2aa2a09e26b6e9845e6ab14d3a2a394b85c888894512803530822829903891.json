@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "bundle": "070892642fd0b0cd4d5c7ff695b146aec0ea5080b81822cee0659928a2de7757",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "context:AGENTS.md",
+    "policy:md/repo/correspondence-review.md",
+    "rust:mdbook-dada/src/configuration.rs:SourceConfiguration::validate_chapters",
+    "rust:mdbook-dada/src/lib.rs:chapter_roles",
+    "rust:mdbook-dada/src/lib.rs:directive_blocks",
+    "rust:mdbook-dada/src/lib.rs:process_with_roots",
+    "rust:mdbook-dada/src/lib.rs:relative_html",
+    "rust:mdbook-dada/src/lib.rs:render",
+    "rust:mdbook-dada/src/lib.rs:render_role",
+    "rust:mdbook-dada/src/lib.rs:roles",
+    "rust:mdbook-dada/src/units.rs:parse_block",
+    "test:mdbook-dada/tests/book.rs:block_directives_are_distinct_from_literal_code_and_inline_roles",
+    "test:mdbook-dada/tests/book.rs:cross_references_traverse_to_parent_and_bad_references_fail",
+    "test:mdbook-dada/tests/book.rs:generated_grammar_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:indexes_forward_references_and_nested_chapters",
+    "test:mdbook-dada/tests/book.rs:inferred_judgment_and_rule_directives_require_migration",
+    "test:mdbook-dada/tests/book.rs:informational_paragraphs_preserve_markdown_and_literal_examples",
+    "test:mdbook-dada/tests/book.rs:literal_examples_are_not_anchors",
+    "test:mdbook-dada/tests/book.rs:typed_anchor_roles_share_ids_and_references_without_implying_proofs",
+    "test:mdbook-dada/tests/evidence_validation.rs:actual_mdbook_pipeline_rejects_includes_in_reviewed_content",
+    "test:mdbook-dada/tests/evidence_validation.rs:authored_includes_and_nested_citations_cannot_acquire_evidence",
+    "test:mdbook-dada/tests/evidence_validation.rs:preexpanded_includes_cannot_bypass_original_source_validation",
+    "test:mdbook-dada/tests/units.rs:draft_status_is_explicit_and_does_not_relax_citation_checks",
+    "test:mdbook-dada/tests/units.rs:drafts_keep_their_semantic_kind_without_claiming_a_formalization",
+    "test:mdbook-dada/tests/units.rs:removed_obligation_syntax_is_rejected_at_every_authoring_entry_point",
+    "test:mdbook-dada/tests/units.rs:structured_units_reject_includes_and_nested_legacy_citations",
+    "unit:meta.syntax.anchors.identity",
+    "unit:meta.syntax.inline_and_block",
+    "unit:meta.units.closed_body"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Comparison for unit:meta.syntax.inline_and_block against rust:mdbook-dada/src/units.rs:parse_block, rust:mdbook-dada/src/lib.rs:directive_blocks, rust:mdbook-dada/src/lib.rs:render, test:mdbook-dada/tests/book.rs:block_directives_are_distinct_from_literal_code_and_inline_roles, test:mdbook-dada/tests/book.rs:informational_paragraphs_preserve_markdown_and_literal_examples, test:mdbook-dada/tests/book.rs:generated_grammar_directives_require_migration, test:mdbook-dada/tests/book.rs:inferred_judgment_and_rule_directives_require_migration, test:mdbook-dada/tests/units.rs:drafts_keep_their_semantic_kind_without_claiming_a_formalization, test:mdbook-dada/tests/units.rs:draft_status_is_explicit_and_does_not_relax_citation_checks, test:mdbook-dada/tests/units.rs:removed_obligation_syntax_is_rejected_at_every_authoring_entry_point. directive_blocks distinguishes brace-prefixed supported fences from ordinary language fences; parse_block retains semantic kind under draft status while still checking supplied citations; render rejects legacy inferred forms and paragraph examples. Tests cover literals, informational Markdown, old syntax diagnostics, draft forms and removed obligations at all entry points. The closed-body dependency supplies the structured nesting boundary. Notation and judgment context was checked in unit:meta.units.closed_body. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "d06921bb4c1d4a5b5fb4ed70c4928feccd746111bec4a3a81aca427dd244a334"
+  ]
+}

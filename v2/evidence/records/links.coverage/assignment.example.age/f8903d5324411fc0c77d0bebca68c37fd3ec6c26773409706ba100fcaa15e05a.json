@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "6d9e5ac6a3617554106f8ead9fe3a7405cf6e4c4d69657fe550de54760ed3618",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:assignment.example.age",
+    "audit:unit:assignment.machine",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The concrete wrapper/resource identities and store are locally described, following machine/store definitions. The structural invariant is linked; the prose names rootedness and compatible ownership while explicitly excluding an allocation-age requirement. The numeric IDs 1 and 2 and the age comparison are concrete values, not new mathematical metavariables. No rank or graph-order symbol is introduced. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "f13d16f2c101546b1c15c81fe7a66f83ea88b04fe49527d56bc6b177f696d7f3"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The concrete wrapper/resource identities and store are locally described, following machine/store definitions. The structural invariant is linked; the prose names rootedness and compatible ownership while explicitly excluding an allocation-age requirement.",
+    "mathematics": "The numeric IDs 1 and 2 and the age comparison are concrete values, not new mathematical metavariables. No rank or graph-order symbol is introduced.",
+    "links": [
+      {
+        "occurrence": "assignment.example.age:1",
+        "role": "conceptual",
+        "rationale": "'structural heap invariant' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.well_formed needed by this passage."
+      }
+    ]
+  }
+}

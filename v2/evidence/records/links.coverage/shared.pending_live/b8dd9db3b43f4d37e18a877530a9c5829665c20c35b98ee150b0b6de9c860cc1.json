@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "bundle": "dcf1a87e065a6b25d31f413414512abf222d8f8b746c32d4c978065a8956dc4f",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7907ffb505327a028a21674e83136ba3ad0803fa3d2ca984a9405fcbfe53c140",
+    "audit:unit:shared.live",
+    "audit:unit:shared.pending_live",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept. Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "963bc3204a4b8e7290031e436091154ef1b9daa454d741479a77fb559a423f39"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept.",
+    "mathematics": "Ordinary liveness links backward to shared.live; pending values and the reference list are introduced in prose. No new mathematical metavariable or forward link is used. This is a separate clear landing for the new pending-root concept. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "shared.pending_live:1",
+        "role": "conceptual",
+        "rationale": "'ordinary liveness' points backward to #claim-shared.live for the definition or concrete setup used here."
+      }
+    ]
+  }
+}

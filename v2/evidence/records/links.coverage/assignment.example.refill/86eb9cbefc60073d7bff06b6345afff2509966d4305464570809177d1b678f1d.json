@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "398b9029e5d5c2878429216fae4ee8c6c67b74db9e544aaef8ff78653b5cc952",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5f127f7ce5c25b7a934da39d8bf81127a2ce186d1d2d766e54ced7a1fdcfd76b",
+    "audit:target:964a3a8e841431e6212c9238cd6011934afdc34c981a24713f7ca20ba3b8a2af",
+    "audit:unit:assignment.example.refill",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/given-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The example locally introduces assignment p = e as installing e into slot p, links destructors and negative view entries, and declares the nominal classes and field used by the program. It does not rely on a later inference rule to explain its result. The type given Wrapper.{-resource} uses the linked signed-view syntax. p and e are identified as destination slot and incoming value in the defining sentence; code names are locally declared/assumed. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "5be69729c71bf655bf5622cf6d3560fc9cc2c2cdb91401d20e1ed30850d4b7d5"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The example locally introduces assignment p = e as installing e into slot p, links destructors and negative view entries, and declares the nominal classes and field used by the program. It does not rely on a later inference rule to explain its result.",
+    "mathematics": "The type given Wrapper.{-resource} uses the linked signed-view syntax. p and e are identified as destination slot and incoming value in the defining sentence; code names are locally declared/assumed.",
+    "links": [
+      {
+        "occurrence": "assignment.example.refill:1",
+        "role": "conceptual",
+        "rationale": "'destructor' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.declarations needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.refill:2",
+        "role": "conceptual",
+        "rationale": "'negative view entry' supplies the defining operation, predicate, syntax or setup at given-typing.md#claim-given.typing.views needed by this passage."
+      }
+    ]
+  }
+}

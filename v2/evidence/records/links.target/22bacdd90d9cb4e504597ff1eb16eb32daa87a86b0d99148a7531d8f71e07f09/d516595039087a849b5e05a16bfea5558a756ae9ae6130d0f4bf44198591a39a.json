@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "290cc54c3fbe5ad57b377bd0e3f16b9647a50b04d7562b5558b26ae4dec07b50",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:22bacdd90d9cb4e504597ff1eb16eb32daa87a86b0d99148a7531d8f71e07f09",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Places and Shared value expressions link their syntax; the inherited Destructor statement family is linked. Assignment p = e is introduced locally and calls remain statements rather than value expressions. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "1a883eb2daf2fc87c7d6fd8d9fbf91b940b9093851dc038bff0da4fa4264117a"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Assignment statement/body/program syntax",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 6718,
+      "end": 7184
+    },
+    "clarity": "The named unit opens with the defining passage for Assignment statement/body/program syntax. Places and Shared value expressions link their syntax; the inherited Destructor statement family is linked. Assignment p = e is introduced locally and calls remain statements rather than value expressions.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. p and e are bound to their syntactic domains immediately. No undeclared grammar variable or inferred receiver sugar is used."
+  }
+}

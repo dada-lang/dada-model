@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "bundle": "fe6c6efc43ebc394299a0ea5c9864cb8710d80522de1ad3808d6114dd894dd6b",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:6a677ac22a7333f883a5bbe3ea1f985b201e8e1dfa34eb7895adb06760dc2928",
+    "audit:target:d23f620a4d543e74b2a0c0ebf99c040dfd62ccaae87df02e867c7c374fa3bc58",
+    "audit:unit:given.gc",
+    "audit:unit:given.machine",
+    "audit:unit:given.state",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links live-frame roots and initialized fields; defines reachability for collection with absent frames having no roots. The filter equation defines gc; S_K and D are explained locally, and the frame/counter are preserved. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "0e78a5ed17461cff2809bbeacf972f67446ffd5bdf7b6c3ea9dcebad2226af76"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links live-frame roots and initialized fields; defines reachability for collection with absent frames having no roots.",
+    "mathematics": "The filter equation defines gc; S_K and D are explained locally, and the frame/counter are preserved.",
+    "links": [
+      {
+        "occurrence": "given.gc:1",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'live frame' refers to md/given.md#claim-given.machine for the concept or example setup used by this unit. Links live-frame roots and initialized fields; defines reachability for collection with absent frames having no roots."
+      },
+      {
+        "occurrence": "given.gc:2",
+        "role": "conceptual",
+        "rationale": "This markdown occurrence of 'initialized object fields' refers to md/given.md#claim-given.slots for the concept or example setup used by this unit. Links live-frame roots and initialized fields; defines reachability for collection with absent frames having no roots."
+      }
+    ]
+  }
+}

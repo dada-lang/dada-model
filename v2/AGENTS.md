@@ -146,7 +146,7 @@ and absent destructors, struct effects, complete nested destruction, and recursi
 execution. `Correspondence/FunctionsDestructors` preserves and reflects steps of
 the embedded Functions fragment under an explicit exit condition and reflects
 arbitrary successors and traces. Both chapters have inherited machinery appendices.
-`md/assignment.md` and `lean/Assignment/` add explicit `store p, e` statements.
+`md/assignment.md` and `lean/Assignment/` add explicit `p = e` statements.
 The RHS evaluates first; the resulting destination must be an empty or struct
 slot, with unique access to a field's parent. Fixed nominal/permission binding
 metadata survives empty slots; current views track partial values independently.

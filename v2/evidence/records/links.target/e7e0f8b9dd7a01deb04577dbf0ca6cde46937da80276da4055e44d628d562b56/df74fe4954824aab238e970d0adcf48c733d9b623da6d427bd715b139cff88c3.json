@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "bundle": "f3833bcd052303be6d5604d80a1f2a7eda1e41d074f06976ecba785f9391fea7",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:e7e0f8b9dd7a01deb04577dbf0ca6cde46937da80276da4055e44d628d562b56",
+    "context:AGENTS.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The landing md/shared-typing.md#claim-shared.typing.emptying directly introduces shared.typing.emptying. Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view. Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. emptyPath maps Given.emptyPath while retaining ty.permission. The empty-path exclusion and positive-path side condition describe the domain, and normalization of the resulting nominal view is inherited from Given. No sharing conversion occurs in this operation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "97e3645c851e39d8ae94e765f569c05f50cd1a2b8ff2a9df52cddc16c7041323"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "shared.typing.emptying",
+    "definition": {
+      "path": "md/shared-typing.md",
+      "start": 13506,
+      "end": 14136
+    },
+    "clarity": "The landing md/shared-typing.md#claim-shared.typing.emptying directly introduces shared.typing.emptying. Links normalized form, pos, Given emptying and nominal table. Defines only retaining outer permission while updating the nominal view.",
+    "independence": "Compared inline notation, displayed rules/equations, and any code/table with the named dependencies. emptyPath maps Given.emptyPath while retaining ty.permission. The empty-path exclusion and positive-path side condition describe the domain, and normalization of the resulting nominal view is inherited from Given. No sharing conversion occurs in this operation. Prerequisites are linked in the retained chapter; the selected body states this subject rather than asking the reader to find a definition elsewhere in a multipurpose chapter."
+  }
+}

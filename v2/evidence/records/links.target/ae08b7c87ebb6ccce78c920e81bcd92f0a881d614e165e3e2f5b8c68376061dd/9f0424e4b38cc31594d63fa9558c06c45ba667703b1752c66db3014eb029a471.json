@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "bundle": "1ac71c02701845f4099580650d02bc704954a9ce56b7eab3b9de5a36bcf9da2f",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:ae08b7c87ebb6ccce78c920e81bcd92f0a881d614e165e3e2f5b8c68376061dd",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The selected current UTF-8 byte span is the defining prose, excluding directive/options/fences. Defines the componentwise translation and links the extended syntax and frames. The list of unchanged heap/local/name/value components supplies the observable scope; no reflection or typing preservation is implied. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "4afce02f69a416e208c5c0efe2b7640ec9524c0d679901e9284270d5962d0606"
+  ],
+  "audit": {
+    "kind": "target",
+    "subject": "Destructor-to-Assignment embedding",
+    "definition": {
+      "path": "md/assignment.md",
+      "start": 17454,
+      "end": 17746
+    },
+    "clarity": "The named unit opens with the defining passage for Destructor-to-Assignment embedding. Defines the componentwise translation and links the extended syntax and frames. The list of unchanged heap/local/name/value components supplies the observable scope; no reflection or typing preservation is implied.",
+    "independence": "The selected body contains the definition or theorem with its conditions and direct prerequisite links. No display mathematics occurs. This is a prose definition of the embedding, with no free equation variables or unnamed translation operation."
+  }
+}

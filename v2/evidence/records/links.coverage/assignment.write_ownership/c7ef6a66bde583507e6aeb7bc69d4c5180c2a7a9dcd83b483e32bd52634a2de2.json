@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "bundle": "9df1973b7d35c3c9d459e653dadeffedd4af3d8b63f854ffc464fed0539dd2d5",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:3d33b028ca981a0fc9321bf9e923e736057fee84a81a9b48d93048441c206c33",
+    "audit:target:5e03929e4988d8b830ec8720d1833303d97b64982fd4b88fe3359faceacf9240",
+    "audit:target:c2e25fe4b8e4ae2a6521f346c885a833221037d48c62cc1807470131f503af00",
+    "audit:unit:assignment.write",
+    "audit:unit:assignment.write_ownership",
+    "audit:unit:shared.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/shared.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links structural well-formedness, pending-root liveness and writable write. The incoming/displaced root exchange is explicit before collection; no age order or global acyclicity is assumed. No mathematical notation occurs. Pending references retain multiplicity and the optional displaced value is named explicitly in the ownership exchange. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "4b17a262a2e60c53e5b092adb723d40fb329ab0df8e0f2bdc7e74f46a4c81295"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links structural well-formedness, pending-root liveness and writable write. The incoming/displaced root exchange is explicit before collection; no age order or global acyclicity is assumed.",
+    "mathematics": "No mathematical notation occurs. Pending references retain multiplicity and the optional displaced value is named explicitly in the ownership exchange.",
+    "links": [
+      {
+        "occurrence": "assignment.write_ownership:1",
+        "role": "conceptual",
+        "rationale": "'structurally well formed' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.well_formed needed by this passage."
+      },
+      {
+        "occurrence": "assignment.write_ownership:2",
+        "role": "conceptual",
+        "rationale": "'pending references' supplies the defining operation, predicate, syntax or setup at shared.md#claim-shared.pending_live needed by this passage."
+      },
+      {
+        "occurrence": "assignment.write_ownership:3",
+        "role": "conceptual",
+        "rationale": "'write to a writable slot' supplies the defining operation, predicate, syntax or setup at #claim-assignment.write needed by this passage."
+      }
+    ]
+  }
+}

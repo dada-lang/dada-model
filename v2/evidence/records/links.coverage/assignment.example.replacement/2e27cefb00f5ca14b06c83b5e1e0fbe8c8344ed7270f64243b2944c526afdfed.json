@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "0c61efbe419d67e4903e1887f6898c65f72cc12a7d4218fa6f870bd0dca1fc49",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:7886078b1fb3904696d1e1f2c4fd92dec9d47982b7939bad7fb3a1e2ae19f9df",
+    "audit:target:fb102fffa34394933fb7961431f0e3e35308342998590976bbea48c889b79ba1",
+    "audit:unit:assignment.example.replacement",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-chapter:md/functions.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Explicit drop typing is linked, and the retained replacement root links suspended call frames. Both input bindings are explicitly assumed; the paragraph does not misrepresent the sequence as an initially closed complete program. Resource and its destructor are declared in the code. r and replacement are explicitly typed before use; give syntax is inherited, with no new symbolic operation. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "6ae578f28d748b7ddb49ebce6801259ba4f027ec291d854ed83f72e7699211b7"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Explicit drop typing is linked, and the retained replacement root links suspended call frames. Both input bindings are explicitly assumed; the paragraph does not misrepresent the sequence as an initially closed complete program.",
+    "mathematics": "Resource and its destructor are declared in the code. r and replacement are explicitly typed before use; give syntax is inherited, with no new symbolic operation.",
+    "links": [
+      {
+        "occurrence": "assignment.example.replacement:1",
+        "role": "conceptual",
+        "rationale": "'explicit destruction' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.drop_typing needed by this passage."
+      },
+      {
+        "occurrence": "assignment.example.replacement:2",
+        "role": "conceptual",
+        "rationale": "'suspended caller frame' supplies the defining operation, predicate, syntax or setup at functions.md#claim-functions.machine needed by this passage."
+      }
+    ]
+  }
+}

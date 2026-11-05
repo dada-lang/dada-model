@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bundle": "66d329aa4c597fb87999401835e7b713e585217bbb6054dd18137b79751ffeac",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:2948fd23e337d523facb0a0bd8446f0c73151a1b3773cee11a0866dd45cc1d0a",
+    "audit:target:ae08b7c87ebb6ccce78c920e81bcd92f0a881d614e165e3e2f5b8c68376061dd",
+    "audit:unit:assignment.embedding",
+    "audit:unit:assignment.forward",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/destructors.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Links Destructor execution and the previously defined embedding. The statement confines itself to forward steps including GC/frame boundaries and explicitly excludes typing preservation. No symbolic judgment occurs; quantification over every source step is explicit in prose. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "67066168eb8310c586f3459d225d0fe3c4621097f8ef474ba9ce79cae4eb95de"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Links Destructor execution and the previously defined embedding. The statement confines itself to forward steps including GC/frame boundaries and explicitly excludes typing preservation.",
+    "mathematics": "No symbolic judgment occurs; quantification over every source step is explicit in prose.",
+    "links": [
+      {
+        "occurrence": "assignment.forward:1",
+        "role": "conceptual",
+        "rationale": "'Destructor execution step' supplies the defining operation, predicate, syntax or setup at destructors.md#claim-destructors.execution needed by this passage."
+      },
+      {
+        "occurrence": "assignment.forward:2",
+        "role": "conceptual",
+        "rationale": "'embedding' supplies the defining operation, predicate, syntax or setup at #claim-assignment.embedding needed by this passage."
+      }
+    ]
+  }
+}

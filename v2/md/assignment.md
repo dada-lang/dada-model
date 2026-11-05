@@ -12,11 +12,11 @@ An empty field can receive a new value. Suppose `w` has type
 class Resource {}
 class Wrapper { resource: Resource }
 
-store w.resource, new Resource();
+w.resource = new Resource();
 ```
 
 The statement checks, and `w` has the whole type `given Wrapper` afterwards.
-The core spelling `store p, e` installs the value of `e` into the slot `p`.
+The assignment `p = e` installs the value of `e` into the slot `p`.
 It does not call a [destructor](destructors.md#claim-destructors.declarations)
 for the previous contents.
 The [negative view entry](given-typing.md#claim-given.typing.views)
@@ -40,7 +40,7 @@ class Wrapper { resource: Resource }
 
 let w = new Wrapper(new Resource());
 drop w.resource;
-store w.resource, new Resource();
+w.resource = new Resource();
 let Wrapper → { resource: r } = w→;
 drop r;
 ```
@@ -69,7 +69,7 @@ class Resource {
 }
 
 drop r;
-store r, replacement→;
+r = replacement→;
 ```
 
 The destructor consumes the old resource. The store then moves the replacement
@@ -87,7 +87,7 @@ An occupied class field cannot be overwritten, even when its class declares a
 [destructor](destructors.md#claim-destructors.declarations). Given whole `w: given Wrapper`, this store is rejected:
 
 ```dada
-store w.resource, new Resource();
+w.resource = new Resource();
 ```
 
 An empty local retains its declared storage type. An empty `r` that previously
@@ -95,8 +95,8 @@ held a `Resource` accepts another `Resource`, but rejects a `Token`:
 
 ```dada
 class Token {}
-store r, new Resource(); // accepted from the empty-r state
-store r, new Token();    // rejected even from the empty-r state
+r = new Resource(); // accepted from the empty-r state
+r = new Token();    // rejected even from the empty-r state
 ```
 
 These are separate checks from the same initial state.
@@ -118,11 +118,11 @@ struct Box { point: Point }
 
 The following cases check independently:
 
-| Destination's current type | Store | Result |
+| Destination's current type | Assignment | Result |
 | --- | --- | --- |
-| `p: given Point` | `store p, new Point()` | accepted |
-| `s: shared SharedPoint` | `store s, new SharedPoint()` | accepted |
-| `b: given Box` | `store b.point, new Point()` | accepted |
+| `p: given Point` | `p = new Point()` | accepted |
+| `s: shared SharedPoint` | `s = new SharedPoint()` | accepted |
+| `b: given Box` | `b.point = new Point()` | accepted |
 | `b: shared Box` | store a shared `Point` into `b.point` | rejected |
 
 A local slot holding a shared reference is writable. A field reached through
@@ -145,7 +145,7 @@ overwritten and left for [collection](functions.md#claim-functions.gc):
 ```dada
 shared struct SharedPoint {}
 let s = new SharedPoint();
-store s, new SharedPoint();
+s = new SharedPoint();
 ```
 
 This also checks as a complete program. For every finite
@@ -181,7 +181,7 @@ The right-hand side runs before the destination is checked. For whole
 `w` out, then the store refills the same local:
 
 ```dada
-store w, w→;
+w = w→;
 ```
 
 It checks and leaves `w` whole. Conversely, an empty `w` does not provide a
@@ -194,7 +194,7 @@ right-hand-side evaluation. Nominal knowledge of the field name is insufficient.
 ```{definition} assignment.syntax
 :lean: Assignment/Syntax:Statement Assignment/Syntax:Body Assignment/Syntax:Declaration Assignment/Syntax:Program
 
-A statement adds `store p, e;` to the [Destructor statements](destructors.md#claim-destructors.declarations).
+Assignment adds the statement `p = e;` to the [Destructor statements](destructors.md#claim-destructors.declarations).
 Here `p` is a [place](shared.md#claim-shared.syntax) and `e` is a
 [Shared value expression](shared.md#claim-shared.syntax). Calls remain
 statements with fresh result bindings; a call is not an assignment expression.
@@ -427,7 +427,7 @@ Reverse execution correspondence and preservation of Destructor typing with
 the new fixed binding metadata remain separate proof obligations. The
 [forward execution theorem](#claim-assignment.forward) does not establish either.
 
-Surface `p = e` elaboration and automatic destructor insertion remain deferred.
+Automatic destructor insertion remains deferred.
 Mutable leases and their different representation also remain outside this layer.
 ```
 

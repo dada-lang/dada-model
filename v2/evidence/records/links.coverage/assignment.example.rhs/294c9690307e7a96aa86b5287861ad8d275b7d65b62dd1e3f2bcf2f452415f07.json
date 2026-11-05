@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "bundle": "1c1244f6d1b3bf9226cdcec44f42a27e0be3fda8d900c110de4a2ecae7be7ebd",
+  "reviewer": "Codex Assignment notation review",
+  "provenance": "Bounded differential review by /root/assignment_notation_review, with fresh comparison of the eight changed formal raw units and cited examples/syntax by /root/assignment_notation_review/formal_notation. Read the complete current Assignment chapter, current review/link policy, changed contributor overview, prior subject-specific decisions, exact new raw units/selections, and derived link inventory. Unchanged required inputs retain their prior reviewed comparisons after byte-for-byte verification; this is not a new proof audit or a claim to have reread all conservative source snapshots. Recording workers only validate immutable prepared packets and write the reviewed decisions.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:828c2e9a592d1b90f2650b6136e24abe27a4c6886c1c3487d5a24c9e3f96fcf7",
+    "audit:unit:assignment.example.rhs",
+    "context:AGENTS.md",
+    "context:link-chapter:md/assignment.md",
+    "context:link-chapter:md/shared-typing.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "The linked ordinary give operation explains self-move. The example directly defines RHS-first ordering and why an empty root cannot supply a field destination; no later judgment is required. The single assignment w = w→ uses explicitly assumed whole Wrapper input and prior give syntax. No display equation or new metavariable occurs. Differential notation review against commit 17af7633: all selected Lean declarations, theorem/example propositions, policies, and other required semantic inputs are unchanged. The eight changed formal units now spell the existing Statement.store Place Value form as p = e. Destination place and incoming expression keep their domains and RHS-first order; explicit class consumption and struct replacement rules are unchanged. The chapter no longer defers this adopted spelling; automatic destructor insertion still remains future work. Every packet input was compared exactly, with only these reviewed authored substitutions, the matching contributor-overview spelling, and derived link byte positions allowed.",
+  "limitations": [
+    "Editorial coverage, target, and reading-order assessment only; formal correspondence and Lean proof checking are separate.",
+    "Unchanged link classifications and defining passages retain the previous reviewed comparison. All changed source text was reread and target/signpost UTF-8 spans were reselected within the current exact subject ranges."
+  ],
+  "supersedes": [
+    "b32a372ace8e18bc5a847c913166812f64c5edacb1cd42c0b69719cb0634f8a2"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "The linked ordinary give operation explains self-move. The example directly defines RHS-first ordering and why an empty root cannot supply a field destination; no later judgment is required.",
+    "mathematics": "The single assignment w = w→ uses explicitly assumed whole Wrapper input and prior give syntax. No display equation or new metavariable occurs.",
+    "links": [
+      {
+        "occurrence": "assignment.example.rhs:1",
+        "role": "conceptual",
+        "rationale": "'giving' supplies the defining operation, predicate, syntax or setup at shared-typing.md#claim-shared.typing.giving needed by this passage."
+      }
+    ]
+  }
+}

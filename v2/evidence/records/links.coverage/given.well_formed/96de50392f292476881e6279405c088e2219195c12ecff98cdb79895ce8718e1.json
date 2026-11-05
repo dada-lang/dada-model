@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "bundle": "4df8a580d7abcaeddaa93c149d5327b19f6f7f9c0b784ac3346e54959fb3f5e1",
+  "reviewer": "Codex retained-review renewal for assignment notation",
+  "provenance": "Retains the prior recorded comparison after exact-content verification of every raw unit, source selection, policy, audit input, and other packet context. The sole changed input for this subject is the contributor overview spelling `store p, e` as `p = e`; root read and reviewed that exact one-line change. An independent agent confirmed all 732 outside-Assignment subjects have identical required input keys, paths, and hashes. This is a bounded differential renewal, not a claim to have independently reread every historical proof. Separate fresh reviews cover the changed Assignment units and their editorial audits.",
+  "examined": [
+    "audit:reading-order",
+    "audit:subject",
+    "audit:target:5027e237be554f4900cfc87bba7610cfac1fcc235ce9fc10af2ff498a9d9290e",
+    "audit:target:56e88d29eb95c2d92fc038aa82ddca6d06f063d06b43e1307ce35878c60572ed",
+    "audit:target:a35297a1ba566d96f5743e560b9d7b37b95ed682297d802704261d888ff64956",
+    "audit:target:e585a8bfdbe998694ebcb73da41995d32acc62d3ac4d7676282396f41a2f6cb4",
+    "audit:target:efa11070e26aa406d375b2f655749b13b17b0ef813eeb93806aaea4a31a7e991",
+    "audit:unit:given.allocated",
+    "audit:unit:given.identities",
+    "audit:unit:given.live",
+    "audit:unit:given.live_pending",
+    "audit:unit:given.programs",
+    "audit:unit:given.state",
+    "audit:unit:given.well_formed",
+    "context:AGENTS.md",
+    "context:link-chapter:md/given.md",
+    "context:link-summary",
+    "policy:md/repo/correspondence-review.md"
+  ],
+  "conclusion": "corresponds",
+  "rationale": "Declared classes, allocated IDs, index notation, ordinary liveness and pending roots all link to earlier definitions. The final Live(S;R) occurrence reuses the immediately preceding linked definition. WF(S) and WF(S;R) are defining occurrences, with S, Delta and nu already introduced by the storage/program units. No forward concept link is required. Declared classes, allocated IDs, index notation, ordinary liveness and pending roots all link to earlier definitions. The final Live(S;R) occurrence reuses the immediately preceding linked definition. WF(S) and WF(S;R) are defining occurrences, with S, Delta and nu already introduced by the storage/program units. No forward concept link is required. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs. Renewal after the Assignment safety extension: the exact authored units, selected declarations/tests, policy, and audit inputs for this comparison are byte-identical to the prior reviewed packet. Existing language definitions and proofs have not changed; the new Assignment proof modules import the earlier foundation without changing it. The contributor overview now reports the proved Assignment results. Where retained Shared chapter context changed, the sole edit removes the obsolete word count from “The five structural clauses”; the linked invariant already enumerates rootedness among its six structural clauses. The earlier subject-specific comparison therefore still applies.\nAssignment-notation renewal: every input to the preceding subject-specific comparison is byte-identical except context:AGENTS.md, whose sole edit replaces the documented concrete spelling `store p, e` with `p = e`. The abstract Statement.store constructor, typing, execution, and proofs are unchanged. This spelling change does not alter the preceding comparison or any audit classification and span for this subject.",
+  "limitations": [
+    "The retained per-unit comparison is from the prior review; this renewal checks unchanged required content and the bounded context changes.",
+    "Lean checks proofs separately. New Assignment semantic claims have separate fresh reviews; reverse execution and typing correspondence remain outside the claimed soundness result.",
+    "This renewal retains the earlier substantive comparison; it verifies exact unchanged inputs and the reviewed one-line context change. It is not a new independent proof audit."
+  ],
+  "supersedes": [
+    "4d316dd7f26ae257b701d6f608596948d3d529518bcbac50aa0b70e5ea3a2d10"
+  ],
+  "audit": {
+    "kind": "coverage",
+    "prose": "Declared classes, allocated IDs, index notation, ordinary liveness and pending roots all link to earlier definitions. The final Live(S;R) occurrence reuses the immediately preceding linked definition. WF(S) and WF(S;R) are defining occurrences, with S, Delta and nu already introduced by the storage/program units. No forward concept link is required.",
+    "mathematics": "Declared classes, allocated IDs, index notation, ordinary liveness and pending roots all link to earlier definitions. The final Live(S;R) occurrence reuses the immediately preceding linked definition. WF(S) and WF(S;R) are defining occurrences, with S, Delta and nu already introduced by the storage/program units. No forward concept link is required. Existing mathematical domains and give syntax are unchanged; the pending-root definition explicitly introduces its root list and judgment before use. No unintroduced graph-rank symbol occurs.",
+    "links": [
+      {
+        "occurrence": "given.well_formed:1",
+        "role": "conceptual",
+        "rationale": "'declared' points backward to #claim-given.programs for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "given.well_formed:2",
+        "role": "conceptual",
+        "rationale": "'allocated identity' points backward to #claim-given.allocated for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "given.well_formed:3",
+        "role": "conceptual",
+        "rationale": "'\\operatorname{index}(\\alpha)' points backward to #claim-given.identities for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "given.well_formed:4",
+        "role": "conceptual",
+        "rationale": "'live' points backward to #claim-given.live for the definition or concrete setup used here."
+      },
+      {
+        "occurrence": "given.well_formed:5",
+        "role": "conceptual",
+        "rationale": "'pending roots' points backward to #claim-given.live_pending for the definition or concrete setup used here."
+      }
+    ]
+  }
+}
